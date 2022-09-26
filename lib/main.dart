@@ -11,7 +11,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/base.dart';
 
+import 'package:adguard_home_manager/services/database.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/config/theme.dart';
 
 
@@ -22,6 +24,12 @@ void main() async {
   );  
   
   AppConfigProvider appConfigProvider = AppConfigProvider();
+  ServersProvider serversProvider = ServersProvider();
+
+  final dbData = await loadDb();
+  serversProvider.setDbInstance(dbData['dbInstance']);
+  appConfigProvider.setDbInstance(dbData['dbInstance']);
+  serversProvider.saveFromDb(dbData['servers']);
 
   PackageInfo appInfo = await PackageInfo.fromPlatform();
   appConfigProvider.setAppInfo(appInfo);
@@ -40,8 +48,11 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: ((context) => serversProvider)
+        ),
+        ChangeNotifierProvider(
           create: ((context) => appConfigProvider)
-        )
+        ),
       ],
       child: const Main(),
     )

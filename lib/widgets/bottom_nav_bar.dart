@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/models/app_screen.dart';
 import 'package:adguard_home_manager/config/app_screens.dart';
 
 class BottomNavBar extends StatelessWidget {
+  final List<AppScreen> screens;
   final int selectedScreen;
   final void Function(int) onSelect;
 
   const BottomNavBar({
-    Key? key,
+    Key? key, 
+    required this.screens,
     required this.selectedScreen,
     required this.onSelect,
   }) : super(key: key);
@@ -22,6 +25,9 @@ class BottomNavBar extends StatelessWidget {
 
         case 'settings':
           return AppLocalizations.of(context)!.settings;
+
+        case 'connect':
+          return AppLocalizations.of(context)!.connect;
 
         default:
           return '';

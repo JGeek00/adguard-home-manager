@@ -1,4 +1,18 @@
 {
     "home": "Inicio",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "connect": "Conectar",
+    "servers": "Servidores",
+    "createConnection": "Crear conexión",
+    "name": "Nombre",
+    "ipDomain": "Dirección IP o dominio",
+    "path": "Ruta",
+    "port": "Puerto",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "defaultServer": "Servidor por defecto",
+    "general": "General",
+    "connection": "Conexión",
+    "authentication": "Autenticación",
+    "other": "Otros"
 }

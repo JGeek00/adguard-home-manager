@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:animations/animations.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 import 'package:adguard_home_manager/widgets/bottom_nav_bar.dart';
-import 'package:flutter/services.dart';
+
+import 'package:adguard_home_manager/models/app_screen.dart';
+import 'package:adguard_home_manager/config/app_screens.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Base extends StatefulWidget {
   const Base({Key? key}) : super(key: key);
@@ -16,6 +20,16 @@ class _BaseState extends State<Base> {
 
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
+
+    List<AppScreen> screens = serversProvider.selectedServer != null
+      ? screensServerConnected 
+      : screensSelectServer;
+
+    if (selectedScreen > screens.length-1) {
+      setState(() => selectedScreen = 0);
+    }
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -31,20 +45,14 @@ class _BaseState extends State<Base> {
           : Brightness.light,
       ),
       child: Scaffold(
-        body: PageTransitionSwitcher(
-          duration: const Duration(milliseconds: 200),
-          transitionBuilder: (
-            (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
-              animation: primaryAnimation, 
-              secondaryAnimation: secondaryAnimation,
-              child: child,
-            )
-          ),
-        ),
+        appBar: screens[selectedScreen].appBar,
+        body: screens[selectedScreen].body,
         bottomNavigationBar: BottomNavBar(
+          screens: screens,
           selectedScreen: selectedScreen,
           onSelect: (value) => setState(() => selectedScreen = value),
         ),
+        floatingActionButton: screens[selectedScreen].fab,
       ),
     );
   }

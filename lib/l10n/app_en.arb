@@ -1,4 +1,18 @@
 {
     "home": "Home",
-    "settings": "Settings"
+    "settings": "Settings",
+    "connect": "Connect",
+    "servers": "Servers",
+    "createConnection": "Create connection",
+    "name": "Name",
+    "ipDomain": "IP address or domain",
+    "path": "Path",
+    "port": "Port",
+    "username": "Username",
+    "password": "Password",
+    "defaultServer": "Default server",
+    "general": "General",
+    "connection": "Connection",
+    "authentication": "Authentication",
+    "other": "Other"
 }
