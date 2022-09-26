@@ -26,5 +26,22 @@
     "sslError": "Error de SSL",
     "unknownError": "Error desconocido",
     "connectionNotCreated": "No se pudo crear la conexión",
-    "connecting": "Conectando..."
+    "connecting": "Conectando...",
+    "connected": "Conectado",
+    "selectedDisconnected": "Seleccionado pero desconectado",
+    "connectionDefaultSuccessfully": "Conexión definida como por defecto.",
+    "connectionDefaultFailed": "No se ha podido definir como conexión por defecto.",
+    "noSavedConnections": "No hay conexiones guardadas",
+    "cannotConnect": "No se puede conectar con el servidor",
+    "connectionRemoved": "Conexión eliminada satisfactoriamente.",
+    "connectionCannotBeRemoved": "No se ha podido eliminar la conexión.",
+    "remove": "Eliminar",
+    "removeWarning": "¿Estás seguro de que deseas eliminar la conexión con este servidor?",
+    "cancel": "Cancelar",
+    "defaultConnection": "Conexión por defecto",
+    "setDefault": "Seleccionar por defecto",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "connectionNotUpdated": "Conexión no actualizada"
 }

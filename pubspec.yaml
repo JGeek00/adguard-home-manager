@@ -43,6 +43,7 @@ dependencies:
   animations: ^2.0.5
   device_info_plus: ^4.1.2
   uuid: ^3.0.6
+  expandable: ^5.0.1
 
 dev_dependencies:
   flutter_test:

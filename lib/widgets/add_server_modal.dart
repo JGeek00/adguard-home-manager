@@ -13,7 +13,12 @@ import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/config/system_overlay_style.dart';
 
 class AddServerModal extends StatefulWidget {
-  const AddServerModal({Key? key}) : super(key: key);
+  final Server? server;
+
+  const AddServerModal({
+    Key? key,
+    this.server,
+  }) : super(key: key);
 
   @override
   State<AddServerModal> createState() => _AddServerModalState();
@@ -179,6 +184,22 @@ class _AddServerModalState extends State<AddServerModal> {
   }
 
   @override
+  void initState() {
+    if (widget.server != null) {
+      nameController.text = widget.server!.name;
+      connectionType = widget.server!.connectionMethod;
+      ipDomainController.text = widget.server!.domain;
+      pathController.text = widget.server!.path ?? '';
+      portController.text = widget.server!.port != null ? widget.server!.port.toString() : "";
+      userController.text = widget.server!.user;
+      passwordController.text = widget.server!.password;
+      defaultServer = widget.server!.defaultServer;
+    }
+    checkDataValid();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context, listen: false);
 
@@ -195,7 +216,9 @@ class _AddServerModalState extends State<AddServerModal> {
         password: passwordController.text, 
         defaultServer: defaultServer
       );
+      setState(() => isConnecting = true);
       final result = await login(serverObj);
+      setState(() => isConnecting = false);
       if (result['result'] == 'success') {
         final serverCreated = await serversProvider.createServer(serverObj);
         if (serverCreated == true) {
@@ -205,6 +228,74 @@ class _AddServerModalState extends State<AddServerModal> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.connectionNotCreated),
+              backgroundColor: Colors.red,
+            )
+          );
+        }
+      }
+      else if (result['result'] == 'error' && result['message'] == 'invalid_username_password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.invalidUsernamePassword),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else if (result['result'] == 'error' && result['message'] == 'many_attempts') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.tooManyAttempts),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else if (result['result'] == 'error' && result['message'] == 'no_connection') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.cantReachServer),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else if (result['result'] == 'error' && result['message'] == 'ssl_error') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.sslError),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.unknownError),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
+    void edit() async {
+      final Server serverObj = Server(
+        id: widget.server!.id,
+        name: nameController.text, 
+        connectionMethod: connectionType, 
+        domain: ipDomainController.text, 
+        port: int.parse(portController.text),
+        user: userController.text, 
+        password: passwordController.text, 
+        defaultServer: defaultServer
+      );
+      final result = await login(serverObj);
+      if (result['result'] == 'success') {
+        final serverSaved = await serversProvider.editServer(serverObj);
+        if (serverSaved == true) {
+          Navigator.pop(context);
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.connectionNotUpdated),
               backgroundColor: Colors.red,
             )
           );
@@ -264,11 +355,19 @@ class _AddServerModalState extends State<AddServerModal> {
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: IconButton(
-                  tooltip: AppLocalizations.of(context)!.connect,
+                  tooltip: widget.server == null 
+                    ? AppLocalizations.of(context)!.connect
+                    : AppLocalizations.of(context)!.save,
                   onPressed: allDataValid == true 
-                    ? () => connect()
+                    ? widget.server == null 
+                      ? () => connect()
+                      : () => edit()
                     : null,
-                  icon: const Icon(Icons.login_rounded)
+                  icon: Icon(
+                    widget.server == null
+                      ? Icons.login_rounded
+                      : Icons.save_rounded
+                  )
                 ),
               ),
             ],
@@ -349,7 +448,9 @@ class _AddServerModalState extends State<AddServerModal> {
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => setState(() => defaultServer = !defaultServer),
+                  onTap: widget.server == null
+                    ? () => setState(() => defaultServer = !defaultServer)
+                    : null,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
@@ -363,7 +464,9 @@ class _AddServerModalState extends State<AddServerModal> {
                         ),
                         Switch(
                           value: defaultServer, 
-                          onChanged: (value) => setState(() => defaultServer = value),
+                          onChanged: widget.server == null 
+                            ? (value) => setState(() => defaultServer = value)
+                            : null,
                           activeColor: Theme.of(context).primaryColor,
                         )
                       ],

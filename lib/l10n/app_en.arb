@@ -26,5 +26,22 @@
     "sslError": "SSL error",
     "unknownError": "Unknown error",
     "connectionNotCreated": "Connection couldn't be created",
-    "connecting": "Connecting..."
+    "connecting": "Connecting...",
+    "connected": "Connected",
+    "selectedDisconnected": "Selected but disconnected",
+    "connectionDefaultSuccessfully": "Connection set as default successfully.",
+    "connectionDefaultFailed": "Connection could not be set as default.",
+    "noSavedConnections": "No saved connections",
+    "cannotConnect": "Cannot connect to the server",
+    "connectionRemoved": "Connection removed successfully",
+    "connectionCannotBeRemoved": "Connection cannot be removed.",
+    "remove": "Remove",
+    "removeWarning": "Are you sure you want to remove the connection with this AdGuard Home server?",
+    "cancel": "Cancel",
+    "defaultConnection": "Default connection",
+    "setDefault": "Set default",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "connectionNotUpdated": "Connection not updated"
 }

@@ -9,6 +9,7 @@ class ServersProvider with ChangeNotifier {
 
   List<Server> _serversList = [];
   Server? _selectedServer;
+  bool? _isServerConnected;
 
   List<Server> get serversList {
     return _serversList;
@@ -18,12 +19,26 @@ class ServersProvider with ChangeNotifier {
     return _selectedServer;
   }
 
+  bool? get isServerConnected {
+    return _isServerConnected;
+  }
+
   void setDbInstance(Database db) {
     _dbInstance = db;
   }
 
   void addServer(Server server) {
     _serversList.add(server);
+    notifyListeners();
+  }
+
+  void setSelectedServer(Server server) {
+    _selectedServer = server;
+    notifyListeners();
+  }
+
+  void setIsServerConnected(bool status) {
+    _isServerConnected = status;
     notifyListeners();
   }
 
@@ -74,11 +89,71 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> editServer(Server server) async {
+    final result = await editServerDb(server);
+    if (result == true) {
+      List<Server> newServers = _serversList.map((s) {
+        if (s.id == server.id) {
+          return server;
+        }
+        else {
+          return s;
+        }
+      }).toList();
+      _serversList = newServers;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  Future<bool> removeServer(Server server) async {
+    final result = await removeFromDb(server.id);
+    if (result == true) {
+      _selectedServer = null;
+      List<Server> newServers = _serversList.where((s) => s.id != server.id).toList();
+      _serversList = newServers;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   Future<bool> saveServerIntoDb(Server server) async {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawInsert(
-          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer) VALUES ("${server.id}", "${server.name}", "${server.connectionMethod}", "${server.domain}", "${server.path}", ${server.port}, "${server.user}", "${server.password}", 0)',
+          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer) VALUES ("${server.id}", "${server.name}", "${server.connectionMethod}", "${server.domain}", ${server.path != null ? "${server.path}" : null}, ${server.port}, "${server.user}", "${server.password}", 0)',
+        );
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> editServerDb(Server server) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawUpdate(
+          'UPDATE servers SET name = "${server.name}", connectionMethod = "${server.connectionMethod}", domain = "${server.domain}", path = ${server.path != null ? "${server.path}" : null}, port = ${server.port}, user = "${server.user}", password = "${server.password}" WHERE id = "${server.id}"',
+        );
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> removeFromDb(String id) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawDelete(
+          'DELETE FROM servers WHERE id = "$id"',
         );
         return true;
       });
