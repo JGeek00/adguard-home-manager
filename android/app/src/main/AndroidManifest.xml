@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.adguard_home_manager">
-   <application
-        android:label="adguard_home_manager"
+    package="com.jgeek00.adguard_home_manager">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:label="AdGuard Home Manager"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
