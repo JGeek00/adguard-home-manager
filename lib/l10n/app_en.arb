@@ -14,5 +14,17 @@
     "general": "General",
     "connection": "Connection",
     "authentication": "Authentication",
-    "other": "Other"
+    "other": "Other",
+    "invalidPort": "Invalid port",
+    "invalidPath": "Invalid path",
+    "invalidIpDomain": "Invalid IP or domain",
+    "ipDomainNotEmpty": "IP or domain cannot be empty",
+    "nameNotEmpty": "Name cannot be empty",
+    "invalidUsernamePassword": "Invalid username or password",
+    "tooManyAttempts": "Too many attempts. Try again later.",
+    "cantReachServer": "Can't reach server. Check connection data.",
+    "sslError": "SSL error",
+    "unknownError": "Unknown error",
+    "connectionNotCreated": "Connection couldn't be created",
+    "connecting": "Connecting..."
 }

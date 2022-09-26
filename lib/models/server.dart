@@ -1,14 +1,16 @@
 class Server {
-  final String name;
-  final String connectionMethod;
-  final String domain;
-  final String? path;
-  final int? port;
-  final String user;
-  final String password;
-  final bool defaultServer;
+  final String id;
+  String name;
+  String connectionMethod;
+  String domain;
+  String? path;
+  int? port;
+  String user;
+  String password;
+  bool defaultServer;
 
-  const Server({
+  Server({
+    required this.id,
     required this.name,
     required this.connectionMethod,
     required this.domain,

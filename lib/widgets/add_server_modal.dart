@@ -1,8 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_radio_toggle.dart';
 
+import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/config/system_overlay_style.dart';
 
 class AddServerModal extends StatefulWidget {
@@ -13,7 +20,10 @@ class AddServerModal extends StatefulWidget {
 }
 
 class _AddServerModalState extends State<AddServerModal> {
+  final uuid = const Uuid();
+
   final TextEditingController nameController = TextEditingController();
+  String? nameError;
 
   String connectionType = "http";
 
@@ -31,6 +41,10 @@ class _AddServerModalState extends State<AddServerModal> {
   final TextEditingController passwordController = TextEditingController();
 
   bool defaultServer = false;
+
+  bool allDataValid = false;
+
+  bool isConnecting = false;
 
   Widget sectionLabel(String label) {
     return Padding(
@@ -53,12 +67,14 @@ class _AddServerModalState extends State<AddServerModal> {
     required TextEditingController controller,
     String? error,
     required IconData icon,
-    TextInputType? keyboardType
+    TextInputType? keyboardType,
+    Function(String)? onChanged,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextFormField(
         controller: controller,
+        onChanged: onChanged,
         decoration: InputDecoration(
           prefixIcon: Icon(icon),
           errorText: error,
@@ -74,8 +90,168 @@ class _AddServerModalState extends State<AddServerModal> {
     );
   }
 
+  void checkDataValid() {
+    if (
+      nameController.text != '' &&
+      ipDomainController.text != '' &&
+      ipDomainError == null &&
+      pathError == null && 
+      portError == null && 
+      userController.text != '' && 
+      passwordController.text != ''
+    ) {
+      setState(() {
+        allDataValid = true;
+      });
+    }
+    else {
+      setState(() {
+        allDataValid = false;
+      });
+    }
+  }
+
+
+  void validatePort(String? value) {
+    if (value != null && value != '') {
+      if (int.tryParse(value) != null && int.parse(value) <= 65535) {
+        setState(() {
+          portError = null;
+        });
+      }
+      else {
+        setState(() {
+          portError = AppLocalizations.of(context)!.invalidPort;
+        });
+      }
+    }
+    else {
+      setState(() {
+        portError = null;
+      });
+    }
+    checkDataValid();
+  }
+
+  void validateSubroute(String? value) {
+    if (value != null && value != '') {
+      RegExp subrouteRegexp = RegExp(r'^\/\b([A-Za-z0-9_\-~/]*)[^\/|\.|\:]$');
+      if (subrouteRegexp.hasMatch(value) == true) {
+        setState(() {
+          pathError = null;
+        });
+      }
+      else {
+        setState(() {
+          pathError = AppLocalizations.of(context)!.invalidPath;
+        });
+      }
+    }
+    else {
+      setState(() {
+        pathError = null;
+      });
+    }
+    checkDataValid();
+  }
+
+  void validateAddress(String? value) {
+    if (value != null && value != '') {
+      RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
+      RegExp domain = RegExp(r'^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$');
+      if (ipAddress.hasMatch(value) == true || domain.hasMatch(value) == true) {
+        setState(() {
+          ipDomainError = null;
+        });
+      }
+      else {
+        setState(() {
+          ipDomainError = AppLocalizations.of(context)!.invalidIpDomain;
+        });
+      }
+    }
+    else {
+      setState(() {
+        ipDomainError = AppLocalizations.of(context)!.ipDomainNotEmpty;
+      });
+    }
+    checkDataValid();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+
+    final mediaQuery = MediaQuery.of(context);
+
+    void connect() async {
+      final Server serverObj = Server(
+        id: uuid.v4(),
+        name: nameController.text, 
+        connectionMethod: connectionType, 
+        domain: ipDomainController.text, 
+        port: int.parse(portController.text),
+        user: userController.text, 
+        password: passwordController.text, 
+        defaultServer: defaultServer
+      );
+      final result = await login(serverObj);
+      if (result['result'] == 'success') {
+        final serverCreated = await serversProvider.createServer(serverObj);
+        if (serverCreated == true) {
+          Navigator.pop(context);
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.connectionNotCreated),
+              backgroundColor: Colors.red,
+            )
+          );
+        }
+      }
+      else if (result['result'] == 'error' && result['message'] == 'invalid_username_password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.invalidUsernamePassword),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else if (result['result'] == 'error' && result['message'] == 'many_attempts') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.tooManyAttempts),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else if (result['result'] == 'error' && result['message'] == 'no_connection') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.cantReachServer),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else if (result['result'] == 'error' && result['message'] == 'ssl_error') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.sslError),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.unknownError),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
     return Stack(
       children: [
         Scaffold(
@@ -89,7 +265,9 @@ class _AddServerModalState extends State<AddServerModal> {
                 padding: const EdgeInsets.only(right: 10),
                 child: IconButton(
                   tooltip: AppLocalizations.of(context)!.connect,
-                  onPressed: () => {},
+                  onPressed: allDataValid == true 
+                    ? () => connect()
+                    : null,
                   icon: const Icon(Icons.login_rounded)
                 ),
               ),
@@ -102,7 +280,11 @@ class _AddServerModalState extends State<AddServerModal> {
               textField(
                 label: AppLocalizations.of(context)!.name, 
                 controller: nameController, 
-                icon: Icons.badge_rounded
+                icon: Icons.badge_rounded,
+                error: nameError,
+                onChanged: (value) => value == ''
+                  ? setState(() => nameError = AppLocalizations.of(context)!.nameNotEmpty)
+                  : setState(() => nameError = null)
               ),
               sectionLabel(AppLocalizations.of(context)!.connection),
               Row(
@@ -128,14 +310,16 @@ class _AddServerModalState extends State<AddServerModal> {
                 controller: ipDomainController, 
                 icon: Icons.link_rounded,
                 error: ipDomainError,
-                keyboardType: TextInputType.url
+                keyboardType: TextInputType.url,
+                onChanged: validateAddress
               ),
               const SizedBox(height: 20),
               textField(
                 label: AppLocalizations.of(context)!.path, 
                 controller: pathController, 
                 icon: Icons.route_rounded,
-                error: pathError
+                error: pathError,
+                onChanged: validateSubroute
               ),
               const SizedBox(height: 20),
               textField(
@@ -143,20 +327,23 @@ class _AddServerModalState extends State<AddServerModal> {
                 controller: portController, 
                 icon: Icons.numbers_rounded,
                 error: portError,
-                keyboardType: TextInputType.number
+                keyboardType: TextInputType.number,
+                onChanged: validatePort
               ),
               sectionLabel(AppLocalizations.of(context)!.authentication),
               textField(
                 label: AppLocalizations.of(context)!.username, 
                 controller: userController, 
                 icon: Icons.person_rounded,
+                onChanged: (_) => checkDataValid()
               ),
               const SizedBox(height: 20),
               textField(
                 label: AppLocalizations.of(context)!.password, 
                 controller: passwordController, 
                 icon: Icons.lock_rounded,
-                keyboardType: TextInputType.visiblePassword
+                keyboardType: TextInputType.visiblePassword,
+                onChanged: (_) => checkDataValid()
               ),
               sectionLabel(AppLocalizations.of(context)!.other),
               Material(
@@ -186,6 +373,39 @@ class _AddServerModalState extends State<AddServerModal> {
               ),
               const SizedBox(height: 20),
             ],
+          ),
+        ),
+        AnimatedOpacity(
+          opacity: isConnecting == true ? 1 : 0,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          child: IgnorePointer(
+            ignoring: isConnecting == true ? false : true,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Container(
+                width: mediaQuery.size.width,
+                height: mediaQuery.size.height,
+                color: const Color.fromRGBO(0, 0, 0, 0.7),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.connecting,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 26
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ),
         )
       ],

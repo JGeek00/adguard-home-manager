@@ -14,5 +14,17 @@
     "general": "General",
     "connection": "Conexión",
     "authentication": "Autenticación",
-    "other": "Otros"
+    "other": "Otros",
+    "invalidPort": "Puerto no válido",
+    "invalidPath": "Ruta no válida",
+    "invalidIpDomain": "IP o dominio no válido",
+    "ipDomainNotEmpty": "IP o dominio no puede estar vacío",
+    "nameNotEmpty": "Name cannot be empty",
+    "invalidUsernamePassword": "Usuario o contraseña no válidos.",
+    "tooManyAttempts": "Demasiados intentos. Prueba de nuevo más tarde.",
+    "cantReachServer": "No se puede alcanzar el servidor. Comprueba los datos de conexión.",
+    "sslError": "Error de SSL",
+    "unknownError": "Error desconocido",
+    "connectionNotCreated": "No se pudo crear la conexión",
+    "connecting": "Conectando..."
 }
