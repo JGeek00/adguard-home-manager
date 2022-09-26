@@ -22,11 +22,9 @@ class _BaseState extends State<Base> {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
 
-    // List<AppScreen> screens = serversProvider.selectedServer != null
-    //   ? screensServerConnected 
-    //   : screensSelectServer;
-
-    List<AppScreen> screens = screensSelectServer;
+    List<AppScreen> screens = serversProvider.selectedServer != null
+      ? screensServerConnected 
+      : screensSelectServer;
 
     if (selectedScreen > screens.length-1) {
       setState(() => selectedScreen = 0);
