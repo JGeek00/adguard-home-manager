@@ -6,8 +6,7 @@ class SettingsAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      toolbarHeight: 50,
-      centerTitle: true,
+      toolbarHeight: 80,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -19,14 +18,14 @@ class SettingsAppBar extends StatelessWidget with PreferredSizeWidget {
           const Text(
             "AdGuard Home Manager",
             style: TextStyle(
-              fontSize: 20
+              fontSize: 22
             ),
           )
         ],
-      ),
+      )
     );
   }
   
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(80);
 }
