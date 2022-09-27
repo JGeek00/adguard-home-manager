@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:provider/provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -59,8 +60,29 @@ void main() async {
   );
 }
 
-class Main extends StatelessWidget {
+class Main extends StatefulWidget {
   const Main({super.key});
+
+  @override
+  State<Main> createState() => _MainState();
+}
+
+class _MainState extends State<Main> {
+  List<DisplayMode> modes = <DisplayMode>[];
+  DisplayMode? active;
+  DisplayMode? preferred;
+
+  Future<void> displayMode() async {
+    try {
+      modes = await FlutterDisplayMode.supported;
+      preferred = await FlutterDisplayMode.preferred;
+      active = await FlutterDisplayMode.active;
+      await FlutterDisplayMode.setHighRefreshRate();
+      setState(() {});
+    } catch (_) {
+      // ---- //
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
