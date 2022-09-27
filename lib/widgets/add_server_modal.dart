@@ -43,8 +43,10 @@ class _AddServerModalState extends State<AddServerModal> {
   String? portError;
 
   final TextEditingController userController = TextEditingController();
+  String? userError;
 
   final TextEditingController passwordController = TextEditingController();
+  String? passwordError;
 
   bool defaultServer = false;
 
@@ -75,15 +77,21 @@ class _AddServerModalState extends State<AddServerModal> {
     required IconData icon,
     TextInputType? keyboardType,
     Function(String)? onChanged,
+    bool? obscureText,
+    String? hintText,
+    String? helperText
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextFormField(
         controller: controller,
         onChanged: onChanged,
+        obscureText: obscureText ?? false,
         decoration: InputDecoration(
           prefixIcon: Icon(icon),
           errorText: error,
+          hintText: hintText,
+          helperText: helperText,
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(10)
@@ -179,6 +187,34 @@ class _AddServerModalState extends State<AddServerModal> {
     else {
       setState(() {
         ipDomainError = AppLocalizations.of(context)!.ipDomainNotEmpty;
+      });
+    }
+    checkDataValid();
+  }
+
+  void validateUser(String? value) {
+    if (value != null && value != '') {
+      setState(() {
+        userError = null;
+      });
+    }
+    else {
+      setState(() {
+        userError = AppLocalizations.of(context)!.userNotEmpty;
+      });
+    }
+    checkDataValid();
+  }
+
+  void validatePassword(String? value) {
+    if (value != null && value != '') {
+      setState(() {
+        passwordError = null;
+      });
+    }
+    else {
+      setState(() {
+        passwordError = AppLocalizations.of(context)!.passwordNotEmpty;
       });
     }
     checkDataValid();
@@ -432,7 +468,9 @@ class _AddServerModalState extends State<AddServerModal> {
                 controller: pathController, 
                 icon: Icons.route_rounded,
                 error: pathError,
-                onChanged: validateSubroute
+                onChanged: validateSubroute,
+                hintText: AppLocalizations.of(context)!.examplePath,
+                helperText: AppLocalizations.of(context)!.helperPath,
               ),
               const SizedBox(height: 20),
               textField(
@@ -448,7 +486,8 @@ class _AddServerModalState extends State<AddServerModal> {
                 label: AppLocalizations.of(context)!.username, 
                 controller: userController, 
                 icon: Icons.person_rounded,
-                onChanged: (_) => checkDataValid()
+                onChanged: validateUser,
+                error: userError
               ),
               const SizedBox(height: 20),
               textField(
@@ -456,7 +495,9 @@ class _AddServerModalState extends State<AddServerModal> {
                 controller: passwordController, 
                 icon: Icons.lock_rounded,
                 keyboardType: TextInputType.visiblePassword,
-                onChanged: (_) => checkDataValid()
+                onChanged: validatePassword,
+                error: passwordError,
+                obscureText: true
               ),
               sectionLabel(AppLocalizations.of(context)!.other),
               Material(

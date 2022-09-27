@@ -70,5 +70,9 @@
     "selectedServer": "Selected server:",
     "noServerSelected": "No server selected",
     "manageServer": "Manage server",
-    "allProtections": "All protections"
+    "allProtections": "All protections",
+    "userNotEmpty": "Username cannot be empty",
+    "passwordNotEmpty": "Password cannot be empty",
+    "examplePath": "Example: /adguard",
+    "helperPath": "If you are using a reverse proxy"
 }

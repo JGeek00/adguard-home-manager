@@ -70,5 +70,9 @@
     "selectedServer": "Servidor seleccionado:",
     "noServerSelected": "No hay servidor seleccionado",
     "manageServer": "Gestión del servidor",
-    "allProtections": "Todas las protecciones"
+    "allProtections": "Todas las protecciones",
+    "userNotEmpty": "Usuario no puede estar vacío",
+    "passwordNotEmpty": "Contraseña no puede estar vacío",
+    "examplePath": "Ejemplo: /adguard",
+    "helperPath": "Si estás usando un reverse proxy"
 }
