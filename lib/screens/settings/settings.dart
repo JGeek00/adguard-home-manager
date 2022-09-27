@@ -75,6 +75,16 @@ class Settings extends StatelessWidget {
             : AppLocalizations.of(context)!.noServerSelected,
           onTap: navigateServers,
         ),
+        const Divider(),
+        SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
+        CustomListTile(
+          label: AppLocalizations.of(context)!.appVersion, 
+          description: appConfigProvider.getAppInfo!.version,
+        ),
+        CustomListTile(
+          label: AppLocalizations.of(context)!.createdBy, 
+          description: "JGeek00",
+        ),
       ],
     );
   }

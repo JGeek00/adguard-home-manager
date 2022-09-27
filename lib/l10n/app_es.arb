@@ -74,5 +74,8 @@
     "userNotEmpty": "Usuario no puede estar vacío",
     "passwordNotEmpty": "Contraseña no puede estar vacío",
     "examplePath": "Ejemplo: /adguard",
-    "helperPath": "Si estás usando un reverse proxy"
+    "helperPath": "Si estás usando un reverse proxy",
+    "aboutApp": "Sobre la aplicación",
+    "appVersion": "Versión de la app",
+    "createdBy": "Creado por"
 }
