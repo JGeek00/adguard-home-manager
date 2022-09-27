@@ -11,29 +11,35 @@ class TopItems extends StatelessWidget {
     required this.data,
   }) : super(key: key);
 
-  Widget rowItem(Map<String, dynamic> item) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 8
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            item.keys.toList()[0],
-            style: const TextStyle(
-              fontWeight: FontWeight.w500
-            ),
-          ),
-          Text(item.values.toList()[0].toString())
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    Widget rowItem(Map<String, dynamic> item) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 8
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: width-100,
+              child: Text(
+                item.keys.toList()[0],
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500
+                ),
+              ),
+            ),
+            Text(item.values.toList()[0].toString())
+          ],
+        ),
+      );
+    }
+
     return SizedBox(
       child: Column(
         children: [

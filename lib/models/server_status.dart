@@ -11,13 +11,13 @@ class ServerStatus {
 }
 class ServerStatusData {
   final DnsStatistics stats;
-  final bool generalEnabled;
-  final bool filteringEnabled;
-  final bool safeSearchEnabled;
-  final bool safeBrowsingEnabled;
-  final bool parentalControlEnabled;
+  bool generalEnabled;
+  bool filteringEnabled;
+  bool safeSearchEnabled;
+  bool safeBrowsingEnabled;
+  bool parentalControlEnabled;
 
-  const ServerStatusData({
+  ServerStatusData({
     required this.stats,
     required this.generalEnabled,
     required this.filteringEnabled,

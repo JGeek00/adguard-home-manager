@@ -7,15 +7,31 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:adguard_home_manager/models/server_status.dart';
-import 'package:adguard_home_manager/models/dns_statistics.dart';
 import 'package:adguard_home_manager/models/server.dart';
 
-Future<http.Response> getRequest(String urlPath, Server server) {
+Future<http.Response> getRequest({
+  required String urlPath,
+  required Server server
+}) {
   return http.get(
     Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"),
     headers: {
       'Authorization': 'Basic ${server.authToken}'
     }
+  );
+}
+
+Future<http.Response> postRequest({
+  required String urlPath, 
+  required Server server, 
+  Map<String, dynamic>? body
+}) {
+  return http.post(
+    Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"),
+    headers: {
+      'Authorization': 'Basic ${server.authToken}'
+    },
+    body: jsonEncode(body)
   );
 }
 
@@ -60,12 +76,12 @@ Future login(Server server) async {
 Future getServerStatus(Server server) async {
   try {
     final result = await Future.wait([
-      getRequest('/stats', server),
-      getRequest('/status', server),
-      getRequest('/filtering/status', server),
-      getRequest('/safesearch/status', server),
-      getRequest('/safebrowsing/status', server),
-      getRequest('/parental/status', server),
+      getRequest(urlPath: '/stats', server: server),
+      getRequest(urlPath: '/status', server: server),
+      getRequest(urlPath: '/filtering/status', server: server),
+      getRequest(urlPath: '/safesearch/status', server: server),
+      getRequest(urlPath: '/safebrowsing/status', server: server),
+      getRequest(urlPath: '/parental/status', server: server),
     ]);
 
     if (
@@ -89,6 +105,129 @@ Future getServerStatus(Server server) async {
         'result': 'success',
         'data': ServerStatusData.fromJson(mappedData)
       };
+    }
+    else {
+      return {'result': 'error'};
+    }
+  } on SocketException {
+    return {'result': 'no_connection'};
+  } on TimeoutException {
+    return {'result': 'no_connection'};
+  } on HandshakeException {
+    return {'result': 'ssl_error'};
+  } catch (e) {
+    return {'result': 'error'};
+  }
+}
+
+Future updateFiltering(Server server, bool enable) async {
+  try {
+    final result = await postRequest(
+      urlPath: '/filtering/config', 
+      server: server, 
+      body: {
+        'enabled': enable
+      }
+    );
+
+    if (result.statusCode == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {'result': 'error'};
+    }
+  } on SocketException {
+    return {'result': 'no_connection'};
+  } on TimeoutException {
+    return {'result': 'no_connection'};
+  } on HandshakeException {
+    return {'result': 'ssl_error'};
+  } catch (e) {
+    return {'result': 'error'};
+  }
+}
+
+Future updateSafeSearch(Server server, bool enable) async {
+  try {
+    final result = enable == true 
+      ? await postRequest(urlPath: '/safesearch/enable', server: server)
+      : await postRequest(urlPath: '/safesearch/disable', server: server);
+
+    if (result.statusCode == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {'result': 'error'};
+    }
+  } on SocketException {
+    return {'result': 'no_connection'};
+  } on TimeoutException {
+    return {'result': 'no_connection'};
+  } on HandshakeException {
+    return {'result': 'ssl_error'};
+  } catch (e) {
+    return {'result': 'error'};
+  }
+}
+
+Future updateSafeBrowsing(Server server, bool enable) async {
+  try {
+    final result = enable == true 
+      ? await postRequest(urlPath: '/safebrowsing/enable', server: server)
+      : await postRequest(urlPath: '/safebrowsing/disable', server: server);
+
+    if (result.statusCode == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {'result': 'error'};
+    }
+  } on SocketException {
+    return {'result': 'no_connection'};
+  } on TimeoutException {
+    return {'result': 'no_connection'};
+  } on HandshakeException {
+    return {'result': 'ssl_error'};
+  } catch (e) {
+    return {'result': 'error'};
+  }
+}
+
+Future updateParentalControl(Server server, bool enable) async {
+  try {
+    final result = enable == true 
+      ? await postRequest(urlPath: '/parental/enable', server: server)
+      : await postRequest(urlPath: '/parental/disable', server: server);
+
+    if (result.statusCode == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {'result': 'error'};
+    }
+  } on SocketException {
+    return {'result': 'no_connection'};
+  } on TimeoutException {
+    return {'result': 'no_connection'};
+  } on HandshakeException {
+    return {'result': 'ssl_error'};
+  } catch (e) {
+    return {'result': 'error'};
+  }
+}
+
+Future updateGeneralProtection(Server server, bool enable) async {
+  try {
+    final result = await postRequest(
+      urlPath: '/dns_config', 
+      server: server,
+      body: {
+        'protection_enabled': enable
+      }
+    );
+
+    if (result.statusCode == 200) {
+      return {'result': 'success'};
     }
     else {
       return {'result': 'error'};

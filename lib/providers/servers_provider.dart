@@ -133,6 +133,68 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> updateBlocking(Server server, String block, bool newStatus) async {
+    switch (block) {
+      case 'general':
+        final result = await updateGeneralProtection(server, newStatus);
+        if (result['result'] == 'success') {
+          _serverStatus.data!.generalEnabled = newStatus;
+          notifyListeners();
+          return true;
+        }
+        else {
+          return false;
+        }
+
+      case 'filtering':
+        final result = await updateFiltering(server, newStatus);
+        if (result['result'] == 'success') {
+          _serverStatus.data!.filteringEnabled = newStatus;
+          notifyListeners();
+          return true;
+        }
+        else {
+          return false;
+        }
+
+      case 'safeSearch':
+        final result = await updateSafeSearch(server, newStatus);
+        if (result['result'] == 'success') {
+          _serverStatus.data!.safeSearchEnabled = newStatus;
+          notifyListeners();
+          return true;
+        }
+        else {
+          return false;
+        }
+
+      case 'safeBrowsing':
+        final result = await updateSafeBrowsing(server, newStatus);
+        if (result['result'] == 'success') {
+          _serverStatus.data!.safeBrowsingEnabled = newStatus;
+          notifyListeners();
+          return true;
+        }
+        else {
+          return false;
+        }
+
+      case 'parentalControl':
+        final result = await updateParentalControl(server, newStatus);
+        if (result['result'] == 'success') {
+          _serverStatus.data!.parentalControlEnabled = newStatus;
+          notifyListeners();
+          return true;
+        }
+        else {
+          return false;
+        }
+
+      default:
+        return false;
+    }
+  }
+
   Future<bool> saveServerIntoDb(Server server) async {
     try {
       return await _dbInstance!.transaction((txn) async {

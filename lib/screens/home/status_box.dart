@@ -14,10 +14,12 @@ class StatusBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
       padding: const EdgeInsets.all(12),
       width: double.maxFinite,
       height: double.maxFinite,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
       decoration: BoxDecoration(
         color: isEnabled == true 
           ? Colors.green
