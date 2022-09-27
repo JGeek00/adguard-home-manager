@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/servers/servers.dart';
+
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
@@ -13,6 +15,14 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
 
     final Server server = serversProvider.selectedServer!;
+
+    void navigateServers() {
+      Future.delayed(const Duration(milliseconds: 0), (() {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const Servers())
+        );
+      }));
+    }
 
     return AppBar(
       title: Padding(
@@ -60,7 +70,16 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
             ),
             PopupMenuButton(
               itemBuilder: (context) => [
-                
+                PopupMenuItem(
+                  onTap: navigateServers,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.storage_rounded),
+                      const SizedBox(width: 10),
+                      Text(AppLocalizations.of(context)!.servers)
+                    ],
+                  ),
+                )
               ]
             )
           ],

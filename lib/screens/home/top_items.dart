@@ -73,7 +73,8 @@ class TopItems extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
+            const SizedBox(height: 10),
           ]
         ],
       ),
