@@ -6,56 +6,19 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class ManagementModal extends StatefulWidget {
+class ManagementModal extends StatelessWidget {
   const ManagementModal({Key? key}) : super(key: key);
-
-  @override
-  State<ManagementModal> createState() => _ManagementModalState();
-}
-
-class _ManagementModalState extends State<ManagementModal> {
-  bool disableGeneralSwitch = false;
-  bool disableFiltersSwitch = false;
-  bool disableSafeBrowsingSwitch = false;
-  bool disableParentalControlSwitch = false;
-  bool disableSafeSearchSwitch = false;
 
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
 
     void updateBlocking(bool value, String filter) async {
-      switch (filter) {
-        case 'general':
-          setState(() => disableGeneralSwitch = true);
-          break;
-          
-        case 'filtering':
-          setState(() => disableFiltersSwitch = true);
-          break;
-          
-        case 'safeBrowsing':
-          setState(() => disableSafeBrowsingSwitch = true);
-          break;
-          
-        case 'parentalControl':
-          setState(() => disableParentalControlSwitch = true);
-          break;
-
-        case 'safeSearch':
-          setState(() => disableSafeSearchSwitch = true);
-          break;
-          
-        default:
-          break;
-      }
-      
       final result = await serversProvider.updateBlocking(
         serversProvider.selectedServer!,
         filter, 
         value
       );
-
       if (result == false) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -63,31 +26,6 @@ class _ManagementModalState extends State<ManagementModal> {
             backgroundColor: Colors.red,
           )
         );
-      }
-
-      switch (filter) {
-        case 'general':
-          setState(() => disableGeneralSwitch = false);
-          break;
-          
-        case 'filtering':
-          setState(() => disableFiltersSwitch = false);
-          break;
-          
-        case 'safeBrowsing':
-          setState(() => disableSafeBrowsingSwitch = false);
-          break;
-          
-        case 'parentalControl':
-          setState(() => disableParentalControlSwitch = false);
-          break;
-
-        case 'safeSearch':
-          setState(() => disableSafeSearchSwitch = false);
-          break;
-          
-        default:
-          break;
       }
     }
 
@@ -98,7 +36,7 @@ class _ManagementModalState extends State<ManagementModal> {
           color: Theme.of(context).primaryColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(28),
           child: InkWell(
-            onTap: disableGeneralSwitch == false
+            onTap: serversProvider.protectionsManagementProcess.contains('general') == false
               ? () => updateBlocking(!serversProvider.serverStatus.data!.generalEnabled, 'general')
               : null,
             borderRadius: BorderRadius.circular(28),
@@ -118,7 +56,7 @@ class _ManagementModalState extends State<ManagementModal> {
                   ),
                   Switch(
                     value: serversProvider.serverStatus.data!.generalEnabled, 
-                    onChanged: disableGeneralSwitch == false
+                    onChanged: serversProvider.protectionsManagementProcess.contains('general') == false
                       ? (value) => updateBlocking(value, 'general')
                       : null,
                     activeColor: Theme.of(context).primaryColor,
@@ -212,28 +150,28 @@ class _ManagementModalState extends State<ManagementModal> {
                 Icons.filter_list_rounded,
                 serversProvider.serverStatus.data!.filteringEnabled, 
                 (value) => updateBlocking(value, 'filtering'),
-                disableFiltersSwitch
+                serversProvider.protectionsManagementProcess.contains('filtering')
               ),
               smallSwitch(
                 AppLocalizations.of(context)!.safeBrowsing,
                 Icons.vpn_lock_rounded,
                 serversProvider.serverStatus.data!.safeBrowsingEnabled, 
                 (value) => updateBlocking(value, 'safeBrowsing'),
-                disableSafeBrowsingSwitch
+                serversProvider.protectionsManagementProcess.contains('safeBrowsing')
               ),
               smallSwitch(
                 AppLocalizations.of(context)!.parentalFiltering,
                 Icons.block,
                 serversProvider.serverStatus.data!.parentalControlEnabled, 
                 (value) => updateBlocking(value, 'parentalControl'),
-                disableParentalControlSwitch
+                serversProvider.protectionsManagementProcess.contains('parentalControl')
               ),
               smallSwitch(
                 AppLocalizations.of(context)!.safeSearch,
                 Icons.search_rounded,
                 serversProvider.serverStatus.data!.safeSearchEnabled, 
                 (value) => updateBlocking(value, 'safeSearch'),
-                disableSafeSearchSwitch
+                serversProvider.protectionsManagementProcess.contains('safeSearch')
               ),
             ],
           ),

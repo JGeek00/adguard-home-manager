@@ -15,6 +15,7 @@ class ServersProvider with ChangeNotifier {
     loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
     data: null
   ); // serverStatus != null means server is connected
+  List<String> _protectionsManagementProcess = []; // protections that are currenty being enabled or disabled
 
   List<Server> get serversList {
     return _serversList;
@@ -26,6 +27,10 @@ class ServersProvider with ChangeNotifier {
 
   ServerStatus get serverStatus {
     return _serverStatus;
+  }
+
+  List<String> get protectionsManagementProcess {
+    return _protectionsManagementProcess;
   }
 
   void setDbInstance(Database db) {
@@ -136,57 +141,92 @@ class ServersProvider with ChangeNotifier {
   Future<bool> updateBlocking(Server server, String block, bool newStatus) async {
     switch (block) {
       case 'general':
+        _protectionsManagementProcess.add('general');
+        notifyListeners();
+
         final result = await updateGeneralProtection(server, newStatus);
+
+        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
+
         if (result['result'] == 'success') {
           _serverStatus.data!.generalEnabled = newStatus;
           notifyListeners();
           return true;
         }
         else {
+          notifyListeners();
           return false;
         }
 
       case 'filtering':
+        _protectionsManagementProcess.add('filtering');
+        notifyListeners();
+
         final result = await updateFiltering(server, newStatus);
+
+        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'filtering').toList();
+
         if (result['result'] == 'success') {
           _serverStatus.data!.filteringEnabled = newStatus;
           notifyListeners();
           return true;
         }
         else {
+          notifyListeners();
           return false;
         }
 
       case 'safeSearch':
+        _protectionsManagementProcess.add('safeSearch');
+        notifyListeners();
+
         final result = await updateSafeSearch(server, newStatus);
+
+        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'safeSearch').toList();
+
         if (result['result'] == 'success') {
           _serverStatus.data!.safeSearchEnabled = newStatus;
           notifyListeners();
           return true;
         }
         else {
+          notifyListeners();
           return false;
         }
 
       case 'safeBrowsing':
+        _protectionsManagementProcess.add('safeBrowsing');
+        notifyListeners();
+
         final result = await updateSafeBrowsing(server, newStatus);
+
+        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'safeBrowsing').toList();
+
         if (result['result'] == 'success') {
           _serverStatus.data!.safeBrowsingEnabled = newStatus;
           notifyListeners();
           return true;
         }
         else {
+          notifyListeners();
           return false;
         }
 
       case 'parentalControl':
+        _protectionsManagementProcess.add('parentalControl');
+        notifyListeners();
+
         final result = await updateParentalControl(server, newStatus);
+
+        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'parentalControl').toList();
+
         if (result['result'] == 'success') {
           _serverStatus.data!.parentalControlEnabled = newStatus;
           notifyListeners();
           return true;
         }
         else {
+          notifyListeners();
           return false;
         }
 
