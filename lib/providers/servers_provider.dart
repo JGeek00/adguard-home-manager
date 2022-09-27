@@ -1,3 +1,5 @@
+import 'package:adguard_home_manager/models/dns_statistics.dart';
+import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,6 +12,7 @@ class ServersProvider with ChangeNotifier {
   List<Server> _serversList = [];
   Server? _selectedServer;
   bool? _isServerConnected;
+  DnsStatistics? _dnsStatistics;
 
   List<Server> get serversList {
     return _serversList;
@@ -21,6 +24,10 @@ class ServersProvider with ChangeNotifier {
 
   bool? get isServerConnected {
     return _isServerConnected;
+  }
+
+  DnsStatistics? get dnsStatistics {
+    return _dnsStatistics;
   }
 
   void setDbInstance(Database db) {
@@ -42,6 +49,11 @@ class ServersProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setDnsStatistics(DnsStatistics data) {
+    _dnsStatistics = data;
+    notifyListeners();
+  }
+ 
   Future<bool> createServer(Server server) async {
     final saved = await saveServerIntoDb(server);
     if (saved == true) {
@@ -127,7 +139,7 @@ class ServersProvider with ChangeNotifier {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawInsert(
-          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer) VALUES ("${server.id}", "${server.name}", "${server.connectionMethod}", "${server.domain}", ${server.path != null ? "${server.path}" : null}, ${server.port}, "${server.user}", "${server.password}", 0)',
+          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer, authToken) VALUES ("${server.id}", "${server.name}", "${server.connectionMethod}", "${server.domain}", ${server.path != null ? "${server.path}" : null}, ${server.port}, "${server.user}", "${server.password}", 0, "${server.authToken}")',
         );
         return true;
       });
@@ -140,7 +152,7 @@ class ServersProvider with ChangeNotifier {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawUpdate(
-          'UPDATE servers SET name = "${server.name}", connectionMethod = "${server.connectionMethod}", domain = "${server.domain}", path = ${server.path != null ? "${server.path}" : null}, port = ${server.port}, user = "${server.user}", password = "${server.password}" WHERE id = "${server.id}"',
+          'UPDATE servers SET name = "${server.name}", connectionMethod = "${server.connectionMethod}", domain = "${server.domain}", path = ${server.path != null ? "${server.path}" : null}, port = ${server.port}, user = "${server.user}", password = "${server.password}", authToken = "${server.authToken}" WHERE id = "${server.id}"',
         );
         return true;
       });
@@ -191,10 +203,19 @@ class ServersProvider with ChangeNotifier {
           user: server['user'],
           password: server['password'],
           defaultServer: convertFromIntToBool(server['defaultServer'])!,
+          authToken: server['authToken']
         );
         _serversList.add(serverObj);
         if (convertFromIntToBool(server['defaultServer']) == true) {
           _selectedServer = serverObj;
+          final dnsStatistics = await getDnsStatistics(serverObj);
+          if (dnsStatistics['result'] == 'success') {
+            _dnsStatistics = dnsStatistics['data'];
+            _isServerConnected = true;
+          }
+          else {
+            _isServerConnected = false;
+          }
         }
       }
     }

@@ -8,7 +8,7 @@ Future<Map<String, dynamic>> loadDb() async {
     'adguard_home_manager.db',
     version: 1,
     onCreate: (Database db, int version) async {
-      await db.execute("CREATE TABLE servers (id TEXT PRIMARY KEY, name TEXT, connectionMethod TEXT, domain TEXT, path TEXT, port INTEGER, user TEXT, password TEXT, defaultServer INTEGER)");
+      await db.execute("CREATE TABLE servers (id TEXT PRIMARY KEY, name TEXT, connectionMethod TEXT, domain TEXT, path TEXT, port INTEGER, user TEXT, password TEXT, defaultServer INTEGER, authToken TEXT)");
     },
     onUpgrade: (Database db, int oldVersion, int newVersion) async {
      

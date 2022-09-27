@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/functions/encode_base64.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -206,7 +207,7 @@ class _AddServerModalState extends State<AddServerModal> {
     final mediaQuery = MediaQuery.of(context);
 
     void connect() async {
-      final Server serverObj = Server(
+      Server serverObj = Server(
         id: uuid.v4(),
         name: nameController.text, 
         connectionMethod: connectionType, 
@@ -214,14 +215,24 @@ class _AddServerModalState extends State<AddServerModal> {
         port: int.parse(portController.text),
         user: userController.text, 
         password: passwordController.text, 
-        defaultServer: defaultServer
+        defaultServer: defaultServer,
+        authToken: ''
       );
       setState(() => isConnecting = true);
       final result = await login(serverObj);
       setState(() => isConnecting = false);
       if (result['result'] == 'success') {
+        serverObj.authToken = encodeBase64UserPass(serverObj.user, serverObj.password);
         final serverCreated = await serversProvider.createServer(serverObj);
         if (serverCreated == true) {
+          final dnsStatistics = await getDnsStatistics(serverObj);
+          if (dnsStatistics['result'] == 'success') {
+            serversProvider.setDnsStatistics(dnsStatistics['data']);
+            serversProvider.setIsServerConnected(true);
+          }
+          else {
+            serversProvider.setIsServerConnected(false);
+          }
           Navigator.pop(context);
         }
         else {
@@ -284,10 +295,12 @@ class _AddServerModalState extends State<AddServerModal> {
         port: int.parse(portController.text),
         user: userController.text, 
         password: passwordController.text, 
-        defaultServer: defaultServer
+        defaultServer: defaultServer,
+        authToken: ''
       );
       final result = await login(serverObj);
       if (result['result'] == 'success') {
+        serverObj.authToken = encodeBase64UserPass(serverObj.user, serverObj.password);
         final serverSaved = await serversProvider.editServer(serverObj);
         if (serverSaved == true) {
           Navigator.pop(context);

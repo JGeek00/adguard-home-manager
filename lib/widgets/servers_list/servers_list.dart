@@ -1,11 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:adguard_home_manager/widgets/add_server_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
+import 'package:adguard_home_manager/widgets/add_server_modal.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/server.dart';
@@ -54,21 +54,27 @@ class ServersList extends StatelessWidget {
     }
 
     void connectToServer(Server server) async {
-      Future connectSuccess(result) async {
-        serversProvider.setSelectedServer(server);
-      }
-
       final ProcessModal process = ProcessModal(context: context);
       process.open(AppLocalizations.of(context)!.connecting);
 
       final result = await login(server);
 
-      process.close();
-
       if (result['result'] == 'success') {
-        await connectSuccess(result);
+        serversProvider.setSelectedServer(server);
+
+        final dnsStatistics = await getDnsStatistics(server);
+        if (dnsStatistics['result'] == 'success') {
+          serversProvider.setDnsStatistics(dnsStatistics['data']);
+          serversProvider.setIsServerConnected(true);
+        }
+        else {
+          serversProvider.setIsServerConnected(false);
+        }
+
+        process.close();
       }
       else {
+        process.close();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.cannotConnect),

@@ -8,6 +8,7 @@ class Server {
   String user;
   String password;
   bool defaultServer;
+  String authToken;
 
   Server({
     required this.id,
@@ -18,6 +19,7 @@ class Server {
     this.port,
     required this.user,
     required this.password,
-    required this.defaultServer
+    required this.defaultServer,
+    required this.authToken
   });
 }
