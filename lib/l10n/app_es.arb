@@ -61,5 +61,8 @@
     "light": "Claro",
     "dark": "Oscuro",
     "systemDefined": "Definido por el sistema",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "connectedTo": "Conectado a:",
+    "selectedServer": "Servidor seleccionado:",
+    "noServerSelected": "No hay servidor seleccionado"
 }

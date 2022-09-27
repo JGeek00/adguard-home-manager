@@ -5,7 +5,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
 import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
+import 'package:adguard_home_manager/screens/servers/servers.dart';
 
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class Settings extends StatelessWidget {
@@ -14,6 +16,7 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final serversProvider = Provider.of<ServersProvider>(context);
 
     final statusBarHeight = MediaQuery.of(context).viewInsets.top;
 
@@ -45,6 +48,14 @@ class Settings extends StatelessWidget {
       );
     }
 
+    void navigateServers() {
+      Future.delayed(const Duration(milliseconds: 0), (() {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const Servers())
+        );
+      }));
+    }
+
     return ListView(
       children: [
         SectionLabel(label: AppLocalizations.of(context)!.appSettings),
@@ -53,6 +64,16 @@ class Settings extends StatelessWidget {
           label: AppLocalizations.of(context)!.theme, 
           description: getThemeString(),
           onTap: openThemeModal,
+        ),
+        CustomListTile(
+          leadingIcon: Icons.storage_rounded,
+          label: AppLocalizations.of(context)!.servers,
+          description: serversProvider.selectedServer != null
+            ? serversProvider.serverStatus.data != null
+              ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
+              : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
+            : AppLocalizations.of(context)!.noServerSelected,
+          onTap: navigateServers,
         ),
       ],
     );
