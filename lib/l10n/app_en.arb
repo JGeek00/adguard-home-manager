@@ -45,10 +45,14 @@
     "save": "Save",
     "serverStatus": "Server status",
     "connectionNotUpdated": "Connection not updated",
-    "ruleFiltering": "Rule\nfiltering",
-    "safeBrowsing": "Safe\nbrowsing",
-    "parentalFiltering": "Parental\nfiltering",
-    "safeSearch": "Safe\nsearch",
+    "ruleFilteringWidget": "Rule\nfiltering",
+    "safeBrowsingWidget": "Safe\nbrowsing",
+    "parentalFilteringWidget": "Parental\nfiltering",
+    "safeSearchWidget": "Safe\nsearch",
+    "ruleFiltering": "Rule filtering",
+    "safeBrowsing": "Safe browsing",
+    "parentalFiltering": "Parental filtering",
+    "safeSearch": "Safe search",
     "serverStatusNotRefreshed": "Server status could not be refreshed",
     "loadingStatus": "Loading status...",
     "errorLoadServerStatus": "Server status could not be loaded",
@@ -64,5 +68,7 @@
     "close": "Close",
     "connectedTo": "Connected to:",
     "selectedServer": "Selected server:",
-    "noServerSelected": "No server selected"
+    "noServerSelected": "No server selected",
+    "manageServer": "Manage server",
+    "allProtections": "All protections"
 }

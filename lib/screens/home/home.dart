@@ -80,6 +80,8 @@ class Home extends StatelessWidget {
                 label: AppLocalizations.of(context)!.topClients, 
                 data: serversProvider.serverStatus.data!.stats.topClients
               ),
+
+              const SizedBox(height: 70) // To avoid content under fab
             ],
           );
         

@@ -40,22 +40,22 @@ class ServerStatus extends StatelessWidget {
               children: [
                 StatusBox(
                   icon: Icons.filter_list_rounded, 
-                  label: AppLocalizations.of(context)!.ruleFiltering, 
+                  label: AppLocalizations.of(context)!.ruleFilteringWidget, 
                   isEnabled: serverStatus.filteringEnabled
                 ),
                 StatusBox(
                   icon: Icons.vpn_lock_rounded, 
-                  label: AppLocalizations.of(context)!.safeBrowsing, 
+                  label: AppLocalizations.of(context)!.safeBrowsingWidget, 
                   isEnabled: serverStatus.safeBrowsingEnabled
                 ),
                 StatusBox(
                   icon: Icons.block, 
-                  label: AppLocalizations.of(context)!.parentalFiltering, 
+                  label: AppLocalizations.of(context)!.parentalFilteringWidget, 
                   isEnabled: serverStatus.parentalControlEnabled
                 ),
                 StatusBox(
                   icon: Icons.search_rounded, 
-                  label: AppLocalizations.of(context)!.safeSearch, 
+                  label: AppLocalizations.of(context)!.safeSearchWidget, 
                   isEnabled: serverStatus.safeSearchEnabled
                 ),
               ],

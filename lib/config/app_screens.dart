@@ -7,6 +7,7 @@ import 'package:adguard_home_manager/screens/connect/connect.dart';
 import 'package:adguard_home_manager/screens/home/home.dart';
 import 'package:adguard_home_manager/screens/settings/appbar.dart';
 import 'package:adguard_home_manager/screens/settings/settings.dart';
+import 'package:adguard_home_manager/screens/home/fab.dart';
 
 import 'package:adguard_home_manager/models/app_screen.dart';
 
@@ -31,7 +32,8 @@ List<AppScreen> screensServerConnected = [
     name: "home", 
     icon: Icons.home_rounded, 
     appBar: HomeAppBar(),
-    body: Home()
+    body: Home(),
+    fab: HomeFab()
   ),
   const AppScreen(
     name: "settings", 

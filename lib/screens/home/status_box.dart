@@ -14,8 +14,6 @@ class StatusBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     return Container(
       padding: const EdgeInsets.all(12),
       width: double.maxFinite,

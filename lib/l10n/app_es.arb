@@ -45,10 +45,14 @@
     "save": "Guardar",
     "connectionNotUpdated": "Conexión no actualizada",
     "serverStatus": "Estado del servidor",
-    "ruleFiltering": "Bloqueo por\nfiltros",
-    "safeBrowsing": "Navegación\nsegura",
-    "parentalFiltering": "Control\nparental",
-    "safeSearch": "Búsqueda\nsegura",
+    "ruleFilteringWidget": "Bloqueo por\nfiltros",
+    "safeBrowsingWidget": "Navegación\nsegura",
+    "parentalFilteringWidget": "Control\nparental",
+    "safeSearchWidget": "Búsqueda\nsegura",
+    "ruleFiltering": "Bloqueo por filtros",
+    "safeBrowsing": "Navegación segura",
+    "parentalFiltering": "Control parental",
+    "safeSearch": "Búsqueda segura",
     "serverStatusNotRefreshed": "No se ha podido actualizar el estado del servidor",
     "loadingStatus": "Cargando estado...",
     "errorLoadServerStatus": "Error al cargar el estado",
@@ -64,5 +68,7 @@
     "close": "Cerrar",
     "connectedTo": "Conectado a:",
     "selectedServer": "Servidor seleccionado:",
-    "noServerSelected": "No hay servidor seleccionado"
+    "noServerSelected": "No hay servidor seleccionado",
+    "manageServer": "Gestión del servidor",
+    "allProtections": "Todas las protecciones"
 }
