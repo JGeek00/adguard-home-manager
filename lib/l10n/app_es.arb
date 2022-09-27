@@ -43,5 +43,13 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "save": "Guardar",
-    "connectionNotUpdated": "Conexión no actualizada"
+    "connectionNotUpdated": "Conexión no actualizada",
+    "serverStatus": "Estado del servidor",
+    "ruleFiltering": "Bloqueo por\nfiltros",
+    "safeBrowsing": "Navegación\nsegura",
+    "parentalFiltering": "Control\nparental",
+    "safeSearch": "Búsqueda\nsegura",
+    "serverStatusNotRefreshed": "No se ha podido actualizar el estado del servidor",
+    "loadingStatus": "Cargando estado...",
+    "errorLoadServerStatus": "Error al cargar el estado"
 }

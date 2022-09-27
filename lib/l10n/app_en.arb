@@ -43,5 +43,13 @@
     "edit": "Edit",
     "delete": "Delete",
     "save": "Save",
-    "connectionNotUpdated": "Connection not updated"
+    "serverStatus": "Server status",
+    "connectionNotUpdated": "Connection not updated",
+    "ruleFiltering": "Rule\nfiltering",
+    "safeBrowsing": "Safe\nbrowsing",
+    "parentalFiltering": "Parental\nfiltering",
+    "safeSearch": "Safe\nsearch",
+    "serverStatusNotRefreshed": "Server status could not be refreshed",
+    "loadingStatus": "Loading status...",
+    "errorLoadServerStatus": "Server status could not be loaded"
 }

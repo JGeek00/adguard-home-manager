@@ -1,9 +1,8 @@
-import 'package:adguard_home_manager/models/dns_statistics.dart';
-import 'package:adguard_home_manager/models/server_status.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/models/server.dart';
 
@@ -12,8 +11,10 @@ class ServersProvider with ChangeNotifier {
 
   List<Server> _serversList = [];
   Server? _selectedServer;
-  bool? _isServerConnected;
-  ServerStatus? _serverStatus;
+  final ServerStatus _serverStatus = ServerStatus(
+    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    data: null
+  ); // serverStatus != null means server is connected
 
   List<Server> get serversList {
     return _serversList;
@@ -23,11 +24,7 @@ class ServersProvider with ChangeNotifier {
     return _selectedServer;
   }
 
-  bool? get isServerConnected {
-    return _isServerConnected;
-  }
-
-  ServerStatus? get serverStatus {
+  ServerStatus get serverStatus {
     return _serverStatus;
   }
 
@@ -45,13 +42,13 @@ class ServersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setIsServerConnected(bool status) {
-    _isServerConnected = status;
+  void setServerStatusData(ServerStatusData data) {
+    _serverStatus.data = data;
     notifyListeners();
   }
 
-  void setServerStatus(ServerStatus data) {
-    _serverStatus = data;
+  void setServerStatusLoad(int status) {
+    _serverStatus.loadStatus = status;
     notifyListeners();
   }
  
@@ -209,13 +206,14 @@ class ServersProvider with ChangeNotifier {
         _serversList.add(serverObj);
         if (convertFromIntToBool(server['defaultServer']) == true) {
           _selectedServer = serverObj;
+          _serverStatus.loadStatus = 0;
           final serverStatus = await getServerStatus(serverObj);
           if (serverStatus['result'] == 'success') {
-            _serverStatus = serverStatus['data'];
-            _isServerConnected = true;
+            _serverStatus.data = serverStatus['data'];
+            _serverStatus.loadStatus = 1;
           }
           else {
-            _isServerConnected = false;
+            _serverStatus.loadStatus = 2;
           }
         }
       }

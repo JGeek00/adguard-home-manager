@@ -62,13 +62,14 @@ class ServersList extends StatelessWidget {
       if (result['result'] == 'success') {
         serversProvider.setSelectedServer(server);
 
+        serversProvider.setServerStatusLoad(0);
         final serverStatus = await getServerStatus(server);
         if (serverStatus['result'] == 'success') {
-          serversProvider.setServerStatus(serverStatus['data']);
-          serversProvider.setIsServerConnected(true);
+          serversProvider.setServerStatusData(serverStatus['data']);
+          serversProvider.setServerStatusLoad(1);
         }
         else {
-          serversProvider.setIsServerConnected(false);
+          serversProvider.setServerStatusLoad(2);
         }
 
         process.close();
@@ -112,7 +113,7 @@ class ServersList extends StatelessWidget {
             Icon(
               Icons.storage_rounded,
               color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-                ? serversProvider.isServerConnected == true 
+                ? serversProvider.serverStatus.data != null
                   ? Colors.green
                   : Colors.orange
                 : null,
@@ -145,7 +146,7 @@ class ServersList extends StatelessWidget {
         return Icon(
           Icons.storage_rounded,
           color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-            ? serversProvider.isServerConnected == true 
+            ? serversProvider.serverStatus.data != null
               ? Colors.green
               : Colors.orange
             : null,
@@ -258,7 +259,7 @@ class ServersList extends StatelessWidget {
                     margin: const EdgeInsets.only(right: 12),
                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     decoration: BoxDecoration(
-                      color: serversProvider.isServerConnected == true
+                      color: serversProvider.serverStatus.data != null
                         ? Colors.green
                         : Colors.orange,
                       borderRadius: BorderRadius.circular(30)
@@ -266,14 +267,14 @@ class ServersList extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(
-                          serversProvider.isServerConnected == true
+                          serversProvider.serverStatus.data != null
                             ? Icons.check
                             : Icons.warning,
                           color: Colors.white,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          serversProvider.isServerConnected == true
+                          serversProvider.serverStatus.data != null
                             ? AppLocalizations.of(context)!.connected
                             : AppLocalizations.of(context)!.selectedDisconnected,
                           style: const TextStyle(

@@ -225,13 +225,14 @@ class _AddServerModalState extends State<AddServerModal> {
         serverObj.authToken = encodeBase64UserPass(serverObj.user, serverObj.password);
         final serverCreated = await serversProvider.createServer(serverObj);
         if (serverCreated == true) {
+          serversProvider.setServerStatusLoad(0);
           final serverStatus = await getServerStatus(serverObj);
           if (serverStatus['result'] == 'success') {
-            serversProvider.setServerStatus(serverStatus['data']);
-            serversProvider.setIsServerConnected(true);
+            serversProvider.setServerStatusData(serverStatus['data']);
+            serversProvider.setServerStatusLoad(1);
           }
           else {
-            serversProvider.setIsServerConnected(false);
+            serversProvider.setServerStatusLoad(2);
           }
           Navigator.pop(context);
         }
