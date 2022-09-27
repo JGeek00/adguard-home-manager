@@ -28,7 +28,7 @@ void main() async {
 
   final dbData = await loadDb();
   serversProvider.setDbInstance(dbData['dbInstance']);
-  appConfigProvider.setDbInstance(dbData['dbInstance']);
+  appConfigProvider.saveFromDb(dbData['dbInstance'], dbData['appConfig']);
   serversProvider.saveFromDb(dbData['servers']);
 
   PackageInfo appInfo = await PackageInfo.fromPlatform();
@@ -75,6 +75,7 @@ class Main extends StatelessWidget {
           darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31
             ? darkTheme(darkDynamic)
             : darkThemeOldVersions(),
+        themeMode: appConfigProvider.selectedTheme,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,

@@ -55,5 +55,11 @@
     "topQueriedDomains": "Top dominios solicitados",
     "viewMore": "Ver más",
     "topClients": "Top clientes recurrentes",
-    "topBlockedDomains": "Top dominios bloqueados"
+    "topBlockedDomains": "Top dominios bloqueados",
+    "appSettings": "Ajustes de la app",    
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "systemDefined": "Definido por el sistema",
+    "close": "Cerrar"
 }

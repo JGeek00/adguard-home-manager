@@ -2,13 +2,15 @@ import 'package:sqflite/sqflite.dart';
 
 Future<Map<String, dynamic>> loadDb() async {
   List<Map<String, Object?>>? servers;
-  // List<Map<String, Object?>>? appConfig;
+  List<Map<String, Object?>>? appConfig;
 
   Database db = await openDatabase(
     'adguard_home_manager.db',
     version: 1,
     onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE servers (id TEXT PRIMARY KEY, name TEXT, connectionMethod TEXT, domain TEXT, path TEXT, port INTEGER, user TEXT, password TEXT, defaultServer INTEGER, authToken TEXT)");
+      await db.execute("CREATE TABLE appConfig (theme NUMERIC)");
+      await db.execute("INSERT INTO appConfig (theme) VALUES (0)");
     },
     onUpgrade: (Database db, int oldVersion, int newVersion) async {
      
@@ -19,17 +21,17 @@ Future<Map<String, dynamic>> loadDb() async {
           'SELECT * FROM servers',
         );
       });
-      // await db.transaction((txn) async{
-      //   appConfig = await txn.rawQuery(
-      //     'SELECT * FROM appConfig',
-      //   );
-      // });
+      await db.transaction((txn) async{
+        appConfig = await txn.rawQuery(
+          'SELECT * FROM appConfig',
+        );
+      });
     }
   );
 
   return {
     "servers": servers,
-    // "appConfig": appConfig![0],
+    "appConfig": appConfig![0],
     "dbInstance": db,
   };
 }

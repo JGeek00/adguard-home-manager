@@ -92,6 +92,7 @@ flutter:
     - assets/icon/icon-android-adap.png
     - assets/icon/icon-android.png
     - assets/icon/icon-splash.png
+    - assets/icon/icon1024-white-center.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

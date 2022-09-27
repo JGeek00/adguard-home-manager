@@ -55,5 +55,11 @@
     "topQueriedDomains": "Top queried domains",
     "viewMore": "View more",
     "topClients": "Top clients",
-    "topBlockedDomains": "Top blocked domains"
+    "topBlockedDomains": "Top blocked domains",
+    "appSettings": "App settings",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "systemDefined": "System defined",
+    "close": "Close"
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsAppBar extends StatelessWidget with PreferredSizeWidget {
   const SettingsAppBar({Key? key}) : super(key: key);
@@ -7,7 +6,24 @@ class SettingsAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(AppLocalizations.of(context)!.settings),
+      toolbarHeight: 50,
+      centerTitle: true,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/icon/icon1024-white-center.png',
+            width: 60,
+          ),
+          const SizedBox(width: 20),
+          const Text(
+            "AdGuard Home Manager",
+            style: TextStyle(
+              fontSize: 20
+            ),
+          )
+        ],
+      ),
     );
   }
   
