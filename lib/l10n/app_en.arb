@@ -51,5 +51,9 @@
     "safeSearch": "Safe\nsearch",
     "serverStatusNotRefreshed": "Server status could not be refreshed",
     "loadingStatus": "Loading status...",
-    "errorLoadServerStatus": "Server status could not be loaded"
+    "errorLoadServerStatus": "Server status could not be loaded",
+    "topQueriedDomains": "Top queried domains",
+    "viewMore": "View more",
+    "topClients": "Top clients",
+    "topBlockedDomains": "Top blocked domains"
 }

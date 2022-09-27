@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/server_status.dart';
+import 'package:adguard_home_manager/screens/home/top_items.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -48,7 +49,37 @@ class Home extends StatelessWidget {
                 child: Divider(
                   thickness: 1,
                 ),
-              )
+              ),
+              const SizedBox(height: 20),
+
+              TopItems(
+                label: AppLocalizations.of(context)!.topQueriedDomains, 
+                data: serversProvider.serverStatus.data!.stats.topQueriedDomains
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              TopItems(
+                label: AppLocalizations.of(context)!.topBlockedDomains, 
+                data: serversProvider.serverStatus.data!.stats.topBlockedDomains
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              TopItems(
+                label: AppLocalizations.of(context)!.topClients, 
+                data: serversProvider.serverStatus.data!.stats.topClients
+              ),
             ],
           );
         
