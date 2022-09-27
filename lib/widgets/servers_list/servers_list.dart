@@ -62,9 +62,9 @@ class ServersList extends StatelessWidget {
       if (result['result'] == 'success') {
         serversProvider.setSelectedServer(server);
 
-        final dnsStatistics = await getDnsStatistics(server);
-        if (dnsStatistics['result'] == 'success') {
-          serversProvider.setDnsStatistics(dnsStatistics['data']);
+        final serverStatus = await getServerStatus(server);
+        if (serverStatus['result'] == 'success') {
+          serversProvider.setServerStatus(serverStatus['data']);
           serversProvider.setIsServerConnected(true);
         }
         else {

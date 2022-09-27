@@ -1,4 +1,5 @@
 import 'package:adguard_home_manager/models/dns_statistics.dart';
+import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -12,7 +13,7 @@ class ServersProvider with ChangeNotifier {
   List<Server> _serversList = [];
   Server? _selectedServer;
   bool? _isServerConnected;
-  DnsStatistics? _dnsStatistics;
+  ServerStatus? _serverStatus;
 
   List<Server> get serversList {
     return _serversList;
@@ -26,8 +27,8 @@ class ServersProvider with ChangeNotifier {
     return _isServerConnected;
   }
 
-  DnsStatistics? get dnsStatistics {
-    return _dnsStatistics;
+  ServerStatus? get serverStatus {
+    return _serverStatus;
   }
 
   void setDbInstance(Database db) {
@@ -49,8 +50,8 @@ class ServersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setDnsStatistics(DnsStatistics data) {
-    _dnsStatistics = data;
+  void setServerStatus(ServerStatus data) {
+    _serverStatus = data;
     notifyListeners();
   }
  
@@ -208,9 +209,9 @@ class ServersProvider with ChangeNotifier {
         _serversList.add(serverObj);
         if (convertFromIntToBool(server['defaultServer']) == true) {
           _selectedServer = serverObj;
-          final dnsStatistics = await getDnsStatistics(serverObj);
-          if (dnsStatistics['result'] == 'success') {
-            _dnsStatistics = dnsStatistics['data'];
+          final serverStatus = await getServerStatus(serverObj);
+          if (serverStatus['result'] == 'success') {
+            _serverStatus = serverStatus['data'];
             _isServerConnected = true;
           }
           else {
