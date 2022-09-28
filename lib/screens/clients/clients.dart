@@ -59,6 +59,10 @@ class _ClientsWidgetState extends State<ClientsWidget> {
     super.initState();
   }
 
+  List<AutoClient> generateClientsList(List<AutoClient> clients, List<String> ips) {
+    return clients.where((client) => ips.contains(client.ip)).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
@@ -121,8 +125,18 @@ class _ClientsWidgetState extends State<ClientsWidget> {
                 ClientsList(
                   data: serversProvider.clients.data!.autoClientsData,
                 ),
-                Container(),
-                Container()
+                ClientsList(
+                  data: generateClientsList(
+                    serversProvider.clients.data!.autoClientsData, 
+                    serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients, 
+                  )
+                ),
+                ClientsList(
+                  data: generateClientsList(
+                    serversProvider.clients.data!.autoClientsData, 
+                    serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients, 
+                  )
+                ),
               ],
             )
           )

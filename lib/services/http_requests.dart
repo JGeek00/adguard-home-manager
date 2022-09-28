@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
+import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/server.dart';
 
 Future<http.Response> getRequest({
@@ -246,15 +247,17 @@ Future updateGeneralProtection(Server server, bool enable) async {
 
 Future getClients(Server server) async {
   try {
-    final result = await getRequest(
-      urlPath: '/clients', 
-      server: server,
-    );
+    final result = await Future.wait([
+      getRequest(urlPath: '/clients', server: server),
+      getRequest(urlPath: '/access/list', server: server),
+    ]);
 
-    if (result.statusCode == 200) {
+    if (result[0].statusCode == 200 && result[1].statusCode == 200) {
+      final clients = ClientsData.fromJson(jsonDecode(result[0].body));
+      clients.clientsAllowedBlocked = ClientsAllowedBlocked.fromJson(jsonDecode(result[1].body));
       return {
         'result': 'success',
-        'data': ClientsData.fromJson(jsonDecode(result.body))
+        'data': clients
       };
     }
     else {

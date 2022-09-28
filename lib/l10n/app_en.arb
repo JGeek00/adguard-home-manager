@@ -80,5 +80,6 @@
     "createdBy": "Created by",
     "clients": "Clients",
     "allowed": "Allowed",
-    "blocked": "Blocked"
+    "blocked": "Blocked",
+    "noClientsList": "There are no clients on this list"
 }

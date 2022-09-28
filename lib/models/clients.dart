@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
+
 class Clients {
   int loadStatus;
   ClientsData? data;
@@ -18,11 +20,13 @@ class ClientsData {
   final List<Client> clients;
   final List<AutoClient> autoClientsData;
   final List<String> supportedTags;
+  ClientsAllowedBlocked? clientsAllowedBlocked;
 
   ClientsData({
     required this.clients,
     required this.autoClientsData,
     required this.supportedTags,
+    this.clientsAllowedBlocked
   });
 
   factory ClientsData.fromJson(Map<String, dynamic> json) => ClientsData(
