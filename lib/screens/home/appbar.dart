@@ -25,6 +25,7 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
     }
 
     return AppBar(
+      toolbarHeight: 70,
       title: Padding(
         padding: const EdgeInsets.only(bottom: 5),
         child: Row(
@@ -89,5 +90,5 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
   }
   
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(70);
 }

@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 
-const MaterialColor primaryColorLight = Colors.blue;
-const MaterialColor primaryColorDark = Colors.lightBlue;
+Map<int, Color> swatch = {
+  50: const Color.fromRGBO(25, 180, 119, .1),
+  100: const Color.fromRGBO(25, 180, 119, .2),
+  200: const Color.fromRGBO(25, 180, 119, .3),
+  300: const Color.fromRGBO(25, 180, 119, .4),
+  400: const Color.fromRGBO(25, 180, 119, .5),
+  500: const Color.fromRGBO(25, 180, 119, .6),
+  600: const Color.fromRGBO(25, 180, 119, .7),
+  700: const Color.fromRGBO(25, 180, 119, .8),
+  800: const Color.fromRGBO(25, 180, 119, .9),
+  900: const Color.fromRGBO(25, 180, 119, 1),
+};
+
+MaterialColor primaryColor = MaterialColor(0xff19b477, swatch);
 
 ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   useMaterial3: true,
-  colorScheme: dynamicColorScheme ?? ColorScheme.fromSwatch(primarySwatch: primaryColorLight),
-  primaryColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorLight,
+  colorScheme: dynamicColorScheme ?? ColorScheme.fromSwatch(primarySwatch: primaryColor),
+  primaryColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
   scaffoldBackgroundColor: dynamicColorScheme != null ? dynamicColorScheme.background : Colors.white,
   snackBarTheme: SnackBarThemeData(
     behavior: SnackBarBehavior.floating,
@@ -27,15 +39,15 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
-    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorLight
+    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStateProperty.all(
-        dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorLight
+        dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
       ),
       overlayColor: MaterialStateProperty.all(
-        dynamicColorScheme != null ? dynamicColorScheme.primary.withOpacity(0.1) : primaryColorLight.withOpacity(0.1)
+        dynamicColorScheme != null ? dynamicColorScheme.primary.withOpacity(0.1) : primaryColor.withOpacity(0.1)
       ),
     ),
   ),
@@ -46,15 +58,15 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
     fillColor: MaterialStateProperty.all(
-      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorLight
+      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
     ),
   ),
   tabBarTheme: TabBarTheme(
     unselectedLabelColor: Colors.black,
-    labelColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorLight,
+    labelColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
     indicator: UnderlineTabIndicator(
       borderSide: BorderSide(
-        color: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorLight,
+        color: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
         width: 2
       )
     )
@@ -64,14 +76,14 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
 
 ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   useMaterial3: true,
-  colorScheme: dynamicColorScheme ?? ColorScheme.fromSwatch(primarySwatch: primaryColorDark).copyWith(
+  colorScheme: dynamicColorScheme ?? ColorScheme.fromSwatch(primarySwatch: primaryColor).copyWith(
     brightness: Brightness.dark
   ),
-  primaryColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorDark,
+  primaryColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
   scaffoldBackgroundColor: dynamicColorScheme != null ? dynamicColorScheme.background :const Color.fromRGBO(18, 18, 18, 1),
   dialogBackgroundColor: dynamicColorScheme != null ? dynamicColorScheme.background : const Color.fromRGBO(44, 44, 44, 1),
   navigationBarTheme: NavigationBarThemeData(
-    indicatorColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorDark,
+    indicatorColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
   ),
   snackBarTheme: SnackBarThemeData(
     contentTextStyle: const TextStyle(
@@ -85,15 +97,15 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
-    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorDark
+    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStateProperty.all(
-        dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorDark
+        dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
       ),
       overlayColor: MaterialStateProperty.all(
-        dynamicColorScheme != null ? dynamicColorScheme.primary.withOpacity(0.1) : primaryColorDark.withOpacity(0.1)
+        dynamicColorScheme != null ? dynamicColorScheme.primary.withOpacity(0.1) : primaryColor.withOpacity(0.1)
       ),
     ),
   ),
@@ -113,15 +125,15 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
     fillColor: MaterialStateProperty.all(
-      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorDark
+      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
     ),
   ),
   tabBarTheme: TabBarTheme(
     unselectedLabelColor: Colors.white,
-    labelColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorDark,
+    labelColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
     indicator: UnderlineTabIndicator(
       borderSide: BorderSide(
-        color: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColorDark,
+        color: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
         width: 2
       )
     )
@@ -131,11 +143,12 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
 
 ThemeData lightThemeOldVersions() => ThemeData(
   useMaterial3: true,
-  primaryColor: primaryColorLight,
-  appBarTheme: const AppBarTheme(
+  primaryColor: primaryColor,
+  appBarTheme: AppBarTheme(
     color: Colors.white,
     foregroundColor: Colors.black,
-    elevation: 0
+    elevation: 0,
+    surfaceTintColor: primaryColor
   ),
   snackBarTheme: SnackBarThemeData(
     behavior: SnackBarBehavior.floating,
@@ -155,14 +168,35 @@ ThemeData lightThemeOldVersions() => ThemeData(
       color: Colors.black
     ),
   ),
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
+    backgroundColor: primaryColor
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
-      foregroundColor: MaterialStateProperty.all(primaryColorLight),
-      overlayColor: MaterialStateProperty.all(primaryColorLight.withOpacity(0.1))
+      foregroundColor: MaterialStateProperty.all(primaryColor),
+      overlayColor: MaterialStateProperty.all(primaryColor.withOpacity(0.1))
     ),
+  ),
+  navigationBarTheme: NavigationBarThemeData(
+    surfaceTintColor: primaryColor,
+    indicatorColor: primaryColor
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    floatingLabelStyle: TextStyle(
+      color: primaryColor
+    ),
+    iconColor: Colors.grey,
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(
+        color: primaryColor,
+        width: 2
+      )
+    )
+  ),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: primaryColor
   ),
   dividerColor: Colors.black12,
   listTileTheme: const ListTileThemeData(
@@ -170,37 +204,44 @@ ThemeData lightThemeOldVersions() => ThemeData(
   ),
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
-    fillColor: MaterialStateProperty.all(primaryColorLight),
+    fillColor: MaterialStateProperty.all(primaryColor),
   ),
-  tabBarTheme: const TabBarTheme(
+  tabBarTheme: TabBarTheme(
     unselectedLabelColor: Colors.black,
-    labelColor: primaryColorLight,
+    labelColor: primaryColor,
     indicator: UnderlineTabIndicator(
       borderSide: BorderSide(
-        color: primaryColorLight,
+        color: primaryColor,
         width: 2
       )
     )
   ),
+  progressIndicatorTheme: ProgressIndicatorThemeData(
+    color: primaryColor
+  ),
+  indicatorColor: primaryColor,
+  
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
 );
 
 ThemeData darkThemeOldVersions() => ThemeData(
   useMaterial3: true,
-  primaryColor: primaryColorDark,
+  primaryColor: primaryColor,
   scaffoldBackgroundColor: const Color.fromRGBO(18, 18, 18, 1),
-  navigationBarTheme: const NavigationBarThemeData(
-    indicatorColor: primaryColorDark,
+  navigationBarTheme: NavigationBarThemeData(
+    indicatorColor: primaryColor,
+    surfaceTintColor: primaryColor
   ),
   dialogTheme: DialogTheme(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(30)
     )
   ),
-  appBarTheme: const AppBarTheme(
-    color: Color.fromRGBO(18, 18, 18, 1),
+  appBarTheme: AppBarTheme(
+    color: const Color.fromRGBO(18, 18, 18, 1),
     foregroundColor: Colors.white,
-    elevation: 0
+    elevation: 0,
+    surfaceTintColor: primaryColor
   ),
   dialogBackgroundColor: const Color.fromRGBO(44, 44, 44, 1),
   snackBarTheme: SnackBarThemeData(
@@ -213,15 +254,30 @@ ThemeData darkThemeOldVersions() => ThemeData(
     ),
     elevation: 4,
   ),
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
-    backgroundColor: primaryColorDark
+    backgroundColor: primaryColor
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
-      foregroundColor: MaterialStateProperty.all(primaryColorDark),
-      overlayColor: MaterialStateProperty.all(primaryColorDark.withOpacity(0.1))
+      foregroundColor: MaterialStateProperty.all(primaryColor),
+      overlayColor: MaterialStateProperty.all(primaryColor.withOpacity(0.1))
     ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    floatingLabelStyle: TextStyle(
+      color: primaryColor
+    ),
+    iconColor: Colors.grey,
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(
+        color: primaryColor,
+      )
+    )
+  ),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: primaryColor
   ),
   brightness: Brightness.dark,
   textTheme: const TextTheme(
@@ -240,15 +296,19 @@ ThemeData darkThemeOldVersions() => ThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
     fillColor: MaterialStateProperty.all(Colors.blue),
   ),
-  tabBarTheme: const TabBarTheme(
+  tabBarTheme: TabBarTheme(
     unselectedLabelColor: Colors.white,
-    labelColor: primaryColorDark,
+    labelColor: primaryColor,
     indicator: UnderlineTabIndicator(
       borderSide: BorderSide(
-        color: primaryColorDark,
+        color: primaryColor,
         width: 2
       )
     )
   ),
+  progressIndicatorTheme: ProgressIndicatorThemeData(
+    color: primaryColor
+  ),
+  indicatorColor: primaryColor,
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch
 );
