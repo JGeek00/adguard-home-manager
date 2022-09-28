@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:adguard_home_manager/models/server_status.dart';
+import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/server.dart';
 
 Future<http.Response> getRequest({
@@ -228,6 +229,33 @@ Future updateGeneralProtection(Server server, bool enable) async {
 
     if (result.statusCode == 200) {
       return {'result': 'success'};
+    }
+    else {
+      return {'result': 'error'};
+    }
+  } on SocketException {
+    return {'result': 'no_connection'};
+  } on TimeoutException {
+    return {'result': 'no_connection'};
+  } on HandshakeException {
+    return {'result': 'ssl_error'};
+  } catch (e) {
+    return {'result': 'error'};
+  }
+}
+
+Future getClients(Server server) async {
+  try {
+    final result = await getRequest(
+      urlPath: '/clients', 
+      server: server,
+    );
+
+    if (result.statusCode == 200) {
+      return {
+        'result': 'success',
+        'data': ClientsData.fromJson(jsonDecode(result.body))
+      };
     }
     else {
       return {'result': 'error'};

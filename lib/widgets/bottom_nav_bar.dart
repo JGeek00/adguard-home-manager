@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/models/app_screen.dart';
-import 'package:adguard_home_manager/config/app_screens.dart';
 
 class BottomNavBar extends StatelessWidget {
   final List<AppScreen> screens;
@@ -28,6 +27,9 @@ class BottomNavBar extends StatelessWidget {
 
         case 'connect':
           return AppLocalizations.of(context)!.connect;
+
+        case 'clients':
+          return AppLocalizations.of(context)!.clients;
 
         default:
           return '';

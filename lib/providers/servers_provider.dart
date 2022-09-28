@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
@@ -17,6 +18,11 @@ class ServersProvider with ChangeNotifier {
   ); // serverStatus != null means server is connected
   List<String> _protectionsManagementProcess = []; // protections that are currenty being enabled or disabled
 
+  final Clients _clients = Clients(
+    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    data: null
+  );
+
   List<Server> get serversList {
     return _serversList;
   }
@@ -31,6 +37,10 @@ class ServersProvider with ChangeNotifier {
 
   List<String> get protectionsManagementProcess {
     return _protectionsManagementProcess;
+  }
+
+  Clients get clients {
+    return _clients;
   }
 
   void setDbInstance(Database db) {
@@ -54,6 +64,18 @@ class ServersProvider with ChangeNotifier {
 
   void setServerStatusLoad(int status) {
     _serverStatus.loadStatus = status;
+    notifyListeners();
+  }
+
+  void setClientsLoadStatus(int status, bool notify) {
+    _clients.loadStatus = status;
+    if (notify == true) {
+      notifyListeners();
+    }
+  }
+
+  void setClientsData(ClientsData data) {
+    _clients.data = data;
     notifyListeners();
   }
  

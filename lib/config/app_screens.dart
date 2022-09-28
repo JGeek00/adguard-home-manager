@@ -5,6 +5,7 @@ import 'package:adguard_home_manager/screens/home/appbar.dart';
 import 'package:adguard_home_manager/screens/connect/appbar.dart';
 import 'package:adguard_home_manager/screens/connect/connect.dart';
 import 'package:adguard_home_manager/screens/home/home.dart';
+import 'package:adguard_home_manager/screens/clients/clients.dart';
 import 'package:adguard_home_manager/screens/settings/appbar.dart';
 import 'package:adguard_home_manager/screens/settings/settings.dart';
 import 'package:adguard_home_manager/screens/home/fab.dart';
@@ -34,6 +35,11 @@ List<AppScreen> screensServerConnected = [
     appBar: HomeAppBar(),
     body: Home(),
     fab: HomeFab()
+  ),
+  const AppScreen(
+    name: "clients", 
+    icon: Icons.devices, 
+    body: Clients(),
   ),
   const AppScreen(
     name: "settings", 

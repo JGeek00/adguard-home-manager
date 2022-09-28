@@ -77,5 +77,8 @@
     "helperPath": "If you are using a reverse proxy",
     "aboutApp": "About the application",
     "appVersion": "App version",
-    "createdBy": "Created by"
+    "createdBy": "Created by",
+    "clients": "Clients",
+    "allowed": "Allowed",
+    "blocked": "Blocked"
 }
