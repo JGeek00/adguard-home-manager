@@ -54,7 +54,8 @@ class Home extends StatelessWidget {
 
               TopItems(
                 label: AppLocalizations.of(context)!.topQueriedDomains, 
-                data: serversProvider.serverStatus.data!.stats.topQueriedDomains
+                data: serversProvider.serverStatus.data!.stats.topQueriedDomains,
+                type: 'topQueriedDomains',
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -66,7 +67,8 @@ class Home extends StatelessWidget {
 
               TopItems(
                 label: AppLocalizations.of(context)!.topBlockedDomains, 
-                data: serversProvider.serverStatus.data!.stats.topBlockedDomains
+                data: serversProvider.serverStatus.data!.stats.topBlockedDomains,
+                type: 'topBlockedDomains',
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -78,7 +80,8 @@ class Home extends StatelessWidget {
 
               TopItems(
                 label: AppLocalizations.of(context)!.topClients, 
-                data: serversProvider.serverStatus.data!.stats.topClients
+                data: serversProvider.serverStatus.data!.stats.topClients,
+                type: 'topClients',
               ),
 
               const SizedBox(height: 70) // To avoid content under fab

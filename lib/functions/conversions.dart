@@ -24,15 +24,6 @@ int? convertFromBoolToInt(bool value) {
   }
 }
 
-double formatPercentage(double value) {
-  return (value * 100).truncateToDouble() / 100;
-}
-
-String intFormat(int value, String locale) {
-  final f = NumberFormat("#,###", locale);
-  return f.format(value);
-}
-
 List<Map<String, dynamic>> convertFromMapToList(Map<String, int> values) {
   List<Map<String, dynamic>> items = [];
   values.forEach((key, value) {

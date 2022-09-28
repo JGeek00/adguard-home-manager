@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/top_items/top_items.dart';
+
 class TopItems extends StatelessWidget {
+  final String type;
   final String label;
   final List<Map<String, dynamic>> data;
 
   const TopItems({
     Key? key,
+    required this.type,
     required this.label,
     required this.data,
   }) : super(key: key);
@@ -64,7 +68,14 @@ class TopItems extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () => {}, 
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => TopItemsScreen(
+                          type: type,
+                          title: label,
+                        )
+                      )
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
