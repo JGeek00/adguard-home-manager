@@ -92,5 +92,6 @@
     "list": "Lista",
     "ipAddress": "Dirección IP",
     "ipNotValid": "Dirección IP no válida",
-    "clientAddedSuccessfully": "Cliente añadido a la lista satisfactoriamente"
+    "clientAddedSuccessfully": "Cliente añadido a la lista satisfactoriamente",
+    "addingClient": "Añadiendo cliente..."
 }

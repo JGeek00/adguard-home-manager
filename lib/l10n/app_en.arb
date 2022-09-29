@@ -92,5 +92,6 @@
     "list": "List",
     "ipAddress": "IP address",
     "ipNotValid": "IP address not valid",
-    "clientAddedSuccessfully": "Client added to the list successfully"
+    "clientAddedSuccessfully": "Client added to the list successfully",
+    "addingClient": "Adding client..."
 }

@@ -41,7 +41,7 @@ class ClientsFab extends StatelessWidget {
       }
 
       ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.removingClient);
+      processModal.open(AppLocalizations.of(context)!.addingClient);
 
       final result = await requestAllowedBlockedClientsHosts(serversProvider.selectedServer!, body);
 
