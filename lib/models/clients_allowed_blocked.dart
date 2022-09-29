@@ -5,20 +5,20 @@ ClientsAllowedBlocked allowedBlockedFromJson(String str) => ClientsAllowedBlocke
 String allowedBlockedToJson(ClientsAllowedBlocked data) => json.encode(data.toJson());
 
 class ClientsAllowedBlocked {
+  List<String> allowedClients;
+  List<String> disallowedClients;
+  List<String> blockedHosts;
+
   ClientsAllowedBlocked({
     required this.allowedClients,
     required this.disallowedClients,
     required this.blockedHosts,
   });
 
-  final List<String> allowedClients;
-  final List<String> disallowedClients;
-  final List<String> blockedHosts;
-
   factory ClientsAllowedBlocked.fromJson(Map<String, dynamic> json) => ClientsAllowedBlocked(
-    allowedClients: List<String>.from(json["allowed_clients"].map((x) => x)),
-    disallowedClients: List<String>.from(json["disallowed_clients"].map((x) => x)),
-    blockedHosts: List<String>.from(json["blocked_hosts"].map((x) => x)),
+    allowedClients: json["allowed_clients"] != null ? List<String>.from(json["allowed_clients"].map((x) => x)) : [],
+    disallowedClients: json["disallowed_clients"] != null ? List<String>.from(json["disallowed_clients"].map((x) => x)) : [],
+    blockedHosts: json["blocked_hosts"] != null ? List<String>.from(json["blocked_hosts"].map((x) => x)) : [],
   );
 
   Map<String, dynamic> toJson() => {

@@ -273,3 +273,28 @@ Future getClients(Server server) async {
     return {'result': 'error'};
   }
 }
+
+Future requestAllowedBlockedClientsHosts(Server server, Map<String, List<String>?> body) async {
+  try {
+    final result = await postRequest(
+      urlPath: '/access/set', 
+      server: server,
+      body: body
+    );
+    
+    if (result.statusCode == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {'result': 'error'};
+    }
+  } on SocketException {
+    return {'result': 'no_connection'};
+  } on TimeoutException {
+    return {'result': 'no_connection'};
+  } on HandshakeException {
+    return {'result': 'ssl_error'};
+  } catch (e) {
+    return {'result': 'error'};
+  }
+}

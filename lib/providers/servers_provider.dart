@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
@@ -76,6 +77,11 @@ class ServersProvider with ChangeNotifier {
 
   void setClientsData(ClientsData data) {
     _clients.data = data;
+    notifyListeners();
+  }
+
+  void setAllowedDisallowedClientsBlockedDomains(ClientsAllowedBlocked data) {
+    _clients.data?.clientsAllowedBlocked = data;
     notifyListeners();
   }
  

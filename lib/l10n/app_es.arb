@@ -81,5 +81,11 @@
     "clients": "Clientes",
     "allowed": "Permitidos",
     "blocked": "Bloqueados",
-    "noClientsList": "No hay clientes en esta lista"
+    "noClientsList": "No hay clientes en esta lista",
+    "activeClients": "Activos",
+    "removeClient": "Eliminar cliente",
+    "removeClientMessage": "Estás seguro que deseas eliminar este cliente de la lista?",
+    "confirm": "Confirmar",
+    "removingClient": "Eliminando cliente...",
+    "clientNotRemoved": "El cliente no pudo ser eliminado de la lista"
 }

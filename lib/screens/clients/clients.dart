@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
+import 'package:adguard_home_manager/screens/clients/blocked_allowed_list.dart';
 
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -105,7 +106,7 @@ class _ClientsWidgetState extends State<ClientsWidget> {
                     tabs: [
                       Tab(
                         icon: const Icon(Icons.devices),
-                        text: AppLocalizations.of(context)!.clients,
+                        text: AppLocalizations.of(context)!.activeClients,
                       ),
                       Tab(
                         icon: const Icon(Icons.check),
@@ -120,24 +121,31 @@ class _ClientsWidgetState extends State<ClientsWidget> {
                 )
               ];
             }), 
-            body: TabBarView(
-              children: [
-                ClientsList(
-                  data: serversProvider.clients.data!.autoClientsData,
-                ),
-                ClientsList(
-                  data: generateClientsList(
-                    serversProvider.clients.data!.autoClientsData, 
-                    serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients, 
+            body: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.light
+                      ? const Color.fromRGBO(220, 220, 220, 1)
+                      : const Color.fromRGBO(50, 50, 50, 1)
                   )
-                ),
-                ClientsList(
-                  data: generateClientsList(
-                    serversProvider.clients.data!.autoClientsData, 
-                    serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients, 
-                  )
-                ),
-              ],
+                )
+              ),
+              child: TabBarView(
+                children: [
+                  ClientsList(
+                    data: serversProvider.clients.data!.autoClientsData,
+                  ),
+                  BlockedAllowedList(
+                    type: 'allowed',
+                    data: serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients, 
+                  ),
+                  BlockedAllowedList(
+                    type: 'blocked',
+                    data: serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients, 
+                  ),
+                ],
+              ),
             )
           )
         );
