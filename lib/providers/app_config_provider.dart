@@ -4,6 +4,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqlite_api.dart';
 
+import 'package:adguard_home_manager/models/app_log.dart';
+
 class AppConfigProvider with ChangeNotifier {
   Database? _dbInstance;
 
@@ -15,7 +17,7 @@ class AppConfigProvider with ChangeNotifier {
 
   int _selectedClientsTab = 0;
 
-  final List<Map<dynamic, dynamic>> _logs = [];
+  final List<AppLog> _logs = [];
 
   PackageInfo? get getAppInfo {
     return _appInfo;
@@ -55,7 +57,7 @@ class AppConfigProvider with ChangeNotifier {
     return _selectedClientsTab;
   }
 
-  List<Map<dynamic, dynamic>> get logs {
+  List<AppLog> get logs {
     return _logs;
   }
 
@@ -80,7 +82,7 @@ class AppConfigProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addLog(Map<dynamic, dynamic> log) {
+  void addLog(AppLog log) {
     _logs.add(log);
     notifyListeners();
   }

@@ -6,7 +6,7 @@ import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
 import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
 import 'package:adguard_home_manager/screens/servers/servers.dart';
-import 'package:adguard_home_manager/screens/logs/logs.dart';
+import 'package:adguard_home_manager/screens/app_logs/app_logs.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -86,7 +86,7 @@ class Settings extends StatelessWidget {
           label: AppLocalizations.of(context)!.createdBy, 
           description: "JGeek00",
           onDoubleTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const Logs())
+            MaterialPageRoute(builder: (context) => const AppLogs())
           ),
         ),
       ],

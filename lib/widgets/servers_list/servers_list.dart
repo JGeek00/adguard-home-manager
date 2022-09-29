@@ -72,11 +72,7 @@ class ServersList extends StatelessWidget {
           serversProvider.setServerStatusLoad(1);
         }
         else {
-          appConfigProvider.addLog({
-            'type': 'login',
-            'time': DateTime.now().toString(),
-            'message': result['message']
-          });
+          appConfigProvider.addLog(result['log']);
           serversProvider.setServerStatusLoad(2);
         }
 
@@ -84,11 +80,7 @@ class ServersList extends StatelessWidget {
       }
       else {
         process.close();
-        appConfigProvider.addLog({
-          'type': 'login',
-          'time': DateTime.now().toString(),
-          'message': result['message']
-        });
+        appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.cannotConnect),

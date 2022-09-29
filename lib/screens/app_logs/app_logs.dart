@@ -2,22 +2,24 @@
 
 import 'dart:convert';
 
+import 'package:adguard_home_manager/screens/app_logs/app_log_details_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
-class Logs extends StatelessWidget {
-  const Logs({Key? key}) : super(key: key);
+class AppLogs extends StatelessWidget {
+  const AppLogs({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void copyLogsClipboard() async {
+      List<Map<String, String>> logsString = appConfigProvider.logs.map((log) => log.toMap()).toList();
       await Clipboard.setData(
-        ClipboardData(text: jsonEncode(appConfigProvider.logs))
+        ClipboardData(text: jsonEncode(logsString))
       );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -46,9 +48,17 @@ class Logs extends StatelessWidget {
           padding: const EdgeInsets.only(top: 0),
           itemCount: appConfigProvider.logs.length,
           itemBuilder: (context, index) => ListTile(
-            title: Text(appConfigProvider.logs[index]['message']),
-            subtitle: Text(appConfigProvider.logs[index]['time']),
-            trailing: Text(appConfigProvider.logs[index]['type']),
+            title: Text(appConfigProvider.logs[index].message),
+            subtitle: Text(appConfigProvider.logs[index].dateTime.toString()),
+            trailing: Text(appConfigProvider.logs[index].type),
+            onTap: () => {
+              showDialog(
+                context: context, 
+                builder: (context) => AppLogDetailsModal(
+                  log: appConfigProvider.logs[index]
+                )
+              )
+            },
           )
         )
       : const Center(

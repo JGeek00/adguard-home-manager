@@ -3,9 +3,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 
+import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
@@ -51,27 +51,77 @@ Future login(Server server) async {
     }
     else if (result.statusCode == 400) {
       return {
-        'result': 'error',
-        'message': 'invalid_username_password'
+        'result': 'invalid_username_password',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'invalid_username_password',
+          statusCode: result.statusCode,
+          resBody: result.body
+        )
       };
     }
     else if (result.statusCode == 429) {
       return {
-        'result': 'error',
-        'message': 'many_attempts'
+        'result': 'many_attempts',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'many_attempts',
+          statusCode: result.statusCode,
+          resBody: result.body
+        )
       };
     }
     else {
-      return {'result': 'error', 'message': 'error_code_not_expected'};
+      return {
+        'result': 'error', 
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result.statusCode,
+          resBody: result.body
+        )
+      };
     }
   } on SocketException {
-    return {'result': 'no_connection', 'message': 'SocketException'};
+    return {
+      'result': 'no_connection', 
+      'log': AppLog(
+        type: 'login', 
+        dateTime: DateTime.now(), 
+        message: 'SocketException'
+      )
+    };
   } on TimeoutException {
-    return {'result': 'no_connection', 'message': 'TimeoutException'};
+    return {
+      'result': 'no_connection', 
+      'log': AppLog(
+        type: 'login', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
   } on HandshakeException {
-    return {'result': 'ssl_error', 'message': 'HandshakeException'};
+    return {
+      'result': 'ssl_error', 
+      'message': 'HandshakeException',
+      'log': AppLog(
+        type: 'login', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
   } catch (e) {
-    return {'result': 'error', 'message': e.toString()};
+    return {
+      'result': 'error', 
+      'log': AppLog(
+        type: 'login', 
+        dateTime: DateTime.now(), 
+        message: e.toString()
+      )
+    };
   }
 }
 
