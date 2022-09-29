@@ -95,5 +95,9 @@
     "clientAddedSuccessfully": "Client added to the list successfully",
     "addingClient": "Adding client...",
     "clientNotAdded": "Client could not be added to the list",
-    "clientAnotherList": "This client is yet in another list"
+    "clientAnotherList": "This client is yet in another list",
+    "noSavedLogs": "No saved logs",
+    "logs": "Logs",
+    "copyLogsClipboard": "Copy logs to clipboard",
+    "logsCopiedClipboard": "Logs copied to clipboard"
 }

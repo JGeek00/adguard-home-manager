@@ -95,5 +95,9 @@
     "clientAddedSuccessfully": "Cliente añadido a la lista satisfactoriamente",
     "addingClient": "Añadiendo cliente...",
     "clientNotAdded": "El cliente no se pudo añadir a la lista",
-    "clientAnotherList": "El cliente ya está en otra lista"
+    "clientAnotherList": "El cliente ya está en otra lista",
+    "noSavedLogs": "No hay logs guardados",
+    "logs": "Registros",
+    "copyLogsClipboard": "Copiar logs al portapapeles",
+    "logsCopiedClipboard": "Registros copiados al portapapeles"
 }

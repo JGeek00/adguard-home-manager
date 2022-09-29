@@ -9,6 +9,7 @@ class CustomListTile extends StatelessWidget {
   final void Function()? onDoubleTap;
   final Widget? trailing;
   final EdgeInsets? padding;
+  final bool? disableRipple;
 
   const CustomListTile({
     Key? key,
@@ -19,7 +20,8 @@ class CustomListTile extends StatelessWidget {
     this.onTap,
     this.onDoubleTap,
     this.trailing,
-    this.padding
+    this.padding,
+    this.disableRipple
   }) : super(key: key);
 
   @override
@@ -29,6 +31,9 @@ class CustomListTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         onDoubleTap: onDoubleTap,
+        splashFactory: disableRipple == true
+          ? NoSplash.splashFactory
+          : null,
         child: Container(
           padding: padding ?? const EdgeInsets.symmetric(
               vertical: 10,

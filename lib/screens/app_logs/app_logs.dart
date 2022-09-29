@@ -2,10 +2,12 @@
 
 import 'dart:convert';
 
-import 'package:adguard_home_manager/screens/app_logs/app_log_details_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:adguard_home_manager/screens/app_logs/app_log_details_modal.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -22,8 +24,8 @@ class AppLogs extends StatelessWidget {
         ClipboardData(text: jsonEncode(logsString))
       );
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Logs copied to the clipboard"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.logsCopiedClipboard),
           backgroundColor: Colors.black,
         )
       );
@@ -31,14 +33,14 @@ class AppLogs extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Logs"),
+        title: Text(AppLocalizations.of(context)!.logs),
         actions: [
           IconButton(
             onPressed: appConfigProvider.logs.isNotEmpty
               ? copyLogsClipboard
               : null, 
             icon: const Icon(Icons.share),
-            tooltip: "Copy logs to clipboard",
+            tooltip: AppLocalizations.of(context)!.copyLogsClipboard,
           ),
           const SizedBox(width: 10),
         ],
@@ -61,10 +63,10 @@ class AppLogs extends StatelessWidget {
             },
           )
         )
-      : const Center(
+      : Center(
           child: Text(
-            "No saved logs",
-            style: TextStyle(
+            AppLocalizations.of(context)!.noSavedLogs,
+            style: const TextStyle(
               fontSize: 24,
               color: Colors.grey,
             ),

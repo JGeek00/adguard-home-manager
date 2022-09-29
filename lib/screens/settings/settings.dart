@@ -81,13 +81,14 @@ class Settings extends StatelessWidget {
         CustomListTile(
           label: AppLocalizations.of(context)!.appVersion, 
           description: appConfigProvider.getAppInfo!.version,
+          onDoubleTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const AppLogs())
+          ),
+          disableRipple: true,
         ),
         CustomListTile(
           label: AppLocalizations.of(context)!.createdBy, 
           description: "JGeek00",
-          onDoubleTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AppLogs())
-          ),
         ),
       ],
     );
