@@ -93,5 +93,7 @@
     "ipAddress": "IP address",
     "ipNotValid": "IP address not valid",
     "clientAddedSuccessfully": "Client added to the list successfully",
-    "addingClient": "Adding client..."
+    "addingClient": "Adding client...",
+    "clientNotAdded": "Client could not be added to the list",
+    "clientAnotherList": "This client is yet in another list"
 }

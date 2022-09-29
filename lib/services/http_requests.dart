@@ -285,6 +285,12 @@ Future requestAllowedBlockedClientsHosts(Server server, Map<String, List<String>
     if (result.statusCode == 200) {
       return {'result': 'success'};
     }
+    else if (result.statusCode == 400) {
+      return {
+        'result': 'error',
+        'message': 'client_another_list'
+      };
+    }
     else {
       return {'result': 'error'};
     }

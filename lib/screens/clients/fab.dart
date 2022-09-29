@@ -62,10 +62,18 @@ class ClientsFab extends StatelessWidget {
           )
         );
       }
+      else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.clientAnotherList),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
       else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientNotRemoved),
+            content: Text(AppLocalizations.of(context)!.clientNotAdded),
             backgroundColor: Colors.red,
           )
         );
