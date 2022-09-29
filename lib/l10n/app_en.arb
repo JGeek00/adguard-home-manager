@@ -87,5 +87,10 @@
     "removeClientMessage": "Are you sure you want to remove this client from the list?",
     "confirm": "Confirm",
     "removingClient": "Removing client...",
-    "clientNotRemoved": "Client could not be removed from the list"
+    "clientNotRemoved": "Client could not be removed from the list",
+    "addClient": "Add client",
+    "list": "List",
+    "ipAddress": "IP address",
+    "ipNotValid": "IP address not valid",
+    "clientAddedSuccessfully": "Client added to the list successfully"
 }

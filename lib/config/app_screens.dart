@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:adguard_home_manager/screens/connect/fab.dart';
 import 'package:adguard_home_manager/screens/home/appbar.dart';
 import 'package:adguard_home_manager/screens/connect/appbar.dart';
+import 'package:adguard_home_manager/screens/clients/fab.dart';
 import 'package:adguard_home_manager/screens/connect/connect.dart';
 import 'package:adguard_home_manager/screens/home/home.dart';
 import 'package:adguard_home_manager/screens/clients/clients.dart';
@@ -40,6 +41,7 @@ List<AppScreen> screensServerConnected = [
     name: "clients", 
     icon: Icons.devices, 
     body: Clients(),
+    fab: ClientsFab()
   ),
   const AppScreen(
     name: "settings", 

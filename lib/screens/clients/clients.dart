@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
 import 'package:adguard_home_manager/screens/clients/blocked_allowed_list.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -16,11 +17,13 @@ class Clients extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     return ClientsWidget(
       server: serversProvider.selectedServer!,
       setLoadingStatus: serversProvider.setClientsLoadStatus,
       setClientsData: serversProvider.setClientsData,
+      setSelectedClientsTab: appConfigProvider.setSelectedClientsTab,
     );
   }
 }
@@ -29,19 +32,23 @@ class ClientsWidget extends StatefulWidget {
   final Server server;
   final void Function(int, bool) setLoadingStatus;
   final void Function(ClientsData) setClientsData;
+  final void Function(int) setSelectedClientsTab;
 
   const ClientsWidget({
     Key? key,
     required this.server,
     required this.setLoadingStatus,
     required this.setClientsData,
+    required this.setSelectedClientsTab
   }) : super(key: key);
 
   @override
   State<ClientsWidget> createState() => _ClientsWidgetState();
 }
 
-class _ClientsWidgetState extends State<ClientsWidget> {
+class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateMixin {
+  late TabController tabController;
+
   void fetchClients() async {
     widget.setLoadingStatus(0, false);
     final result = await getClients(widget.server);
@@ -58,6 +65,12 @@ class _ClientsWidgetState extends State<ClientsWidget> {
   void initState() {
     fetchClients();
     super.initState();
+    tabController = TabController(
+      initialIndex: 0,
+      length: 3,
+      vsync: this,
+    );
+    tabController.addListener(() => widget.setSelectedClientsTab(tabController.index));
   }
 
   List<AutoClient> generateClientsList(List<AutoClient> clients, List<String> ips) {
@@ -103,6 +116,7 @@ class _ClientsWidgetState extends State<ClientsWidget> {
                   floating: true,
                   forceElevated: innerBoxIsScrolled,
                   bottom: TabBar(
+                    controller: tabController,
                     tabs: [
                       Tab(
                         icon: const Icon(Icons.devices),
@@ -132,6 +146,7 @@ class _ClientsWidgetState extends State<ClientsWidget> {
                 )
               ),
               child: TabBarView(
+                controller: tabController,
                 children: [
                   ClientsList(
                     data: serversProvider.clients.data!.autoClientsData,

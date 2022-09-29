@@ -13,6 +13,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _selectedTheme = 0;
 
+  int _selectedClientsTab = 0;
+
   PackageInfo? get getAppInfo {
     return _appInfo;
   }
@@ -47,6 +49,9 @@ class AppConfigProvider with ChangeNotifier {
     return _selectedTheme;
   }
 
+  int get selectedClientsTab {
+    return _selectedClientsTab;
+  }
 
   void setDbInstance(Database db) {
     _dbInstance = db;
@@ -62,6 +67,11 @@ class AppConfigProvider with ChangeNotifier {
 
   void setIosInfo(IosDeviceInfo deviceInfo) {
     _iosDeviceInfo = deviceInfo;
+  }
+
+  void setSelectedClientsTab(int tab) {
+    _selectedClientsTab = tab;
+    notifyListeners();
   }
 
   Future<bool> setSelectedTheme(int value) async {
