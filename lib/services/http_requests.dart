@@ -19,8 +19,8 @@ Future<http.Response> getRequest({
     Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"),
     headers: {
       'Authorization': 'Basic ${server.authToken}'
-    }
-  );
+    },
+  ).timeout(const Duration(seconds: 10));
 }
 
 Future<http.Response> postRequest({
@@ -34,7 +34,7 @@ Future<http.Response> postRequest({
       'Authorization': 'Basic ${server.authToken}'
     },
     body: jsonEncode(body)
-  );
+  ).timeout(const Duration(seconds: 10));
 }
 
 Future login(Server server) async {
@@ -45,7 +45,7 @@ Future login(Server server) async {
         "name": server.user,
         "password": server.password
       })
-    );
+    ).timeout(const Duration(seconds: 10));
     if (result.statusCode == 200) {
       return {'result': 'success'};
     }
@@ -62,16 +62,16 @@ Future login(Server server) async {
       };
     }
     else {
-      return {'result': 'error'};
+      return {'result': 'error', 'message': 'error_code_not_expected'};
     }
   } on SocketException {
-    return {'result': 'no_connection'};
+    return {'result': 'no_connection', 'message': 'SocketException'};
   } on TimeoutException {
-    return {'result': 'no_connection'};
+    return {'result': 'no_connection', 'message': 'TimeoutException'};
   } on HandshakeException {
-    return {'result': 'ssl_error'};
+    return {'result': 'ssl_error', 'message': 'HandshakeException'};
   } catch (e) {
-    return {'result': 'error'};
+    return {'result': 'error', 'message': e.toString()};
   }
 }
 

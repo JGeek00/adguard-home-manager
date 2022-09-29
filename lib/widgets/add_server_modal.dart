@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/functions/encode_base64.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -8,6 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_radio_toggle.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/functions/encode_base64.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
@@ -239,6 +240,7 @@ class _AddServerModalState extends State<AddServerModal> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
 
     final mediaQuery = MediaQuery.of(context);
 
@@ -273,6 +275,11 @@ class _AddServerModalState extends State<AddServerModal> {
           Navigator.pop(context);
         }
         else {
+          appConfigProvider.addLog({
+            'type': 'login',
+            'time': DateTime.now().toString(),
+            'message': result['message']
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.connectionNotCreated),
@@ -281,7 +288,12 @@ class _AddServerModalState extends State<AddServerModal> {
           );
         }
       }
-      else if (result['result'] == 'error' && result['message'] == 'invalid_username_password') {
+      else if (result['result'] == 'invalid_username_password') {
+        appConfigProvider.addLog({
+          'type': 'login',
+          'time': DateTime.now().toString(),
+          'message': result['message']
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.invalidUsernamePassword),
@@ -289,7 +301,12 @@ class _AddServerModalState extends State<AddServerModal> {
           )
         );
       }
-      else if (result['result'] == 'error' && result['message'] == 'many_attempts') {
+      else if (result['result'] == 'many_attempts') {
+        appConfigProvider.addLog({
+          'type': 'login',
+          'time': DateTime.now().toString(),
+          'message': result['message']
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.tooManyAttempts),
@@ -297,7 +314,12 @@ class _AddServerModalState extends State<AddServerModal> {
           )
         );
       }
-      else if (result['result'] == 'error' && result['message'] == 'no_connection') {
+      else if (result['result'] == 'no_connection') {
+        appConfigProvider.addLog({
+          'type': 'login',
+          'time': DateTime.now().toString(),
+          'message': result['message']
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.cantReachServer),
@@ -305,7 +327,12 @@ class _AddServerModalState extends State<AddServerModal> {
           )
         );
       }
-      else if (result['result'] == 'error' && result['message'] == 'ssl_error') {
+      else if (result['result'] == 'ssl_error') {
+        appConfigProvider.addLog({
+          'type': 'login',
+          'time': DateTime.now().toString(),
+          'message': result['message']
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.sslError),
@@ -314,6 +341,11 @@ class _AddServerModalState extends State<AddServerModal> {
         );
       }
       else {
+        appConfigProvider.addLog({
+          'type': 'login',
+          'time': DateTime.now().toString(),
+          'message': result['message']
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.unknownError),

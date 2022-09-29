@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
 import 'package:adguard_home_manager/widgets/add_server_modal.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -28,6 +29,8 @@ class ServersList extends StatelessWidget {
   // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
     List<Server> servers = serversProvider.serversList;
 
     final width = MediaQuery.of(context).size.width;
@@ -69,6 +72,11 @@ class ServersList extends StatelessWidget {
           serversProvider.setServerStatusLoad(1);
         }
         else {
+          appConfigProvider.addLog({
+            'type': 'login',
+            'time': DateTime.now().toString(),
+            'message': result['message']
+          });
           serversProvider.setServerStatusLoad(2);
         }
 
@@ -76,6 +84,11 @@ class ServersList extends StatelessWidget {
       }
       else {
         process.close();
+        appConfigProvider.addLog({
+          'type': 'login',
+          'time': DateTime.now().toString(),
+          'message': result['message']
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.cannotConnect),

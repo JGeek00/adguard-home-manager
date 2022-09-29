@@ -15,6 +15,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _selectedClientsTab = 0;
 
+  final List<Map<dynamic, dynamic>> _logs = [];
+
   PackageInfo? get getAppInfo {
     return _appInfo;
   }
@@ -53,6 +55,10 @@ class AppConfigProvider with ChangeNotifier {
     return _selectedClientsTab;
   }
 
+  List<Map<dynamic, dynamic>> get logs {
+    return _logs;
+  }
+
   void setDbInstance(Database db) {
     _dbInstance = db;
   }
@@ -71,6 +77,11 @@ class AppConfigProvider with ChangeNotifier {
 
   void setSelectedClientsTab(int tab) {
     _selectedClientsTab = tab;
+    notifyListeners();
+  }
+
+  void addLog(Map<dynamic, dynamic> log) {
+    _logs.add(log);
     notifyListeners();
   }
 

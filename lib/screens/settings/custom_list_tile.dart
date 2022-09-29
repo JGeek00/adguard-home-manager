@@ -6,6 +6,7 @@ class CustomListTile extends StatelessWidget {
   final String? description;
   final Color? color;
   final void Function()? onTap;
+  final void Function()? onDoubleTap;
   final Widget? trailing;
   final EdgeInsets? padding;
 
@@ -16,6 +17,7 @@ class CustomListTile extends StatelessWidget {
     this.description,
     this.color,
     this.onTap,
+    this.onDoubleTap,
     this.trailing,
     this.padding
   }) : super(key: key);
@@ -26,6 +28,7 @@ class CustomListTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        onDoubleTap: onDoubleTap,
         child: Container(
           padding: padding ?? const EdgeInsets.symmetric(
               vertical: 10,
