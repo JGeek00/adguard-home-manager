@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
+import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -354,5 +355,74 @@ Future requestAllowedBlockedClientsHosts(Server server, Map<String, List<String>
     return {'result': 'ssl_error'};
   } catch (e) {
     return {'result': 'error'};
+  }
+}
+
+Future getLogs({
+  required Server server, 
+  required int count, 
+  int? offset
+}) async {
+    final result = await getRequest(
+      urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}', 
+      server: server
+    );
+    
+    if (result.statusCode == 200) {
+      return {
+        'result': 'success',
+        'data': LogsData.fromJson(jsonDecode(result.body))
+      };
+    }
+    else {
+      return {
+        'result': 'error', 
+        'log': AppLog(
+          type: 'logs', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result.statusCode,
+          resBody: result.body
+        )
+      };
+    }
+  try {
+  } on SocketException {
+    return {
+      'result': 'no_connection', 
+      'log': AppLog(
+        type: 'logs', 
+        dateTime: DateTime.now(), 
+        message: 'SocketException'
+      )
+    };
+  } on TimeoutException {
+    return {
+      'result': 'no_connection', 
+      'log': AppLog(
+        type: 'logs', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } on HandshakeException {
+    return {
+      'result': 'ssl_error', 
+      'message': 'HandshakeException',
+      'log': AppLog(
+        type: 'logs', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } catch (e) {
+    return {
+      'result': 'error', 
+      'log': AppLog(
+        type: 'logs', 
+        dateTime: DateTime.now(), 
+        message: e.toString()
+      )
+    };
   }
 }

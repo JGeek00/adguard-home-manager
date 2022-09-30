@@ -106,5 +106,10 @@
     "advancedSetupDescription": "Advanced options",
     "settingsUpdatedSuccessfully": "Settings updated successfully.",
     "cannotUpdateSettings": "Settings cannot be updated.",
-    "restartAppTakeEffect": "Restart the application"
+    "restartAppTakeEffect": "Restart the application",
+    "loadingLogs": "Loading logs...",
+    "logsNotLoaded": "Logs list could not be loaded",
+    "processed": "Processed (no list)",
+    "blockedBlacklist": "Blocked (blacklist)",
+    "processedWhitelist": "Processed (whitelist)"
 }

@@ -106,5 +106,10 @@
     "advancedSetupDescription": "Opciones avanzadas",
     "settingsUpdatedSuccessfully": "Ajustes actualizados correctamente.",
     "cannotUpdateSettings": "No se han podido actualizar los ajustes.",
-    "restartAppTakeEffect": "Reinicia la aplicación para que se apliquen los cambios."
+    "restartAppTakeEffect": "Reinicia la aplicación para que se apliquen los cambios.",
+    "loadingLogs": "Cargando registros...",
+    "logsNotLoaded": "No se pudieron cargar los registros",
+    "processed": "Procesada (sin lista)",
+    "blockedBlacklist": "Bloqueada (lista negra)",
+    "processedWhitelist": "Procesada (lista blanca)"
 }
