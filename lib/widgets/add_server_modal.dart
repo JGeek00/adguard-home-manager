@@ -438,6 +438,29 @@ class _AddServerModalState extends State<AddServerModal> {
           ),
           body: ListView(
             children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                margin: const EdgeInsets.only(
+                  top: 30,
+                  left: 20,
+                  right: 20
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor
+                  )
+                ),
+                child: Text(
+                  "$connectionType://${ipDomainController.text}${pathController.text}${portController.text != '' ? ':${portController.text}' : ""}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w500
+                  ),
+                ),
+              ),
               sectionLabel(AppLocalizations.of(context)!.general),
               textField(
                 label: AppLocalizations.of(context)!.name, 
