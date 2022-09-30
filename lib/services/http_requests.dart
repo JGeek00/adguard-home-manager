@@ -39,13 +39,15 @@ Future<http.Response> postRequest({
 
 Future login(Server server) async {
   try {
-    final result = await http.post(
-      Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control/login"),
-      body: jsonEncode({
+    final result = await postRequest(
+      urlPath: '/login', 
+      server: server,
+      body: {
         "name": server.user,
         "password": server.password
-      })
-    ).timeout(const Duration(seconds: 10));
+      }
+    );
+    
     if (result.statusCode == 200) {
       return {'result': 'success'};
     }
