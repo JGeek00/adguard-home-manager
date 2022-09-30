@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/screens/settings/advanced_setings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -75,6 +76,18 @@ class Settings extends StatelessWidget {
               : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
             : AppLocalizations.of(context)!.noServerSelected,
           onTap: navigateServers,
+        ),
+        CustomListTile(
+          leadingIcon: Icons.settings,
+          label: AppLocalizations.of(context)!.advancedSettings,
+          description: AppLocalizations.of(context)!.advancedSetupDescription,
+          onTap: () => {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const AdvancedSettings()
+              )
+            )
+          },
         ),
         const Divider(),
         SectionLabel(label: AppLocalizations.of(context)!.aboutApp),

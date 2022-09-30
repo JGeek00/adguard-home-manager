@@ -99,5 +99,12 @@
     "noSavedLogs": "No hay logs guardados",
     "logs": "Registros",
     "copyLogsClipboard": "Copiar logs al portapapeles",
-    "logsCopiedClipboard": "Registros copiados al portapapeles"
+    "logsCopiedClipboard": "Registros copiados al portapapeles",
+    "advancedSettings": "Ajustes avanzados",
+    "dontCheckCertificate": "No comprobar el certificado SSL",
+    "dontCheckCertificateDescription": "Anula la validación del certificado SSL del servidor",
+    "advancedSetupDescription": "Opciones avanzadas",
+    "settingsUpdatedSuccessfully": "Ajustes actualizados correctamente.",
+    "cannotUpdateSettings": "No se han podido actualizar los ajustes.",
+    "restartAppTakeEffect": "Reinicia la aplicación para que se apliquen los cambios."
 }

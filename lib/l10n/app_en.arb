@@ -99,5 +99,12 @@
     "noSavedLogs": "No saved logs",
     "logs": "Logs",
     "copyLogsClipboard": "Copy logs to clipboard",
-    "logsCopiedClipboard": "Logs copied to clipboard"
+    "logsCopiedClipboard": "Logs copied to clipboard",
+    "advancedSettings": "Advanced settings",
+    "dontCheckCertificate": "Don't check SSL certificate",
+    "dontCheckCertificateDescription": "Overrides the server's SSL certificate validation",
+    "advancedSetupDescription": "Advanced options",
+    "settingsUpdatedSuccessfully": "Settings updated successfully.",
+    "cannotUpdateSettings": "Settings cannot be updated.",
+    "restartAppTakeEffect": "Restart the application"
 }

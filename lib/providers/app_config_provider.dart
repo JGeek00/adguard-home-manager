@@ -19,6 +19,8 @@ class AppConfigProvider with ChangeNotifier {
 
   final List<AppLog> _logs = [];
 
+  int _overrideSslCheck = 0;
+
   PackageInfo? get getAppInfo {
     return _appInfo;
   }
@@ -61,6 +63,10 @@ class AppConfigProvider with ChangeNotifier {
     return _logs;
   }
 
+  bool get overrideSslCheck {
+    return _overrideSslCheck == 1 ? true : false;
+  }
+
   void setDbInstance(Database db) {
     _dbInstance = db;
   }
@@ -87,6 +93,19 @@ class AppConfigProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> setOverrideSslCheck(bool status) async {
+    final updated = await _updateOverrideSslCheck(status == true ? 1 : 0);
+    if (updated == true) {
+      _overrideSslCheck = status == true ? 1 : 0;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+
   Future<bool> setSelectedTheme(int value) async {
     final updated = await _updateThemeDb(value);
     if (updated == true) {
@@ -112,9 +131,23 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> _updateOverrideSslCheck(int value) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawUpdate(
+          'UPDATE appConfig SET overrideSslCheck = $value',
+        );
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
   void saveFromDb(Database dbInstance, Map<String, dynamic> dbData) {
     _selectedTheme = dbData['theme'];
-    
+    _overrideSslCheck = dbData['overrideSslCheck'];
+
     _dbInstance = dbInstance;
     notifyListeners();
   }
