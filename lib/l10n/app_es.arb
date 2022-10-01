@@ -111,5 +111,21 @@
     "logsNotLoaded": "No se pudieron cargar los registros",
     "processed": "Procesada (sin lista)",
     "blockedBlacklist": "Bloqueada (lista negra)",
-    "processedWhitelist": "Procesada (lista blanca)"
+    "processedWhitelist": "Procesada (lista blanca)",
+    "status": "Estado",
+    "result": "Resultado",
+    "time": "Hora",
+    "blocklist": "Lista de bloqueo",
+    "request": "Petición",
+    "domain": "Dominio",
+    "type": "Tipo",
+    "clas": "Clase",
+    "response": "Respuesta",
+    "dnsServer": "Servidor DNS",
+    "elapsedTime": "Tiempo transcurrido",
+    "responseCode": "Código de respuesta",
+    "client": "Cliente",
+    "device": "Dispositivo",
+    "logDetails": "Detalles del registro",
+    "blockingRule": "Regla de bloqueo"
 }

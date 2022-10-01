@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/logs/log_details_modal.dart';
+
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
 
@@ -58,7 +60,7 @@ class LogTile extends StatelessWidget {
           return logStatusWidget(
             icon: Icons.verified_user_rounded, 
             color: Colors.red, 
-            text:AppLocalizations.of(context)!.blockedBlacklist,
+            text: AppLocalizations.of(context)!.blockedBlacklist,
           );
 
         case "NotFilteredWhiteList":
@@ -77,11 +79,21 @@ class LogTile extends StatelessWidget {
       }
     }
     
+    void openLogDetailsModal() {
+      showModalBottomSheet(
+        context: context, 
+        builder: (context) => LogDetailsModal(
+          log: log
+        ),
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true
+      );
+    }
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => {},
+        onTap: openLogDetailsModal,
         child: Container(
           width: double.maxFinite,
           padding: const EdgeInsets.all(10),

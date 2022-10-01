@@ -111,5 +111,21 @@
     "logsNotLoaded": "Logs list could not be loaded",
     "processed": "Processed (no list)",
     "blockedBlacklist": "Blocked (blacklist)",
-    "processedWhitelist": "Processed (whitelist)"
+    "processedWhitelist": "Processed (whitelist)",
+    "status": "Status",
+    "result": "Result",
+    "time": "Time",
+    "blocklist": "Blocklist",
+    "request": "Request",
+    "domain": "Domain",
+    "type": "Type",
+    "clas": "Class",
+    "response": "Response",
+    "dnsServer": "DNS server",
+    "elapsedTime": "Elapsed time",
+    "responseCode": "Response code",
+    "client": "Client",
+    "device": "Device",
+    "logDetails": "Log details",
+    "blockingRule": "Blocking rule"
 }
