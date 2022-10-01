@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:adguard_home_manager/models/logs.dart';
+import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -27,14 +28,15 @@ Future<http.Response> getRequest({
 Future<http.Response> postRequest({
   required String urlPath, 
   required Server server, 
-  Map<String, dynamic>? body
+  Map<String, dynamic>? body,
+  String? stringBody
 }) {
   return http.post(
     Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"),
     headers: {
       'Authorization': 'Basic ${server.authToken}'
     },
-    body: jsonEncode(body)
+    body: body ?? stringBody
   ).timeout(const Duration(seconds: 10));
 }
 
@@ -363,6 +365,7 @@ Future getLogs({
   required int count, 
   int? offset
 }) async {
+  try {
     final result = await getRequest(
       urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}', 
       server: server
@@ -386,7 +389,6 @@ Future getLogs({
         )
       };
     }
-  try {
   } on SocketException {
     return {
       'result': 'no_connection', 
@@ -420,6 +422,139 @@ Future getLogs({
       'result': 'error', 
       'log': AppLog(
         type: 'logs', 
+        dateTime: DateTime.now(), 
+        message: e.toString()
+      )
+    };
+  }
+}
+
+Future getFilteringRules({
+  required Server server, 
+}) async {
+  try {
+    final result = await getRequest(
+      urlPath: '/filtering/status', 
+      server: server
+    );
+    
+    if (result.statusCode == 200) {
+      return {
+        'result': 'success',
+        'data': FilteringStatus.fromJson(jsonDecode(result.body))
+      };
+    }
+    else {
+      return {
+        'result': 'error', 
+        'log': AppLog(
+          type: 'filtering_status', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result.statusCode,
+          resBody: result.body
+        )
+      };
+    }
+  } on SocketException {
+    return {
+      'result': 'no_connection', 
+      'log': AppLog(
+        type: 'filtering_status', 
+        dateTime: DateTime.now(), 
+        message: 'SocketException'
+      )
+    };
+  } on TimeoutException {
+    return {
+      'result': 'no_connection', 
+      'log': AppLog(
+        type: 'filtering_status', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } on HandshakeException {
+    return {
+      'result': 'ssl_error', 
+      'message': 'HandshakeException',
+      'log': AppLog(
+        type: 'filtering_status', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } catch (e) {
+    return {
+      'result': 'error', 
+      'log': AppLog(
+        type: 'filtering_status', 
+        dateTime: DateTime.now(), 
+        message: e.toString()
+      )
+    };
+  }
+}
+
+Future postFilteringRules({
+  required Server server, 
+  required String data, 
+}) async {
+  try {
+    final result = await postRequest(
+      urlPath: '/filtering/set_rules', 
+      server: server,
+      stringBody: data
+    );
+    
+    if (result.statusCode == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error', 
+        'log': AppLog(
+          type: 'filtering_set_rules', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result.statusCode,
+          resBody: result.body
+        )
+      };
+    }
+  } on SocketException {
+    return {
+      'result': 'no_connection', 
+      'log': AppLog(
+        type: 'filtering_set_rules', 
+        dateTime: DateTime.now(), 
+        message: 'SocketException'
+      )
+    };
+  } on TimeoutException {
+    return {
+      'result': 'no_connection', 
+      'log': AppLog(
+        type: 'filtering_set_rules', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } on HandshakeException {
+    return {
+      'result': 'ssl_error', 
+      'message': 'HandshakeException',
+      'log': AppLog(
+        type: 'filtering_set_rules', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } catch (e) {
+    return {
+      'result': 'error', 
+      'log': AppLog(
+        type: 'filtering_set_rules', 
         dateTime: DateTime.now(), 
         message: e.toString()
       )

@@ -125,7 +125,14 @@
     "elapsedTime": "Tiempo transcurrido",
     "responseCode": "Código de respuesta",
     "client": "Cliente",
-    "device": "Dispositivo",
+    "deviceIp": "Dirección IP",
+    "deviceName": "Nombre",
     "logDetails": "Detalles del registro",
-    "blockingRule": "Regla de bloqueo"
+    "blockingRule": "Regla de bloqueo",
+    "blockDomain": "Bloquear dominio",
+    "couldntGetFilteringStatus": "No se pudo obtener el estado de filtrado",
+    "unblockDomain": "Desbloquear dominio",
+    "userFilteringRulesNotUpdated": "No se pudieron actualizar las reglas de filtrado del usuario",
+    "userFilteringRulesUpdated": "Reglas de filtrado del usuario actualizadas correctamente",
+    "savingUserFilters": "Guardando filtros de usuario..."
 }

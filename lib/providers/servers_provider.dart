@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -24,6 +25,8 @@ class ServersProvider with ChangeNotifier {
     data: null
   );
 
+  FilteringStatus? _filteringStatus;
+
   List<Server> get serversList {
     return _serversList;
   }
@@ -42,6 +45,10 @@ class ServersProvider with ChangeNotifier {
 
   Clients get clients {
     return _clients;
+  }
+
+  FilteringStatus? get filteringStatus {
+    return _filteringStatus;
   }
 
   void setDbInstance(Database db) {
@@ -82,6 +89,11 @@ class ServersProvider with ChangeNotifier {
 
   void setAllowedDisallowedClientsBlockedDomains(ClientsAllowedBlocked data) {
     _clients.data?.clientsAllowedBlocked = data;
+    notifyListeners();
+  }
+
+  void setFilteringStatus(FilteringStatus status) {
+    _filteringStatus = status;
     notifyListeners();
   }
  

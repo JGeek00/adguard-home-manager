@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
 
+import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -21,7 +24,8 @@ class Logs extends StatelessWidget {
 
     return LogsWidget(
       server: serversProvider.selectedServer!,
-      createLog: appConfigProvider.addLog
+      createLog: appConfigProvider.addLog,
+      setFilteringStatus: serversProvider.setFilteringStatus,
     );
   }
 }
@@ -29,11 +33,13 @@ class Logs extends StatelessWidget {
 class LogsWidget extends StatefulWidget {
   final Server server;
   final void Function(AppLog) createLog;
+  final void Function(FilteringStatus) setFilteringStatus;
 
   const LogsWidget({
     Key? key,
     required this.server,
-    required this.createLog
+    required this.createLog,
+    required this.setFilteringStatus,
   }) : super(key: key);
 
   @override
@@ -89,6 +95,21 @@ class _LogsWidgetState extends State<LogsWidget> {
     }
   }
 
+  void fetchFilteringRules() async {
+    final result = await getFilteringRules(server: widget.server);
+    if (result['result'] == 'success') {
+      widget.setFilteringStatus(result['data']);
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),
+          backgroundColor: Colors.red,
+        )
+      );
+    }
+  }
+
   void scrollListener() {
     if (scrollController.position.extentAfter < 500 && isLoadingMore == false) {
       fetchLogs(loadingMore: true);
@@ -99,6 +120,7 @@ class _LogsWidgetState extends State<LogsWidget> {
   void initState() {
     scrollController = ScrollController()..addListener(scrollListener);
     fetchLogs(inOffset: 0);
+    fetchFilteringRules();
     super.initState();
   }
 

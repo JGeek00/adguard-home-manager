@@ -1,8 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_details_modal.dart';
 
+import 'package:adguard_home_manager/models/filtering_status.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
 
@@ -20,6 +27,8 @@ class LogTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
+
     final width = MediaQuery.of(context).size.width;
 
     Widget logStatusWidget({
@@ -78,12 +87,63 @@ class LogTile extends StatelessWidget {
           );
       }
     }
+
+    void blockUnblock(Log log, String newStatus) async {
+      FilteringStatus oldStatus = serversProvider.filteringStatus!;
+
+      List<String> newRules = serversProvider.filteringStatus!.userRules.where((domain) => !domain.contains(log.question.name)).toList();
+      if (newStatus == 'block') {
+        newRules.add("||${log.question.name}^");
+      }
+      else if (newStatus == 'unblock') {
+        newRules.add("@@||${log.question.name}^");
+      }
+      FilteringStatus newObj = serversProvider.filteringStatus!;
+      newObj.userRules = newRules;
+      serversProvider.setFilteringStatus(newObj);
+      
+      String formattedFilters = "";
+      for (var rule in newObj.userRules) {
+        if (formattedFilters == "") {
+          formattedFilters = "$formattedFilters$rule";
+        }
+        else {
+          formattedFilters = "$formattedFilters\n$rule";
+        }
+      }
+
+      final ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.savingUserFilters);
+
+      final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: formattedFilters);
+      
+      processModal.close();
+      
+      if (result['result'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
+            backgroundColor: Colors.green,
+          )
+        );
+      }
+      else {
+        serversProvider.setFilteringStatus(oldStatus);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
     
     void openLogDetailsModal() {
       showModalBottomSheet(
         context: context, 
-        builder: (context) => LogDetailsModal(
-          log: log
+        builder: (ctx) => LogDetailsModal(
+          log: log,
+          blockUnblock: blockUnblock,
         ),
         backgroundColor: Colors.transparent,
         isScrollControlled: true

@@ -125,7 +125,14 @@
     "elapsedTime": "Elapsed time",
     "responseCode": "Response code",
     "client": "Client",
-    "device": "Device",
+    "deviceIp": "IP address",
+    "deviceName": "Name",
     "logDetails": "Log details",
-    "blockingRule": "Blocking rule"
+    "blockingRule": "Blocking rule",
+    "blockDomain": "Block domain",
+    "couldntGetFilteringStatus": "Could not get filtering status",
+    "unblockDomain": "Unblock domain",
+    "userFilteringRulesNotUpdated": "User filtering rules could not be updated",
+    "userFilteringRulesUpdated": "User filtering rules updated successfully",
+    "savingUserFilters": "Saving user filters..."
 }

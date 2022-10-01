@@ -8,14 +8,31 @@ import 'package:adguard_home_manager/models/logs.dart';
 
 class LogDetailsModal extends StatelessWidget {
   final Log log;
+  final void Function(Log, String) blockUnblock;
 
   const LogDetailsModal({
     Key? key,
-    required this.log
+    required this.log,
+    required this.blockUnblock
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    bool isLogBlocked() {
+      switch (log.reason) {
+        case 'NotFilteredNotFound':
+          return false;
+
+        case 'NotFilteredWhiteList':
+          return true;
+
+        case 'FilteredBlackList':
+          return true;
+
+        default: 
+          return true;
+      }
+    }
 
     Widget getResult() {
       switch (log.reason) {
@@ -193,8 +210,13 @@ class LogDetailsModal extends StatelessWidget {
                   ),
                   LogListTile(
                     icon: Icons.smartphone_rounded, 
-                    title: AppLocalizations.of(context)!.device,
+                    title: AppLocalizations.of(context)!.deviceIp,
                     subtitle: log.client
+                  ),
+                  if (log.clientInfo.name != '') LogListTile(
+                    icon: Icons.abc_rounded, 
+                    title: AppLocalizations.of(context)!.deviceName,
+                    subtitle: log.clientInfo.name
                   ),
                 ],
               )
@@ -202,12 +224,23 @@ class LogDetailsModal extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  TextButton(
+                    onPressed: () {
+                      blockUnblock(log, isLogBlocked() == true ? 'unblock' : 'block');
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      isLogBlocked() == true
+                        ? AppLocalizations.of(context)!.unblockDomain
+                        : AppLocalizations.of(context)!.blockDomain
+                      )
+                  ),
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(AppLocalizations.of(context)!.close)
-                  )
+                  ),
                 ],  
               ),
             )
