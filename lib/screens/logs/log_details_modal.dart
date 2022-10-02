@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/get_filtered_status.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 
@@ -18,54 +19,15 @@ class LogDetailsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isLogBlocked() {
-      switch (log.reason) {
-        case 'NotFilteredNotFound':
-          return false;
-
-        case 'NotFilteredWhiteList':
-          return true;
-
-        case 'FilteredBlackList':
-          return true;
-
-        default: 
-          return true;
-      }
-    }
-
     Widget getResult() {
-      switch (log.reason) {
-        case 'NotFilteredNotFound':
-          return Text(
-            AppLocalizations.of(context)!.processed,
-            style: const TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.w500
-            ),
-          );
-
-        case 'NotFilteredWhiteList':
-          return Text(
-            AppLocalizations.of(context)!.processedWhitelist,
-            style: const TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.w500
-            ),
-          );
-
-        case 'FilteredBlackList':
-          return Text(
-            AppLocalizations.of(context)!.blockedBlacklist,
-            style: const TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.w500
-            ),
-          );
-
-        default: 
-          return const Text("");
-      }
+      final filter = getFilteredStatus(context, log.reason);
+      return Text(
+        filter['label'],
+        style: TextStyle(
+          color: filter['color'],
+          fontWeight: FontWeight.w500
+        ),
+      );
     }
 
     return DraggableScrollableSheet(
@@ -228,11 +190,11 @@ class LogDetailsModal extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
-                      blockUnblock(log, isLogBlocked() == true ? 'unblock' : 'block');
+                      blockUnblock(log, getFilteredStatus(context, log.reason)['filtered'] == true ? 'unblock' : 'block');
                       Navigator.pop(context);
                     },
                     child: Text(
-                      isLogBlocked() == true
+                      getFilteredStatus(context, log.reason)['filtered'] == true
                         ? AppLocalizations.of(context)!.unblockDomain
                         : AppLocalizations.of(context)!.blockDomain
                       )

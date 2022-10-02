@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_details_modal.dart';
 
+import 'package:adguard_home_manager/functions/get_filtered_status.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -57,35 +58,12 @@ class LogTile extends StatelessWidget {
     }
     
     Widget generateLogStatus() {
-      switch (log.reason) {
-        case "NotFilteredNotFound":
-          return logStatusWidget(
-            icon: Icons.verified_user_rounded, 
-            color: Colors.green, 
-            text: AppLocalizations.of(context)!.processed,
-          );
-
-        case "FilteredBlackList":
-          return logStatusWidget(
-            icon: Icons.verified_user_rounded, 
-            color: Colors.red, 
-            text: AppLocalizations.of(context)!.blockedBlacklist,
-          );
-
-        case "NotFilteredWhiteList":
-          return logStatusWidget(
-            icon: Icons.verified_user_rounded, 
-            color: Colors.green, 
-            text: AppLocalizations.of(context)!.processedWhitelist,
-          );
-          
-        default:
-          return  logStatusWidget(
-            icon: Icons.shield_rounded, 
-            color: Colors.grey, 
-            text: "Unknwon"
-          );
-      }
+      final filter = getFilteredStatus(context, log.reason);
+      return logStatusWidget(
+        icon: filter['icon'],
+        color: filter['color'],
+        text: filter['label'],
+      );
     }
 
     void blockUnblock(Log log, String newStatus) async {
