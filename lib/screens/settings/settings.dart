@@ -89,7 +89,6 @@ class Settings extends StatelessWidget {
             )
           },
         ),
-        const Divider(),
         SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
         CustomListTile(
           label: AppLocalizations.of(context)!.appVersion, 

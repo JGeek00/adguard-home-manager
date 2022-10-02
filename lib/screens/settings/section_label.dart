@@ -17,9 +17,10 @@ class SectionLabel extends StatelessWidget {
           padding: const EdgeInsets.all(25),
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w500,
-              fontSize: 16
+              fontSize: 16,
+              color: Theme.of(context).primaryColor
             ),
           ),
         ),
