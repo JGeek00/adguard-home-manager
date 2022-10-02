@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
+import 'package:adguard_home_manager/screens/app_logs/app_logs.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -51,6 +52,24 @@ class AdvancedSettings extends StatelessWidget {
               activeColor: Theme.of(context).primaryColor,
             ),
             onTap: () => updateSslCheck(!appConfigProvider.overrideSslCheck),
+            padding: const EdgeInsets.only(
+              top: 10,
+              bottom: 10,
+              left: 20,
+              right: 10
+            )
+          ),
+          CustomListTile(
+            leadingIcon: Icons.list_rounded,
+            label: AppLocalizations.of(context)!.logs,
+            description: AppLocalizations.of(context)!.checkAppLogs,
+            onTap: () => {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AppLogs()
+                )
+              )
+            },
             padding: const EdgeInsets.only(
               top: 10,
               bottom: 10,

@@ -154,5 +154,6 @@
     "selectAll": "Seleccionar todo",
     "unselectAll": "Deseleccionar todo",
     "all": "Todas",
-    "filtered": "Filtrada"
+    "filtered": "Filtrada",
+    "checkAppLogs": "Comprueba los logs de la app"
 }

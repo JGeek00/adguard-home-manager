@@ -36,7 +36,7 @@ Future<http.Response> postRequest({
     headers: {
       'Authorization': 'Basic ${server.authToken}'
     },
-    body: body ?? stringBody
+    body: (body != null ? jsonEncode(body) : null) ?? stringBody
   ).timeout(const Duration(seconds: 10));
 }
 
