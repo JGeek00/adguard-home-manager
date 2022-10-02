@@ -17,6 +17,38 @@ class LogsFiltersModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
+
+    return LogsFiltersModalWidget(
+      logsProvider: logsProvider
+    );
+  }
+}
+
+class LogsFiltersModalWidget extends StatefulWidget {
+  final LogsProvider logsProvider;
+
+  const LogsFiltersModalWidget({
+    Key? key,
+    required this.logsProvider
+  }) : super(key: key);
+
+  @override
+  State<LogsFiltersModalWidget> createState() => _LogsFiltersModalWidgetState();
+}
+
+class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
+  TextEditingController addressController = TextEditingController();
+  String? addressFieldError;
+
+  @override
+  void initState() {
+    addressController.text = widget.logsProvider.searchIpDomain ?? '';
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final logsProvider = Provider.of<LogsProvider>(context);
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -56,24 +88,6 @@ class LogsFiltersModal extends StatelessWidget {
           ).toUtc();
 
           logsProvider.setLogsOlderThan(value);
-
-          logsProvider.setLoadStatus(0);
-
-          logsProvider.setOffset(0);
-
-          final result = await getLogs(
-            server: serversProvider.selectedServer!, 
-            count: logsProvider.logsQuantity,
-            olderThan: logsProvider.logsOlderThan
-          );
-          if (result['result'] == 'success') {
-            logsProvider.setLogsData(result['data']);
-            logsProvider.setLoadStatus(1);
-          }
-          else {
-            appConfigProvider.addLog(result['log']);
-            logsProvider.setLoadStatus(2);
-          }
         }
       }
     }
@@ -109,138 +123,220 @@ class LogsFiltersModal extends StatelessWidget {
       );
     }
 
-    return Container(
-      height: 350,
-      decoration: BoxDecoration(
-        color: Theme.of(context).dialogBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28)
-        )
-      ),
-      child: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(
-              top: 24,
-              bottom: 20,
-            ),
-            child: Icon(
-              Icons.filter_list_rounded,
-              size: 26,
-            ),
-          ),
-          Text(
-            AppLocalizations.of(context)!.filters,
-            style: const TextStyle(
-              fontSize: 24
-            ),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: selectTime,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.schedule,
-                            size: 24,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 20),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.logsOlderThan,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                logsProvider.logsOlderThan != null
-                                  ? formatTimestampUTC(logsProvider.logsOlderThan!, 'HH:mm - dd/MM/yyyy')
-                                  : AppLocalizations.of(context)!.notSelected,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: openSelectFilterStatus,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.shield_rounded,
-                            size: 24,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 20),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.responseStatus,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                "${translatedString[logsProvider.selectedResultStatus]}",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: resetFilters, 
-                  child: Text(AppLocalizations.of(context)!.resetFilters)
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context), 
-                  child: Text(AppLocalizations.of(context)!.close)
-                ),
-              ],
-            ),
+    void validateAddress(String? value) {
+      if (value != null && value != '') {
+        RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
+        RegExp domain = RegExp(r'^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$');
+        if (ipAddress.hasMatch(value) == true || domain.hasMatch(value) == true) {
+          setState(() {
+            addressFieldError = null;
+          });
+          logsProvider.setSearchIpDomain(addressController.text);
+        }
+        else {
+          setState(() {
+            addressFieldError = AppLocalizations.of(context)!.invalidIpDomain;
+          });
+        }
+      }
+      else {
+        setState(() {
+          addressFieldError = AppLocalizations.of(context)!.ipDomainNotEmpty;
+        });
+      }
+    }
+
+    void filterLogs() async {
+      Navigator.pop(context);
+
+      logsProvider.setLoadStatus(0);
+
+      logsProvider.setOffset(0);
+
+      final result = await getLogs(
+        server: serversProvider.selectedServer!, 
+        count: logsProvider.logsQuantity,
+        olderThan: logsProvider.logsOlderThan,
+        responseStatus: logsProvider.selectedResultStatus,
+        search: logsProvider.searchIpDomain,
+      );
+      if (result['result'] == 'success') {
+        logsProvider.setLogsData(result['data']);
+        logsProvider.setLoadStatus(1);
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+        logsProvider.setLoadStatus(2);
+      }
+    }
+
+    return Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: Container(
+        height: 470,
+        decoration: BoxDecoration(
+          color: Theme.of(context).dialogBackgroundColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
           )
-        ],
+        ),
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(
+                top: 24,
+                bottom: 20,
+              ),
+              child: Icon(
+                Icons.filter_list_rounded,
+                size: 26,
+              ),
+            ),
+            Text(
+              AppLocalizations.of(context)!.filters,
+              style: const TextStyle(
+                fontSize: 24
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView(
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 108,
+                          child: TextFormField(
+                            controller: addressController,
+                            onChanged: validateAddress,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.link_rounded),
+                              errorText: addressFieldError,
+                              border: const OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10)
+                                )
+                              ),
+                              labelText: AppLocalizations.of(context)!.ipDomain,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        IconButton(
+                          onPressed: () => setState(() {
+                            addressController.text = '';
+                            addressFieldError = null;
+                          }),
+                          icon: const Icon(Icons.clear)
+                        )
+                      ],
+                    ),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: selectTime,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.schedule,
+                              size: 24,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.logsOlderThan,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  logsProvider.logsOlderThan != null
+                                    ? formatTimestampUTC(logsProvider.logsOlderThan!, 'HH:mm - dd/MM/yyyy')
+                                    : AppLocalizations.of(context)!.notSelected,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: openSelectFilterStatus,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.shield_rounded,
+                              size: 24,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.responseStatus,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  "${translatedString[logsProvider.selectedResultStatus]}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: resetFilters, 
+                    child: Text(AppLocalizations.of(context)!.resetFilters)
+                  ),
+                  TextButton(
+                    onPressed: filterLogs, 
+                    child: Text(AppLocalizations.of(context)!.apply)
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

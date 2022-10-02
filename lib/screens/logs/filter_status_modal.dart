@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class FilterStatusModal extends StatefulWidget {
@@ -31,30 +28,11 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
   @override
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void apply() async {
-      logsProvider.setLoadStatus(0);
-
       logsProvider.setSelectedResultStatus(selectedResultStatus);
 
       Navigator.pop(context);
-
-      final result = await getLogs(
-        server: serversProvider.selectedServer!, 
-        count: logsProvider.logsQuantity,
-        responseStatus: selectedResultStatus
-      );
-
-      if (result['result'] == 'success') {
-        logsProvider.setLogsData(result['data']);
-        logsProvider.setLoadStatus(1);
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-        logsProvider.setLoadStatus(2);
-      }
     }
 
     Widget filterStatusListItem({
