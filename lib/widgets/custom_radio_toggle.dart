@@ -22,7 +22,9 @@ class CustomRadioToggle extends StatelessWidget {
       child: InkWell(
         onTap: () => onTap(value),
         borderRadius: BorderRadius.circular(30),
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
             vertical: 5
@@ -38,22 +40,15 @@ class CustomRadioToggle extends StatelessWidget {
           ),
           child: Row(
             children: [
-              if (groupSelected == value) ...[
-                const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 18,
-                ),
-                const SizedBox(width: 10),
-              ],
               Text(
                 label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
+                  fontWeight: FontWeight.w500,
                   color: groupSelected == value
                     ? Colors.white
-                    : null
+                    : Theme.of(context).primaryColor
                 ),
               )
             ],
