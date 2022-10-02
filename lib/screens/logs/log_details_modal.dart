@@ -32,7 +32,7 @@ class LogDetailsModal extends StatelessWidget {
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
-      minChildSize: 0.4,
+      minChildSize: 0.6,
       maxChildSize: 0.95,
       builder: (context, controller) => Container(
         decoration: BoxDecoration(
