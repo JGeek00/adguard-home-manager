@@ -178,7 +178,7 @@ class LogTile extends StatelessWidget {
                 ],
               ),
               Text(
-                formatTimestampUTC(log.time, 'HH:mm:ss')
+                formatTimestampUTCFromAPI(log.time, 'HH:mm:ss')
               ),
             ],
           ),
