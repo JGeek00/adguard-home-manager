@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
 
+import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -21,25 +22,26 @@ class Logs extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
 
     return LogsWidget(
-      server: serversProvider.selectedServer!,
-      createLog: appConfigProvider.addLog,
-      setFilteringStatus: serversProvider.setFilteringStatus,
+      serversProvider: serversProvider,
+      appConfigProvider: appConfigProvider,
+      logsProvider: logsProvider,
     );
   }
 }
 
 class LogsWidget extends StatefulWidget {
-  final Server server;
-  final void Function(AppLog) createLog;
-  final void Function(FilteringStatus) setFilteringStatus;
+  final ServersProvider serversProvider;
+  final AppConfigProvider appConfigProvider;
+  final LogsProvider logsProvider;
 
   const LogsWidget({
     Key? key,
-    required this.server,
-    required this.createLog,
-    required this.setFilteringStatus,
+    required this.serversProvider,
+    required this.appConfigProvider,
+    required this.logsProvider,
   }) : super(key: key);
 
   @override
@@ -47,14 +49,6 @@ class LogsWidget extends StatefulWidget {
 }
 
 class _LogsWidgetState extends State<LogsWidget> {
-  LogsList logsList = LogsList(
-    loadStatus: 0, 
-    logsData: null
-  );
-
-  int itemsPerLoad = 100;
-  int offset = 0;
-
   late ScrollController scrollController;
   
   bool isLoadingMore = false;
@@ -63,42 +57,44 @@ class _LogsWidgetState extends State<LogsWidget> {
     int? inOffset,
     bool? loadingMore
   }) async {
-    int offst = inOffset ?? offset;
+    int offst = inOffset ?? widget.logsProvider.offset;
 
     if (loadingMore != null && loadingMore == true) {
       setState(() => isLoadingMore = true);
     }
 
-    final result = await getLogs(server: widget.server, count: itemsPerLoad, offset: offst);
+    final result = await getLogs(
+      server: widget.serversProvider.selectedServer!, 
+      count: widget.logsProvider.logsQuantity, 
+      offset: offst
+    );
 
     if (loadingMore != null && loadingMore == true) {
       setState(() => isLoadingMore = false);
     }
 
     if (result['result'] == 'success') {
-      setState(() {
-        offset = inOffset != null ? inOffset+itemsPerLoad : offset+itemsPerLoad;
-        if (loadingMore != null && loadingMore == true) {
-          logsList.logsData!.data = [...logsList.logsData!.data, ...result['data'].data];
-        }
-        else {
-          logsList.logsData = result['data'];
-        }
-        logsList.loadStatus = 1;
-      });
+      widget.logsProvider.setOffset(inOffset != null ? inOffset+widget.logsProvider.logsQuantity : widget.logsProvider.offset+widget.logsProvider.logsQuantity);
+      if (loadingMore != null && loadingMore == true && widget.logsProvider.logsData != null) {
+        LogsData newLogsData = result['data'];
+        newLogsData.data = [...widget.logsProvider.logsData!.data, ...result['data'].data];
+        widget.logsProvider.setLogsData(newLogsData);
+      }
+      else {
+        widget.logsProvider.setLogsData(result['data']);
+      }
+      widget.logsProvider.setLoadStatus(1);
     }
     else {
-      setState(() {
-        logsList.loadStatus = 2;
-      });
-      widget.createLog(result['log']);
+      widget.logsProvider.setLoadStatus(2);
+      widget.appConfigProvider.addLog(result['log']);
     }
   }
 
   void fetchFilteringRules() async {
-    final result = await getFilteringRules(server: widget.server);
+    final result = await getFilteringRules(server: widget.serversProvider.selectedServer!);
     if (result['result'] == 'success') {
-      widget.setFilteringStatus(result['data']);
+      widget.serversProvider.setFilteringStatus(result['data']);
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -126,7 +122,9 @@ class _LogsWidgetState extends State<LogsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    switch (logsList.loadStatus) {
+    final logsProvider = Provider.of<LogsProvider>(context);
+
+    switch (logsProvider.loadStatus) {
       case 0:
         return SizedBox(
           width: double.maxFinite,
@@ -153,30 +151,60 @@ class _LogsWidgetState extends State<LogsWidget> {
           onRefresh: () async {
             await fetchLogs(inOffset: 0);
           },
-          child: ListView.builder(
-            controller: scrollController,
-            padding: const EdgeInsets.only(top: 0),
-            itemCount: isLoadingMore == true 
-              ? logsList.logsData!.data.length+1
-              : logsList.logsData!.data.length,
-            itemBuilder: (context, index) {
-              if (isLoadingMore == true && index == logsList.logsData!.data.length) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-              else {
-                return LogTile(
-                  log: logsList.logsData!.data[index],
-                  index: index,
-                  length: logsList.logsData!.data.length,
-                );
-              }
-            }
-          ),
+          child: logsProvider.logsData!.data.isNotEmpty
+            ? ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.only(top: 0),
+                itemCount: isLoadingMore == true 
+                  ? logsProvider.logsData!.data.length+1
+                  : logsProvider.logsData!.data.length,
+                itemBuilder: (context, index) {
+                  if (isLoadingMore == true && index == logsProvider.logsData!.data.length) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  else {
+                    return LogTile(
+                      log: logsProvider.logsData!.data[index],
+                      index: index,
+                      length: logsProvider.logsData!.data.length,
+                    );
+                  }
+                }
+              )
+            : Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.noLogsDisplay,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.grey
+                      ),
+                    ),
+                    if (logsProvider.logsOlderThan != null) Padding(
+                      padding: const EdgeInsets.only(
+                        top: 30,
+                        left: 20,
+                        right: 20
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.noLogsThatOld,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey
+                        ),
+                      ),
+                    ),
+                  ]
+                ),
+              )
         );
         
       case 2:

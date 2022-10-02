@@ -134,5 +134,13 @@
     "unblockDomain": "Unblock domain",
     "userFilteringRulesNotUpdated": "User filtering rules could not be updated",
     "userFilteringRulesUpdated": "User filtering rules updated successfully",
-    "savingUserFilters": "Saving user filters..."
+    "savingUserFilters": "Saving user filters...",
+    "filters": "Filters",
+    "logsOlderThan": "Logs older than",
+    "responseStatus": "Response status",
+    "selectTime": "Select time",
+    "notSelected": "Not selected",
+    "resetFilters": "Reset filters",
+    "noLogsDisplay": "No logs to display",
+    "noLogsThatOld": "It's possible that there are no logs saved for that selected time. Try selecting a more recent time."
 }

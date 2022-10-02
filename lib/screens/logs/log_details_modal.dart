@@ -143,7 +143,7 @@ class LogDetailsModal extends StatelessWidget {
                   LogListTile(
                     icon: Icons.schedule, 
                     title: AppLocalizations.of(context)!.time,
-                    subtitle: formatTimestamp(log.time, 'HH:mm:ss')
+                    subtitle: formatTimestampUTC(log.time, 'HH:mm:ss')
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20),

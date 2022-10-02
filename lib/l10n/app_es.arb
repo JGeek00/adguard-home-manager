@@ -134,5 +134,13 @@
     "unblockDomain": "Desbloquear dominio",
     "userFilteringRulesNotUpdated": "No se pudieron actualizar las reglas de filtrado del usuario",
     "userFilteringRulesUpdated": "Reglas de filtrado del usuario actualizadas correctamente",
-    "savingUserFilters": "Guardando filtros de usuario..."
+    "savingUserFilters": "Guardando filtros de usuario...",
+    "filters": "Filtros",
+    "logsOlderThan": "Logs anteriores a",
+    "responseStatus": "Estado de la respuesta",
+    "selectTime": "Seleccionar hora",
+    "notSelected": "No seleccionado",
+    "resetFilters": "Resetear filtros",
+    "noLogsDisplay": "No hay registros para mostrar",
+    "noLogsThatOld": "Es posible que no haya registros guardados para ese tiempo seleccionado. Prueba a seleccionar un tiempo más reciente."
 }

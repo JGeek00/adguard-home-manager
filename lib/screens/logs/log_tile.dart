@@ -200,7 +200,7 @@ class LogTile extends StatelessWidget {
                 ],
               ),
               Text(
-                formatTimestamp(log.time, 'HH:mm:ss')
+                formatTimestampUTC(log.time, 'HH:mm:ss')
               ),
             ],
           ),

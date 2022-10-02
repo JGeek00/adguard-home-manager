@@ -14,6 +14,7 @@ import 'package:adguard_home_manager/base.dart';
 
 import 'package:adguard_home_manager/classes/http_override.dart';
 import 'package:adguard_home_manager/services/database.dart';
+import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/config/theme.dart';
@@ -27,6 +28,7 @@ void main() async {
   
   AppConfigProvider appConfigProvider = AppConfigProvider();
   ServersProvider serversProvider = ServersProvider();
+  LogsProvider logsProvider = LogsProvider();
 
   final dbData = await loadDb();
 
@@ -59,6 +61,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: ((context) => appConfigProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => logsProvider)
         ),
       ],
       child: const Main(),

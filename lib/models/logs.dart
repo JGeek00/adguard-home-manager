@@ -16,21 +16,21 @@ String logsToJson(LogsData data) => json.encode(data.toJson());
 
 class LogsData {
   List<Log> data;
-  final DateTime oldest;
+  final DateTime? oldest;
 
   LogsData({
     required this.data,
-    required this.oldest,
+    this.oldest,
   });
 
   factory LogsData.fromJson(Map<String, dynamic> json) => LogsData(
     data: List<Log>.from(json["data"].map((x) => Log.fromJson(x))),
-    oldest: DateTime.parse(json["oldest"]),
+    oldest: json["oldest"] != '' ? DateTime.parse(json["oldest"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
     "data": List<dynamic>.from(data.map((x) => x.toJson())),
-    "oldest": oldest.toIso8601String(),
+    "oldest": oldest != null ? oldest!.toIso8601String() : null,
   };
 }
 

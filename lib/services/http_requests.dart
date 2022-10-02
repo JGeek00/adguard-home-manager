@@ -363,11 +363,11 @@ Future requestAllowedBlockedClientsHosts(Server server, Map<String, List<String>
 Future getLogs({
   required Server server, 
   required int count, 
-  int? offset
+  int? offset,
+  DateTime? olderThan,
 }) async {
-  try {
     final result = await getRequest(
-      urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}', 
+      urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}', 
       server: server
     );
     
@@ -389,6 +389,7 @@ Future getLogs({
         )
       };
     }
+  try {
   } on SocketException {
     return {
       'result': 'no_connection', 
