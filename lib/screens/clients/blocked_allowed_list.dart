@@ -14,11 +14,13 @@ import 'package:adguard_home_manager/classes/process_modal.dart';
 class BlockedAllowedList extends StatelessWidget {
   final String type;
   final List<String> data;
+  final Future Function() fetchClients;
 
   const BlockedAllowedList({
     Key? key,
     required this.type,
-    required this.data
+    required this.data,
+    required this.fetchClients
   }) : super(key: key);
 
   @override
@@ -78,37 +80,49 @@ class BlockedAllowedList extends StatelessWidget {
     }
 
     if (data.isNotEmpty) {
-      return ListView.builder(
-        padding: const EdgeInsets.only(top: 0),
-        itemCount: data.length,
-        itemBuilder: (context, index) => ListTile(
-          title: Text(data[index]),
-          trailing: IconButton(
-            onPressed: () => {
-              showDialog(
-                context: context, 
-                builder: (context) => RemoveDomainModal(
-                  onConfirm: () => confirmRemoveDomain(data[index]),
+      return RefreshIndicator(
+        onRefresh: () async {},
+        child: ListView.builder(
+          padding: const EdgeInsets.only(top: 0),
+          itemCount: data.length,
+          itemBuilder: (context, index) => ListTile(
+            title: Text(data[index]),
+            trailing: IconButton(
+              onPressed: () => {
+                showDialog(
+                  context: context, 
+                  builder: (context) => RemoveDomainModal(
+                    onConfirm: () => confirmRemoveDomain(data[index]),
+                  )
                 )
-              )
-            }, 
-            icon: const Icon(Icons.delete_rounded)
-          ),
-        )
+              }, 
+              icon: const Icon(Icons.delete_rounded)
+            ),
+          )
+        ),
       );
     }
     else {
       return SizedBox(
         width: double.maxFinite,
-        child: Center(
-          child: Text(
-            AppLocalizations.of(context)!.noClientsList,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 24,
-              color: Colors.grey
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppLocalizations.of(context)!.noClientsList,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 24,
+                color: Colors.grey
+              ),
             ),
-          ),
+            const SizedBox(height: 30),
+            TextButton.icon(
+              onPressed: fetchClients, 
+              icon: const Icon(Icons.refresh_rounded), 
+              label: Text(AppLocalizations.of(context)!.refresh),
+            )
+          ],
         ),
       );
     }

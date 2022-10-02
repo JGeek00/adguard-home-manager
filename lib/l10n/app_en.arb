@@ -155,5 +155,6 @@
     "unselectAll": "Unselect all",
     "all": "All",
     "filtered": "Filtered",
-    "checkAppLogs": "Check app logs"
+    "checkAppLogs": "Check app logs",
+    "refresh": "Refresh"
 }

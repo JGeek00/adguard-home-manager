@@ -49,7 +49,7 @@ class ClientsWidget extends StatefulWidget {
 class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateMixin {
   late TabController tabController;
 
-  void fetchClients() async {
+  Future fetchClients() async {
     widget.setLoadingStatus(0, false);
     final result = await getClients(widget.server);
     if (result['result'] == 'success') {
@@ -148,16 +148,28 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  ClientsList(
-                    data: serversProvider.clients.data!.autoClientsData,
+                  RefreshIndicator(
+                    onRefresh: fetchClients,
+                    child: ClientsList(
+                      data: serversProvider.clients.data!.autoClientsData,
+                      fetchClients: fetchClients,
+                    ),
                   ),
-                  BlockedAllowedList(
-                    type: 'allowed',
-                    data: serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients, 
+                  RefreshIndicator(
+                    onRefresh: fetchClients,
+                    child: BlockedAllowedList(
+                      type: 'allowed',
+                      data: serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients, 
+                      fetchClients: fetchClients,
+                    ),
                   ),
-                  BlockedAllowedList(
-                    type: 'blocked',
-                    data: serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients, 
+                  RefreshIndicator(
+                    onRefresh: fetchClients,
+                    child: BlockedAllowedList(
+                      type: 'blocked',
+                      data: serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients, 
+                      fetchClients: fetchClients,
+                    ),
                   ),
                 ],
               ),

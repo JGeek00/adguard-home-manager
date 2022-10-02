@@ -155,5 +155,6 @@
     "unselectAll": "Deseleccionar todo",
     "all": "Todas",
     "filtered": "Filtrada",
-    "checkAppLogs": "Comprueba los logs de la app"
+    "checkAppLogs": "Comprueba los logs de la app",
+    "refresh": "Actualizar"
 }
