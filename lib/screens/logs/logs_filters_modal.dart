@@ -93,6 +93,11 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     }
 
     void resetFilters() async {
+      setState(() {
+        addressController.text = '';
+        addressFieldError = null;
+      });
+
       logsProvider.setLoadStatus(0);
 
       logsProvider.resetFilters();
