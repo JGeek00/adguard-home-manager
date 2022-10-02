@@ -227,10 +227,13 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                         ),
                         const SizedBox(width: 20),
                         IconButton(
-                          onPressed: () => setState(() {
-                            addressController.text = '';
-                            addressFieldError = null;
-                          }),
+                          onPressed: () {
+                            setState(() {
+                              addressController.text = '';
+                              addressFieldError = null;
+                            });
+                            logsProvider.setSearchIpDomain(null);
+                          },
                           icon: const Icon(Icons.clear)
                         )
                       ],

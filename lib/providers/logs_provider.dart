@@ -77,7 +77,7 @@ class LogsProvider with ChangeNotifier {
     _selectedResultStatus = value;
     notifyListeners();
   }
-  void setSearchIpDomain(String value) {
+  void setSearchIpDomain(String? value) {
     _searchIpDomain = value;
     notifyListeners();
   }
