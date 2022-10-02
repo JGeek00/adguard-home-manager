@@ -149,5 +149,10 @@
     "notSelected": "No seleccionado",
     "resetFilters": "Resetear filtros",
     "noLogsDisplay": "No hay registros para mostrar",
-    "noLogsThatOld": "Es posible que no haya registros guardados para ese tiempo seleccionado. Prueba a seleccionar un tiempo más reciente."
+    "noLogsThatOld": "Es posible que no haya registros guardados para ese tiempo seleccionado. Prueba a seleccionar un tiempo más reciente.",
+    "apply": "Aplicar",
+    "selectAll": "Seleccionar todo",
+    "unselectAll": "Deseleccionar todo",
+    "all": "Todas",
+    "filtered": "Filtrada"
 }

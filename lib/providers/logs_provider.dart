@@ -6,6 +6,7 @@ class LogsProvider with ChangeNotifier {
   LogsData? _logsData;
 
   DateTime? _logsOlderThan;
+  String _selectedResultStatus = 'all';
 
   int _logsQuantity = 100;
   int _offset = 0;
@@ -21,6 +22,10 @@ class LogsProvider with ChangeNotifier {
   DateTime? get logsOlderThan {
     return _logsOlderThan;
   }
+
+  String get selectedResultStatus {
+    return _selectedResultStatus;
+  }
   
   int get logsQuantity {
     return _logsQuantity;
@@ -29,6 +34,7 @@ class LogsProvider with ChangeNotifier {
   int get offset {
     return _offset;
   }
+
 
   void setLoadStatus(int value) {
     _loadStatus = value;
@@ -48,6 +54,7 @@ class LogsProvider with ChangeNotifier {
   void resetFilters() {
     _logsOlderThan = null;
     _offset = 0;
+    _selectedResultStatus = 'all';
     notifyListeners();
   }
 
@@ -58,5 +65,10 @@ class LogsProvider with ChangeNotifier {
 
   void setOffset(int value) {
     _offset = value;
+  }
+
+  void setSelectedResultStatus(String value) {
+    _selectedResultStatus = value;
+    notifyListeners();
   }
 }

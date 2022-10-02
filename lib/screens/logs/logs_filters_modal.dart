@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/logs/filter_status_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -18,6 +19,17 @@ class LogsFiltersModal extends StatelessWidget {
     final logsProvider = Provider.of<LogsProvider>(context);
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final Map<String, String> translatedString = {
+      "all": AppLocalizations.of(context)!.all, 
+      "filtered": AppLocalizations.of(context)!.filtered, 
+      "processed": AppLocalizations.of(context)!.processed, 
+      "whitelisted": AppLocalizations.of(context)!.processedWhitelist, 
+      "blocked": AppLocalizations.of(context)!.blocked, 
+      "blocked_safebrowsing": AppLocalizations.of(context)!.blockedSafeBrowsing, 
+      "blocked_parental": AppLocalizations.of(context)!.blockedParental, 
+      "safe_search": AppLocalizations.of(context)!.safeSearch, 
+    };
 
     void selectTime() async {
       DateTime now = DateTime.now();
@@ -84,6 +96,17 @@ class LogsFiltersModal extends StatelessWidget {
         appConfigProvider.addLog(result['log']);
         logsProvider.setLoadStatus(2);
       }
+    }
+
+    void openSelectFilterStatus() {
+      showModalBottomSheet(
+        context: context, 
+        builder: (context) => FilterStatusModal(
+          value: logsProvider.selectedResultStatus,
+        ),
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent
+      );
     }
 
     return Container(
@@ -162,7 +185,7 @@ class LogsFiltersModal extends StatelessWidget {
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () => {},
+                    onTap: openSelectFilterStatus,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: Row(
@@ -184,9 +207,9 @@ class LogsFiltersModal extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 5),
-                              const Text(
-                                "12/12/2000",
-                                style: TextStyle(
+                              Text(
+                                "${translatedString[logsProvider.selectedResultStatus]}",
+                                style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey
                                 ),

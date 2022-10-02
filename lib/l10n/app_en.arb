@@ -149,5 +149,10 @@
     "notSelected": "Not selected",
     "resetFilters": "Reset filters",
     "noLogsDisplay": "No logs to display",
-    "noLogsThatOld": "It's possible that there are no logs saved for that selected time. Try selecting a more recent time."
+    "noLogsThatOld": "It's possible that there are no logs saved for that selected time. Try selecting a more recent time.",
+    "apply": "Apply",
+    "selectAll": "Select all",
+    "unselectAll": "Unselect all",
+    "all": "All",
+    "filtered": "Filtered"
 }

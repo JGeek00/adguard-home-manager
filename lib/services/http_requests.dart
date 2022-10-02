@@ -365,9 +365,10 @@ Future getLogs({
   required int count, 
   int? offset,
   DateTime? olderThan,
+  String? responseStatus,
 }) async {
     final result = await getRequest(
-      urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}', 
+      urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}', 
       server: server
     );
     

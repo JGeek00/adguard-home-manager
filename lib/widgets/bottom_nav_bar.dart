@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/app_screen.dart';
 
@@ -20,6 +21,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
 
     String translatedName(String key) {
       switch (key) {
@@ -53,6 +55,10 @@ class BottomNavBar extends StatelessWidget {
         // Reset clients tab to 0 when changing screen
         if (value != 1) {
           appConfigProvider.setSelectedClientsTab(0);
+        }
+        // Reset logs filters when changing screen
+        if (value != 2) {
+          logsProvider.resetFilters();
         }
         onSelect(value);
       },

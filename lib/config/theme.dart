@@ -71,6 +71,11 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
       )
     )
   ),
+  radioTheme: RadioThemeData(
+    fillColor: MaterialStateProperty.all(
+      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+    ),
+  ),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
 );
 
@@ -137,6 +142,11 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
         width: 2
       )
     )
+  ),
+  radioTheme: RadioThemeData(
+    fillColor: MaterialStateProperty.all(
+      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+    ),
   ),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch
 );
@@ -220,7 +230,9 @@ ThemeData lightThemeOldVersions() => ThemeData(
     color: primaryColor
   ),
   indicatorColor: primaryColor,
-  
+  radioTheme: RadioThemeData(
+    fillColor: MaterialStateProperty.all(primaryColor),
+  ),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
 );
 
@@ -310,5 +322,8 @@ ThemeData darkThemeOldVersions() => ThemeData(
     color: primaryColor
   ),
   indicatorColor: primaryColor,
+  radioTheme: RadioThemeData(
+    fillColor: MaterialStateProperty.all(primaryColor),
+  ),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch
 );

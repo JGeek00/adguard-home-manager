@@ -1,0 +1,208 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/providers/logs_provider.dart';
+
+class FilterStatusModal extends StatefulWidget {
+  final String value;
+
+  const FilterStatusModal({
+    Key? key,
+    required this.value
+  }) : super(key: key);
+
+  @override
+  State<FilterStatusModal> createState() => _FilterStatusModalState();
+}
+
+class _FilterStatusModalState extends State<FilterStatusModal> {
+  String selectedResultStatus = 'all';
+
+  @override
+  void initState() {
+    setState(() => selectedResultStatus = widget.value);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final logsProvider = Provider.of<LogsProvider>(context);
+    final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    void apply() async {
+      logsProvider.setLoadStatus(0);
+
+      logsProvider.setSelectedResultStatus(selectedResultStatus);
+
+      Navigator.pop(context);
+
+      final result = await getLogs(
+        server: serversProvider.selectedServer!, 
+        count: logsProvider.logsQuantity,
+        responseStatus: selectedResultStatus
+      );
+
+      if (result['result'] == 'success') {
+        logsProvider.setLogsData(result['data']);
+        logsProvider.setLoadStatus(1);
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+        logsProvider.setLoadStatus(2);
+      }
+    }
+
+    Widget filterStatusListItem({
+      required String id,
+      required IconData icon,
+      required String label,
+      required void Function(String?) onChanged
+    }) {
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => onChanged(id),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      icon,
+                      size: 24,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 20),
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500
+                      ),
+                    )
+                  ],
+                ),
+                Radio(
+                  value: id, 
+                  groupValue: selectedResultStatus, 
+                  onChanged: onChanged
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.7,
+      minChildSize: 0.2,
+      maxChildSize: 0.7,
+      builder: (context, scrollController) =>  Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28) 
+          ),
+          color: Theme.of(context).dialogBackgroundColor
+        ),
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(
+                top: 24,
+                bottom: 20,
+              ),
+              child: Icon(
+                Icons.shield_rounded,
+                size: 26,
+              ),
+            ),
+            Text(
+              AppLocalizations.of(context)!.responseStatus,
+              style: const TextStyle(
+                fontSize: 24
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView(
+                controller: scrollController,
+                children: [
+                  filterStatusListItem(
+                    id: "all",
+                    icon: Icons.shield_rounded, 
+                    label: AppLocalizations.of(context)!.all, 
+                    onChanged: (value) => setState(() => selectedResultStatus = value!)
+                  ),
+                  filterStatusListItem(
+                    id: "filtered",
+                    icon: Icons.shield_rounded, 
+                    label: AppLocalizations.of(context)!.filtered, 
+                    onChanged: (value) => setState(() => selectedResultStatus = value!)
+                  ),
+                  filterStatusListItem(
+                    id: "processed",
+                    icon: Icons.verified_user_rounded, 
+                    label: AppLocalizations.of(context)!.processed, 
+                    onChanged: (value) => setState(() => selectedResultStatus = value!)
+                  ),
+                  filterStatusListItem(
+                    id: "whitelisted",
+                    icon: Icons.verified_user_rounded, 
+                    label: AppLocalizations.of(context)!.processedWhitelist, 
+                    onChanged: (value) => setState(() => selectedResultStatus = value!)
+                  ),
+                  filterStatusListItem(
+                    id: "blocked",
+                    icon: Icons.gpp_bad_rounded, 
+                    label: AppLocalizations.of(context)!.blocked, 
+                    onChanged: (value) => setState(() => selectedResultStatus = value!)
+                  ),
+                  filterStatusListItem(
+                    id: "blocked_safebrowsing",
+                    icon: Icons.gpp_bad_rounded, 
+                    label: AppLocalizations.of(context)!.blockedSafeBrowsing, 
+                    onChanged: (value) => setState(() => selectedResultStatus = value!)
+                  ),
+                  filterStatusListItem(
+                    id: "blocked_parental",
+                    icon: Icons.gpp_bad_rounded, 
+                    label: AppLocalizations.of(context)!.blockedParental, 
+                    onChanged: (value) => setState(() => selectedResultStatus = value!)
+                  ),
+                  filterStatusListItem(
+                    id: "safe_search",
+                    icon: Icons.gpp_bad_rounded, 
+                    label: AppLocalizations.of(context)!.blockedSafeSearch, 
+                    onChanged: (value) => setState(() => selectedResultStatus = value!)
+                  ),
+                 
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: apply, 
+                    child: Text(AppLocalizations.of(context)!.apply)
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
