@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 class AppLog {
   final String type;
   final DateTime dateTime;
   final String message;
-  final int? statusCode;
+  final String? statusCode;
   final String? resBody;
 
   const AppLog({
