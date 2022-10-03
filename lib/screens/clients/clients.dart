@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
 import 'package:adguard_home_manager/screens/clients/blocked_allowed_list.dart';
 
+import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -24,6 +25,7 @@ class Clients extends StatelessWidget {
       setLoadingStatus: serversProvider.setClientsLoadStatus,
       setClientsData: serversProvider.setClientsData,
       setSelectedClientsTab: appConfigProvider.setSelectedClientsTab,
+      addLog: appConfigProvider.addLog,
     );
   }
 }
@@ -33,13 +35,15 @@ class ClientsWidget extends StatefulWidget {
   final void Function(int, bool) setLoadingStatus;
   final void Function(ClientsData) setClientsData;
   final void Function(int) setSelectedClientsTab;
+  final void Function(AppLog) addLog;
 
   const ClientsWidget({
     Key? key,
     required this.server,
     required this.setLoadingStatus,
     required this.setClientsData,
-    required this.setSelectedClientsTab
+    required this.setSelectedClientsTab,
+    required this.addLog,
   }) : super(key: key);
 
   @override
@@ -57,6 +61,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
       widget.setLoadingStatus(1, true);
     }
     else {
+      widget.addLog(result['log']);
       widget.setLoadingStatus(2, true);
     }
   }

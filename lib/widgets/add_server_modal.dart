@@ -270,12 +270,12 @@ class _AddServerModalState extends State<AddServerModal> {
             serversProvider.setServerStatusLoad(1);
           }
           else {
+            appConfigProvider.addLog(serverStatus['log']);
             serversProvider.setServerStatusLoad(2);
           }
           Navigator.pop(context);
         }
         else {
-          appConfigProvider.addLog(result['log']);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.connectionNotCreated),

@@ -97,6 +97,7 @@ class _LogsWidgetState extends State<LogsWidget> {
       widget.serversProvider.setFilteringStatus(result['data']);
     }
     else {
+      widget.appConfigProvider.addLog(result['log']);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),

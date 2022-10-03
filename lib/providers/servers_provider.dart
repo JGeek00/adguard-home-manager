@@ -178,7 +178,7 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> updateBlocking(Server server, String block, bool newStatus) async {
+  Future<dynamic> updateBlocking(Server server, String block, bool newStatus) async {
     switch (block) {
       case 'general':
         _protectionsManagementProcess.add('general');
@@ -195,7 +195,7 @@ class ServersProvider with ChangeNotifier {
         }
         else {
           notifyListeners();
-          return false;
+          return result['log'];
         }
 
       case 'filtering':
@@ -212,8 +212,9 @@ class ServersProvider with ChangeNotifier {
           return true;
         }
         else {
+          
           notifyListeners();
-          return false;
+          return result['log'];
         }
 
       case 'safeSearch':
@@ -231,7 +232,7 @@ class ServersProvider with ChangeNotifier {
         }
         else {
           notifyListeners();
-          return false;
+          return result['log'];
         }
 
       case 'safeBrowsing':
@@ -249,7 +250,7 @@ class ServersProvider with ChangeNotifier {
         }
         else {
           notifyListeners();
-          return false;
+          return result['log'];
         }
 
       case 'parentalControl':
@@ -267,7 +268,7 @@ class ServersProvider with ChangeNotifier {
         }
         else {
           notifyListeners();
-          return false;
+          return result['log'];
         }
 
       default:

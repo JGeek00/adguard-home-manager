@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class ManagementModal extends StatelessWidget {
@@ -12,6 +13,7 @@ class ManagementModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void updateBlocking(bool value, String filter) async {
       final result = await serversProvider.updateBlocking(
@@ -19,7 +21,10 @@ class ManagementModal extends StatelessWidget {
         filter, 
         value
       );
-      if (result == false) {
+      if (result != null ) {
+        if (result != false) {
+          appConfigProvider.addLog(result['log']);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.invalidUsernamePassword),

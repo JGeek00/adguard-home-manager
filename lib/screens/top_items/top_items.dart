@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/functions/number_format.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 
@@ -23,6 +24,7 @@ class TopItemsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     List<Map<String, dynamic>> data = [];
     switch (type) {
@@ -58,6 +60,7 @@ class TopItemsScreen extends StatelessWidget {
             serversProvider.setServerStatusData(result['data']);
           }
           else {
+            appConfigProvider.addLog(result['log']);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),

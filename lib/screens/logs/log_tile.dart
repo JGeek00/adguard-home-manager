@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_details_modal.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -29,6 +30,7 @@ class LogTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
@@ -99,6 +101,7 @@ class LogTile extends StatelessWidget {
           );
         }
         else {
+          appConfigProvider.addLog(result['log']);
           serversProvider.setFilteringStatus(oldStatus);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -109,6 +112,7 @@ class LogTile extends StatelessWidget {
         }
       }
       else {
+        appConfigProvider.addLog(rules['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),

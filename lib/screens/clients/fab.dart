@@ -63,6 +63,7 @@ class ClientsFab extends StatelessWidget {
         );
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
+        appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientAnotherList),
@@ -71,6 +72,7 @@ class ClientsFab extends StatelessWidget {
         );
       }
       else {
+        appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientNotAdded),

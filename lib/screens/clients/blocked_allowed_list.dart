@@ -1,12 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/remove_domain_modal.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -26,6 +27,7 @@ class BlockedAllowedList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void confirmRemoveDomain(String domain) async {
       Map<String, List<String>> body = {};
@@ -62,6 +64,7 @@ class BlockedAllowedList extends StatelessWidget {
         );
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
+        appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientAnotherList),
@@ -70,6 +73,7 @@ class BlockedAllowedList extends StatelessWidget {
         );
       }
       else {
+        appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientNotRemoved),

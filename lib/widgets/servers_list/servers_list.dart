@@ -72,7 +72,7 @@ class ServersList extends StatelessWidget {
           serversProvider.setServerStatusLoad(1);
         }
         else {
-          appConfigProvider.addLog(result['log']);
+          appConfigProvider.addLog(serverStatus['log']);
           serversProvider.setServerStatusLoad(2);
         }
 

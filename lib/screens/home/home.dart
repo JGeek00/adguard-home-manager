@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/home/server_status.dart';
 import 'package:adguard_home_manager/screens/home/top_items.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
@@ -16,6 +17,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     Widget status() {
       switch (serversProvider.serverStatus.loadStatus) {
@@ -126,6 +128,7 @@ class Home extends StatelessWidget {
           serversProvider.setServerStatusData(result['data']);
         }
         else {
+          appConfigProvider.addLog(result['log']);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
