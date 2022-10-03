@@ -20,7 +20,8 @@ Future<http.Response> getRequest({
   return http.get(
     Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"),
     headers: {
-      'Authorization': 'Basic ${server.authToken}'
+      'Authorization': 'Basic ${server.authToken}',
+      'Content-Type': 'application/json'
     },
   ).timeout(const Duration(seconds: 10));
 }
@@ -34,61 +35,73 @@ Future<http.Response> postRequest({
   return http.post(
     Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"),
     headers: {
-      'Authorization': 'Basic ${server.authToken}'
+      "Authorization": "Basic ${server.authToken}",
+      "Content-Type": "application/json",
     },
-    body: (body != null ? jsonEncode(body) : null) ?? stringBody
+    body: jsonEncode(body)
   ).timeout(const Duration(seconds: 10));
 }
 
-Future login(Server server) async {
+Future<Map<String, dynamic>> apiRequest({
+  required Server server, 
+  required String method, 
+  required String urlPath, 
+  Map<String, dynamic>? body,
+  bool? withAuth,
+}) async {
   try {
-    final result = await postRequest(
-      urlPath: '/login', 
-      server: server,
-      body: {
-        "name": server.user,
-        "password": server.password
+    HttpClient httpClient = HttpClient();
+    if (method == 'get') {
+      HttpClientRequest request = await httpClient.getUrl(Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"));
+      HttpClientResponse response = await request.close();
+      String reply = await response.transform(utf8.decoder).join();
+      httpClient.close();
+      if (response.statusCode == 200) {
+        return {
+          'hasResponse': true,
+          'error': false,
+          'statusCode': response.statusCode,
+          'body': reply
+        };
       }
-    );
-    
-    if (result.statusCode == 200) {
-      return {'result': 'success'};
+      else {
+        return {
+          'hasResponse': true,
+          'error': true,
+          'statusCode': response.statusCode,
+          'body': reply
+        };
+      }    
     }
-    else if (result.statusCode == 400) {
-      return {
-        'result': 'invalid_username_password',
-        'log': AppLog(
-          type: 'login', 
-          dateTime: DateTime.now(), 
-          message: 'invalid_username_password',
-          statusCode: result.statusCode,
-          resBody: result.body
-        )
-      };
-    }
-    else if (result.statusCode == 429) {
-      return {
-        'result': 'many_attempts',
-        'log': AppLog(
-          type: 'login', 
-          dateTime: DateTime.now(), 
-          message: 'many_attempts',
-          statusCode: result.statusCode,
-          resBody: result.body
-        )
-      };
+    else if (method == 'post') {
+      HttpClientRequest request = await httpClient.postUrl(Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"));
+      request.headers.set('content-type', 'application/json');
+      if (withAuth != null && withAuth == true) {
+        request.headers.set('authorization', 'Basic ${server.authToken}');
+      }
+      request.add(utf8.encode(json.encode(body)));
+      HttpClientResponse response = await request.close();
+      String reply = await response.transform(utf8.decoder).join();
+      httpClient.close();
+      if (response.statusCode == 200) {
+        return {
+          'hasResponse': true,
+          'error': false,
+          'statusCode': response.statusCode,
+          'body': reply
+        };
+      }
+      else {
+        return {
+          'hasResponse': true,
+          'error': true,
+          'statusCode': response.statusCode,
+          'body': reply
+        };
+      }    
     }
     else {
-      return {
-        'result': 'error', 
-        'log': AppLog(
-          type: 'login', 
-          dateTime: DateTime.now(), 
-          message: 'error_code_not_expected',
-          statusCode: result.statusCode,
-          resBody: result.body
-        )
-      };
+      throw Exception('Method is required');
     }
   } on SocketException {
     return {
@@ -127,6 +140,63 @@ Future login(Server server) async {
         message: e.toString()
       )
     };
+  }
+}
+
+Future login(Server server) async {
+  final result = await apiRequest(
+    server: server,
+    method: 'post',
+    urlPath: '/login', 
+    body: {
+      "name": server.user,
+      "password": server.password
+    }
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else if (result['statusCode'] == 400) {
+      return {
+        'result': 'invalid_username_password',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'invalid_username_password',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
+    }
+    else if (result['statusCode'] == 429) {
+      return {
+        'result': 'many_attempts',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'many_attempts',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
   }
 }
 
@@ -178,98 +248,146 @@ Future getServerStatus(Server server) async {
 }
 
 Future updateFiltering(Server server, bool enable) async {
-  try {
-    final result = await postRequest(
-      urlPath: '/filtering/config', 
-      server: server, 
-      body: {
-        'enabled': enable
-      }
-    );
+  final result = await apiRequest(
+    urlPath: '/filtering/config', 
+    method: 'post',
+    server: server, 
+    body: {
+      'enabled': enable
+    },
+    withAuth: true
+  );
 
-    if (result.statusCode == 200) {
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
-      return {'result': 'error'};
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
     }
-  } on SocketException {
-    return {'result': 'no_connection'};
-  } on TimeoutException {
-    return {'result': 'no_connection'};
-  } on HandshakeException {
-    return {'result': 'ssl_error'};
-  } catch (e) {
-    return {'result': 'error'};
+  }
+  else {
+    return result;
   }
 }
 
 Future updateSafeSearch(Server server, bool enable) async {
-  try {
-    final result = enable == true 
-      ? await postRequest(urlPath: '/safesearch/enable', server: server)
-      : await postRequest(urlPath: '/safesearch/disable', server: server);
+  final result = enable == true 
+    ? await apiRequest(
+        urlPath: '/safesearch/enable', 
+        method: 'post',
+        server: server, 
+        withAuth: true
+      )
+    : await apiRequest(
+        urlPath: '/safesearch/disable', 
+        method: 'post',
+        server: server, 
+        withAuth: true
+      );
 
-    if (result.statusCode == 200) {
+  if (result['hasResponse'] == true && result['hasResponse'] == true) {
+    if (result['statusCode'] == 200 && result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
-      return {'result': 'error'};
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
     }
-  } on SocketException {
-    return {'result': 'no_connection'};
-  } on TimeoutException {
-    return {'result': 'no_connection'};
-  } on HandshakeException {
-    return {'result': 'ssl_error'};
-  } catch (e) {
-    return {'result': 'error'};
+  }
+  else {
+    return result;
   }
 }
 
 Future updateSafeBrowsing(Server server, bool enable) async {
-  try {
-    final result = enable == true 
-      ? await postRequest(urlPath: '/safebrowsing/enable', server: server)
-      : await postRequest(urlPath: '/safebrowsing/disable', server: server);
+  final result = enable == true 
+    ? await apiRequest(
+        urlPath: '/safebrowsing/enable', 
+        method: 'post',
+        server: server, 
+        withAuth: true
+      )
+    : await apiRequest(
+        urlPath: '/safebrowsing/disable', 
+        method: 'post',
+        server: server, 
+        withAuth: true
+      );
 
-    if (result.statusCode == 200) {
+  if (result['hasResponse'] == true && result['hasResponse'] == true) {
+    if (result['statusCode'] == 200 && result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
-      return {'result': 'error'};
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
     }
-  } on SocketException {
-    return {'result': 'no_connection'};
-  } on TimeoutException {
-    return {'result': 'no_connection'};
-  } on HandshakeException {
-    return {'result': 'ssl_error'};
-  } catch (e) {
-    return {'result': 'error'};
+  }
+  else {
+    return result;
   }
 }
 
 Future updateParentalControl(Server server, bool enable) async {
-  try {
-    final result = enable == true 
-      ? await postRequest(urlPath: '/parental/enable', server: server)
-      : await postRequest(urlPath: '/parental/disable', server: server);
+  final result = enable == true 
+    ? await apiRequest(
+        urlPath: '/parental/enable', 
+        method: 'post',
+        server: server, 
+        withAuth: true
+      )
+    : await apiRequest(
+        urlPath: '/parental/disable', 
+        method: 'post',
+        server: server, 
+        withAuth: true
+      );
 
-    if (result.statusCode == 200) {
+  if (result['hasResponse'] == true && result['hasResponse'] == true) {
+    if (result['statusCode'] == 200 && result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
-      return {'result': 'error'};
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
     }
-  } on SocketException {
-    return {'result': 'no_connection'};
-  } on TimeoutException {
-    return {'result': 'no_connection'};
-  } on HandshakeException {
-    return {'result': 'ssl_error'};
-  } catch (e) {
-    return {'result': 'error'};
+  }
+  else {
+    return result;
   }
 }
 
