@@ -46,7 +46,8 @@ Future<Map<String, dynamic>> apiRequest({
   required Server server, 
   required String method, 
   required String urlPath, 
-  Map<String, dynamic>? body,
+  Map<String, dynamic>? jsonBody,
+  String? stringBody,
   bool? withAuth,
 }) async {
   try {
@@ -75,14 +76,27 @@ Future<Map<String, dynamic>> apiRequest({
     }
     else if (method == 'post') {
       HttpClientRequest request = await httpClient.postUrl(Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"));
-      request.headers.set('content-type', 'application/json');
+      
       if (withAuth != null && withAuth == true) {
         request.headers.set('authorization', 'Basic ${server.authToken}');
       }
-      request.add(utf8.encode(json.encode(body)));
+
+      request.headers.set('content-type', 'application/json');
+      if (jsonBody != null && stringBody == null) {
+        request.add(utf8.encode(json.encode(jsonBody)));
+      }
+      else if (jsonBody == null && stringBody != null) {
+        request.write(stringBody);
+      }
+      else if (jsonBody != null && stringBody != null) {
+        throw Exception("Don't add a jsonBody and a stringBody");
+      }
+
       HttpClientResponse response = await request.close();
       String reply = await response.transform(utf8.decoder).join();
+
       httpClient.close();
+
       if (response.statusCode == 200) {
         return {
           'hasResponse': true,
@@ -148,7 +162,7 @@ Future login(Server server) async {
     server: server,
     method: 'post',
     urlPath: '/login', 
-    body: {
+    jsonBody: {
       "name": server.user,
       "password": server.password
     }
@@ -252,7 +266,7 @@ Future updateFiltering(Server server, bool enable) async {
     urlPath: '/filtering/config', 
     method: 'post',
     server: server, 
-    body: {
+    jsonBody: {
       'enabled': enable
     },
     withAuth: true
@@ -295,8 +309,8 @@ Future updateSafeSearch(Server server, bool enable) async {
         withAuth: true
       );
 
-  if (result['hasResponse'] == true && result['hasResponse'] == true) {
-    if (result['statusCode'] == 200 && result['statusCode'] == 200) {
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
@@ -331,9 +345,9 @@ Future updateSafeBrowsing(Server server, bool enable) async {
         server: server, 
         withAuth: true
       );
-
-  if (result['hasResponse'] == true && result['hasResponse'] == true) {
-    if (result['statusCode'] == 200 && result['statusCode'] == 200) {
+print(result);
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
@@ -368,9 +382,9 @@ Future updateParentalControl(Server server, bool enable) async {
         server: server, 
         withAuth: true
       );
-
-  if (result['hasResponse'] == true && result['hasResponse'] == true) {
-    if (result['statusCode'] == 200 && result['statusCode'] == 200) {
+print(result);
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
@@ -392,29 +406,35 @@ Future updateParentalControl(Server server, bool enable) async {
 }
 
 Future updateGeneralProtection(Server server, bool enable) async {
-  try {
-    final result = await postRequest(
-      urlPath: '/dns_config', 
-      server: server,
-      body: {
-        'protection_enabled': enable
-      }
-    );
+    final result = await apiRequest(
+    urlPath: '/dns_config', 
+    method: 'post',
+    server: server, 
+    jsonBody: {
+      'protection_enabled': enable
+    },
+    withAuth: true
+  );
 
-    if (result.statusCode == 200) {
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
-      return {'result': 'error'};
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
     }
-  } on SocketException {
-    return {'result': 'no_connection'};
-  } on TimeoutException {
-    return {'result': 'no_connection'};
-  } on HandshakeException {
-    return {'result': 'ssl_error'};
-  } catch (e) {
-    return {'result': 'error'};
+  }
+  else {
+    return result;
   }
 }
 
@@ -448,33 +468,39 @@ Future getClients(Server server) async {
 }
 
 Future requestAllowedBlockedClientsHosts(Server server, Map<String, List<String>?> body) async {
-  try {
-    final result = await postRequest(
-      urlPath: '/access/set', 
-      server: server,
-      body: body
-    );
-    
-    if (result.statusCode == 200) {
+  final result = await apiRequest(
+    urlPath: '/access/set', 
+    method: 'post',
+    server: server, 
+    jsonBody: body,
+    withAuth: true
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
-    else if (result.statusCode == 400) {
+    if (result['statusCode'] == 400) {
       return {
         'result': 'error',
         'message': 'client_another_list'
       };
     }
     else {
-      return {'result': 'error'};
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body']
+        )
+      };
     }
-  } on SocketException {
-    return {'result': 'no_connection'};
-  } on TimeoutException {
-    return {'result': 'no_connection'};
-  } on HandshakeException {
-    return {'result': 'ssl_error'};
-  } catch (e) {
-    return {'result': 'error'};
+  }
+  else {
+    return result;
   }
 }
 
@@ -486,6 +512,7 @@ Future getLogs({
   String? responseStatus,
   String? search
 }) async {
+  try {
     final result = await getRequest(
       urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}', 
       server: server
@@ -509,7 +536,6 @@ Future getLogs({
         )
       };
     }
-  try {
   } on SocketException {
     return {
       'result': 'no_connection', 
@@ -621,64 +647,32 @@ Future postFilteringRules({
   required Server server, 
   required String data, 
 }) async {
-  try {
-    final result = await postRequest(
-      urlPath: '/filtering/set_rules', 
-      server: server,
-      stringBody: data
-    );
-    
-    if (result.statusCode == 200) {
+    final result = await apiRequest(
+    urlPath: '/filtering/set_rules', 
+    method: 'post',
+    server: server, 
+    stringBody: data,
+    withAuth: true
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
     else {
       return {
-        'result': 'error', 
+        'result': 'error',
         'log': AppLog(
-          type: 'filtering_set_rules', 
+          type: 'login', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result.statusCode,
-          resBody: result.body
+          statusCode: result['statusCode'],
+          resBody: result['body']
         )
       };
     }
-  } on SocketException {
-    return {
-      'result': 'no_connection', 
-      'log': AppLog(
-        type: 'filtering_set_rules', 
-        dateTime: DateTime.now(), 
-        message: 'SocketException'
-      )
-    };
-  } on TimeoutException {
-    return {
-      'result': 'no_connection', 
-      'log': AppLog(
-        type: 'filtering_set_rules', 
-        dateTime: DateTime.now(), 
-        message: 'TimeoutException'
-      )
-    };
-  } on HandshakeException {
-    return {
-      'result': 'ssl_error', 
-      'message': 'HandshakeException',
-      'log': AppLog(
-        type: 'filtering_set_rules', 
-        dateTime: DateTime.now(), 
-        message: 'TimeoutException'
-      )
-    };
-  } catch (e) {
-    return {
-      'result': 'error', 
-      'log': AppLog(
-        type: 'filtering_set_rules', 
-        dateTime: DateTime.now(), 
-        message: e.toString()
-      )
-    };
+  }
+  else {
+    return result;
   }
 }
