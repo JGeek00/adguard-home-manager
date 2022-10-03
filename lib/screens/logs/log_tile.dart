@@ -67,46 +67,48 @@ class LogTile extends StatelessWidget {
     }
 
     void blockUnblock(Log log, String newStatus) async {
-      FilteringStatus oldStatus = serversProvider.filteringStatus!;
-
-      List<String> newRules = serversProvider.filteringStatus!.userRules.where((domain) => !domain.contains(log.question.name)).toList();
-      if (newStatus == 'block') {
-        newRules.add("||${log.question.name}^");
-      }
-      else if (newStatus == 'unblock') {
-        newRules.add("@@||${log.question.name}^");
-      }
-      FilteringStatus newObj = serversProvider.filteringStatus!;
-      newObj.userRules = newRules;
-      serversProvider.setFilteringStatus(newObj);
-      
-      String formattedFilters = "";
-      for (var rule in newObj.userRules) {
-        if (formattedFilters == "") {
-          formattedFilters = "$formattedFilters$rule";
-        }
-        else {
-          formattedFilters = "$formattedFilters\n$rule";
-        }
-      }
-
       final ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingUserFilters);
 
-      final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: formattedFilters);
-      
-      processModal.close();
-      
-      if (result['result'] == 'success') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
-            backgroundColor: Colors.green,
-          )
-        );
+      final rules = await getFilteringRules(server: serversProvider.selectedServer!);
+
+      if (rules['result'] == 'success') {
+        FilteringStatus oldStatus = serversProvider.filteringStatus!;
+
+        List<String> newRules = rules['data'].userRules.where((domain) => !domain.contains(log.question.name)).toList();
+        if (newStatus == 'block') {
+          newRules.add("||${log.question.name}^");
+        }
+        else if (newStatus == 'unblock') {
+          newRules.add("@@||${log.question.name}^");
+        }
+        FilteringStatus newObj = serversProvider.filteringStatus!;
+        newObj.userRules = newRules;
+        serversProvider.setFilteringStatus(newObj);
+
+        final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
+        
+        processModal.close();
+        
+        if (result['result'] == 'success') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
+              backgroundColor: Colors.green,
+            )
+          );
+        }
+        else {
+          serversProvider.setFilteringStatus(oldStatus);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
+              backgroundColor: Colors.red,
+            )
+          );
+        }
       }
       else {
-        serversProvider.setFilteringStatus(oldStatus);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),

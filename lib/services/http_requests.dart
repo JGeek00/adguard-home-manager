@@ -46,8 +46,7 @@ Future<Map<String, dynamic>> apiRequest({
   required Server server, 
   required String method, 
   required String urlPath, 
-  Map<String, dynamic>? jsonBody,
-  String? stringBody,
+  Map<String, dynamic>? body,
   bool? withAuth,
 }) async {
   try {
@@ -76,27 +75,14 @@ Future<Map<String, dynamic>> apiRequest({
     }
     else if (method == 'post') {
       HttpClientRequest request = await httpClient.postUrl(Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"));
-      
       if (withAuth != null && withAuth == true) {
         request.headers.set('authorization', 'Basic ${server.authToken}');
       }
-
       request.headers.set('content-type', 'application/json');
-      if (jsonBody != null && stringBody == null) {
-        request.add(utf8.encode(json.encode(jsonBody)));
-      }
-      else if (jsonBody == null && stringBody != null) {
-        request.write(stringBody);
-      }
-      else if (jsonBody != null && stringBody != null) {
-        throw Exception("Don't add a jsonBody and a stringBody");
-      }
-
+      request.add(utf8.encode(json.encode(body)));
       HttpClientResponse response = await request.close();
       String reply = await response.transform(utf8.decoder).join();
-
       httpClient.close();
-
       if (response.statusCode == 200) {
         return {
           'hasResponse': true,
@@ -162,7 +148,7 @@ Future login(Server server) async {
     server: server,
     method: 'post',
     urlPath: '/login', 
-    jsonBody: {
+    body: {
       "name": server.user,
       "password": server.password
     }
@@ -266,7 +252,7 @@ Future updateFiltering(Server server, bool enable) async {
     urlPath: '/filtering/config', 
     method: 'post',
     server: server, 
-    jsonBody: {
+    body: {
       'enabled': enable
     },
     withAuth: true
@@ -345,7 +331,7 @@ Future updateSafeBrowsing(Server server, bool enable) async {
         server: server, 
         withAuth: true
       );
-print(result);
+
   if (result['hasResponse'] == true) {
     if (result['statusCode'] == 200) {
       return {'result': 'success'};
@@ -382,7 +368,7 @@ Future updateParentalControl(Server server, bool enable) async {
         server: server, 
         withAuth: true
       );
-print(result);
+
   if (result['hasResponse'] == true) {
     if (result['statusCode'] == 200) {
       return {'result': 'success'};
@@ -410,7 +396,7 @@ Future updateGeneralProtection(Server server, bool enable) async {
     urlPath: '/dns_config', 
     method: 'post',
     server: server, 
-    jsonBody: {
+    body: {
       'protection_enabled': enable
     },
     withAuth: true
@@ -472,7 +458,7 @@ Future requestAllowedBlockedClientsHosts(Server server, Map<String, List<String>
     urlPath: '/access/set', 
     method: 'post',
     server: server, 
-    jsonBody: body,
+    body: body,
     withAuth: true
   );
 
@@ -645,13 +631,13 @@ Future getFilteringRules({
 
 Future postFilteringRules({
   required Server server, 
-  required String data, 
+  required Map<String, List<String>> data, 
 }) async {
     final result = await apiRequest(
     urlPath: '/filtering/set_rules', 
     method: 'post',
     server: server, 
-    stringBody: data,
+    body: data,
     withAuth: true
   );
 
