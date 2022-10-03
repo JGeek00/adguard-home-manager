@@ -66,7 +66,10 @@ class _LogsWidgetState extends State<LogsWidget> {
     final result = await getLogs(
       server: widget.serversProvider.selectedServer!, 
       count: widget.logsProvider.logsQuantity, 
-      offset: offst
+      offset: offst,
+      olderThan: widget.logsProvider.logsOlderThan,
+      responseStatus: widget.logsProvider.selectedResultStatus,
+      search: widget.logsProvider.searchText
     );
 
     if (loadingMore != null && loadingMore == true) {
