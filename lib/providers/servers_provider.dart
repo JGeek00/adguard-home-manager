@@ -191,7 +191,7 @@ class ServersProvider with ChangeNotifier {
         if (result['result'] == 'success') {
           _serverStatus.data!.generalEnabled = newStatus;
           notifyListeners();
-          return true;
+          return null;
         }
         else {
           notifyListeners();
@@ -209,7 +209,7 @@ class ServersProvider with ChangeNotifier {
         if (result['result'] == 'success') {
           _serverStatus.data!.filteringEnabled = newStatus;
           notifyListeners();
-          return true;
+          return null;
         }
         else {
           
@@ -228,7 +228,7 @@ class ServersProvider with ChangeNotifier {
         if (result['result'] == 'success') {
           _serverStatus.data!.safeSearchEnabled = newStatus;
           notifyListeners();
-          return true;
+          return null;
         }
         else {
           notifyListeners();
@@ -246,7 +246,7 @@ class ServersProvider with ChangeNotifier {
         if (result['result'] == 'success') {
           _serverStatus.data!.safeBrowsingEnabled = newStatus;
           notifyListeners();
-          return true;
+          return null;
         }
         else {
           notifyListeners();
@@ -264,7 +264,7 @@ class ServersProvider with ChangeNotifier {
         if (result['result'] == 'success') {
           _serverStatus.data!.parentalControlEnabled = newStatus;
           notifyListeners();
-          return true;
+          return null;
         }
         else {
           notifyListeners();

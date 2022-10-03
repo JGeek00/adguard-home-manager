@@ -21,7 +21,7 @@ class ManagementModal extends StatelessWidget {
         filter, 
         value
       );
-      if (result != null ) {
+      if (result != null) {
         if (result != false) {
           appConfigProvider.addLog(result['log']);
         }
