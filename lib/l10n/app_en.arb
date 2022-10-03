@@ -156,5 +156,6 @@
     "all": "All",
     "filtered": "Filtered",
     "checkAppLogs": "Check app logs",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "search": "Search"
 }

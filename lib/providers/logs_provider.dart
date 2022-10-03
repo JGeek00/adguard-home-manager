@@ -7,7 +7,7 @@ class LogsProvider with ChangeNotifier {
 
   DateTime? _logsOlderThan;
   String _selectedResultStatus = 'all';
-  String? _searchIpDomain;
+  String? _searchText;
 
   int _logsQuantity = 100;
   int _offset = 0;
@@ -28,8 +28,8 @@ class LogsProvider with ChangeNotifier {
     return _selectedResultStatus;
   }
 
-  String? get searchIpDomain {
-    return _searchIpDomain;
+  String? get searchText {
+    return _searchText;
   }
   
   int get logsQuantity {
@@ -60,7 +60,7 @@ class LogsProvider with ChangeNotifier {
     _logsOlderThan = null;
     _offset = 0;
     _selectedResultStatus = 'all';
-    _searchIpDomain = null;
+    _searchText = null;
     notifyListeners();
   }
 
@@ -77,8 +77,8 @@ class LogsProvider with ChangeNotifier {
     _selectedResultStatus = value;
     notifyListeners();
   }
-  void setSearchIpDomain(String? value) {
-    _searchIpDomain = value;
+  void setSearchText(String? value) {
+    _searchText = value;
     notifyListeners();
   }
 }

@@ -37,12 +37,11 @@ class LogsFiltersModalWidget extends StatefulWidget {
 }
 
 class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
-  TextEditingController addressController = TextEditingController();
-  String? addressFieldError;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
-    addressController.text = widget.logsProvider.searchIpDomain ?? '';
+    searchController.text = widget.logsProvider.searchText ?? '';
     super.initState();
   }
 
@@ -94,8 +93,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
 
     void resetFilters() async {
       setState(() {
-        addressController.text = '';
-        addressFieldError = null;
+        searchController.text = '';
       });
 
       logsProvider.setLoadStatus(0);
@@ -128,29 +126,6 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       );
     }
 
-    void validateAddress(String? value) {
-      if (value != null && value != '') {
-        RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
-        RegExp domain = RegExp(r'^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$');
-        if (ipAddress.hasMatch(value) == true || domain.hasMatch(value) == true) {
-          setState(() {
-            addressFieldError = null;
-          });
-          logsProvider.setSearchIpDomain(addressController.text);
-        }
-        else {
-          setState(() {
-            addressFieldError = AppLocalizations.of(context)!.invalidIpDomain;
-          });
-        }
-      }
-      else {
-        setState(() {
-          addressFieldError = AppLocalizations.of(context)!.ipDomainNotEmpty;
-        });
-      }
-    }
-
     void filterLogs() async {
       Navigator.pop(context);
 
@@ -163,7 +138,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
         count: logsProvider.logsQuantity,
         olderThan: logsProvider.logsOlderThan,
         responseStatus: logsProvider.selectedResultStatus,
-        search: logsProvider.searchIpDomain,
+        search: logsProvider.searchText,
       );
       if (result['result'] == 'success') {
         logsProvider.setLogsData(result['data']);
@@ -216,17 +191,16 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width - 108,
                           child: TextFormField(
-                            controller: addressController,
-                            onChanged: validateAddress,
+                            controller: searchController,
+                            onChanged: (value) => logsProvider.setSearchText(value),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.link_rounded),
-                              errorText: addressFieldError,
+                              prefixIcon: const Icon(Icons.search_rounded),
                               border: const OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(10)
                                 )
                               ),
-                              labelText: AppLocalizations.of(context)!.ipDomain,
+                              labelText: AppLocalizations.of(context)!.search,
                             ),
                           ),
                         ),
@@ -234,10 +208,9 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                         IconButton(
                           onPressed: () {
                             setState(() {
-                              addressController.text = '';
-                              addressFieldError = null;
+                              searchController.text = '';
                             });
-                            logsProvider.setSearchIpDomain(null);
+                            logsProvider.setSearchText(null);
                           },
                           icon: const Icon(Icons.clear)
                         )

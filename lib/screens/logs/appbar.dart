@@ -27,7 +27,7 @@ class LogsAppBar extends StatelessWidget with PreferredSizeWidget {
       if (logsProvider.logsOlderThan != null) {
         number++;
       }
-      if (logsProvider.searchIpDomain != null) {
+      if (logsProvider.searchText != null) {
         number++;
       }
       if (logsProvider.selectedResultStatus != 'all') {
