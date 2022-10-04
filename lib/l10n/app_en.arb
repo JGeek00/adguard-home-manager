@@ -162,5 +162,9 @@
     "average": "Average",
     "blockedFilters": "Blocked by filters",
     "malwarePhisingBlocked": "Blocked malware/phising",
-    "blockedAdultWebsites": "Blocked adult websites"
+    "blockedAdultWebsites": "Blocked adult websites",
+    "generalSettings": "General settings",
+    "generalSettingsDescription": "Various different settings",
+    "hideZeroValues": "Hide zero values",
+    "hideZeroValuesDescription": "On homescreen, hide blocks with zero value"
 }

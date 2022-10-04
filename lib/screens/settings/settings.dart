@@ -1,4 +1,3 @@
-import 'package:adguard_home_manager/screens/settings/advanced_setings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,7 +6,8 @@ import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
 import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
 import 'package:adguard_home_manager/screens/servers/servers.dart';
-import 'package:adguard_home_manager/screens/app_logs/app_logs.dart';
+import 'package:adguard_home_manager/screens/settings/advanced_setings.dart';
+import 'package:adguard_home_manager/screens/settings/general_settings.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -79,6 +79,18 @@ class Settings extends StatelessWidget {
         ),
         CustomListTile(
           leadingIcon: Icons.settings,
+          label: AppLocalizations.of(context)!.generalSettings,
+          description: AppLocalizations.of(context)!.generalSettingsDescription,
+          onTap: () => {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const GeneralSettings()
+              )
+            )
+          },
+        ),
+        CustomListTile(
+          leadingIcon: Icons.build_outlined,
           label: AppLocalizations.of(context)!.advancedSettings,
           description: AppLocalizations.of(context)!.advancedSetupDescription,
           onTap: () => {

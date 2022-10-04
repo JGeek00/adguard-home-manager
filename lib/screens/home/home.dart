@@ -65,13 +65,6 @@ class Home extends StatelessWidget {
                 secondaryValue: "${doubleFormat(serversProvider.serverStatus.data!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
                 color: Colors.blue,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 1,
-                ),
-              ),
-              const SizedBox(height: 20),
               
               HomeChart(
                 data: serversProvider.serverStatus.data!.stats.blockedFiltering, 
@@ -80,13 +73,6 @@ class Home extends StatelessWidget {
                 secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
                 color: Colors.red,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 1,
-                ),
-              ),
-              const SizedBox(height: 20),
 
               HomeChart(
                 data: serversProvider.serverStatus.data!.stats.replacedSafebrowsing, 
@@ -95,13 +81,6 @@ class Home extends StatelessWidget {
                 secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
                 color: Colors.green,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 1,
-                ),
-              ),
-              const SizedBox(height: 20),
 
               HomeChart(
                 data: serversProvider.serverStatus.data!.stats.replacedParental, 
@@ -110,13 +89,6 @@ class Home extends StatelessWidget {
                 secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
                 color: Colors.orange,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 1,
-                ),
-              ),
-              const SizedBox(height: 20),
 
               TopItems(
                 label: AppLocalizations.of(context)!.topQueriedDomains, 

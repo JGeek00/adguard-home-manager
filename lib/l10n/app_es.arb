@@ -162,5 +162,9 @@
     "average": "Promedio",
     "blockedFilters": "Bloqueado por filtros",
     "malwarePhisingBlocked": "Malware/phising bloqueado",
-    "blockedAdultWebsites": "Sitios para adultos bloqueados"
+    "blockedAdultWebsites": "Sitios para adultos bloqueados",
+    "generalSettings": "Ajustes generales",
+    "generalSettingsDescription": "Varios ajustes generales",
+    "hideZeroValues": "Oculta valores a cero",
+    "hideZeroValuesDescription": "En la pantalla de inicio, oculta bloqueos con valor cero"
 }

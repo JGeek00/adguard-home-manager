@@ -21,6 +21,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _overrideSslCheck = 0;
 
+  int _hideZeroValues = 0;
+
   PackageInfo? get getAppInfo {
     return _appInfo;
   }
@@ -67,6 +69,10 @@ class AppConfigProvider with ChangeNotifier {
     return _overrideSslCheck == 1 ? true : false;
   }
 
+  bool get hideZeroValues {
+    return _hideZeroValues == 1 ? true : false;
+  }
+
   void setDbInstance(Database db) {
     _dbInstance = db;
   }
@@ -105,6 +111,17 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setHideZeroValues(bool status) async {
+    final updated = await _updateSetHideZeroValues(status == true ? 1 : 0);
+    if (updated == true) {
+      _hideZeroValues = status == true ? 1 : 0;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
   Future<bool> setSelectedTheme(int value) async {
     final updated = await _updateThemeDb(value);
@@ -144,9 +161,23 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> _updateSetHideZeroValues(int value) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawUpdate(
+          'UPDATE appConfig SET hideZeroValues = $value',
+        );
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
   void saveFromDb(Database dbInstance, Map<String, dynamic> dbData) {
     _selectedTheme = dbData['theme'];
     _overrideSslCheck = dbData['overrideSslCheck'];
+    _hideZeroValues = dbData['hideZeroValues'];
 
     _dbInstance = dbInstance;
     notifyListeners();

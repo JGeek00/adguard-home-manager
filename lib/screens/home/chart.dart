@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:adguard_home_manager/widgets/line_chart.dart';
+
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class HomeChart extends StatelessWidget {
   final List<int> data;
@@ -20,6 +23,8 @@ class HomeChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
     bool isEmpty = true;
     for (int item in data) {
       if (item > 0) {
@@ -28,79 +33,95 @@ class HomeChart extends StatelessWidget {
       }
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
+    if (!(appConfigProvider.hideZeroValues == true && isEmpty == true)) {
+      return Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(
-              bottom: !isEmpty ? 10 : 15
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
               children: [
-                Text(
-                  label, 
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: !isEmpty ? 10 : 15
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label, 
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500
+                        ),
+                      ),
+                      !isEmpty
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                primaryValue,
+                                style: TextStyle(
+                                  color: color,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500
+                                ),
+                              ),
+                              Text(
+                                secondaryValue,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: color
+                                ),
+                              )
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Text(
+                                primaryValue,
+                                style: TextStyle(
+                                  color: color,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "($secondaryValue)",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: color
+                                ),
+                              )
+                            ],
+                          )
+                    ],
                   ),
                 ),
-                !isEmpty
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          primaryValue,
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500
-                          ),
-                        ),
-                        Text(
-                          secondaryValue,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: color
-                          ),
-                        )
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        Text(
-                          primaryValue,
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          "($secondaryValue)",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: color
-                          ),
-                        )
-                      ],
-                    )
+                if (!isEmpty) SizedBox(
+                  width: double.maxFinite,
+                  height: 150,
+                  child: CustomLineChart(
+                    data: data, 
+                    color: color,
+                  )
+                ),
               ],
             ),
           ),
-          if (!isEmpty) SizedBox(
-            width: double.maxFinite,
-            height: 150,
-            child: CustomLineChart(
-              data: data, 
-              color: color,
-            )
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Divider(
+              thickness: 1,
+            ),
           ),
+          const SizedBox(height: 20),
         ],
-      ),
-    );
+      );
+    }
+    else {
+      return const SizedBox();
+    }
   }
 }
