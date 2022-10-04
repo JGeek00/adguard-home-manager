@@ -1,12 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/server_status.dart';
 import 'package:adguard_home_manager/screens/home/top_items.dart';
+import 'package:adguard_home_manager/screens/home/chart.dart';
 
+import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -46,6 +50,66 @@ class Home extends StatelessWidget {
           return ListView(
             children: [
               ServerStatus(serverStatus: serversProvider.serverStatus.data!),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              HomeChart(
+                data: serversProvider.serverStatus.data!.stats.dnsQueries, 
+                label: AppLocalizations.of(context)!.dnsQueries, 
+                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numDnsQueries, Platform.localeName), 
+                secondaryValue: "${doubleFormat(serversProvider.serverStatus.data!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
+                color: Colors.blue,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 20),
+              
+              HomeChart(
+                data: serversProvider.serverStatus.data!.stats.blockedFiltering, 
+                label: AppLocalizations.of(context)!.blockedFilters, 
+                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numBlockedFiltering, Platform.localeName), 
+                secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
+                color: Colors.red,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              HomeChart(
+                data: serversProvider.serverStatus.data!.stats.replacedSafebrowsing, 
+                label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
+                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing, Platform.localeName), 
+                secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
+                color: Colors.green,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              HomeChart(
+                data: serversProvider.serverStatus.data!.stats.replacedParental, 
+                label: AppLocalizations.of(context)!.blockedAdultWebsites, 
+                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedParental, Platform.localeName), 
+                secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
+                color: Colors.orange,
+              ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Divider(

@@ -157,5 +157,10 @@
     "filtered": "Filtrada",
     "checkAppLogs": "Comprueba los logs de la app",
     "refresh": "Actualizar",
-    "search": "Buscar"
+    "search": "Buscar",
+    "dnsQueries": "Consultas DNS",
+    "average": "Promedio",
+    "blockedFilters": "Bloqueado por filtros",
+    "malwarePhisingBlocked": "Malware/phising bloqueado",
+    "blockedAdultWebsites": "Sitios para adultos bloqueados"
 }

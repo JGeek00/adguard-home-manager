@@ -157,5 +157,10 @@
     "filtered": "Filtered",
     "checkAppLogs": "Check app logs",
     "refresh": "Refresh",
-    "search": "Search"
+    "search": "Search",
+    "dnsQueries": "DNS queries",
+    "average": "Average",
+    "blockedFilters": "Blocked by filters",
+    "malwarePhisingBlocked": "Blocked malware/phising",
+    "blockedAdultWebsites": "Blocked adult websites"
 }
