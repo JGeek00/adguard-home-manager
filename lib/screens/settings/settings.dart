@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
@@ -9,6 +11,8 @@ import 'package:adguard_home_manager/screens/servers/servers.dart';
 import 'package:adguard_home_manager/screens/settings/advanced_setings.dart';
 import 'package:adguard_home_manager/screens/settings/general_settings.dart';
 
+import 'package:adguard_home_manager/constants/strings.dart';
+import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -57,6 +61,22 @@ class Settings extends StatelessWidget {
         );
       }));
     }
+
+    void openWeb(String url) {
+      FlutterWebBrowser.openWebPage(
+        url: url,
+        customTabsOptions: const CustomTabsOptions(
+          instantAppsEnabled: true,
+          showTitle: true,
+          urlBarHidingEnabled: false,
+        ),
+        safariVCOptions: const SafariViewControllerOptions(
+          barCollapsingEnabled: true,
+          dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+          modalPresentationCapturesStatusBarAppearance: true,
+        )
+      );
+    }    
 
     return ListView(
       children: [
@@ -108,8 +128,36 @@ class Settings extends StatelessWidget {
         ),
         CustomListTile(
           label: AppLocalizations.of(context)!.createdBy, 
-          description: "JGeek00",
+          description: Strings.createdBy,
         ),
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                onPressed: () => openWeb(Urls.playStore), 
+                icon: SvgPicture.asset(
+                  'assets/resources/google-play.svg',
+                  color: Theme.of(context).textTheme.bodyText2!.color,
+                  width: 30,
+                  height: 30,
+                ),
+                tooltip: AppLocalizations.of(context)!.visitGooglePlay,
+              ),
+              IconButton(
+                onPressed: () => openWeb(Urls.gitHub), 
+                icon: SvgPicture.asset(
+                  'assets/resources/github.svg',
+                  color: Theme.of(context).textTheme.bodyText2!.color,
+                  width: 30,
+                  height: 30,
+                ),
+                tooltip: AppLocalizations.of(context)!.gitHub,
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

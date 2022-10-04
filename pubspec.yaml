@@ -46,6 +46,7 @@ dependencies:
   expandable: ^5.0.1
   fl_chart: ^0.55.2
   flutter_web_browser: ^0.17.1
+  flutter_svg: ^1.1.5
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +96,9 @@ flutter:
     - assets/icon/icon-android.png
     - assets/icon/icon-splash.png
     - assets/icon/icon1024-white-center.png
+    - assets/other/get_google_play.png
+    - assets/resources/github.svg
+    - assets/resources/google-play.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
