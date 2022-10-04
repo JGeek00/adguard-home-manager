@@ -1,6 +1,8 @@
 # AdGuard Home Manager
 AdGuard Home Manager is an unofficial client developed with Flutter.
 
+[<img src="/assets/other/get_google_play.png" width="300px">](https://play.google.com/store/apps/details?id=com.jgeek00.adguard_home_manager)
+
 ## Main features
 <p>▶ Manage your AdGuard Home server on an easy way.</p>
 <p>▶ Supports HTTP and HTTPS connections.</p>
@@ -29,6 +31,9 @@ This is an unofficial application. The AdGuard Home team and the development of 
 - [animations](https://pub.dev/packages/animations)
 - [dynamic color](https://pub.dev/packages/dynamic_color)
 - [device info](https://pub.dev/packages/device_info)
+- [fl chart](https://pub.dev/packages/fl_chart)
+- [flutter web browser](https://pub.dev/packages/flutter_web_browser)
+- [flutter svg](https://pub.dev/packages/flutter_svg)
 
 <br>
 
