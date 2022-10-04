@@ -166,5 +166,6 @@
     "generalSettings": "Ajustes generales",
     "generalSettingsDescription": "Varios ajustes generales",
     "hideZeroValues": "Oculta valores a cero",
-    "hideZeroValuesDescription": "En la pantalla de inicio, oculta bloqueos con valor cero"
+    "hideZeroValuesDescription": "En la pantalla de inicio, oculta bloqueos con valor cero",
+    "webAdminPanel": "Panel de admin. web"
 }

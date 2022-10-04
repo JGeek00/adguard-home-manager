@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 
 import 'package:adguard_home_manager/screens/servers/servers.dart';
 
@@ -23,6 +24,22 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
         );
       }));
     }
+
+    void openWebAdminPanel() {
+      FlutterWebBrowser.openWebPage(
+        url: "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
+        customTabsOptions: const CustomTabsOptions(
+          instantAppsEnabled: true,
+          showTitle: true,
+          urlBarHidingEnabled: false,
+        ),
+        safariVCOptions: const SafariViewControllerOptions(
+          barCollapsingEnabled: true,
+          dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+          modalPresentationCapturesStatusBarAppearance: true,
+        )
+      );
+    } 
 
     return AppBar(
       toolbarHeight: 70,
@@ -78,6 +95,16 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
                       const Icon(Icons.storage_rounded),
                       const SizedBox(width: 10),
                       Text(AppLocalizations.of(context)!.servers)
+                    ],
+                  ),
+                ),
+                if (serversProvider.serverStatus.loadStatus == 1) PopupMenuItem(
+                  onTap: openWebAdminPanel,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.web_rounded),
+                      const SizedBox(width: 10),
+                      Text(AppLocalizations.of(context)!.webAdminPanel)
                     ],
                   ),
                 )

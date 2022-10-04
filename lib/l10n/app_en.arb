@@ -166,5 +166,6 @@
     "generalSettings": "General settings",
     "generalSettingsDescription": "Various different settings",
     "hideZeroValues": "Hide zero values",
-    "hideZeroValuesDescription": "On homescreen, hide blocks with zero value"
+    "hideZeroValuesDescription": "On homescreen, hide blocks with zero value",
+    "webAdminPanel": "Web admin. panel"
 }
