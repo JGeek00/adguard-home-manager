@@ -32,7 +32,7 @@ Future<Map<String, dynamic>> loadDb() async {
     onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE servers (id TEXT PRIMARY KEY, name TEXT, connectionMethod TEXT, domain TEXT, path TEXT, port INTEGER, user TEXT, password TEXT, defaultServer INTEGER, authToken TEXT)");
       await db.execute("CREATE TABLE appConfig (theme NUMERIC, overrideSslCheck NUMERIC, hideZeroValues NUMERIC)");
-      await db.execute("INSERT INTO appConfig (theme, overrideSslCheck) VALUES (0, 0, 0)");
+      await db.execute("INSERT INTO appConfig (theme, overrideSslCheck, hideZeroValues) VALUES (0, 0, 0)");
     },
     onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion == 1) {
