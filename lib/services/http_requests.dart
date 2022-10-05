@@ -24,7 +24,7 @@ Future<Map<String, dynamic>> apiRequest({
     if (method == 'get') {
       HttpClientRequest request = await httpClient.getUrl(Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"));
       request.headers.set('authorization', 'Basic ${server.authToken}');
-      HttpClientResponse response = await request.close();
+      HttpClientResponse response = await request.close().timeout(const Duration(seconds: 10));
       response.timeout(const Duration(seconds: 10));
       String reply = await response.transform(utf8.decoder).join();
       httpClient.close();
@@ -50,8 +50,7 @@ Future<Map<String, dynamic>> apiRequest({
       request.headers.set('authorization', 'Basic ${server.authToken}');
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(json.encode(body)));
-      HttpClientResponse response = await request.close();
-      response.timeout(const Duration(seconds: 10));
+      HttpClientResponse response = await request.close().timeout(const Duration(seconds: 10));
       String reply = await response.transform(utf8.decoder).join();
       httpClient.close();
       if (response.statusCode == 200) {

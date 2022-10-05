@@ -76,37 +76,41 @@ class _LogsWidgetState extends State<LogsWidget> {
       setState(() => isLoadingMore = false);
     }
 
-    if (result['result'] == 'success') {
-      widget.logsProvider.setOffset(inOffset != null ? inOffset+widget.logsProvider.logsQuantity : widget.logsProvider.offset+widget.logsProvider.logsQuantity);
-      if (loadingMore != null && loadingMore == true && widget.logsProvider.logsData != null) {
-        LogsData newLogsData = result['data'];
-        newLogsData.data = [...widget.logsProvider.logsData!.data, ...result['data'].data];
-        widget.logsProvider.setLogsData(newLogsData);
+    if (mounted) {
+      if (result['result'] == 'success') {
+        widget.logsProvider.setOffset(inOffset != null ? inOffset+widget.logsProvider.logsQuantity : widget.logsProvider.offset+widget.logsProvider.logsQuantity);
+        if (loadingMore != null && loadingMore == true && widget.logsProvider.logsData != null) {
+          LogsData newLogsData = result['data'];
+          newLogsData.data = [...widget.logsProvider.logsData!.data, ...result['data'].data];
+          widget.logsProvider.setLogsData(newLogsData);
+        }
+        else {
+          widget.logsProvider.setLogsData(result['data']);
+        }
+        widget.logsProvider.setLoadStatus(1);
       }
       else {
-        widget.logsProvider.setLogsData(result['data']);
+        widget.logsProvider.setLoadStatus(2);
+        widget.appConfigProvider.addLog(result['log']);
       }
-      widget.logsProvider.setLoadStatus(1);
-    }
-    else {
-      widget.logsProvider.setLoadStatus(2);
-      widget.appConfigProvider.addLog(result['log']);
     }
   }
 
   void fetchFilteringRules() async {
     final result = await getFilteringRules(server: widget.serversProvider.selectedServer!);
-    if (result['result'] == 'success') {
-      widget.serversProvider.setFilteringStatus(result['data']);
-    }
-    else {
-      widget.appConfigProvider.addLog(result['log']);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),
-          backgroundColor: Colors.red,
-        )
-      );
+    if (mounted) {
+      if (result['result'] == 'success') {
+        widget.serversProvider.setFilteringStatus(result['data']);
+      }
+      else {
+        widget.appConfigProvider.addLog(result['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
     }
   }
 

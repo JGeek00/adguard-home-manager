@@ -56,13 +56,15 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   Future fetchClients() async {
     widget.setLoadingStatus(0, false);
     final result = await getClients(widget.server);
-    if (result['result'] == 'success') {
-      widget.setClientsData(result['data']);
-      widget.setLoadingStatus(1, true);
-    }
-    else {
-      widget.addLog(result['log']);
-      widget.setLoadingStatus(2, true);
+    if (mounted) {
+      if (result['result'] == 'success') {
+        widget.setClientsData(result['data']);
+        widget.setLoadingStatus(1, true);
+      }
+      else {
+        widget.addLog(result['log']);
+        widget.setLoadingStatus(2, true);
+      }
     }
   }
 
@@ -88,24 +90,39 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
 
     switch (serversProvider.clients.loadStatus) {
       case 0:
-        return SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.loadingStatus,
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(30),
+              child: Text(
+                AppLocalizations.of(context)!.clients,
                 style: const TextStyle(
-                  fontSize: 22,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500
+                  fontSize: 22
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+            SizedBox(
+              width: double.maxFinite,
+              height: MediaQuery.of(context).size.height-171,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 30),
+                  Text(
+                    AppLocalizations.of(context)!.loadingStatus,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
         );
       
       case 1:
@@ -183,28 +200,42 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
         );
         
       case 2:
-        return SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 50,
-              ),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.errorLoadServerStatus,
+        return Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(30),
+              child: Text(
+                AppLocalizations.of(context)!.clients,
                 style: const TextStyle(
-                  fontSize: 22,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500
+                  fontSize: 24
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+            SizedBox(
+              width: double.maxFinite,
+              height: MediaQuery.of(context).size.height-171,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                    size: 50,
+                  ),
+                  const SizedBox(height: 30),
+                  Text(
+                    AppLocalizations.of(context)!.errorLoadServerStatus,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
         );
 
       default:

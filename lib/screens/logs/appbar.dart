@@ -39,11 +39,13 @@ class LogsAppBar extends StatelessWidget with PreferredSizeWidget {
     return AppBar(
       title: Text(AppLocalizations.of(context)!.logs),
       actions: [
-        TextButton.icon(
-          onPressed: openFilersModal, 
-          icon: const Icon(Icons.filter_list_rounded),
-          label: Text("${AppLocalizations.of(context)!.filters} ${getNumFiltersApplied() > 0 ? '(${getNumFiltersApplied().toString()})' : ''}"),
-        ),
+        logsProvider.loadStatus == 1 
+          ? TextButton.icon(
+              onPressed: openFilersModal, 
+              icon: const Icon(Icons.filter_list_rounded),
+              label: Text("${AppLocalizations.of(context)!.filters} ${getNumFiltersApplied() > 0 ? '(${getNumFiltersApplied().toString()})' : ''}"),
+            )
+          : const SizedBox(),
         const SizedBox(width: 5),
       ],
     );
