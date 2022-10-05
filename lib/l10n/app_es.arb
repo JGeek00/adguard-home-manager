@@ -169,5 +169,6 @@
     "hideZeroValuesDescription": "En la pantalla de inicio, oculta bloqueos con valor cero",
     "webAdminPanel": "Panel de admin. web",    
     "visitGooglePlay": "Visita la página de Google Play",
-    "gitHub": "Código de la app disponible en GitHub"
+    "gitHub": "Código de la app disponible en GitHub",
+    "blockClient": "Bloquear cliente"
 }

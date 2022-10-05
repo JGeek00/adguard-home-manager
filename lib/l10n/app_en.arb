@@ -169,5 +169,6 @@
     "hideZeroValuesDescription": "On homescreen, hide blocks with zero value",
     "webAdminPanel": "Web admin. panel",
     "visitGooglePlay": "Visit Google Play page",
-    "gitHub": "App code available on GitHub"
+    "gitHub": "App code available on GitHub",
+    "blockClient": "Block client"
 }
