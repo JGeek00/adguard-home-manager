@@ -93,14 +93,9 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
         return Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Container(
-              padding: const EdgeInsets.all(30),
-              child: Text(
-                AppLocalizations.of(context)!.clients,
-                style: const TextStyle(
-                  fontSize: 22
-                ),
-              ),
+            AppBar(
+              title: Text(AppLocalizations.of(context)!.clients),
+              centerTitle: true,
             ),
             SizedBox(
               width: double.maxFinite,
@@ -202,14 +197,9 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
       case 2:
         return Column(
           children: [
-            Container(
-              padding: const EdgeInsets.all(30),
-              child: Text(
-                AppLocalizations.of(context)!.clients,
-                style: const TextStyle(
-                  fontSize: 24
-                ),
-              ),
+            AppBar(
+              title: Text(AppLocalizations.of(context)!.clients),
+              centerTitle: true,
             ),
             SizedBox(
               width: double.maxFinite,
