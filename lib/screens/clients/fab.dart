@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/block_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/add_client_modal.dart';
 
+import 'package:adguard_home_manager/models/add_client.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -72,6 +74,10 @@ class ClientsFab extends StatelessWidget {
       }
     }
 
+    void confirmAddClient(AddClient client) {
+
+    }
+
     void openBlockClient() {
       showModalBottomSheet(
         context: context, 
@@ -84,14 +90,14 @@ class ClientsFab extends StatelessWidget {
     }
 
     void openAddClient() {
-      // showModalBottomSheet(
-      //   context: context, 
-      //   builder: (ctx) => BlockClientModal(
-      //     onConfirm: confirmRemoveDomain
-      //   ),
-      //   isScrollControlled: true,
-      //   backgroundColor: Colors.transparent
-      // );
+      showModalBottomSheet(
+        context: context, 
+        builder: (ctx) => AddClientModal(
+          onConfirm: confirmAddClient
+        ),
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent
+      );
     }
 
     if (appConfigProvider.selectedClientsTab == 1) {

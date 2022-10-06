@@ -170,5 +170,20 @@
     "webAdminPanel": "Panel de admin. web",    
     "visitGooglePlay": "Visita la página de Google Play",
     "gitHub": "Código de la app disponible en GitHub",
-    "blockClient": "Bloquear cliente"
+    "blockClient": "Bloquear cliente",
+    "selectTags": "Seleccionar etiquetas",
+    "noTagsSelected": "No hay etiquetas seleccionadas",
+    "tags": "Etiquetas",
+    "identifiers": "Identificadores",
+    "identifier": "Identificador",
+    "identifierHelper": "Dirección IP, CIDR, dirección MAC, o ClientID",
+    "noIdentifiers": "No hay identificadores añadidos",
+    "useGlobalSettings": "Usar configuración global",
+    "enableFiltering": "Activar filtrado",
+    "enableSafeBrowsing": "Activar navegación segura",
+    "enableParentalControl": "Activar control parental",
+    "enableSafeSearch": "Activar búsqueda segura",
+    "blockedServices": "Servicios bloqueados",
+    "selectBlockedServices": "Seleccionar servicios para bloquear",
+    "noBlockedServicesSelected": "No hay servicios bloqueados"
 }
