@@ -42,8 +42,7 @@ List<AppScreen> screensServerConnected = [
   const AppScreen(
     name: "clients", 
     icon: Icons.devices, 
-    body: Clients(),
-    fab: ClientsFab()
+    body: Clients()
   ),
   const AppScreen(
     name: "logs", 

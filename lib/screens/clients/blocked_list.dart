@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/remove_domain_modal.dart';
+import 'package:adguard_home_manager/screens/clients/fab.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
@@ -70,52 +71,57 @@ class BlockedList extends StatelessWidget {
       }
     }
 
-    if (data.isNotEmpty) {
-      return RefreshIndicator(
-        onRefresh: () async {},
-        child: ListView.builder(
-          padding: const EdgeInsets.only(top: 0),
-          itemCount: data.length,
-          itemBuilder: (context, index) => ListTile(
-            title: Text(data[index]),
-            trailing: IconButton(
-              onPressed: () => {
-                showDialog(
-                  context: context, 
-                  builder: (context) => RemoveDomainModal(
-                    onConfirm: () => confirmRemoveDomain(data[index]),
+    return Stack(
+      children: [
+        if (data.isNotEmpty) RefreshIndicator(
+          onRefresh: () async {},
+          child: ListView.builder(
+            padding: const EdgeInsets.only(top: 0),
+            itemCount: data.length,
+            itemBuilder: (context, index) => ListTile(
+              title: Text(data[index]),
+              trailing: IconButton(
+                onPressed: () => {
+                  showDialog(
+                    context: context, 
+                    builder: (context) => RemoveDomainModal(
+                      onConfirm: () => confirmRemoveDomain(data[index]),
+                    )
                   )
-                )
-              }, 
-              icon: const Icon(Icons.delete_rounded)
-            ),
-          )
-        ),
-      );
-    }
-    else {
-      return SizedBox(
-        width: double.maxFinite,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.noClientsList,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
-                color: Colors.grey
+                }, 
+                icon: const Icon(Icons.delete_rounded)
               ),
-            ),
-            const SizedBox(height: 30),
-            TextButton.icon(
-              onPressed: fetchClients, 
-              icon: const Icon(Icons.refresh_rounded), 
-              label: Text(AppLocalizations.of(context)!.refresh),
             )
-          ],
+          ),
         ),
-      );
-    }
+        if (data.isEmpty) SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.noClientsList,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.grey
+                ),
+              ),
+              const SizedBox(height: 30),
+              TextButton.icon(
+                onPressed: fetchClients, 
+                icon: const Icon(Icons.refresh_rounded), 
+                label: Text(AppLocalizations.of(context)!.refresh),
+              )
+            ],
+          ),
+        ),
+        const Positioned(
+          bottom: 20,
+          right: 20,
+          child: ClientsFab(),
+        ),
+      ]
+    );
   }
 }
