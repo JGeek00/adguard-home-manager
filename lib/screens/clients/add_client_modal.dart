@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/clients/tags_modal.dart';
+
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/add_client.dart';
 
 class AddClientModal extends StatefulWidget {
@@ -20,6 +24,8 @@ class _AddClientModalState extends State<AddClientModal> {
   final Uuid uuid = const Uuid();
 
   TextEditingController nameController = TextEditingController();
+
+  String? selectedTag;
 
   List<Map<dynamic, dynamic>> identifiersControllers = [
     {
@@ -50,6 +56,8 @@ class _AddClientModalState extends State<AddClientModal> {
     
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
+
     void createClient() {
 
     }
@@ -92,6 +100,17 @@ class _AddClientModalState extends State<AddClientModal> {
           enableSafeSearch = null;
         });
       }
+    }
+
+    void openTagsModal() {
+      showDialog(
+        context: context, 
+        builder: (context) => TagsModal(
+          selectedTag: selectedTag,
+          tags: serversProvider.clients.data!.supportedTags,
+          onConfirm: (selected) => setState(() => selectedTag = selected),
+        )
+      );
     }
 
     Widget settignsTile({
@@ -192,7 +211,7 @@ class _AddClientModalState extends State<AddClientModal> {
                     Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () => {},
+                        onTap: openTagsModal,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20
@@ -215,7 +234,9 @@ class _AddClientModalState extends State<AddClientModal> {
                                   ),
                                   const SizedBox(height: 5),
                                   Text(
-                                    AppLocalizations.of(context)!.noTagsSelected,
+                                    selectedTag != null
+                                      ? selectedTag!
+                                      : AppLocalizations.of(context)!.noTagsSelected,
                                     style: const TextStyle(
                                       color: Colors.grey
                                     ),
