@@ -192,5 +192,6 @@
     "upstreamServers": "Upstream servers",
     "serverAddress": "Server address",
     "noUpstreamServers": "No upstream servers.",
-    "willBeUsedGeneralServers": "General upstream servers will be used."
+    "willBeUsedGeneralServers": "General upstream servers will be used.",
+    "added": "Added"
 }

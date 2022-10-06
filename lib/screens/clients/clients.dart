@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
-import 'package:adguard_home_manager/screens/clients/blocked_allowed_list.dart';
+import 'package:adguard_home_manager/screens/clients/blocked_list.dart';
+import 'package:adguard_home_manager/screens/clients/added_list.dart';
 
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -140,8 +141,8 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                         text: AppLocalizations.of(context)!.activeClients,
                       ),
                       Tab(
-                        icon: const Icon(Icons.check),
-                        text: AppLocalizations.of(context)!.allowed,
+                        icon: const Icon(Icons.add),
+                        text: AppLocalizations.of(context)!.added,
                       ),
                       Tab(
                         icon: const Icon(Icons.block),
@@ -174,16 +175,14 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                   ),
                   RefreshIndicator(
                     onRefresh: fetchClients,
-                    child: BlockedAllowedList(
-                      type: 'allowed',
-                      data: serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients, 
+                    child: AddedList(
+                      data: serversProvider.clients.data!.clients, 
                       fetchClients: fetchClients,
-                    ),
+                    )
                   ),
                   RefreshIndicator(
                     onRefresh: fetchClients,
-                    child: BlockedAllowedList(
-                      type: 'blocked',
+                    child: BlockedList(
                       data: serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients, 
                       fetchClients: fetchClients,
                     ),

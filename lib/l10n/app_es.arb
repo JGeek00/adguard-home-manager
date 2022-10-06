@@ -192,5 +192,6 @@
     "upstreamServers": "Servidores de salida",
     "serverAddress": "Dirección del servidor",
     "noUpstreamServers": "No hay servidores de salida.",
-    "willBeUsedGeneralServers": "Se usarán los servidores de salida generales."
+    "willBeUsedGeneralServers": "Se usarán los servidores de salida generales.",
+    "added": "Añadidos"
 }

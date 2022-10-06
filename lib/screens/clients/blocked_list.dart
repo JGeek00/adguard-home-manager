@@ -12,14 +12,12 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
-class BlockedAllowedList extends StatelessWidget {
-  final String type;
+class BlockedList extends StatelessWidget {
   final List<String> data;
   final Future Function() fetchClients;
 
-  const BlockedAllowedList({
+  const BlockedList({
     Key? key,
-    required this.type,
     required this.data,
     required this.fetchClients
   }) : super(key: key);
@@ -30,22 +28,11 @@ class BlockedAllowedList extends StatelessWidget {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void confirmRemoveDomain(String domain) async {
-      Map<String, List<String>> body = {};
-
-      if (type == 'allowed') {
-        body = {
-          "allowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.allowedClients.where((client) => client != domain).toList() ?? [],
-          "disallowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.disallowedClients ?? [],
-          "blocked_hosts": serversProvider.clients.data!.clientsAllowedBlocked?.blockedHosts ?? [],
-        };
-      }
-      else if (type == 'blocked') {
-        body = {
-          "allowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.allowedClients ?? [],
-          "disallowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.disallowedClients.where((client) => client != domain).toList() ?? [],
-          "blocked_hosts": serversProvider.clients.data!.clientsAllowedBlocked?.blockedHosts ?? [],
-        };
-      }
+      Map<String, List<String>> body = {
+        "allowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.allowedClients ?? [],
+        "disallowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.disallowedClients.where((client) => client != domain).toList() ?? [],
+        "blocked_hosts": serversProvider.clients.data!.clientsAllowedBlocked?.blockedHosts ?? [],
+      };
 
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.removingClient);
