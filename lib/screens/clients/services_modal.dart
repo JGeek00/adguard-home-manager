@@ -64,17 +64,17 @@ class _ServicesModalState extends State<ServicesModal> {
             title: Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(
-                services[index],
+                services[index]['label']!,
                 style: const TextStyle(
                   fontWeight: FontWeight.normal
                 ),
               ),
             ),
-            value: blockedServices.contains(services[index]), 
+            value: blockedServices.contains(services[index]['id']), 
             checkboxShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5)
             ),
-            onChanged: (value) => checkUncheckService(value!, services[index])
+            onChanged: (value) => checkUncheckService(value!, services[index]['id']!)
           )
         ),
       ),
