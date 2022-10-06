@@ -74,8 +74,31 @@ class ClientsFab extends StatelessWidget {
       }
     }
 
-    void confirmAddClient(AddClient client) {
+    void confirmAddClient(AddClient client) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.addingClient);
+      
+      final result = await postAddClient(server: serversProvider.selectedServer!, data: client.toJson());
+      
+      processModal.close();
 
+      if (result['result'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.clientAddedSuccessfully),
+            backgroundColor: Colors.green,
+          )
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.clientNotAdded),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
     }
 
     void openBlockClient() {

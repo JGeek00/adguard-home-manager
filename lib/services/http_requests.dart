@@ -17,7 +17,8 @@ Future<Map<String, dynamic>> apiRequest({
   required Server server, 
   required String method, 
   required String urlPath, 
-  Map<String, dynamic>? body
+  Map<String, dynamic>? body,
+  required String type,
 }) async {
   try {
     HttpClient httpClient = HttpClient();
@@ -77,7 +78,7 @@ Future<Map<String, dynamic>> apiRequest({
     return {
       'result': 'no_connection', 
       'log': AppLog(
-        type: 'login', 
+        type: type, 
         dateTime: DateTime.now(), 
         message: 'SocketException'
       )
@@ -86,7 +87,7 @@ Future<Map<String, dynamic>> apiRequest({
     return {
       'result': 'no_connection', 
       'log': AppLog(
-        type: 'login', 
+        type: type, 
         dateTime: DateTime.now(), 
         message: 'TimeoutException'
       )
@@ -96,7 +97,7 @@ Future<Map<String, dynamic>> apiRequest({
       'result': 'ssl_error', 
       'message': 'HandshakeException',
       'log': AppLog(
-        type: 'login', 
+        type: type, 
         dateTime: DateTime.now(), 
         message: 'TimeoutException'
       )
@@ -105,7 +106,7 @@ Future<Map<String, dynamic>> apiRequest({
     return {
       'result': 'error', 
       'log': AppLog(
-        type: 'login', 
+        type: type, 
         dateTime: DateTime.now(), 
         message: e.toString()
       )
@@ -121,7 +122,8 @@ Future login(Server server) async {
     body: {
       "name": server.user,
       "password": server.password
-    }
+    },
+    type: 'login'
   );
 
   if (result['hasResponse'] == true) {
@@ -135,7 +137,7 @@ Future login(Server server) async {
           type: 'login', 
           dateTime: DateTime.now(), 
           message: 'invalid_username_password',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -147,7 +149,7 @@ Future login(Server server) async {
           type: 'login', 
           dateTime: DateTime.now(), 
           message: 'many_attempts',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -159,7 +161,7 @@ Future login(Server server) async {
           type: 'login', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -172,12 +174,12 @@ Future login(Server server) async {
 
 Future getServerStatus(Server server) async {
   final result = await Future.wait([
-    apiRequest(server: server, method: 'get', urlPath: '/stats'),
-    apiRequest(server: server, method: 'get', urlPath: '/status'),
-    apiRequest(server: server, method: 'get', urlPath: '/filtering/status'),
-    apiRequest(server: server, method: 'get', urlPath: '/safesearch/status'),
-    apiRequest(server: server, method: 'get', urlPath: '/safebrowsing/status'),
-    apiRequest(server: server, method: 'get', urlPath: '/parental/status'),
+    apiRequest(server: server, method: 'get', urlPath: '/stats', type: 'server_status'),
+    apiRequest(server: server, method: 'get', urlPath: '/status', type: 'server_status'),
+    apiRequest(server: server, method: 'get', urlPath: '/filtering/status', type: 'server_status'),
+    apiRequest(server: server, method: 'get', urlPath: '/safesearch/status', type: 'server_status'),
+    apiRequest(server: server, method: 'get', urlPath: '/safebrowsing/status', type: 'server_status'),
+    apiRequest(server: server, method: 'get', urlPath: '/parental/status', type: 'server_status'),
   ]);
 
   if (
@@ -243,7 +245,8 @@ Future updateFiltering(Server server, bool enable) async {
     server: server, 
     body: {
       'enabled': enable
-    }
+    },
+    type: 'update_filtering'
   );
 
   if (result['hasResponse'] == true) {
@@ -254,10 +257,10 @@ Future updateFiltering(Server server, bool enable) async {
       return {
         'result': 'error',
         'log': AppLog(
-          type: 'login', 
+          type: 'update_filtering', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -274,11 +277,13 @@ Future updateSafeSearch(Server server, bool enable) async {
         urlPath: '/safesearch/enable', 
         method: 'post',
         server: server, 
+        type: 'enable_safe_search'
       )
     : await apiRequest(
         urlPath: '/safesearch/disable', 
         method: 'post',
         server: server,
+        type: 'disable_safe_search'
       );
 
   if (result['hasResponse'] == true) {
@@ -289,10 +294,10 @@ Future updateSafeSearch(Server server, bool enable) async {
       return {
         'result': 'error',
         'log': AppLog(
-          type: 'login', 
+          type: 'safe_search', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -309,11 +314,13 @@ Future updateSafeBrowsing(Server server, bool enable) async {
         urlPath: '/safebrowsing/enable', 
         method: 'post',
         server: server, 
+        type: 'enable_safe_browsing'
       )
     : await apiRequest(
         urlPath: '/safebrowsing/disable', 
         method: 'post',
         server: server, 
+        type: 'disable_safe_browsing'
       );
 
   if (result['hasResponse'] == true) {
@@ -324,10 +331,10 @@ Future updateSafeBrowsing(Server server, bool enable) async {
       return {
         'result': 'error',
         'log': AppLog(
-          type: 'login', 
+          type: 'safe_browsing', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -344,11 +351,13 @@ Future updateParentalControl(Server server, bool enable) async {
         urlPath: '/parental/enable', 
         method: 'post',
         server: server, 
+        type: 'enable_parental_control'
       )
     : await apiRequest(
         urlPath: '/parental/disable', 
         method: 'post',
         server: server, 
+        type: 'disable_parental_control'
       );
 
   if (result['hasResponse'] == true) {
@@ -359,10 +368,10 @@ Future updateParentalControl(Server server, bool enable) async {
       return {
         'result': 'error',
         'log': AppLog(
-          type: 'login', 
+          type: 'parental_control', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -381,6 +390,7 @@ Future updateGeneralProtection(Server server, bool enable) async {
     body: {
       'protection_enabled': enable
     },
+    type: 'general_protection'
   );
 
   if (result['hasResponse'] == true) {
@@ -391,10 +401,10 @@ Future updateGeneralProtection(Server server, bool enable) async {
       return {
         'result': 'error',
         'log': AppLog(
-          type: 'login', 
+          type: 'general_protection', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -407,8 +417,8 @@ Future updateGeneralProtection(Server server, bool enable) async {
 
 Future getClients(Server server) async {
   final result = await Future.wait([
-    apiRequest(server: server, method: 'get', urlPath: '/clients'),
-    apiRequest(server: server, method: 'get', urlPath: '/access/list'),
+    apiRequest(server: server, method: 'get', urlPath: '/clients', type: 'get_clients'),
+    apiRequest(server: server, method: 'get', urlPath: '/access/list', type: 'get_clients'),
   ]);
 
   if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
@@ -453,6 +463,7 @@ Future requestAllowedBlockedClientsHosts(Server server, Map<String, List<String>
     method: 'post',
     server: server, 
     body: body,
+    type: 'get_clients'
   );
 
   if (result['hasResponse'] == true) {
@@ -469,10 +480,10 @@ Future requestAllowedBlockedClientsHosts(Server server, Map<String, List<String>
       return {
         'result': 'error',
         'log': AppLog(
-          type: 'login', 
+          type: 'get_clients', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };
@@ -494,7 +505,8 @@ Future getLogs({
   final result = await apiRequest(
     server: server, 
     method: 'get', 
-    urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}'
+    urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}',
+    type: 'get_logs'
   );
     
   if (result['hasResponse'] == true) {
@@ -508,7 +520,7 @@ Future getLogs({
       return {
         'result': 'error', 
         'log': AppLog(
-          type: 'logs', 
+          type: 'get_logs', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),
@@ -528,7 +540,8 @@ Future getFilteringRules({
   final result = await apiRequest(
     server: server, 
     method: 'get', 
-    urlPath: '/filtering/status'
+    urlPath: '/filtering/status',
+    type: 'get_filtering_rules'
   );
     
   if (result['hasResponse'] == true) {
@@ -542,7 +555,7 @@ Future getFilteringRules({
       return {
         'result': 'error', 
         'log': AppLog(
-          type: 'logs', 
+          type: 'get_filtering_rules', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),
@@ -565,6 +578,7 @@ Future postFilteringRules({
     method: 'post',
     server: server, 
     body: data,
+    type: 'post_filering_rules'
   );
 
   if (result['hasResponse'] == true) {
@@ -575,10 +589,44 @@ Future postFilteringRules({
       return {
         'result': 'error',
         'log': AppLog(
-          type: 'login', 
+          type: 'post_filtering_rules', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future postAddClient({
+  required Server server, 
+  required Map<String, dynamic> data, 
+}) async {
+    final result = await apiRequest(
+    urlPath: '/clients/add', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'add_client'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'add_client', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
           resBody: result['body']
         )
       };

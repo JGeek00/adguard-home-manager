@@ -185,5 +185,12 @@
     "enableSafeSearch": "Activar búsqueda segura",
     "blockedServices": "Servicios bloqueados",
     "selectBlockedServices": "Seleccionar servicios para bloquear",
-    "noBlockedServicesSelected": "No hay servicios bloqueados"
+    "noBlockedServicesSelected": "No hay servicios bloqueados",
+    "services": "Servicios",
+    "servicesBlocked": "servicios bloqueados",
+    "tagsSelected": "etiquetas seleccionadas",
+    "upstreamServers": "Servidores de salida",
+    "serverAddress": "Dirección del servidor",
+    "noUpstreamServers": "No hay servidores de salida.",
+    "willBeUsedGeneralServers": "Se usarán los servidores de salida generales."
 }

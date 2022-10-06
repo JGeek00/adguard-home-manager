@@ -1,46 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TagsModal extends StatefulWidget {
-  final List<String> selectedTags;
-  final List<String> tags;
+import 'package:adguard_home_manager/constants/services.dart';
+
+class ServicesModal extends StatefulWidget {
+  final List<String> blockedServices;
   final void Function(List<String>) onConfirm;
 
-  const TagsModal({
+  const ServicesModal({
     Key? key,
-    required this.selectedTags,
-    required this.tags,
+    required this.blockedServices,
     required this.onConfirm,
   }) : super(key: key);
 
   @override
-  State<TagsModal> createState() => _TagsModalState();
+  State<ServicesModal> createState() => _ServicesModalState();
 }
 
-class _TagsModalState extends State<TagsModal> {
-  List<String> selectedTags = [];
+class _ServicesModalState extends State<ServicesModal> {
+  List<String> blockedServices = [];
 
   @override
   void initState() {
-    selectedTags = widget.selectedTags;
+    blockedServices = widget.blockedServices;
     super.initState();
+  }
+
+  void checkUncheckService(bool value, String service) {
+    if (value == true) {
+      setState(() {
+        blockedServices.add(service);
+      });
+    }
+    else if (value == false) {
+      setState(() {
+        blockedServices = blockedServices.where((s) => s != service).toList();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    void checkUncheckTag(bool value, String tag) {
-      if (value == true) {
-        setState(() {
-          selectedTags.add(tag);
-        });
-      }
-      else if (value == false) {
-        setState(() {
-          selectedTags = selectedTags.where((s) => s != tag).toList();
-        });
-      }
-    }
     return AlertDialog(
       scrollable: true,
       contentPadding: const EdgeInsets.symmetric(
@@ -49,9 +49,9 @@ class _TagsModalState extends State<TagsModal> {
       ),
       title: Column(
         children: [
-          const Icon(Icons.label_rounded),
+          const Icon(Icons.public),
           const SizedBox(height: 20),
-          Text(AppLocalizations.of(context)!.tags)
+          Text(AppLocalizations.of(context)!.services)
         ],
       ),
       content: SizedBox(
@@ -59,19 +59,22 @@ class _TagsModalState extends State<TagsModal> {
         height: MediaQuery.of(context).size.height*0.5,
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: widget.tags.length,
+          itemCount: services.length,
           itemBuilder: (context, index) => CheckboxListTile(
-            title: Text(
-              widget.tags[index],
-              style: const TextStyle(
-                fontWeight: FontWeight.normal
+            title: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                services[index],
+                style: const TextStyle(
+                  fontWeight: FontWeight.normal
+                ),
               ),
             ),
-            value: selectedTags.contains(widget.tags[index]), 
+            value: blockedServices.contains(services[index]), 
             checkboxShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5)
             ),
-            onChanged: (value) => checkUncheckTag(value!, widget.tags[index])
+            onChanged: (value) => checkUncheckService(value!, services[index])
           )
         ),
       ),
@@ -81,16 +84,16 @@ class _TagsModalState extends State<TagsModal> {
           child: Text(AppLocalizations.of(context)!.cancel)
         ),
         TextButton(
-          onPressed: selectedTags.isNotEmpty
+          onPressed: blockedServices.isNotEmpty
             ? () {
-                widget.onConfirm(selectedTags);
+                widget.onConfirm(blockedServices);
                 Navigator.pop(context);
               }
             : null, 
           child: Text(
             AppLocalizations.of(context)!.confirm,
             style: TextStyle(
-              color: selectedTags.isNotEmpty
+              color: blockedServices.isNotEmpty 
                 ? Theme.of(context).primaryColor
                 : Colors.grey
             ),

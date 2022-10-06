@@ -185,5 +185,12 @@
     "enableSafeSearch": "Enable safe search",
     "blockedServices": "Blocked services",
     "selectBlockedServices": "Select services to block",
-    "noBlockedServicesSelected": "No blocked services"
+    "noBlockedServicesSelected": "No blocked services",
+    "services": "Services",
+    "servicesBlocked": "services blocked",
+    "tagsSelected": "tags selected",
+    "upstreamServers": "Upstream servers",
+    "serverAddress": "Server address",
+    "noUpstreamServers": "No upstream servers.",
+    "willBeUsedGeneralServers": "General upstream servers will be used."
 }

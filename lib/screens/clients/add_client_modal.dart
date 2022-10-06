@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/clients/services_modal.dart';
 import 'package:adguard_home_manager/screens/clients/tags_modal.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -25,7 +26,7 @@ class _AddClientModalState extends State<AddClientModal> {
 
   TextEditingController nameController = TextEditingController();
 
-  String? selectedTag;
+  List<String> selectedTags = [];
 
   List<Map<dynamic, dynamic>> identifiersControllers = [
     {
@@ -41,11 +42,16 @@ class _AddClientModalState extends State<AddClientModal> {
   bool? enableSafeSearch;
 
   bool useGlobalSettingsServices = true;
+  List<String> blockedServices = [];
+
+  List<Map<dynamic, dynamic>> upstreamServers = [];
 
 
   bool checkValidValues() {
     if (
-      nameController.text != ''
+      nameController.text != '' &&
+      identifiersControllers.isNotEmpty && 
+      identifiersControllers[0]['controller'].text != ''
     ) {
       return true;
     }
@@ -59,7 +65,20 @@ class _AddClientModalState extends State<AddClientModal> {
     final serversProvider = Provider.of<ServersProvider>(context);
 
     void createClient() {
-
+      final AddClient client = AddClient(
+        name: nameController.text, 
+        ids: List<String>.from(identifiersControllers.map((e) => e['controller'].text)), 
+        useGlobalSettings: useGlobalSettingsFiltering, 
+        filteringEnabled: enableFiltering ?? false, 
+        parentalEnabled: enableParentalControl ?? false, 
+        safebrowsingEnabled: enableSafeBrowsing ?? false, 
+        safesearchEnabled: enableSafeSearch ?? false, 
+        useGlobalBlockedServices: useGlobalSettingsServices, 
+        blockedServices: blockedServices, 
+        upstreams: List<String>.from(upstreamServers.map((e) => e['controller'].text)), 
+        tags: selectedTags
+      );
+      widget.onConfirm(client);
     }
 
     Widget sectionLabel(String label) {
@@ -106,11 +125,35 @@ class _AddClientModalState extends State<AddClientModal> {
       showDialog(
         context: context, 
         builder: (context) => TagsModal(
-          selectedTag: selectedTag,
+          selectedTags: selectedTags,
           tags: serversProvider.clients.data!.supportedTags,
-          onConfirm: (selected) => setState(() => selectedTag = selected),
+          onConfirm: (selected) => setState(() => selectedTags = selected),
         )
       );
+    }
+
+    void openServicesModal() {
+      showDialog(
+        context: context, 
+        builder: (context) => ServicesModal(
+          blockedServices: blockedServices,
+          onConfirm: (values) => setState(() => blockedServices = values),
+        )
+      );
+    }
+
+    void updateServicesGlobalSettings(bool value) {
+      if (value == true) {
+        setState(() {
+          blockedServices = [];
+          useGlobalSettingsServices = true;
+        });
+      }
+      else if (value == false) {
+        setState(() {
+          useGlobalSettingsServices = false;
+        });
+      }
     }
 
     Widget settignsTile({
@@ -196,6 +239,7 @@ class _AddClientModalState extends State<AddClientModal> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: TextFormField(
                         controller: nameController,
+                        onChanged: (_) => checkValidValues(),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.badge_rounded),
                           border: const OutlineInputBorder(
@@ -234,8 +278,8 @@ class _AddClientModalState extends State<AddClientModal> {
                                   ),
                                   const SizedBox(height: 5),
                                   Text(
-                                    selectedTag != null
-                                      ? selectedTag!
+                                    selectedTags.isNotEmpty
+                                      ? "${selectedTags.length} ${AppLocalizations.of(context)!.tagsSelected}"
                                       : AppLocalizations.of(context)!.noTagsSelected,
                                     style: const TextStyle(
                                       color: Colors.grey
@@ -275,6 +319,7 @@ class _AddClientModalState extends State<AddClientModal> {
                               width: MediaQuery.of(context).size.width - 108,
                               child: TextFormField(
                                 controller: controller['controller'],
+                                onChanged: (_) => checkValidValues(),
                                 decoration: InputDecoration(
                                   prefixIcon: const Icon(Icons.tag),
                                   border: const OutlineInputBorder(
@@ -374,7 +419,7 @@ class _AddClientModalState extends State<AddClientModal> {
                         color: Theme.of(context).primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(28),
                         child: InkWell(
-                          onTap: () => setState(() => useGlobalSettingsServices = !useGlobalSettingsServices),
+                          onTap: () => updateServicesGlobalSettings(!useGlobalSettingsServices),
                           borderRadius: BorderRadius.circular(28),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -392,7 +437,7 @@ class _AddClientModalState extends State<AddClientModal> {
                                 ),
                                 Switch(
                                   value: useGlobalSettingsServices, 
-                                  onChanged: (value) => setState(() => useGlobalSettingsServices = value),
+                                  onChanged: updateServicesGlobalSettings,
                                   activeColor: Theme.of(context).primaryColor,
                                 )
                               ],
@@ -406,7 +451,7 @@ class _AddClientModalState extends State<AddClientModal> {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: useGlobalSettingsServices == false
-                          ? () => {}
+                          ? openServicesModal
                           : null,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -434,7 +479,9 @@ class _AddClientModalState extends State<AddClientModal> {
                                   if (useGlobalSettingsServices == false) ...[
                                     const SizedBox(height: 5),
                                     Text(
-                                      AppLocalizations.of(context)!.noBlockedServicesSelected,
+                                      blockedServices.isNotEmpty
+                                        ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
+                                        :  AppLocalizations.of(context)!.noBlockedServicesSelected,
                                       style: const TextStyle(
                                         color: Colors.grey
                                       ),
@@ -445,6 +492,80 @@ class _AddClientModalState extends State<AddClientModal> {
                             ],
                           ),
                         ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        sectionLabel(AppLocalizations.of(context)!.upstreamServers),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: IconButton(
+                            onPressed: () => setState(() => upstreamServers.add({
+                              'id': uuid.v4(),
+                              'controller': TextEditingController()
+                            })),
+                            icon: const Icon(Icons.add)
+                          ),
+                        )
+                      ],
+                    ),
+                    if (upstreamServers.isNotEmpty) ...upstreamServers.map((controller) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 108,
+                              child: TextFormField(
+                                controller: controller['controller'],
+                                onChanged: (_) => checkValidValues(),
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.dns_rounded),
+                                  border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10)
+                                    )
+                                  ),
+                                  labelText: AppLocalizations.of(context)!.serverAddress,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            IconButton(
+                              onPressed: () => setState(
+                                () => upstreamServers = upstreamServers.where((e) => e['id'] != controller['id']).toList()
+                              ), 
+                              icon: const Icon(Icons.remove_circle_outline_outlined)
+                            )
+                          ],
+                        ),
+                      ),
+                    )).toList(),
+                    if (upstreamServers.isEmpty) Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Column(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.noUpstreamServers,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            AppLocalizations.of(context)!.willBeUsedGeneralServers,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -462,7 +583,10 @@ class _AddClientModalState extends State<AddClientModal> {
                     const SizedBox(width: 20),
                     TextButton(
                       onPressed: checkValidValues() == true
-                        ? createClient
+                        ? () {
+                            createClient();
+                            Navigator.pop(context);
+                          }
                         : null, 
                       child: Text(
                         AppLocalizations.of(context)!.confirm,
