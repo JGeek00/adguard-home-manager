@@ -41,6 +41,7 @@ class FiltersWidget extends StatefulWidget {
 
 class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateMixin {
   late TabController tabController;
+  final ScrollController scrollController = ScrollController();
 
   Future fetchFilters() async {
     widget.serversProvider.setFilteringLoadStatus(0, false);
@@ -114,6 +115,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
         return DefaultTabController(
           length: 3, 
           child: NestedScrollView(
+            controller: scrollController,
             headerSliverBuilder: ((context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
@@ -158,19 +160,27 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                   RefreshIndicator(
                     onRefresh: fetchFilters,
                     child: FiltersList(
-                      data: serversProvider.filtering.data!.whitelistFilters
+                      scrollController: scrollController,
+                      type: 'whitelist',
+                      data: serversProvider.filtering.data!.whitelistFilters,
+                      fetchData: fetchFilters,
                     )
                   ),
                   RefreshIndicator(
                     onRefresh: fetchFilters,
                     child: FiltersList(
-                      data: serversProvider.filtering.data!.filters
+                      scrollController: scrollController,
+                      type: 'blacklist',
+                      data: serversProvider.filtering.data!.filters,
+                      fetchData: fetchFilters,
                     )
                   ),
                   RefreshIndicator(
                     onRefresh: fetchFilters,
                     child: CustomRulesList(
-                      data: serversProvider.filtering.data!.userRules
+                      scrollController: scrollController,
+                      data: serversProvider.filtering.data!.userRules,
+                      fetchData: fetchFilters,
                     )
                   ),
                 ],

@@ -73,26 +73,23 @@ class BlockedList extends StatelessWidget {
 
     return Stack(
       children: [
-        if (data.isNotEmpty) RefreshIndicator(
-          onRefresh: () async {},
-          child: ListView.builder(
-            padding: const EdgeInsets.only(top: 0),
-            itemCount: data.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(data[index]),
-              trailing: IconButton(
-                onPressed: () => {
-                  showDialog(
-                    context: context, 
-                    builder: (context) => RemoveDomainModal(
-                      onConfirm: () => confirmRemoveDomain(data[index]),
-                    )
+        if (data.isNotEmpty) ListView.builder(
+          padding: const EdgeInsets.only(top: 0),
+          itemCount: data.length,
+          itemBuilder: (context, index) => ListTile(
+            title: Text(data[index]),
+            trailing: IconButton(
+              onPressed: () => {
+                showDialog(
+                  context: context, 
+                  builder: (context) => RemoveDomainModal(
+                    onConfirm: () => confirmRemoveDomain(data[index]),
                   )
-                }, 
-                icon: const Icon(Icons.delete_rounded)
-              ),
-            )
-          ),
+                )
+              }, 
+              icon: const Icon(Icons.delete_rounded)
+            ),
+          )
         ),
         if (data.isEmpty) SizedBox(
           width: double.maxFinite,
@@ -100,7 +97,7 @@ class BlockedList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                AppLocalizations.of(context)!.noClientsList,
+                AppLocalizations.of(context)!.noCustomFilters,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 24,

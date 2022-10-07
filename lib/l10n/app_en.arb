@@ -216,5 +216,17 @@
     "ruleRemovedSuccessfully": "Rule removed successfully",
     "ruleNotRemoved": "Couldn't remove the rule",
     "ruleAddedSuccessfully": "Rule added successfully",
-    "ruleNotAdded": "Couldn't add the rule,"
+    "ruleNotAdded": "Couldn't add the rule",
+    "noCustomFilters": "No custom filters",
+    "noBlackLists": "No blacklists",
+    "noWhiteLists": "No whitelists",
+    "addWhitelist": "Add whitelist",
+    "addBlacklist": "Add blacklist",
+    "urlNotValid": "URL is not valid",
+    "urlAbsolutePath": "URL or absolute path",
+    "addingList": "Adding list...",
+    "listAdded": "List added successfully. Items added:",
+    "listAlreadyAdded": "List already added",
+    "listUrlInvalid": "List URL invalid",
+    "listNotAdded": "List couldn't be added"
 }

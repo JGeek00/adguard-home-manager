@@ -216,5 +216,17 @@
     "ruleRemovedSuccessfully": "Regla eliminada correctamente",
     "ruleNotRemoved": "No se ha podido eliminar la regla",
     "ruleAddedSuccessfully": "Regla añadida correctamente",
-    "ruleNotAdded": "No se ha podido añadir la regla"
+    "ruleNotAdded": "No se ha podido añadir la regla",
+    "noCustomFilters": "No custom filters",
+    "noBlackLists": "No hay listas negras",
+    "noWhiteLists": "No hay listas blancas",
+    "addWhitelist": "Añadir lista blanca",
+    "addBlacklist": "Añadir lista negra",
+    "urlNotValid": "La URL no es válida",
+    "urlAbsolutePath": "URL o ruta absoluta",
+    "addingList": "Añadiendo lista...",    
+    "listAdded": "Lista añadida correctamente. Items añadidos:",
+    "listAlreadyAdded": "La lista ya estaba añadida",
+    "listUrlInvalid": "URL de la lista no válida",
+    "listNotAdded": "La lista no se pudo añadir"
 }

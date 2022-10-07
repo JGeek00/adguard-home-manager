@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -13,13 +14,45 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
-class CustomRulesList extends StatelessWidget {
+class CustomRulesList extends StatefulWidget {
+  final ScrollController scrollController;
   final List<String> data;
+  final void Function() fetchData;
 
   const CustomRulesList({
     Key? key,
-    required this.data
+    required this.scrollController,
+    required this.data,
+    required this.fetchData
   }) : super(key: key);
+
+  @override
+  State<CustomRulesList> createState() => _CustomRulesListState();
+}
+
+class _CustomRulesListState extends State<CustomRulesList> {
+  late bool isVisible;
+
+  @override
+  initState(){
+    super.initState();
+    
+    isVisible = true;
+    widget.scrollController.addListener(() {
+      if (widget.scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (mounted && isVisible == true) {
+          setState(() => isVisible = false);
+        }
+      } 
+      else {
+        if (widget.scrollController.position.userScrollDirection == ScrollDirection.forward) {
+          if (mounted && isVisible == false) {
+            setState(() => isVisible = true);
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,21 +102,47 @@ class CustomRulesList extends StatelessWidget {
 
     return Stack(
       children: [
-        ListView.builder(
+        if (widget.data.isNotEmpty) ListView.builder(
           padding: const EdgeInsets.only(top: 0),
-          itemCount: data.length,
+          itemCount: widget.data.length,
           itemBuilder: (context, index) => ListTile(
-            title: Text(data[index]),
+            title: Text(widget.data[index]),
             trailing: IconButton(
-              onPressed: () => openRemoveCustomRuleModal(data[index]),
+              onPressed: () => openRemoveCustomRuleModal(widget.data[index]),
               icon: const Icon(Icons.delete)
             ),
           )
         ),
-        const Positioned(
-          bottom: 20,
+        if (widget.data.isEmpty) SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.noBlackLists,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.grey
+                ),
+              ),
+              const SizedBox(height: 30),
+              TextButton.icon(
+                onPressed: widget.fetchData, 
+                icon: const Icon(Icons.refresh_rounded), 
+                label: Text(AppLocalizations.of(context)!.refresh),
+              )
+            ],
+          ),
+        ),
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeInOut,
+          bottom: isVisible ? 20 : -70,
           right: 20,
-          child: FiltersFab()
+          child: const FiltersFab(
+            type: 'custom_rule',
+          )
         )
       ],
     );
