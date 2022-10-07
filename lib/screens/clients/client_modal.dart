@@ -9,20 +9,23 @@ import 'package:adguard_home_manager/screens/clients/tags_modal.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
-class AddClientModal extends StatefulWidget {
+class ClientModal extends StatefulWidget {
+  final Client? client;
   final void Function(Client) onConfirm;
 
-  const AddClientModal({
+  const ClientModal({
     Key? key,
+    this.client,
     required this.onConfirm
   }) : super(key: key);
 
   @override
-  State<AddClientModal> createState() => _AddClientModalState();
+  State<ClientModal> createState() => _ClientModalState();
 }
 
-class _AddClientModalState extends State<AddClientModal> {
+class _ClientModalState extends State<ClientModal> {
   final Uuid uuid = const Uuid();
+  bool editMode = true;
 
   TextEditingController nameController = TextEditingController();
 
@@ -58,6 +61,28 @@ class _AddClientModalState extends State<AddClientModal> {
     else {
       return false;
     }
+  }
+
+  @override
+  void initState() {
+    if (widget.client != null) {
+      editMode = false;
+
+      nameController.text = widget.client!.name;
+      selectedTags = widget.client!.tags;
+      identifiersControllers = widget.client!.ids.map((e) => {
+        'id': uuid.v4(),
+        'controller': TextEditingController(text: e)
+      }).toList();
+      useGlobalSettingsFiltering = widget.client!.useGlobalSettings;
+      enableFiltering = widget.client!.filteringEnabled;
+      enableParentalControl = widget.client!.parentalEnabled;
+      enableSafeBrowsing = widget.client!.safebrowsingEnabled;
+      enableSafeSearch = widget.client!.safesearchEnabled;
+      useGlobalSettingsServices = widget.client!.useGlobalBlockedServices;
+      blockedServices = widget.client!.blockedServices;
+    }
+    super.initState();
   }
     
   @override
@@ -159,12 +184,14 @@ class _AddClientModalState extends State<AddClientModal> {
     Widget settignsTile({
       required String label,
       required bool? value,
-      required void Function(bool) onChange
+      void Function(bool)? onChange
     }) {
       return Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: value != null ? () => onChange(!value) : null,
+          onTap: onChange != null
+            ?  value != null ? () => onChange(!value) : null
+            : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 30,
@@ -179,9 +206,9 @@ class _AddClientModalState extends State<AddClientModal> {
                     fontSize: 15
                   ),
                 ),
-                value != null 
+                useGlobalSettingsFiltering == false
                   ? Switch(
-                      value: value, 
+                      value: value!, 
                       onChanged: onChange,
                       activeColor: Theme.of(context).primaryColor,
                     )
@@ -238,6 +265,7 @@ class _AddClientModalState extends State<AddClientModal> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: TextFormField(
+                        enabled: widget.client != null ? false : true,
                         controller: nameController,
                         onChanged: (_) => checkValidValues(),
                         decoration: InputDecoration(
@@ -255,7 +283,7 @@ class _AddClientModalState extends State<AddClientModal> {
                     Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: openTagsModal,
+                        onTap: editMode == true ? () => openTagsModal() : null,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20
@@ -296,7 +324,7 @@ class _AddClientModalState extends State<AddClientModal> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         sectionLabel(AppLocalizations.of(context)!.identifiers),
-                        Padding(
+                        if (editMode == true) Padding(
                           padding: const EdgeInsets.only(right: 20),
                           child: IconButton(
                             onPressed: () => setState(() => identifiersControllers.add({
@@ -316,8 +344,11 @@ class _AddClientModalState extends State<AddClientModal> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(
-                              width: MediaQuery.of(context).size.width - 108,
+                              width: editMode == true 
+                                ? MediaQuery.of(context).size.width - 108
+                                : MediaQuery.of(context).size.width - 40,
                               child: TextFormField(
+                                enabled: editMode,
                                 controller: controller['controller'],
                                 onChanged: (_) => checkValidValues(),
                                 decoration: InputDecoration(
@@ -332,16 +363,18 @@ class _AddClientModalState extends State<AddClientModal> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 20),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 25),
-                              child: IconButton(
-                                onPressed: () => setState(
-                                  () => identifiersControllers = identifiersControllers.where((e) => e['id'] != controller['id']).toList()
-                                ), 
-                                icon: const Icon(Icons.remove_circle_outline_outlined)
-                              ),
-                            )
+                            if (editMode == true) ...[
+                              const SizedBox(width: 20),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 25),
+                                child: IconButton(
+                                  onPressed: () => setState(
+                                    () => identifiersControllers = identifiersControllers.where((e) => e['id'] != controller['id']).toList()
+                                  ), 
+                                  icon: const Icon(Icons.remove_circle_outline_outlined)
+                                ),
+                              )
+                            ]
                           ],
                         ),
                       ),
@@ -364,7 +397,9 @@ class _AddClientModalState extends State<AddClientModal> {
                         color: Theme.of(context).primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(28),
                         child: InkWell(
-                          onTap: enableDisableGlobalSettingsFiltering,
+                          onTap: editMode 
+                            ? () => enableDisableGlobalSettingsFiltering()
+                            : null,
                           borderRadius: BorderRadius.circular(28),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -382,7 +417,9 @@ class _AddClientModalState extends State<AddClientModal> {
                                 ),
                                 Switch(
                                   value: useGlobalSettingsFiltering, 
-                                  onChanged: (value) => enableDisableGlobalSettingsFiltering(),
+                                  onChanged: editMode == true
+                                    ? (value) => enableDisableGlobalSettingsFiltering()
+                                    : null,
                                   activeColor: Theme.of(context).primaryColor,
                                 )
                               ],
@@ -395,22 +432,30 @@ class _AddClientModalState extends State<AddClientModal> {
                     settignsTile(
                       label: AppLocalizations.of(context)!.enableFiltering,
                       value: enableFiltering, 
-                      onChange: (value) => setState(() => enableFiltering = value)
+                      onChange: editMode == true
+                        ? (value) => setState(() => enableFiltering = value)
+                        : null
                     ),
                     settignsTile(
                       label: AppLocalizations.of(context)!.enableSafeBrowsing,
                       value: enableSafeBrowsing, 
-                      onChange: (value) => setState(() => enableSafeBrowsing = value)
+                      onChange: editMode == true
+                        ? (value) => setState(() => enableSafeBrowsing = value)
+                        : null
                     ),
                     settignsTile(
                       label: AppLocalizations.of(context)!.enableParentalControl,
                       value: enableParentalControl, 
-                      onChange: (value) => setState(() => enableParentalControl = value)
+                      onChange: editMode == true
+                        ? (value) => setState(() => enableParentalControl = value)
+                        : null
                     ),
                     settignsTile(
                       label: AppLocalizations.of(context)!.enableSafeSearch,
                       value: enableSafeSearch, 
-                      onChange: (value) => setState(() => enableSafeSearch = value)
+                      onChange: editMode == true
+                        ? (value) => setState(() => enableSafeSearch = value)
+                        : null
                     ),
                     sectionLabel(AppLocalizations.of(context)!.blockedServices),
                     Padding(
@@ -419,7 +464,9 @@ class _AddClientModalState extends State<AddClientModal> {
                         color: Theme.of(context).primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(28),
                         child: InkWell(
-                          onTap: () => updateServicesGlobalSettings(!useGlobalSettingsServices),
+                          onTap: editMode == true
+                            ? () => updateServicesGlobalSettings(!useGlobalSettingsServices)
+                            : null,
                           borderRadius: BorderRadius.circular(28),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -437,7 +484,9 @@ class _AddClientModalState extends State<AddClientModal> {
                                 ),
                                 Switch(
                                   value: useGlobalSettingsServices, 
-                                  onChanged: updateServicesGlobalSettings,
+                                  onChanged: editMode == true
+                                    ? (value) => updateServicesGlobalSettings(value)
+                                    : null,
                                   activeColor: Theme.of(context).primaryColor,
                                 )
                               ],
@@ -450,8 +499,10 @@ class _AddClientModalState extends State<AddClientModal> {
                     Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: useGlobalSettingsServices == false
-                          ? openServicesModal
+                        onTap: editMode == true
+                          ? useGlobalSettingsServices == false
+                            ? openServicesModal
+                            : null
                           : null,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -498,7 +549,7 @@ class _AddClientModalState extends State<AddClientModal> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         sectionLabel(AppLocalizations.of(context)!.upstreamServers),
-                        Padding(
+                        if (editMode == true) Padding(
                           padding: const EdgeInsets.only(right: 20),
                           child: IconButton(
                             onPressed: () => setState(() => upstreamServers.add({
@@ -520,6 +571,7 @@ class _AddClientModalState extends State<AddClientModal> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 108,
                               child: TextFormField(
+                                enabled: editMode,
                                 controller: controller['controller'],
                                 onChanged: (_) => checkValidValues(),
                                 decoration: InputDecoration(
@@ -574,29 +626,43 @@ class _AddClientModalState extends State<AddClientModal> {
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: widget.client == null || (widget.client != null && editMode == true)
+                    ? MainAxisAlignment.end
+                    : MainAxisAlignment.spaceBetween,
                   children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context), 
-                      child: Text(AppLocalizations.of(context)!.cancel)
+                    if (widget.client != null && editMode == false) TextButton(
+                      onPressed: () => setState(() => editMode = true), 
+                      child: Text(AppLocalizations.of(context)!.edit)
                     ),
-                    const SizedBox(width: 20),
-                    TextButton(
-                      onPressed: checkValidValues() == true
-                        ? () {
-                            createClient();
-                            Navigator.pop(context);
-                          }
-                        : null, 
-                      child: Text(
-                        AppLocalizations.of(context)!.confirm,
-                        style: TextStyle(
-                          color: checkValidValues() == true
-                            ? Theme.of(context).primaryColor
-                            : Colors.grey
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context), 
+                          child: Text(AppLocalizations.of(context)!.cancel)
                         ),
-                      )
-                    ),
+                        if (widget.client == null || (widget.client != null && editMode == true)) ...[
+                          const SizedBox(width: 20),
+                          TextButton(
+                            onPressed: checkValidValues() == true
+                              ? () {
+                                  createClient();
+                                  Navigator.pop(context);
+                                }
+                              : null, 
+                            child: Text(
+                              widget.client != null && editMode == true
+                                ? AppLocalizations.of(context)!.save
+                                : AppLocalizations.of(context)!.confirm,
+                              style: TextStyle(
+                                color: checkValidValues() == true
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.grey
+                              ),
+                            )
+                          ),
+                        ]
+                      ],
+                    )
                   ],
                 ),
               ),

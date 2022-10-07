@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/block_client_modal.dart';
-import 'package:adguard_home_manager/screens/clients/add_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/client_modal.dart';
 
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -118,7 +118,7 @@ class ClientsFab extends StatelessWidget {
     void openAddClient() {
       showModalBottomSheet(
         context: context, 
-        builder: (ctx) => AddClientModal(
+        builder: (ctx) => ClientModal(
           onConfirm: confirmAddClient
         ),
         isScrollControlled: true,

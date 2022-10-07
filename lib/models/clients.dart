@@ -17,7 +17,7 @@ ClientsData clientsFromJson(String str) => ClientsData.fromJson(json.decode(str)
 String clientsToJson(ClientsData data) => json.encode(data.toJson());
 
 class ClientsData {
-  final List<Client> clients;
+  List<Client> clients;
   final List<AutoClient> autoClientsData;
   final List<String> supportedTags;
   ClientsAllowedBlocked? clientsAllowedBlocked;
@@ -80,7 +80,7 @@ class WhoisInfo {
 
 class Client {
   final String name;
-  final dynamic blockedServices;
+  final List<String> blockedServices;
   final List<String> ids;
   final List<String> tags;
   final List<dynamic> upstreams;
@@ -107,7 +107,7 @@ class Client {
 
   factory Client.fromJson(Map<String, dynamic> json) => Client(
     name: json["name"],
-    blockedServices: json["blocked_services"],
+    blockedServices: List<String>.from(json["blocked_services"]),
     ids: List<String>.from(json["ids"].map((x) => x)),
     tags: List<String>.from(json["tags"].map((x) => x)),
     upstreams: List<dynamic>.from(json["upstreams"].map((x) => x)),

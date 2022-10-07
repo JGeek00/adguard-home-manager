@@ -193,5 +193,7 @@
     "serverAddress": "Server address",
     "noUpstreamServers": "No upstream servers.",
     "willBeUsedGeneralServers": "General upstream servers will be used.",
-    "added": "Added"
+    "added": "Added",
+    "clientUpdatedSuccessfully": "Client updated successfully",
+    "clientNotUpdated": "Client could not be updated"
 }

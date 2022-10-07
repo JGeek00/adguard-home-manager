@@ -5,7 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/fab.dart';
+import 'package:adguard_home_manager/screens/clients/client_modal.dart';
 
+import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -25,6 +28,58 @@ class AddedList extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    void confirmEditClient(Client client) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.addingClient);
+      
+      final result = await postUpdateClient(server: serversProvider.selectedServer!, data: {
+        'name': client.name,
+        'data': client.toJson()
+      });
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        ClientsData clientsData = serversProvider.clients.data!;
+        clientsData.clients = clientsData.clients.map((e) {
+          if (e.name == client.name) {
+            return client;
+          }
+          else {
+            return e;
+          }
+        }).toList();
+        serversProvider.setClientsData(clientsData);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.clientUpdatedSuccessfully),
+            backgroundColor: Colors.green,
+          )
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.clientNotUpdated),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
+    void openClientModal(Client client) {
+      showModalBottomSheet(
+        context: context, 
+        builder: (ctx) => ClientModal(
+          client: client,
+          onConfirm: confirmEditClient
+        ),
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent
+      );
+    }
+
     return Stack(
       children: [
         if (data.isNotEmpty) RefreshIndicator(
@@ -34,7 +89,7 @@ class AddedList extends StatelessWidget {
             itemCount: data.length,
             itemBuilder: (context, index) => ListTile(
               isThreeLine: true,
-              onTap: () => {},
+              onTap: () => openClientModal(data[index]),
               title: Padding(
                 padding: const EdgeInsets.only(bottom: 5),
                 child: Text(data[index].name),

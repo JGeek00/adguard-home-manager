@@ -636,3 +636,37 @@ Future postAddClient({
     return result;
   }
 }
+
+Future postUpdateClient({
+  required Server server, 
+  required Map<String, dynamic> data, 
+}) async {
+    final result = await apiRequest(
+    urlPath: '/clients/update', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'update_client'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_client', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
