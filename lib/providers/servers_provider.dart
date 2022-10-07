@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -21,6 +22,11 @@ class ServersProvider with ChangeNotifier {
   List<String> _protectionsManagementProcess = []; // protections that are currenty being enabled or disabled
 
   final Clients _clients = Clients(
+    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    data: null
+  );
+
+  final Filtering _filtering = Filtering(
     loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
     data: null
   );
@@ -49,6 +55,10 @@ class ServersProvider with ChangeNotifier {
 
   FilteringStatus? get filteringStatus {
     return _filteringStatus;
+  }
+
+  Filtering get filtering {
+    return _filtering;
   }
 
   void setDbInstance(Database db) {
@@ -95,6 +105,18 @@ class ServersProvider with ChangeNotifier {
   void setFilteringStatus(FilteringStatus status) {
     _filteringStatus = status;
     notifyListeners();
+  }
+
+  void setFilteringData(FilteringData data) {
+    _filtering.data = data;
+    notifyListeners();
+  }
+
+  void setFilteringLoadStatus(int loadStatus, bool notify) {
+    _filtering.loadStatus = loadStatus;
+    if (notify == true) {
+      notifyListeners();
+    }
   }
  
   Future<bool> createServer(Server server) async {

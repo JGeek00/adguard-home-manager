@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -692,6 +693,41 @@ Future postDeleteClient({
         'result': 'error',
         'log': AppLog(
           type: 'remove_client', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future getFiltering({
+  required Server server, 
+}) async {
+  final result = await apiRequest(
+    urlPath: '/filtering/status', 
+    method: 'get',
+    server: server, 
+    type: 'get_filtering_status'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {
+        'result': 'success',
+        'data': FilteringData.fromJson(jsonDecode(result['body']))
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_filtering_status', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),

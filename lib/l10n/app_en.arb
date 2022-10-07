@@ -198,5 +198,10 @@
     "clientNotUpdated": "Client could not be updated",
     "clientDeletedSuccessfully": "Client removed successfully",
     "clientNotDeleted": "Client could not be deleted",
-    "options": "Options"
+    "options": "Options",
+    "loadingFilters": "Loading filters...",
+    "filtersNotLoaded": "Filters couldn't be loaded.",
+    "whitelists": "Whitelists",
+    "blacklists": "Blacklists",
+    "rules": "Rules" 
 }

@@ -16,6 +16,7 @@ class AppConfigProvider with ChangeNotifier {
   int _selectedTheme = 0;
 
   int _selectedClientsTab = 0;
+  int _selectedFiltersTab = 0;
 
   final List<AppLog> _logs = [];
 
@@ -61,6 +62,10 @@ class AppConfigProvider with ChangeNotifier {
     return _selectedClientsTab;
   }
 
+  int get selectedFiltersTab {
+    return _selectedFiltersTab;
+  }
+
   List<AppLog> get logs {
     return _logs;
   }
@@ -91,6 +96,11 @@ class AppConfigProvider with ChangeNotifier {
 
   void setSelectedClientsTab(int tab) {
     _selectedClientsTab = tab;
+    notifyListeners();
+  }
+
+  void setSelectedFiltersTab(int tab) {
+    _selectedFiltersTab = tab;
     notifyListeners();
   }
 
