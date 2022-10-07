@@ -147,7 +147,6 @@ class _LogsWidgetState extends State<LogsWidget> {
                 style: const TextStyle(
                   fontSize: 22,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w500
                 ),
               )
             ],
@@ -233,7 +232,6 @@ class _LogsWidgetState extends State<LogsWidget> {
                 style: const TextStyle(
                   fontSize: 22,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w500
                 ),
               )
             ],

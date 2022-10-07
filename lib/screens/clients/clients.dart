@@ -112,7 +112,6 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                     style: const TextStyle(
                       fontSize: 22,
                       color: Colors.grey,
-                      fontWeight: FontWeight.w500
                     ),
                   )
                 ],
@@ -218,7 +217,6 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                     style: const TextStyle(
                       fontSize: 22,
                       color: Colors.grey,
-                      fontWeight: FontWeight.w500
                     ),
                   )
                 ],
