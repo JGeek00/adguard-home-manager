@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/clients/block_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/add_client_modal.dart';
 
-import 'package:adguard_home_manager/models/add_client.dart';
+import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -74,7 +74,7 @@ class ClientsFab extends StatelessWidget {
       }
     }
 
-    void confirmAddClient(AddClient client) async {
+    void confirmAddClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
@@ -83,6 +83,9 @@ class ClientsFab extends StatelessWidget {
       processModal.close();
 
       if (result['result'] == 'success') {
+        ClientsData clientsData = serversProvider.clients.data!;
+        clientsData.clients.add(client);
+        serversProvider.setClientsData(clientsData);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientAddedSuccessfully),

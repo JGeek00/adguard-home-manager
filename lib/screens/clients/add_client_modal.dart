@@ -7,10 +7,10 @@ import 'package:adguard_home_manager/screens/clients/services_modal.dart';
 import 'package:adguard_home_manager/screens/clients/tags_modal.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/models/add_client.dart';
+import 'package:adguard_home_manager/models/clients.dart';
 
 class AddClientModal extends StatefulWidget {
-  final void Function(AddClient) onConfirm;
+  final void Function(Client) onConfirm;
 
   const AddClientModal({
     Key? key,
@@ -65,7 +65,7 @@ class _AddClientModalState extends State<AddClientModal> {
     final serversProvider = Provider.of<ServersProvider>(context);
 
     void createClient() {
-      final AddClient client = AddClient(
+      final Client client = Client(
         name: nameController.text, 
         ids: List<String>.from(identifiersControllers.map((e) => e['controller'].text)), 
         useGlobalSettings: useGlobalSettingsFiltering, 
