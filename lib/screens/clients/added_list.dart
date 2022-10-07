@@ -218,7 +218,7 @@ class AddedList extends StatelessWidget {
         const Positioned(
           bottom: 20,
           right: 20,
-          child: ClientsFab(),
+          child: ClientsFab(tab: 1),
         ),
       ],
     );

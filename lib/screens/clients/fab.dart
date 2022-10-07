@@ -15,7 +15,12 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class ClientsFab extends StatelessWidget {
-  const ClientsFab({Key? key}) : super(key: key);
+  final int tab;
+
+  const ClientsFab({
+    Key? key,
+    required this.tab,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -126,13 +131,13 @@ class ClientsFab extends StatelessWidget {
       );
     }
 
-    if (appConfigProvider.selectedClientsTab == 1) {
+    if (tab == 1) {
       return FloatingActionButton(
         onPressed: () => openAddClient(),
         child: const Icon(Icons.add),
       );
     }
-    else if (appConfigProvider.selectedClientsTab == 2) {
+    else if (tab == 2) {
       return FloatingActionButton(
         onPressed: () => openBlockClient(),
         child: const Icon(Icons.add),
