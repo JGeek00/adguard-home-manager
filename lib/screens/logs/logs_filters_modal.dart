@@ -153,7 +153,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 470,
+        height: 380,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -217,47 +217,47 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                       ],
                     ),
                   ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: selectTime,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.schedule,
-                              size: 24,
-                              color: Colors.grey,
-                            ),
-                            const SizedBox(width: 20),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.logsOlderThan,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  logsProvider.logsOlderThan != null
-                                    ? formatTimestampUTC(logsProvider.logsOlderThan!, 'HH:mm - dd/MM/yyyy')
-                                    : AppLocalizations.of(context)!.notSelected,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Material(
+                  //   color: Colors.transparent,
+                  //   child: InkWell(
+                  //     onTap: selectTime,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  //       child: Row(
+                  //         children: [
+                  //           const Icon(
+                  //             Icons.schedule,
+                  //             size: 24,
+                  //             color: Colors.grey,
+                  //           ),
+                  //           const SizedBox(width: 20),
+                  //           Column(
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             children: [
+                  //               Text(
+                  //                 AppLocalizations.of(context)!.logsOlderThan,
+                  //                 style: const TextStyle(
+                  //                   fontSize: 16,
+                  //                   fontWeight: FontWeight.w500
+                  //                 ),
+                  //               ),
+                  //               const SizedBox(height: 5),
+                  //               Text(
+                  //                 logsProvider.logsOlderThan != null
+                  //                   ? formatTimestampUTC(logsProvider.logsOlderThan!, 'HH:mm - dd/MM/yyyy')
+                  //                   : AppLocalizations.of(context)!.notSelected,
+                  //                 style: const TextStyle(
+                  //                   fontSize: 14,
+                  //                   color: Colors.grey
+                  //                 ),
+                  //               )
+                  //             ],
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
