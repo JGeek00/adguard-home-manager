@@ -39,7 +39,6 @@ class Home extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 22,
                     color: Colors.grey,
-                    fontWeight: FontWeight.w500
                   ),
                 )
               ],
@@ -144,7 +143,6 @@ class Home extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 22,
                     color: Colors.grey,
-                    fontWeight: FontWeight.w500
                   ),
                 )
               ],
