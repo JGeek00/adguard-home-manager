@@ -84,6 +84,10 @@ class _ClientModalState extends State<ClientModal> {
       enableSafeSearch = widget.client!.safesearchEnabled;
       useGlobalSettingsServices = widget.client!.useGlobalBlockedServices;
       blockedServices = widget.client!.blockedServices;
+      upstreamServers = widget.client!.upstreams.map((e) => {
+        'id': uuid.v4(),
+        'controller': TextEditingController(text: e)
+      }).toList();
     }
     super.initState();
   }
@@ -584,7 +588,9 @@ class _ClientModalState extends State<ClientModal> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(
-                              width: MediaQuery.of(context).size.width - 108,
+                              width: editMode == true
+                                ? MediaQuery.of(context).size.width - 108
+                                : MediaQuery.of(context).size.width - 40,
                               child: TextFormField(
                                 enabled: editMode,
                                 controller: controller['controller'],
@@ -600,13 +606,15 @@ class _ClientModalState extends State<ClientModal> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 20),
-                            IconButton(
-                              onPressed: () => setState(
-                                () => upstreamServers = upstreamServers.where((e) => e['id'] != controller['id']).toList()
-                              ), 
-                              icon: const Icon(Icons.remove_circle_outline_outlined)
-                            )
+                            if (editMode == true) ...[
+                              const SizedBox(width: 20),
+                              IconButton(
+                                onPressed: () => setState(
+                                  () => upstreamServers = upstreamServers.where((e) => e['id'] != controller['id']).toList()
+                                ), 
+                                icon: const Icon(Icons.remove_circle_outline_outlined)
+                              )
+                            ]
                           ],
                         ),
                       ),
