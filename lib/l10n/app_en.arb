@@ -195,5 +195,8 @@
     "willBeUsedGeneralServers": "General upstream servers will be used.",
     "added": "Added",
     "clientUpdatedSuccessfully": "Client updated successfully",
-    "clientNotUpdated": "Client could not be updated"
+    "clientNotUpdated": "Client could not be updated",
+    "clientDeletedSuccessfully": "Client removed successfully",
+    "clientNotDeleted": "Client could not be deleted",
+    "options": "Options"
 }

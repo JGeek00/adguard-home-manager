@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/clients/remove_domain_modal.dart';
 import 'package:adguard_home_manager/screens/clients/services_modal.dart';
 import 'package:adguard_home_manager/screens/clients/tags_modal.dart';
 
@@ -12,11 +13,13 @@ import 'package:adguard_home_manager/models/clients.dart';
 class ClientModal extends StatefulWidget {
   final Client? client;
   final void Function(Client) onConfirm;
+  final void Function(Client)? onDelete;
 
   const ClientModal({
     Key? key,
     this.client,
-    required this.onConfirm
+    required this.onConfirm,
+    this.onDelete,
   }) : super(key: key);
 
   @override
@@ -179,6 +182,18 @@ class _ClientModalState extends State<ClientModal> {
           useGlobalSettingsServices = false;
         });
       }
+    }
+
+    void openDeleteClientModal() {
+      showDialog(
+        context: context, 
+        builder: (ctx) => RemoveDomainModal(
+          onConfirm: () {
+            Navigator.pop(context);
+            widget.onDelete!(widget.client!);
+          }
+        )
+      );
     }
 
     Widget settignsTile({
@@ -626,13 +641,23 @@ class _ClientModalState extends State<ClientModal> {
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Row(
-                  mainAxisAlignment: widget.client == null || (widget.client != null && editMode == true)
-                    ? MainAxisAlignment.end
-                    : MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (widget.client != null && editMode == false) TextButton(
-                      onPressed: () => setState(() => editMode = true), 
-                      child: Text(AppLocalizations.of(context)!.edit)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        if (widget.client != null && editMode == false) ...[
+                          IconButton(
+                            onPressed: () => setState(() => editMode = true), 
+                            icon: const Icon(Icons.edit)
+                          ),
+                          const SizedBox(width: 10),
+                        ],
+                        if (widget.client != null && widget.onDelete != null) IconButton(
+                          onPressed: openDeleteClientModal, 
+                          icon: const Icon(Icons.delete)
+                        ),
+                      ],
                     ),
                     Row(
                       children: [

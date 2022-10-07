@@ -670,3 +670,37 @@ Future postUpdateClient({
     return result;
   }
 }
+
+Future postDeleteClient({
+  required Server server, 
+  required String name, 
+}) async {
+    final result = await apiRequest(
+    urlPath: '/clients/delete', 
+    method: 'post',
+    server: server, 
+    body: {'name': name},
+    type: 'remove_client'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'remove_client', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

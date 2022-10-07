@@ -1,10 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/screens/clients/remove_domain_modal.dart';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/fab.dart';
+import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/screens/clients/client_modal.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -68,15 +71,65 @@ class AddedList extends StatelessWidget {
       }
     }
 
+    void deleteClient(Client client) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.removingClient);
+      
+      final result = await postDeleteClient(server: serversProvider.selectedServer!, name: client.name);
+    
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        ClientsData clientsData = serversProvider.clients.data!;
+        clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
+        serversProvider.setClientsData(clientsData);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.clientDeletedSuccessfully),
+            backgroundColor: Colors.green,
+          )
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.clientNotDeleted),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
     void openClientModal(Client client) {
       showModalBottomSheet(
         context: context, 
         builder: (ctx) => ClientModal(
           client: client,
-          onConfirm: confirmEditClient
+          onConfirm: confirmEditClient,
+          onDelete: deleteClient,
         ),
         isScrollControlled: true,
         backgroundColor: Colors.transparent
+      );
+    }
+
+    void openDeleteModal(Client client) {
+      showModal(
+        context: context, 
+        builder: (ctx) => RemoveDomainModal(
+          onConfirm: () => deleteClient(client)
+        )
+      );
+    }
+
+    void openOptionsModal(Client client) {
+      showModal(
+        context: context, 
+        builder: (ctx) => OptionsModal(
+          onDelete: () => openDeleteModal(client),
+          onEdit: () => openClientModal(client),
+        )
       );
     }
 
@@ -89,6 +142,7 @@ class AddedList extends StatelessWidget {
             itemCount: data.length,
             itemBuilder: (context, index) => ListTile(
               isThreeLine: true,
+              onLongPress: () => openOptionsModal(data[index]),
               onTap: () => openClientModal(data[index]),
               title: Padding(
                 padding: const EdgeInsets.only(bottom: 5),
