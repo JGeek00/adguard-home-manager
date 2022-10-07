@@ -203,5 +203,9 @@
     "filtersNotLoaded": "Filters couldn't be loaded.",
     "whitelists": "Whitelists",
     "blacklists": "Blacklists",
-    "rules": "Rules" 
+    "rules": "Rules",
+    "customRules": "Custom rules",
+    "enabledRules": "Enabled rules",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
 }

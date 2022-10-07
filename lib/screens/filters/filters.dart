@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/clients_list.dart';
-import 'package:adguard_home_manager/screens/clients/blocked_list.dart';
-import 'package:adguard_home_manager/screens/clients/added_list.dart';
+import 'package:adguard_home_manager/screens/filters/filters_list.dart';
+import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
 
-import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -138,7 +135,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                       ),
                       Tab(
                         icon: const Icon(Icons.shield_rounded),
-                        text: AppLocalizations.of(context)!.rules,
+                        text: AppLocalizations.of(context)!.customRules,
                       ),
                     ]
                   )
@@ -158,30 +155,24 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  Container(),
-                  Container(),
-                  Container()
-                  // RefreshIndicator(
-                  //   onRefresh: fetchClients,
-                  //   child: ClientsList(
-                  //     data: serversProvider.clients.data!.autoClientsData,
-                  //     fetchClients: fetchClients,
-                  //   ),
-                  // ),
-                  // RefreshIndicator(
-                  //   onRefresh: fetchClients,
-                  //   child: AddedList(
-                  //     data: serversProvider.clients.data!.clients, 
-                  //     fetchClients: fetchClients,
-                  //   )
-                  // ),
-                  // RefreshIndicator(
-                  //   onRefresh: fetchClients,
-                  //   child: BlockedList(
-                  //     data: serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients, 
-                  //     fetchClients: fetchClients,
-                  //   ),
-                  // ),
+                  RefreshIndicator(
+                    onRefresh: fetchFilters,
+                    child: FiltersList(
+                      data: serversProvider.filtering.data!.whitelistFilters
+                    )
+                  ),
+                  RefreshIndicator(
+                    onRefresh: fetchFilters,
+                    child: FiltersList(
+                      data: serversProvider.filtering.data!.filters
+                    )
+                  ),
+                  RefreshIndicator(
+                    onRefresh: fetchFilters,
+                    child: CustomRulesList(
+                      data: serversProvider.filtering.data!.userRules
+                    )
+                  ),
                 ],
               ),
             )

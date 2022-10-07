@@ -203,5 +203,9 @@
     "filtersNotLoaded": "No se han podido cargar los filtros.",
     "whitelists": "Listas blancas",
     "blacklists": "Listas negras",
-    "rules": "Reglas"
+    "rules": "Reglas",
+    "customRules": "Reglas personalizadas",
+    "enabledRules": "Reglas activas",
+    "enabled": "Activada",
+    "disabled": "Desactivada"
 }
