@@ -207,5 +207,14 @@
     "customRules": "Custom rules",
     "enabledRules": "Enabled rules",
     "enabled": "Enabled",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "rule": "Rule",
+    "addCustomRule": "Add custom rule",
+    "removeCustomRule": "Remove custom rule",
+    "removeCustomRuleMessage": "Are you sure you want to remove this custom rule?",
+    "updatingRules": "Updating custom rules...",
+    "ruleRemovedSuccessfully": "Rule removed successfully",
+    "ruleNotRemoved": "Couldn't remove the rule",
+    "ruleAddedSuccessfully": "Rule added successfully",
+    "ruleNotAdded": "Couldn't add the rule,"
 }

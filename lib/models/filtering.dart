@@ -17,7 +17,7 @@ class Filtering {
 class FilteringData {
   final List<Filter> filters;
   final List<Filter> whitelistFilters;
-  final List<String> userRules;
+  List<String> userRules;
   final int interval;
   final bool enabled;
 

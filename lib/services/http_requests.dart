@@ -676,7 +676,7 @@ Future postDeleteClient({
   required Server server, 
   required String name, 
 }) async {
-    final result = await apiRequest(
+  final result = await apiRequest(
     urlPath: '/clients/delete', 
     method: 'post',
     server: server, 
@@ -728,6 +728,40 @@ Future getFiltering({
         'result': 'error',
         'log': AppLog(
           type: 'get_filtering_status', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future setCustomRules({
+  required Server server, 
+  required List<String> rules, 
+}) async {
+  final result = await apiRequest(
+    urlPath: '/filtering/set_rules', 
+    method: 'post',
+    server: server, 
+    body: {'rules': rules},
+    type: 'set_custom_rules'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'set_custom_rules', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),

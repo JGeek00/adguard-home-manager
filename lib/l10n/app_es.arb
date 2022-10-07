@@ -207,5 +207,14 @@
     "customRules": "Reglas personalizadas",
     "enabledRules": "Reglas activas",
     "enabled": "Activada",
-    "disabled": "Desactivada"
+    "disabled": "Desactivada",
+    "rule": "Regla",
+    "addCustomRule": "Añadir regla personalizada",
+    "removeCustomRule": "Eliminar regla personalizada",
+    "removeCustomRuleMessage": "¿Estás seguro que deseas eliminar esta regla personalizada?",
+    "updatingRules": "Updating custom rules...",
+    "ruleRemovedSuccessfully": "Regla eliminada correctamente",
+    "ruleNotRemoved": "No se ha podido eliminar la regla",
+    "ruleAddedSuccessfully": "Regla añadida correctamente",
+    "ruleNotAdded": "No se ha podido añadir la regla"
 }
