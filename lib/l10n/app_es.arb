@@ -228,5 +228,16 @@
     "listAdded": "Lista añadida correctamente. Items añadidos:",
     "listAlreadyAdded": "La lista ya estaba añadida",
     "listUrlInvalid": "URL de la lista no válida",
-    "listNotAdded": "La lista no se pudo añadir"
+    "listNotAdded": "La lista no se pudo añadir",
+    "listDetails": "Detalles de la lista",
+    "listType": "Tipo de lista",
+    "whitelist": "Lista blanca",
+    "blacklist": "Lista negra",
+    "latestUpdate": "Última actualización",
+    "disable": "Deshabilitar",
+    "enable": "Habilitar",
+    "currentStatus": "Estado actual",
+    "listDataUpdated": "Datos de lista actualizados correctamente",
+    "listDataNotUpdated": "No se han podido actualizar los datos de la lista",
+    "updatingListData": "Actualizando datos de lista..."
 }

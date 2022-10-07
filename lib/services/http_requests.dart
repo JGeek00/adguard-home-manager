@@ -775,6 +775,7 @@ Future setCustomRules({
   }
 
 }
+
 Future addFilteringList({
   required Server server, 
   required Map<String, dynamic> data, 
@@ -799,6 +800,40 @@ Future addFilteringList({
         'result': 'error',
         'log': AppLog(
           type: 'add_filtering_url', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future updateFilterList({
+  required Server server, 
+  required Map<String, dynamic> data, 
+}) async {
+  final result = await apiRequest(
+    urlPath: '/filtering/set_url', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'update_filter_list'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_filter_list', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),

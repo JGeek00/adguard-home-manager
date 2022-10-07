@@ -228,5 +228,16 @@
     "listAdded": "List added successfully. Items added:",
     "listAlreadyAdded": "List already added",
     "listUrlInvalid": "List URL invalid",
-    "listNotAdded": "List couldn't be added"
+    "listNotAdded": "List couldn't be added",
+    "listDetails": "List details",
+    "listType": "List type",
+    "whitelist": "White list",
+    "blacklist": "Black list",
+    "latestUpdate": "Latest update",
+    "disable": "Disable",
+    "enable": "Enable",
+    "currentStatus": "Current status",
+    "listDataUpdated": "List data updated successfull",
+    "listDataNotUpdated": "Couldn't update list data",
+    "updatingListData": "Updating list data..."
 }

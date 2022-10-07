@@ -1,11 +1,19 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/fab.dart';
+import 'package:adguard_home_manager/screens/filters/list_details_modal.dart';
 
+import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 
@@ -53,6 +61,72 @@ class _FiltersListState extends State<FiltersList> {
 
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    void enableDisableList(Filter list, bool enabled) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.updatingListData);
+      
+      final result = await updateFilterList(server: serversProvider.selectedServer!, data: {
+        "data": {
+          "enabled": enabled,
+          "name": list.name,
+          "url": list.url
+        },
+        "url": list.url,
+        "whitelist": widget.type == 'whitelist' ? true : false
+      });
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        final result2 = await getFiltering(server: serversProvider.selectedServer!);
+
+        if (result2['result'] == 'success') {
+          serversProvider.setFilteringData(result2['data']);
+          serversProvider.setFilteringLoadStatus(1, true);
+        }
+        else {
+          appConfigProvider.addLog(result2['log']);
+          serversProvider.setFilteringLoadStatus(2, true);
+        }
+
+        processModal.close();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.listDataUpdated),
+            backgroundColor: Colors.green,
+          )
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.listDataNotUpdated),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
+    void openDetailsModal(Filter filter) {
+      showModalBottomSheet(
+        context: context, 
+        builder: (ctx) => ListDetailsModal(
+          list: filter, 
+          type: widget.type,
+          onDelete: () => {}, 
+          edit: () => {},
+          onEnableDisable: enableDisableList,
+        ),
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true
+      );
+    }
+
     return Stack(
       children: [
         if (widget.data.isNotEmpty) ListView.builder(
@@ -61,7 +135,7 @@ class _FiltersListState extends State<FiltersList> {
           itemBuilder: (context, index) => Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => {},
+              onTap: () => openDetailsModal(widget.data[index]),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Row(
