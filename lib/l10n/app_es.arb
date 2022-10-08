@@ -242,5 +242,10 @@
     "listDataNotUpdated": "No se han podido actualizar los datos de la lista",
     "updatingListData": "Actualizando datos de lista...",
     "editWhitelist": "Editar lista blanca",
-    "editBlacklist": "Editar lista negra"
+    "editBlacklist": "Editar lista negra",
+    "deletingList": "Eliminando lista...",
+    "listDeleted": "Lista eliminada correctamente",
+    "listNotDeleted": "La lista no pudo ser eliminada",
+    "deleteList": "Eliminar lista",
+    "deleteListMessage": "¿Estás seguro que deseas eliminar esta lista? Esta acción no se puede revertir."
 }

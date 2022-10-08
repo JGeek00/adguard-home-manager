@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/remove_domain_modal.dart';
+import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/services_modal.dart';
 import 'package:adguard_home_manager/screens/clients/tags_modal.dart';
 
@@ -191,7 +191,7 @@ class _ClientModalState extends State<ClientModal> {
     void openDeleteClientModal() {
       showDialog(
         context: context, 
-        builder: (ctx) => RemoveDomainModal(
+        builder: (ctx) => RemoveClientModal(
           onConfirm: () {
             Navigator.pop(context);
             widget.onDelete!(widget.client!);

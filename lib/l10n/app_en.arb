@@ -242,5 +242,10 @@
     "listDataNotUpdated": "Couldn't update list data",
     "updatingListData": "Updating list data...",
     "editWhitelist": "Edit white list",
-    "editBlacklist": "Edit black list"
+    "editBlacklist": "Edit black list",
+    "deletingList": "Deleting list...",
+    "listDeleted": "List deleted successfully",
+    "listNotDeleted": "The list couldn't be deleted",
+    "deleteList": "Delete list",
+    "deleteListMessage": "Are you sure you want to delete this list? This action can't be reverted."
 }

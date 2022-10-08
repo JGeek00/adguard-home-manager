@@ -72,7 +72,7 @@ class FiltersFab extends StatelessWidget {
       );
     }
 
-    void confirmAddList({required String name, required String url, String? type}) async {
+    void confirmAddList({required String name, required String url, required String type}) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingList);
 

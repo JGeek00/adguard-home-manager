@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:adguard_home_manager/screens/filters/delete_list_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/rendering.dart';
@@ -119,7 +120,7 @@ class _FiltersListState extends State<FiltersList> {
 
     void confirmEditList({required Filter list, required String type}) async {
       ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.addingList);
+      processModal.open(AppLocalizations.of(context)!.updatingListData);
 
       final result1 = await updateFilterList(server: serversProvider.selectedServer!, data: {
         "data": {
@@ -166,13 +167,67 @@ class _FiltersListState extends State<FiltersList> {
       }
     }
 
+    void deleteList(Filter list, String type) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.deletingList);
+
+      final result1 = await deleteFilterList(server: serversProvider.selectedServer!, data: {
+        "url": list.url,
+        "whitelist": type == 'whitelist' ? true : false
+      });
+
+      if (result1['result'] == 'success') {
+        final result2 = await getFiltering(server: serversProvider.selectedServer!);
+
+        if (result2['result'] == 'success') {
+          serversProvider.setFilteringData(result2['data']);
+          serversProvider.setFilteringLoadStatus(1, true);
+        }
+        else {
+          appConfigProvider.addLog(result2['log']);
+          serversProvider.setFilteringLoadStatus(2, true);
+          }
+
+        processModal.close();
+
+        appConfigProvider.setShowingSnackbar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.listDeleted),
+            backgroundColor: Colors.green,
+          )
+        );
+      }
+      else {
+        processModal.close();
+        appConfigProvider.addLog(result1['log']);
+        appConfigProvider.setShowingSnackbar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.listNotDeleted),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
     void openDetailsModal(Filter filter) {
       showModalBottomSheet(
         context: context, 
         builder: (ctx) => ListDetailsModal(
           list: filter, 
           type: widget.type,
-          onDelete: () => {}, 
+          onDelete: (Filter list, String type) {
+            showDialog(
+              context: context, 
+              builder: (context) => DeleteListModal(
+                onConfirm: () {
+                  Navigator.pop(context);
+                  deleteList(list, type);
+                },
+              )
+            );
+          }, 
           edit: (type) => {
             showModalBottomSheet(
               context: context, 

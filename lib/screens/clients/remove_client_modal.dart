@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class RemoveDomainModal extends StatelessWidget {
+class RemoveClientModal extends StatelessWidget {
   final void Function() onConfirm;
 
-  const RemoveDomainModal({
+  const RemoveClientModal({
     Key? key,
     required this.onConfirm
   }) : super(key: key);

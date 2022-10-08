@@ -9,7 +9,7 @@ import 'package:adguard_home_manager/models/filtering.dart';
 class ListDetailsModal extends StatelessWidget {
   final Filter list;
   final String type;
-  final void Function() onDelete;
+  final void Function(Filter, String) onDelete;
   final void Function(String) edit;
   final void Function(Filter, bool) onEnableDisable;
 
@@ -133,12 +133,23 @@ class ListDetailsModal extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      edit(type);
-                    }, 
-                    icon: const Icon(Icons.edit)
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          edit(type);
+                        }, 
+                        icon: const Icon(Icons.edit)
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        onPressed: () {
+                          onDelete(list, type);
+                        }, 
+                        icon: const Icon(Icons.delete)
+                      ),
+                    ],
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context), 

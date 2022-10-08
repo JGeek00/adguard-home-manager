@@ -846,3 +846,37 @@ Future updateFilterList({
     return result;
   }
 }
+
+Future deleteFilterList({
+  required Server server, 
+  required Map<String, dynamic> data, 
+}) async {
+  final result = await apiRequest(
+    urlPath: '/filtering/remove_url', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'delete_filter_list'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'delete_filter_list', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/remove_domain_modal.dart';
+import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -138,7 +138,7 @@ class _BlockedListState extends State<BlockedList> {
                   onPressed: () => {
                     showDialog(
                       context: context, 
-                      builder: (context) => RemoveDomainModal(
+                      builder: (context) => RemoveClientModal(
                         onConfirm: () => confirmRemoveDomain(widget.data[index]),
                       )
                     )

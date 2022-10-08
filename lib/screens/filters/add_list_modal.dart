@@ -6,7 +6,7 @@ import 'package:adguard_home_manager/models/filtering.dart';
 class AddListModal extends StatefulWidget {
   final String type;
   final Filter? list;
-  final void Function({required String name, required String url})? onConfirm;
+  final void Function({required String name, required String url, required String type})? onConfirm;
   final void Function({required Filter list, required String type})? onEdit;
 
   const AddListModal({
@@ -163,6 +163,7 @@ class _AddListModalState extends State<AddListModal> {
                             widget.onConfirm!(
                               name: nameController.text,
                               url: urlController.text,
+                              type: widget.type
                             );
                           }
                         }, 
