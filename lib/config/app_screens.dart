@@ -55,7 +55,6 @@ List<AppScreen> screensServerConnected = [
   const AppScreen(
     name: "settings", 
     icon: Icons.settings_rounded,
-    appBar: SettingsAppBar(),
     body: Settings()
   )
 ];

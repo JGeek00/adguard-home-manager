@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
 import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
+import 'package:adguard_home_manager/screens/settings/appbar.dart';
 import 'package:adguard_home_manager/screens/servers/servers.dart';
 import 'package:adguard_home_manager/screens/settings/advanced_setings.dart';
 import 'package:adguard_home_manager/screens/settings/general_settings.dart';
@@ -78,87 +79,90 @@ class Settings extends StatelessWidget {
       );
     }    
 
-    return ListView(
-      children: [
-        SectionLabel(label: AppLocalizations.of(context)!.appSettings),
-        CustomListTile(
-          leadingIcon: Icons.light_mode_rounded,
-          label: AppLocalizations.of(context)!.theme, 
-          description: getThemeString(),
-          onTap: openThemeModal,
-        ),
-        CustomListTile(
-          leadingIcon: Icons.storage_rounded,
-          label: AppLocalizations.of(context)!.servers,
-          description: serversProvider.selectedServer != null
-            ? serversProvider.serverStatus.data != null
-              ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
-              : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
-            : AppLocalizations.of(context)!.noServerSelected,
-          onTap: navigateServers,
-        ),
-        CustomListTile(
-          leadingIcon: Icons.settings,
-          label: AppLocalizations.of(context)!.generalSettings,
-          description: AppLocalizations.of(context)!.generalSettingsDescription,
-          onTap: () => {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const GeneralSettings()
-              )
-            )
-          },
-        ),
-        CustomListTile(
-          leadingIcon: Icons.build_outlined,
-          label: AppLocalizations.of(context)!.advancedSettings,
-          description: AppLocalizations.of(context)!.advancedSetupDescription,
-          onTap: () => {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const AdvancedSettings()
-              )
-            )
-          },
-        ),
-        SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
-        CustomListTile(
-          label: AppLocalizations.of(context)!.appVersion, 
-          description: appConfigProvider.getAppInfo!.version,
-        ),
-        CustomListTile(
-          label: AppLocalizations.of(context)!.createdBy, 
-          description: Strings.createdBy,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                onPressed: () => openWeb(Urls.playStore), 
-                icon: SvgPicture.asset(
-                  'assets/resources/google-play.svg',
-                  color: Theme.of(context).textTheme.bodyText2!.color,
-                  width: 30,
-                  height: 30,
-                ),
-                tooltip: AppLocalizations.of(context)!.visitGooglePlay,
-              ),
-              IconButton(
-                onPressed: () => openWeb(Urls.gitHub), 
-                icon: SvgPicture.asset(
-                  'assets/resources/github.svg',
-                  color: Theme.of(context).textTheme.bodyText2!.color,
-                  width: 30,
-                  height: 30,
-                ),
-                tooltip: AppLocalizations.of(context)!.gitHub,
-              ),
-            ],
+    return Scaffold(
+      appBar: const SettingsAppBar(),
+      body: ListView(
+        children: [
+          SectionLabel(label: AppLocalizations.of(context)!.appSettings),
+          CustomListTile(
+            leadingIcon: Icons.light_mode_rounded,
+            label: AppLocalizations.of(context)!.theme, 
+            description: getThemeString(),
+            onTap: openThemeModal,
           ),
-        )
-      ],
+          CustomListTile(
+            leadingIcon: Icons.storage_rounded,
+            label: AppLocalizations.of(context)!.servers,
+            description: serversProvider.selectedServer != null
+              ? serversProvider.serverStatus.data != null
+                ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
+                : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
+              : AppLocalizations.of(context)!.noServerSelected,
+            onTap: navigateServers,
+          ),
+          CustomListTile(
+            leadingIcon: Icons.settings,
+            label: AppLocalizations.of(context)!.generalSettings,
+            description: AppLocalizations.of(context)!.generalSettingsDescription,
+            onTap: () => {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const GeneralSettings()
+                )
+              )
+            },
+          ),
+          CustomListTile(
+            leadingIcon: Icons.build_outlined,
+            label: AppLocalizations.of(context)!.advancedSettings,
+            description: AppLocalizations.of(context)!.advancedSetupDescription,
+            onTap: () => {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AdvancedSettings()
+                )
+              )
+            },
+          ),
+          SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
+          CustomListTile(
+            label: AppLocalizations.of(context)!.appVersion, 
+            description: appConfigProvider.getAppInfo!.version,
+          ),
+          CustomListTile(
+            label: AppLocalizations.of(context)!.createdBy, 
+            description: Strings.createdBy,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  onPressed: () => openWeb(Urls.playStore), 
+                  icon: SvgPicture.asset(
+                    'assets/resources/google-play.svg',
+                    color: Theme.of(context).textTheme.bodyText2!.color,
+                    width: 30,
+                    height: 30,
+                  ),
+                  tooltip: AppLocalizations.of(context)!.visitGooglePlay,
+                ),
+                IconButton(
+                  onPressed: () => openWeb(Urls.gitHub), 
+                  icon: SvgPicture.asset(
+                    'assets/resources/github.svg',
+                    color: Theme.of(context).textTheme.bodyText2!.color,
+                    width: 30,
+                    height: 30,
+                  ),
+                  tooltip: AppLocalizations.of(context)!.gitHub,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
