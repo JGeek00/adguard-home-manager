@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -53,6 +54,7 @@ class ClientsWidget extends StatefulWidget {
 
 class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateMixin {
   late TabController tabController;
+  final ScrollController scrollController = ScrollController();
 
   Future fetchClients() async {
     widget.setLoadingStatus(0, false);
@@ -89,74 +91,10 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
 
-    Widget generateBody() {
-      switch (serversProvider.clients.loadStatus) {
-      case 0:
-          return Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              SizedBox(
-                width: double.maxFinite,
-                height: MediaQuery.of(context).size.height-171,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.loadingStatus,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        color: Colors.grey,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          );
-        
-        case 1:
-        return Container();
-          
-        case 2:
-          return Column(
-            children: [
-              SizedBox(
-                width: double.maxFinite,
-                height: MediaQuery.of(context).size.height-171,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                      size: 50,
-                    ),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.errorLoadServerStatus,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        color: Colors.grey,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          );
-
-        default:
-          return const SizedBox();
-      }
-    }
-
     return DefaultTabController(
       length: 3,
       child: NestedScrollView(
+        controller: scrollController,
         headerSliverBuilder: ((context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
@@ -201,6 +139,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
               RefreshIndicator(
                 onRefresh: fetchClients,
                 child: ClientsList(
+                  scrollController: scrollController,
                   loadStatus: serversProvider.clients.loadStatus,
                   data: serversProvider.clients.loadStatus == 1
                     ? serversProvider.clients.data!.autoClientsData : [],
@@ -210,6 +149,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
               RefreshIndicator(
                 onRefresh: fetchClients,
                 child: AddedList(
+                  scrollController: scrollController,
                   loadStatus: serversProvider.clients.loadStatus,
                   data: serversProvider.clients.loadStatus == 1
                     ? serversProvider.clients.data!.clients : [], 
@@ -219,6 +159,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
               RefreshIndicator(
                 onRefresh: fetchClients,
                 child: BlockedList(
+                  scrollController: scrollController,
                   loadStatus: serversProvider.clients.loadStatus,
                   data: serversProvider.clients.loadStatus == 1
                     ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 

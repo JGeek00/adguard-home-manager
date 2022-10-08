@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -244,7 +245,7 @@ class _LogsWidgetState extends State<LogsWidget> {
 
     return Scaffold(
       appBar: const LogsAppBar(),
-      body: generateBody(),
+      body: generateBody()
     );
   }
 }

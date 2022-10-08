@@ -52,6 +52,7 @@ class ClientsFab extends StatelessWidget {
             blockedHosts: body['blocked_hosts'] ?? [], 
           )
         );
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientAddedSuccessfully),
@@ -61,6 +62,7 @@ class ClientsFab extends StatelessWidget {
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
         appConfigProvider.addLog(result['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientAnotherList),
@@ -70,6 +72,7 @@ class ClientsFab extends StatelessWidget {
       }
       else {
         appConfigProvider.addLog(result['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientNotAdded),
@@ -91,6 +94,7 @@ class ClientsFab extends StatelessWidget {
         ClientsData clientsData = serversProvider.clients.data!;
         clientsData.clients.add(client);
         serversProvider.setClientsData(clientsData);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientAddedSuccessfully),
@@ -100,6 +104,7 @@ class ClientsFab extends StatelessWidget {
       }
       else {
         appConfigProvider.addLog(result['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientNotAdded),

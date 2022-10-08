@@ -1,11 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/screens/clients/remove_domain_modal.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/clients/remove_domain_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/screens/clients/client_modal.dart';
@@ -16,17 +17,47 @@ import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class AddedList extends StatelessWidget {
+class AddedList extends StatefulWidget {
+  final ScrollController scrollController;
   final int loadStatus;
   final List<Client> data;
   final Future Function() fetchClients;
 
   const AddedList({
     Key? key,
+    required this.scrollController,
     required this.loadStatus,
     required this.data,
     required this.fetchClients
   }) : super(key: key);
+
+  @override
+  State<AddedList> createState() => _AddedListState();
+}
+
+class _AddedListState extends State<AddedList> {
+  late bool isVisible;
+
+  @override
+  initState(){
+    super.initState();
+
+    isVisible = true;
+    widget.scrollController.addListener(() {
+      if (widget.scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (mounted && isVisible == true) {
+          setState(() => isVisible = false);
+        }
+      } 
+      else {
+        if (widget.scrollController.position.userScrollDirection == ScrollDirection.forward) {
+          if (mounted && isVisible == false) {
+            setState(() => isVisible = true);
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +86,7 @@ class AddedList extends StatelessWidget {
           }
         }).toList();
         serversProvider.setClientsData(clientsData);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientUpdatedSuccessfully),
@@ -64,6 +96,7 @@ class AddedList extends StatelessWidget {
       }
       else {
         appConfigProvider.addLog(result['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientNotUpdated),
@@ -85,6 +118,7 @@ class AddedList extends StatelessWidget {
         ClientsData clientsData = serversProvider.clients.data!;
         clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
         serversProvider.setClientsData(clientsData);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientDeletedSuccessfully),
@@ -94,6 +128,7 @@ class AddedList extends StatelessWidget {
       }
       else {
         appConfigProvider.addLog(result['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.clientNotDeleted),
@@ -135,7 +170,7 @@ class AddedList extends StatelessWidget {
       );
     }
 
-    switch (loadStatus) {
+    switch (widget.loadStatus) {
       case 0:
         return SizedBox(
           width: double.maxFinite,
@@ -160,28 +195,28 @@ class AddedList extends StatelessWidget {
       case 1:
         return Stack(
           children: [
-            if (data.isNotEmpty) ListView.builder(
+            if (widget.data.isNotEmpty) ListView.builder(
               padding: const EdgeInsets.only(top: 0),
-              itemCount: data.length,
+              itemCount: widget.data.length,
               itemBuilder: (context, index) => ListTile(
                 isThreeLine: true,
-                onLongPress: () => openOptionsModal(data[index]),
-                onTap: () => openClientModal(data[index]),
+                onLongPress: () => openOptionsModal(widget.data[index]),
+                onTap: () => openClientModal(widget.data[index]),
                 title: Padding(
                   padding: const EdgeInsets.only(bottom: 5),
-                  child: Text(data[index].name),
+                  child: Text(widget.data[index].name),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), '')),
+                    Text(widget.data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), '')),
                     const SizedBox(height: 7),
                     Row(
                       children: [
                         Icon(
                           Icons.filter_list_rounded,
                           size: 19,
-                          color: data[index].filteringEnabled == true 
+                          color: widget.data[index].filteringEnabled == true 
                             ? Colors.green
                             : Colors.red,
                         ),
@@ -189,7 +224,7 @@ class AddedList extends StatelessWidget {
                         Icon(
                           Icons.vpn_lock_rounded,
                           size: 18,
-                          color: data[index].safebrowsingEnabled == true 
+                          color: widget.data[index].safebrowsingEnabled == true 
                             ? Colors.green
                             : Colors.red,
                         ),
@@ -197,7 +232,7 @@ class AddedList extends StatelessWidget {
                         Icon(
                           Icons.block,
                           size: 18,
-                          color: data[index].parentalEnabled == true 
+                          color: widget.data[index].parentalEnabled == true 
                             ? Colors.green
                             : Colors.red,
                         ),
@@ -205,7 +240,7 @@ class AddedList extends StatelessWidget {
                         Icon(
                           Icons.search_rounded,
                           size: 19,
-                          color: data[index].safesearchEnabled == true 
+                          color: widget.data[index].safesearchEnabled == true 
                             ? Colors.green
                             : Colors.red,
                         )
@@ -215,7 +250,7 @@ class AddedList extends StatelessWidget {
                 ),
               )
             ),
-            if (data.isEmpty) SizedBox(
+            if (widget.data.isEmpty) SizedBox(
               width: double.maxFinite,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -230,18 +265,23 @@ class AddedList extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   TextButton.icon(
-                    onPressed: fetchClients, 
+                    onPressed: widget.fetchClients, 
                     icon: const Icon(Icons.refresh_rounded), 
                     label: Text(AppLocalizations.of(context)!.refresh),
                   )
                 ],
               ),
             ),
-            const Positioned(
-              bottom: 20,
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              bottom: isVisible ?
+                appConfigProvider.showingSnackbar
+                  ? 70 : 20
+                : -70,
               right: 20,
-              child: ClientsFab(tab: 1),
-            ),
+              child: const ClientsFab(tab: 1),
+            )
           ],
         );
       

@@ -75,6 +75,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
         FilteringData filteringData = serversProvider.filtering.data!;
         filteringData.userRules = newRules;
         serversProvider.setFilteringData(filteringData);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.ruleRemovedSuccessfully),
@@ -84,6 +85,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
       }
       else {
         appConfigProvider.addLog(result['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.ruleNotRemoved),
@@ -163,7 +165,10 @@ class _CustomRulesListState extends State<CustomRulesList> {
             AnimatedPositioned(
               duration: const Duration(milliseconds: 100),
               curve: Curves.easeInOut,
-              bottom: isVisible ? 20 : -70,
+              bottom: isVisible ?
+                appConfigProvider.showingSnackbar
+                  ? 70 : 20
+                : -70,
               right: 20,
               child: const FiltersFab(
                 type: 'custom_rule',

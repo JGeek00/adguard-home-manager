@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -13,17 +14,47 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
-class BlockedList extends StatelessWidget {
+class BlockedList extends StatefulWidget {
+  final ScrollController scrollController;
   final int loadStatus;
   final List<String> data;
   final Future Function() fetchClients;
 
   const BlockedList({
     Key? key,
+    required this.scrollController,
     required this.loadStatus,
     required this.data,
     required this.fetchClients
   }) : super(key: key);
+
+  @override
+  State<BlockedList> createState() => _BlockedListState();
+}
+
+class _BlockedListState extends State<BlockedList> {
+  late bool isVisible;
+
+  @override
+  initState(){
+    super.initState();
+
+    isVisible = true;
+    widget.scrollController.addListener(() {
+      if (widget.scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (mounted && isVisible == true) {
+          setState(() => isVisible = false);
+        }
+      } 
+      else {
+        if (widget.scrollController.position.userScrollDirection == ScrollDirection.forward) {
+          if (mounted && isVisible == false) {
+            setState(() => isVisible = true);
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +104,7 @@ class BlockedList extends StatelessWidget {
       }
     }
 
-    switch (loadStatus) {
+    switch (widget.loadStatus) {
       case 0:
          return SizedBox(
           width: double.maxFinite,
@@ -98,17 +129,17 @@ class BlockedList extends StatelessWidget {
       case 1: 
         return Stack(
           children: [
-            if (data.isNotEmpty) ListView.builder(
+            if (widget.data.isNotEmpty) ListView.builder(
               padding: const EdgeInsets.only(top: 0),
-              itemCount: data.length,
+              itemCount: widget.data.length,
               itemBuilder: (context, index) => ListTile(
-                title: Text(data[index]),
+                title: Text(widget.data[index]),
                 trailing: IconButton(
                   onPressed: () => {
                     showDialog(
                       context: context, 
                       builder: (context) => RemoveDomainModal(
-                        onConfirm: () => confirmRemoveDomain(data[index]),
+                        onConfirm: () => confirmRemoveDomain(widget.data[index]),
                       )
                     )
                   }, 
@@ -116,13 +147,13 @@ class BlockedList extends StatelessWidget {
                 ),
               )
             ),
-            if (data.isEmpty) SizedBox(
+            if (widget.data.isEmpty) SizedBox(
               width: double.maxFinite,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.noCustomFilters,
+                    AppLocalizations.of(context)!.noBlockedClients,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 24,
@@ -131,18 +162,23 @@ class BlockedList extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   TextButton.icon(
-                    onPressed: fetchClients, 
+                    onPressed: widget.fetchClients, 
                     icon: const Icon(Icons.refresh_rounded), 
                     label: Text(AppLocalizations.of(context)!.refresh),
                   )
                 ],
               ),
             ),
-            const Positioned(
-              bottom: 20,
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              bottom: isVisible ?
+                appConfigProvider.showingSnackbar
+                  ? 70 : 20
+                : -70,
               right: 20,
-              child: ClientsFab(tab: 2),
-            ),
+              child: const ClientsFab(tab: 2),
+            )
           ]
         );
 

@@ -4,12 +4,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientsList extends StatelessWidget {
+  final ScrollController scrollController;
   final int loadStatus;
   final List<AutoClient> data;
   final Future Function() fetchClients;
 
   const ClientsList({
     Key? key,
+    required this.scrollController,
     required this.loadStatus,
     required this.data,
     required this.fetchClients

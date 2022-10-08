@@ -3,11 +3,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/server_status.dart';
 import 'package:adguard_home_manager/screens/home/appbar.dart';
+import 'package:adguard_home_manager/screens/home/fab.dart';
 import 'package:adguard_home_manager/screens/home/top_items.dart';
 import 'package:adguard_home_manager/screens/home/chart.dart';
 
@@ -16,8 +18,37 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final ScrollController scrollController = ScrollController();
+  late bool isVisible;
+
+  @override
+  initState(){
+    super.initState();
+
+    isVisible = true;
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (mounted && isVisible == true) {
+          setState(() => isVisible = false);
+        }
+      } 
+      else {
+        if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+          if (mounted && isVisible == false) {
+            setState(() => isVisible = true);
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +79,7 @@ class Home extends StatelessWidget {
 
         case 1:
           return ListView(
+            controller: scrollController,
             children: [
               ServerStatus(serverStatus: serversProvider.serverStatus.data!),
               const Padding(
@@ -176,6 +208,7 @@ class Home extends StatelessWidget {
         },
         child: status()
       ),
+      floatingActionButton: isVisible ? const HomeFab() : null
     );
   }
 }

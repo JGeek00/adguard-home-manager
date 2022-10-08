@@ -13,6 +13,10 @@ class AppConfigProvider with ChangeNotifier {
   AndroidDeviceInfo? _androidDeviceInfo;
   IosDeviceInfo? _iosDeviceInfo;
 
+  int _selectedScreen = 0;
+
+  bool _showingSnackbar = false;
+
   int _selectedTheme = 0;
 
   int _selectedClientsTab = 0;
@@ -78,6 +82,14 @@ class AppConfigProvider with ChangeNotifier {
     return _hideZeroValues == 1 ? true : false;
   }
 
+  int get selectedScreen {
+    return _selectedScreen;
+  }
+
+  bool get showingSnackbar {
+    return _showingSnackbar;
+  }
+
   void setDbInstance(Database db) {
     _dbInstance = db;
   }
@@ -106,6 +118,19 @@ class AppConfigProvider with ChangeNotifier {
 
   void addLog(AppLog log) {
     _logs.add(log);
+    notifyListeners();
+  }
+
+  void setSelectedScreen(int screen) {
+    _selectedScreen = screen;
+    notifyListeners();
+  }
+
+  void setShowingSnackbar() async {
+    _showingSnackbar = true;
+    notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 4500));
+    _showingSnackbar = false;
     notifyListeners();
   }
 

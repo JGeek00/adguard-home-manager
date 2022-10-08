@@ -96,6 +96,7 @@ class _FiltersListState extends State<FiltersList> {
 
         processModal.close();
 
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.listDataUpdated),
@@ -105,6 +106,7 @@ class _FiltersListState extends State<FiltersList> {
       }
       else {
         appConfigProvider.addLog(result['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.listDataNotUpdated),
@@ -233,7 +235,10 @@ class _FiltersListState extends State<FiltersList> {
             AnimatedPositioned(
               duration: const Duration(milliseconds: 100),
               curve: Curves.easeInOut,
-              bottom: isVisible ? 20 : -70,
+              bottom: isVisible ?
+                appConfigProvider.showingSnackbar
+                  ? 70 : 20
+                : -70,
               right: 20,
               child: FiltersFab(
                 type: widget.type

@@ -83,6 +83,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     return DefaultTabController(
       length: 3,
       child: NestedScrollView(
+        controller: scrollController,
         headerSliverBuilder: ((context, innerBoxIsScrolled) {
           return [
             SliverAppBar(

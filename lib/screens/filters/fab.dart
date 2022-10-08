@@ -41,6 +41,7 @@ class FiltersFab extends StatelessWidget {
         FilteringData filteringData = serversProvider.filtering.data!;
         filteringData.userRules = newRules;
         serversProvider.setFilteringData(filteringData);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.ruleAddedSuccessfully),
@@ -50,6 +51,7 @@ class FiltersFab extends StatelessWidget {
       }
       else {
         appConfigProvider.addLog(result['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.ruleNotAdded),
@@ -96,6 +98,7 @@ class FiltersFab extends StatelessWidget {
 
           processModal.close();
 
+          appConfigProvider.setShowingSnackbar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("${AppLocalizations.of(context)!.listAdded} $items."),
@@ -105,6 +108,7 @@ class FiltersFab extends StatelessWidget {
         }
         else {
           processModal.close();
+          appConfigProvider.setShowingSnackbar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.listNotAdded),
@@ -116,6 +120,7 @@ class FiltersFab extends StatelessWidget {
       else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains("Couldn't fetch filter from url")) {
         processModal.close();
         appConfigProvider.addLog(result1['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar( 
           SnackBar(
             content: Text(AppLocalizations.of(context)!.listUrlInvalid),
@@ -126,6 +131,7 @@ class FiltersFab extends StatelessWidget {
       else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains('Filter URL already added')) {
         processModal.close();
         appConfigProvider.addLog(result1['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar( 
           SnackBar(
             content: Text(AppLocalizations.of(context)!.listAlreadyAdded),
@@ -136,6 +142,7 @@ class FiltersFab extends StatelessWidget {
       else {
         processModal.close();
         appConfigProvider.addLog(result1['log']);
+        appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.listNotAdded),

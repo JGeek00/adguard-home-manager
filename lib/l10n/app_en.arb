@@ -218,6 +218,7 @@
     "ruleAddedSuccessfully": "Rule added successfully",
     "ruleNotAdded": "Couldn't add the rule",
     "noCustomFilters": "No custom filters",
+    "noBlockedClients": "No blocked clients",
     "noBlackLists": "No blacklists",
     "noWhiteLists": "No whitelists",
     "addWhitelist": "Add whitelist",
