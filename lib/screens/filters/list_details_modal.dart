@@ -10,7 +10,7 @@ class ListDetailsModal extends StatelessWidget {
   final Filter list;
   final String type;
   final void Function() onDelete;
-  final void Function() edit;
+  final void Function(String) edit;
   final void Function(Filter, bool) onEnableDisable;
 
   const ListDetailsModal({
@@ -134,7 +134,10 @@ class ListDetailsModal extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    onPressed: edit, 
+                    onPressed: () {
+                      Navigator.pop(context);
+                      edit(type);
+                    }, 
                     icon: const Icon(Icons.edit)
                   ),
                   TextButton(

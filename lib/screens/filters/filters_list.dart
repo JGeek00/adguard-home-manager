@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/fab.dart';
 import 'package:adguard_home_manager/screens/filters/list_details_modal.dart';
+import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -116,6 +117,55 @@ class _FiltersListState extends State<FiltersList> {
       }
     }
 
+    void confirmEditList({required Filter list, required String type}) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.addingList);
+
+      final result1 = await updateFilterList(server: serversProvider.selectedServer!, data: {
+        "data": {
+          "enabled": list.enabled,
+          "name": list.name,
+          "url": list.url
+        },
+        "url": list.url,
+        "whitelist": type == 'whitelist' ? true : false
+      });
+
+      if (result1['result'] == 'success') {
+        final result2 = await getFiltering(server: serversProvider.selectedServer!);
+
+        if (result2['result'] == 'success') {
+          serversProvider.setFilteringData(result2['data']);
+          serversProvider.setFilteringLoadStatus(1, true);
+        }
+        else {
+          appConfigProvider.addLog(result2['log']);
+          serversProvider.setFilteringLoadStatus(2, true);
+          }
+
+        processModal.close();
+
+        appConfigProvider.setShowingSnackbar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.listDataUpdated),
+            backgroundColor: Colors.green,
+          )
+        );
+      }
+      else {
+        processModal.close();
+        appConfigProvider.addLog(result1['log']);
+        appConfigProvider.setShowingSnackbar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.listDataNotUpdated),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
     void openDetailsModal(Filter filter) {
       showModalBottomSheet(
         context: context, 
@@ -123,7 +173,18 @@ class _FiltersListState extends State<FiltersList> {
           list: filter, 
           type: widget.type,
           onDelete: () => {}, 
-          edit: () => {},
+          edit: (type) => {
+            showModalBottomSheet(
+              context: context, 
+              builder: (ctx) => AddListModal(
+                list: filter,
+                type: type,
+                onEdit: confirmEditList
+              ),
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent
+            )
+          },
           onEnableDisable: enableDisableList,
         ),
         backgroundColor: Colors.transparent,

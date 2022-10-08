@@ -240,5 +240,7 @@
     "currentStatus": "Current status",
     "listDataUpdated": "List data updated successfull",
     "listDataNotUpdated": "Couldn't update list data",
-    "updatingListData": "Updating list data..."
+    "updatingListData": "Updating list data...",
+    "editWhitelist": "Edit white list",
+    "editBlacklist": "Edit black list"
 }

@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/models/filtering.dart';
+
 class AddListModal extends StatefulWidget {
   final String type;
-  final void Function({required String name, required String url}) onConfirm;
+  final Filter? list;
+  final void Function({required String name, required String url})? onConfirm;
+  final void Function({required Filter list, required String type})? onEdit;
 
   const AddListModal({
     Key? key,
     required this.type,
-    required this.onConfirm,
+    this.list,
+    this.onConfirm,
+    this.onEdit,
   }) : super(key: key);
 
   @override
@@ -48,6 +54,17 @@ class _AddListModalState extends State<AddListModal> {
   }
 
   @override
+  void initState() {
+    if (widget.list != null) {
+      nameController.text = widget.list!.name;
+      urlController.text = widget.list!.url;
+
+      validData = true;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
@@ -71,9 +88,13 @@ class _AddListModalState extends State<AddListModal> {
             ),
             const SizedBox(height: 20),
             Text(
-              widget.type == 'whitelist'
-                ? AppLocalizations.of(context)!.addWhitelist
-                : AppLocalizations.of(context)!.addBlacklist,
+              widget.list != null
+                ? widget.type == 'whitelist'
+                  ? AppLocalizations.of(context)!.editWhitelist
+                  : AppLocalizations.of(context)!.editBlacklist
+                : widget.type == 'whitelist'
+                  ? AppLocalizations.of(context)!.addWhitelist
+                  : AppLocalizations.of(context)!.addBlacklist,
               style: const TextStyle(
                 fontSize: 24
               ),
@@ -96,6 +117,7 @@ class _AddListModalState extends State<AddListModal> {
             TextFormField(
               controller: urlController,
               onChanged: validateUrl,
+              enabled: widget.list != null ? false : true,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.link_rounded),
                 border: const OutlineInputBorder(
@@ -123,12 +145,32 @@ class _AddListModalState extends State<AddListModal> {
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);
-                          widget.onConfirm(
-                            name: nameController.text,
-                            url: urlController.text
-                          );
+                          if (widget.list != null) {
+                            final Filter newList = Filter(
+                              url: urlController.text,
+                              name: nameController.text, 
+                              lastUpdated: widget.list!.lastUpdated, 
+                              id: widget.list!.id, 
+                              rulesCount: widget.list!.rulesCount, 
+                              enabled: widget.list!.enabled
+                            );
+                            widget.onEdit!(
+                              list: newList,
+                              type: widget.type
+                            );
+                          }
+                          else {
+                            widget.onConfirm!(
+                              name: nameController.text,
+                              url: urlController.text,
+                            );
+                          }
                         }, 
-                        child: Text(AppLocalizations.of(context)!.confirm)
+                        child: Text(
+                          widget.list != null
+                            ? AppLocalizations.of(context)!.save
+                            : AppLocalizations.of(context)!.confirm
+                        )
                       ),
                     ],
                   ),

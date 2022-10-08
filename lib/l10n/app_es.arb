@@ -240,5 +240,7 @@
     "currentStatus": "Estado actual",
     "listDataUpdated": "Datos de lista actualizados correctamente",
     "listDataNotUpdated": "No se han podido actualizar los datos de la lista",
-    "updatingListData": "Actualizando datos de lista..."
+    "updatingListData": "Actualizando datos de lista...",
+    "editWhitelist": "Editar lista blanca",
+    "editBlacklist": "Editar lista negra"
 }

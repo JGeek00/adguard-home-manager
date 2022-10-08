@@ -72,7 +72,7 @@ class FiltersFab extends StatelessWidget {
       );
     }
 
-    void confirmAddList({required String name, required String url}) async {
+    void confirmAddList({required String name, required String url, String? type}) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingList);
 
@@ -157,7 +157,7 @@ class FiltersFab extends StatelessWidget {
         context: context, 
         builder: (ctx) => AddListModal(
           type: type,
-          onConfirm: confirmAddList
+          onConfirm: confirmAddList,
         ),
         isScrollControlled: true,
         backgroundColor: Colors.transparent
