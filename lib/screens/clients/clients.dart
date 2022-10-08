@@ -1,10 +1,8 @@
-import 'package:adguard_home_manager/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
-import 'package:adguard_home_manager/screens/clients/blocked_list.dart';
 import 'package:adguard_home_manager/screens/clients/added_list.dart';
 
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -77,7 +75,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
     super.initState();
     tabController = TabController(
       initialIndex: 0,
-      length: 3,
+      length: 2,
       vsync: this,
     );
     tabController.addListener(() => widget.setSelectedClientsTab(tabController.index));
@@ -92,7 +90,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
     final serversProvider = Provider.of<ServersProvider>(context);
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: NestedScrollView(
         controller: scrollController,
         headerSliverBuilder: ((context, innerBoxIsScrolled) {
@@ -113,10 +111,6 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                   Tab(
                     icon: const Icon(Icons.add),
                     text: AppLocalizations.of(context)!.added,
-                  ),
-                  Tab(
-                    icon: const Icon(Icons.block),
-                    text: AppLocalizations.of(context)!.blocked,
                   ),
                 ]
               )
@@ -154,16 +148,6 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                   loadStatus: serversProvider.clients.loadStatus,
                   data: serversProvider.clients.loadStatus == 1
                     ? serversProvider.clients.data!.clients : [], 
-                  fetchClients: fetchClients,
-                )
-              ),
-              RefreshIndicator(
-                onRefresh: fetchClients,
-                child: BlockedList(
-                  scrollController: scrollController,
-                  loadStatus: serversProvider.clients.loadStatus,
-                  data: serversProvider.clients.loadStatus == 1
-                    ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 
                   fetchClients: fetchClients,
                 )
               ),

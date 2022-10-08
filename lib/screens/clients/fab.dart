@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/block_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/client_modal.dart';
 
 import 'package:adguard_home_manager/models/clients.dart';
@@ -61,7 +60,6 @@ class ClientsFab extends StatelessWidget {
         );
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
-        appConfigProvider.addLog(result['log']);
         appConfigProvider.setShowingSnackbar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -114,17 +112,6 @@ class ClientsFab extends StatelessWidget {
       }
     }
 
-    void openBlockClient() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (ctx) => BlockClientModal(
-          onConfirm: confirmRemoveDomain
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
-      );
-    }
-
     void openAddClient() {
       showModalBottomSheet(
         context: context, 
@@ -136,20 +123,9 @@ class ClientsFab extends StatelessWidget {
       );
     }
 
-    if (tab == 1) {
-      return FloatingActionButton(
-        onPressed: () => openAddClient(),
-        child: const Icon(Icons.add),
-      );
-    }
-    else if (tab == 2) {
-      return FloatingActionButton(
-        onPressed: () => openBlockClient(),
-        child: const Icon(Icons.add),
-      );
-    }
-    else {
-      return const SizedBox();
-    }
+    return FloatingActionButton(
+      onPressed: () => openAddClient(),
+      child: const Icon(Icons.add),
+    );
   }
 }

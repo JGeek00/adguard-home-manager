@@ -263,5 +263,22 @@
     "serverVersion": "Server version", 
     "serverLanguage": "Server language",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "allowedClients": "Allowed clients",
+    "disallowedClients": "Disallowed clients",
+    "disallowedDomains": "Disallowed domains",
+    "accessSettings": "Access settings",
+    "accessSettingsDescription": "Configure access rules for the server",
+    "loadingClients": "Loading clients...",
+    "clientsNotLoaded": "Clients couldn't be loaded.",
+    "noAllowedClients": "No hay clientes permitidos",
+    "allowedClientsDescription": "If this list has entries, AdGuard Home will accept requests only from these clients.",
+    "blockedClientsDescription": "If this list has entries, AdGuard Home will drop requests from these clients. This field is ignored if there are entries in Allowed clients.",
+    "disallowedDomainsDescription": "AdGuard Home drops DNS queries matching these domains, and these queries don't even appear in the query log.",
+    "addClientFieldDescription": "CIDRs, IP address, or ClientID",
+    "clientIdentifier": "Client identifier",
+    "allowClient": "Allow client",
+    "disallowClient": "Disallow client",
+    "noDisallowedDomains": "No disallowed domains",
+    "domainNotAdded": "The domain couldn't be added"
 }

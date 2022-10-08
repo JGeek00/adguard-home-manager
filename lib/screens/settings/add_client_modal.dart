@@ -1,46 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class BlockClientModal extends StatefulWidget {
-  final void Function(String) onConfirm;
+class AddClientModal extends StatefulWidget {
+  final String type;
+  final void Function(String, String) onConfirm;
 
-  const BlockClientModal({
+  const AddClientModal({
     Key? key,
+    required this.type,
     required this.onConfirm
   }) : super(key: key);
 
   @override
-  State<BlockClientModal> createState() => _BlockClientModalState();
+  State<AddClientModal> createState() => _AddClientModalState();
 }
 
-class _BlockClientModalState extends State<BlockClientModal> {
-  TextEditingController ipController = TextEditingController();
-  String? ipError;
+class _AddClientModalState extends State<AddClientModal> {
+  TextEditingController fieldController = TextEditingController();
 
-  void validateIp(String value) {
-    RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
-    if (ipAddress.hasMatch(value) == true) {
-      setState(() => ipError = null);
+  bool validData = false;
+
+  void checkValidValues() {
+    if (fieldController.text != '') {
+      setState(() => validData = true);
     }
     else {
-      setState(() => ipError = AppLocalizations.of(context)!.ipNotValid);
-    }
-  }
-
-  bool checkValidValues() {
-    if (
-      ipController.text != '' &&
-      ipError == null
-    ) {
-      return true;
-    }
-    else {
-      return false;
+      setState(() => validData = false);
     }
   }
     
   @override
   Widget build(BuildContext context) {
+    IconData icon() {
+      switch (widget.type) {
+        case 'allowed':
+          return Icons.check;
+
+        case 'disallowed':
+          return Icons.block;
+
+        case 'domains':
+          return Icons.link_rounded;
+
+        default:
+          return Icons.check;
+      }
+    }
+
+    String title() {
+      switch (widget.type) {
+        case 'allowed':
+          return AppLocalizations.of(context)!.allowClient;
+
+        case 'disallowed':
+          return AppLocalizations.of(context)!.disallowClient;
+
+        case 'domains':
+          return AppLocalizations.of(context)!.disallowedDomains;
+
+        default:
+          return "";
+      }
+    }
+
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
@@ -55,30 +77,33 @@ class _BlockClientModalState extends State<BlockClientModal> {
         ),
         child: Column(
           children: [
-            const Icon(
-              Icons.block,
+            Icon(
+              icon(),
               size: 26,
             ),
             const SizedBox(height: 20),
             Text(
-              AppLocalizations.of(context)!.blockClient,
+              title(),
               style: const TextStyle(
                 fontSize: 24
               ),
             ),
             const SizedBox(height: 30),
             TextFormField(
-              controller: ipController,
-              onChanged: validateIp,
+              controller: fieldController,
+              onChanged: (_) => checkValidValues(),
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.link_rounded),
-                errorText: ipError,
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(10)
                   )
                 ),
-                labelText: AppLocalizations.of(context)!.ipAddress,
+                helperText: widget.type == 'allowed' || widget.type == 'blocked'
+                  ? AppLocalizations.of(context)!.addClientFieldDescription : null,
+                labelText: widget.type == 'allowed' || widget.type == 'blocked'
+                  ? AppLocalizations.of(context)!.clientIdentifier
+                  : AppLocalizations.of(context)!.domain,
               ),
             ),
             Expanded(
@@ -96,16 +121,16 @@ class _BlockClientModalState extends State<BlockClientModal> {
                         ),
                         const SizedBox(width: 20),
                         TextButton(
-                          onPressed: checkValidValues() == true
+                          onPressed: validData == true
                             ? () {
                                 Navigator.pop(context);
-                                widget.onConfirm(ipController.text);
+                                widget.onConfirm(fieldController.text, widget.type);
                               }
                             : null, 
                           child: Text(
                             AppLocalizations.of(context)!.confirm,
                             style: TextStyle(
-                              color: checkValidValues() == true
+                              color: validData == true
                                 ? Theme.of(context).primaryColor
                                 : Colors.grey
                             ),
