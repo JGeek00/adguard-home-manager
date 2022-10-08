@@ -360,7 +360,6 @@ class ServersList extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 24,
                 color: Colors.grey,
-                fontWeight: FontWeight.w500
               ),
             ),
           ),
