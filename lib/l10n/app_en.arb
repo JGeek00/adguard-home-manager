@@ -247,5 +247,21 @@
     "listDeleted": "List deleted successfully",
     "listNotDeleted": "The list couldn't be deleted",
     "deleteList": "Delete list",
-    "deleteListMessage": "Are you sure you want to delete this list? This action can't be reverted."
+    "deleteListMessage": "Are you sure you want to delete this list? This action can't be reverted.",
+    "serverSettings": "Server settings",
+    "serverInformation": "Server information",
+    "serverInformationDescription": "Server information and status",
+    "loadingServerInfo": "Loading server information...",
+    "serverInfoNotLoaded": "Server information couldn't be loaded.",
+    "dnsAddresses": "DNS addresses",
+    "seeDnsAddresses": "See DNS addresses",
+    "dnsPort": "DNS port",
+    "httpPort": "HTTP port",
+    "protectionEnabled": "Protection enabled",
+    "dhcpAvailable": "DHCP available",
+    "serverRunning": "Server running",
+    "serverVersion": "Server version", 
+    "serverLanguage": "Server language",
+    "yes": "Yes",
+    "no": "No"
 }

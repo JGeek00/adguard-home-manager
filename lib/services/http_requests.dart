@@ -8,6 +8,7 @@ import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
+import 'package:adguard_home_manager/models/server_info.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
@@ -868,6 +869,41 @@ Future deleteFilterList({
         'result': 'error',
         'log': AppLog(
           type: 'delete_filter_list', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future getServerInfo({
+  required Server server, 
+}) async {
+  final result = await apiRequest(
+    urlPath: '/status', 
+    method: 'get',
+    server: server, 
+    type: 'server_info'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {
+        'result': 'success',
+        'data': ServerInfoData.fromJson(jsonDecode(result['body']))
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'server_info', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),
