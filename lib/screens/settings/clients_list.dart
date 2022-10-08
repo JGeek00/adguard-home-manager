@@ -43,15 +43,17 @@ class _ClientsListState extends State<ClientsList> {
 
     isVisible = true;
     widget.scrollController.addListener(() {
-      if (widget.scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-        if (mounted && isVisible == true) {
-          setState(() => isVisible = false);
-        }
-      } 
-      else {
-        if (widget.scrollController.position.userScrollDirection == ScrollDirection.forward) {
-          if (mounted && isVisible == false) {
-            setState(() => isVisible = true);
+      if (mounted) {
+        if (widget.scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+          if (mounted && isVisible == true) {
+            setState(() => isVisible = false);
+          }
+        } 
+        else {
+          if (widget.scrollController.position.userScrollDirection == ScrollDirection.forward) {
+            if (mounted && isVisible == false) {
+              setState(() => isVisible = true);
+            }
           }
         }
       }
@@ -232,69 +234,72 @@ class _ClientsListState extends State<ClientsList> {
       case 1: 
         return Stack(
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.info_rounded),
-                          const SizedBox(width: 20),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width-112,
-                            child: Text(description()),
-                          )
-                        ],
+            RefreshIndicator(
+              onRefresh: widget.fetchClients,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.info_rounded),
+                            const SizedBox(width: 20),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width-112,
+                              child: Text(description()),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                if (widget.data.isNotEmpty) Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(top: 0),
-                    itemCount: widget.data.length,
-                    itemBuilder: (context, index) => ListTile(
-                      title: Text(widget.data[index]),
-                      trailing: IconButton(
-                        onPressed: () => {
-                          showDialog(
-                            context: context, 
-                            builder: (context) => RemoveClientModal(
-                              onConfirm: () => confirmRemoveItem(widget.data[index], widget.type),
+                  if (widget.data.isNotEmpty) Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(top: 0),
+                      itemCount: widget.data.length,
+                      itemBuilder: (context, index) => ListTile(
+                        title: Text(widget.data[index]),
+                        trailing: IconButton(
+                          onPressed: () => {
+                            showDialog(
+                              context: context, 
+                              builder: (context) => RemoveClientModal(
+                                onConfirm: () => confirmRemoveItem(widget.data[index], widget.type),
+                              )
                             )
-                          )
-                        }, 
-                        icon: const Icon(Icons.delete_rounded)
-                      ),
-                    )
-                  ),
-                ),
-                if (widget.data.isEmpty) Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        noItems(),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          color: Colors.grey
+                          }, 
+                          icon: const Icon(Icons.delete_rounded)
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                      TextButton.icon(
-                        onPressed: widget.fetchClients, 
-                        icon: const Icon(Icons.refresh_rounded), 
-                        label: Text(AppLocalizations.of(context)!.refresh),
                       )
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  if (widget.data.isEmpty) Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          noItems(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            color: Colors.grey
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        TextButton.icon(
+                          onPressed: widget.fetchClients, 
+                          icon: const Icon(Icons.refresh_rounded), 
+                          label: Text(AppLocalizations.of(context)!.refresh),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             AnimatedPositioned(
               duration: const Duration(milliseconds: 100),
