@@ -114,6 +114,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
         }), 
         body: Container(
           decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
             border: Border(
               top: BorderSide(
                 color: Theme.of(context).brightness == Brightness.light
