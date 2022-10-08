@@ -2,6 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:adguard_home_manager/screens/connect/appbar.dart';
 import 'package:adguard_home_manager/widgets/servers_list/servers_list.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -28,10 +29,13 @@ class _ConnectState extends State<Connect> {
       expandableControllerList.add(ExpandableController());
     }
 
-    return ServersList(
-      context: context, 
-      controllers: expandableControllerList, 
-      onChange: expandOrContract
+    return Scaffold(
+      appBar: const ConnectAppBar(),
+      body: ServersList(
+        context: context, 
+        controllers: expandableControllerList, 
+        onChange: expandOrContract
+      ),
     );
   }
 }

@@ -85,31 +85,33 @@ class Settings extends StatelessWidget {
       appBar: const SettingsAppBar(),
       body: ListView(
         children: [
-          SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
-          CustomListTile(
-            leadingIcon: Icons.lock_rounded,
-            label: AppLocalizations.of(context)!.accessSettings,
-            description: AppLocalizations.of(context)!.accessSettingsDescription,
-            onTap: () => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const AccessSettings()
+          if (serversProvider.selectedServer != null) ...[
+            SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
+            CustomListTile(
+              leadingIcon: Icons.lock_rounded,
+              label: AppLocalizations.of(context)!.accessSettings,
+              description: AppLocalizations.of(context)!.accessSettingsDescription,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AccessSettings()
+                  )
                 )
-              )
-            },
-          ),
-          CustomListTile(
-            leadingIcon: Icons.info_rounded,
-            label: AppLocalizations.of(context)!.serverInformation,
-            description: AppLocalizations.of(context)!.serverInformationDescription,
-            onTap: () => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const ServerInformation()
+              },
+            ),
+            CustomListTile(
+              leadingIcon: Icons.info_rounded,
+              label: AppLocalizations.of(context)!.serverInformation,
+              description: AppLocalizations.of(context)!.serverInformationDescription,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ServerInformation()
+                  )
                 )
-              )
-            },
-          ),
+              },
+            ),
+          ],
           SectionLabel(label: AppLocalizations.of(context)!.appSettings),
           CustomListTile(
             leadingIcon: Icons.light_mode_rounded,
