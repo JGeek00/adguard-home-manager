@@ -5,14 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
+import 'package:adguard_home_manager/screens/logs/appbar.dart';
 
 import 'package:adguard_home_manager/providers/logs_provider.dart';
-import 'package:adguard_home_manager/models/filtering_status.dart';
-import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/logs.dart';
-import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Logs extends StatelessWidget {
@@ -132,114 +130,121 @@ class _LogsWidgetState extends State<LogsWidget> {
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
 
-    switch (logsProvider.loadStatus) {
-      case 0:
-        return SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.loadingLogs,
-                style: const TextStyle(
-                  fontSize: 22,
-                  color: Colors.grey,
-                ),
-              )
-            ],
-          ),
-        );
-      
-      case 1:
-        return RefreshIndicator(
-          onRefresh: () async {
-            await fetchLogs(inOffset: 0);
-          },
-          child: logsProvider.logsData!.data.isNotEmpty
-            ? ListView.builder(
-                controller: scrollController,
-                padding: const EdgeInsets.only(top: 0),
-                itemCount: isLoadingMore == true 
-                  ? logsProvider.logsData!.data.length+1
-                  : logsProvider.logsData!.data.length,
-                itemBuilder: (context, index) {
-                  if (isLoadingMore == true && index == logsProvider.logsData!.data.length) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+    Widget generateBody() {
+      switch (logsProvider.loadStatus) {
+        case 0:
+          return SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 30),
+                Text(
+                  AppLocalizations.of(context)!.loadingLogs,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    color: Colors.grey,
+                  ),
+                )
+              ],
+            ),
+          );
+        
+        case 1:
+          return RefreshIndicator(
+            onRefresh: () async {
+              await fetchLogs(inOffset: 0);
+            },
+            child: logsProvider.logsData!.data.isNotEmpty
+              ? ListView.builder(
+                  controller: scrollController,
+                  padding: const EdgeInsets.only(top: 0),
+                  itemCount: isLoadingMore == true 
+                    ? logsProvider.logsData!.data.length+1
+                    : logsProvider.logsData!.data.length,
+                  itemBuilder: (context, index) {
+                    if (isLoadingMore == true && index == logsProvider.logsData!.data.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                    else {
+                      return LogTile(
+                        log: logsProvider.logsData!.data[index],
+                        index: index,
+                        length: logsProvider.logsData!.data.length,
+                      );
+                    }
                   }
-                  else {
-                    return LogTile(
-                      log: logsProvider.logsData!.data[index],
-                      index: index,
-                      length: logsProvider.logsData!.data.length,
-                    );
-                  }
-                }
-              )
-            : Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.noLogsDisplay,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.grey
-                      ),
-                    ),
-                    if (logsProvider.logsOlderThan != null) Padding(
-                      padding: const EdgeInsets.only(
-                        top: 30,
-                        left: 20,
-                        right: 20
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.noLogsThatOld,
-                        textAlign: TextAlign.center,
+                )
+              : Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.noLogsDisplay,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 24,
                           color: Colors.grey
                         ),
                       ),
-                    ),
-                  ]
+                      if (logsProvider.logsOlderThan != null) Padding(
+                        padding: const EdgeInsets.only(
+                          top: 30,
+                          left: 20,
+                          right: 20
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.noLogsThatOld,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey
+                          ),
+                        ),
+                      ),
+                    ]
+                  ),
+                )
+          );
+          
+        case 2:
+          return SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                  size: 50,
                 ),
-              )
-        );
-        
-      case 2:
-        return SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 50,
-              ),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.logsNotLoaded,
-                style: const TextStyle(
-                  fontSize: 22,
-                  color: Colors.grey,
-                ),
-              )
-            ],
-          ),
-        );
+                const SizedBox(height: 30),
+                Text(
+                  AppLocalizations.of(context)!.logsNotLoaded,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    color: Colors.grey,
+                  ),
+                )
+              ],
+            ),
+          );
 
-      default:
-        return const SizedBox();
+        default:
+          return const SizedBox();
+      }
     }
+
+    return Scaffold(
+      appBar: const LogsAppBar(),
+      body: generateBody(),
+    );
   }
 }

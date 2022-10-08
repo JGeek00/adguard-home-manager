@@ -89,144 +89,146 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
 
-    switch (serversProvider.clients.loadStatus) {
+    Widget generateBody() {
+      switch (serversProvider.clients.loadStatus) {
       case 0:
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            AppBar(
-              title: Text(AppLocalizations.of(context)!.clients),
-              centerTitle: true,
-            ),
-            SizedBox(
-              width: double.maxFinite,
-              height: MediaQuery.of(context).size.height-171,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 30),
-                  Text(
-                    AppLocalizations.of(context)!.loadingStatus,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.grey,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        );
-      
-      case 1:
-        return DefaultTabController(
-          length: 3, 
-          child: NestedScrollView(
-            headerSliverBuilder: ((context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  title: Text(AppLocalizations.of(context)!.clients),
-                  centerTitle: true,
-                  pinned: true,
-                  floating: true,
-                  forceElevated: innerBoxIsScrolled,
-                  bottom: TabBar(
-                    controller: tabController,
-                    tabs: [
-                      Tab(
-                        icon: const Icon(Icons.devices),
-                        text: AppLocalizations.of(context)!.activeClients,
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(
+                width: double.maxFinite,
+                height: MediaQuery.of(context).size.height-171,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.loadingStatus,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        color: Colors.grey,
                       ),
-                      Tab(
-                        icon: const Icon(Icons.add),
-                        text: AppLocalizations.of(context)!.added,
-                      ),
-                      Tab(
-                        icon: const Icon(Icons.block),
-                        text: AppLocalizations.of(context)!.blocked,
-                      ),
-                    ]
-                  )
-                )
-              ];
-            }), 
-            body: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Theme.of(context).brightness == Brightness.light
-                      ? const Color.fromRGBO(220, 220, 220, 1)
-                      : const Color.fromRGBO(50, 50, 50, 1)
-                  )
-                )
-              ),
-              child: TabBarView(
-                controller: tabController,
-                children: [
-                  RefreshIndicator(
-                    onRefresh: fetchClients,
-                    child: ClientsList(
-                      data: serversProvider.clients.data!.autoClientsData,
-                      fetchClients: fetchClients,
-                    ),
-                  ),
-                  RefreshIndicator(
-                    onRefresh: fetchClients,
-                    child: AddedList(
-                      data: serversProvider.clients.data!.clients, 
-                      fetchClients: fetchClients,
                     )
-                  ),
-                  RefreshIndicator(
-                    onRefresh: fetchClients,
-                    child: BlockedList(
-                      data: serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients, 
-                      fetchClients: fetchClients,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            )
-          )
-        );
+            ],
+          );
         
-      case 2:
-        return Column(
-          children: [
-            AppBar(
+        case 1:
+        return Container();
+          
+        case 2:
+          return Column(
+            children: [
+              SizedBox(
+                width: double.maxFinite,
+                height: MediaQuery.of(context).size.height-171,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.errorLoadServerStatus,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        color: Colors.grey,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          );
+
+        default:
+          return const SizedBox();
+      }
+    }
+
+    return DefaultTabController(
+      length: 3,
+      child: NestedScrollView(
+        headerSliverBuilder: ((context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
               title: Text(AppLocalizations.of(context)!.clients),
               centerTitle: true,
-            ),
-            SizedBox(
-              width: double.maxFinite,
-              height: MediaQuery.of(context).size.height-171,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                    size: 50,
+              pinned: true,
+              floating: true,
+              forceElevated: innerBoxIsScrolled,
+              bottom: TabBar(
+                controller: tabController,
+                tabs: [
+                  Tab(
+                    icon: const Icon(Icons.devices),
+                    text: AppLocalizations.of(context)!.activeClients,
                   ),
-                  const SizedBox(height: 30),
-                  Text(
-                    AppLocalizations.of(context)!.errorLoadServerStatus,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.grey,
-                    ),
-                  )
-                ],
+                  Tab(
+                    icon: const Icon(Icons.add),
+                    text: AppLocalizations.of(context)!.added,
+                  ),
+                  Tab(
+                    icon: const Icon(Icons.block),
+                    text: AppLocalizations.of(context)!.blocked,
+                  ),
+                ]
+              )
+            )
+          ];
+        }), 
+        body: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: Theme.of(context).brightness == Brightness.light
+                  ? const Color.fromRGBO(220, 220, 220, 1)
+                  : const Color.fromRGBO(50, 50, 50, 1)
+              )
+            )
+          ),
+          child: TabBarView(
+            controller: tabController,
+            children: [
+              RefreshIndicator(
+                onRefresh: fetchClients,
+                child: ClientsList(
+                  loadStatus: serversProvider.clients.loadStatus,
+                  data: serversProvider.clients.loadStatus == 1
+                    ? serversProvider.clients.data!.autoClientsData : [],
+                  fetchClients: fetchClients,
+                ),
               ),
-            ),
-          ],
-        );
-
-      default:
-        return const SizedBox();
-    }
+              RefreshIndicator(
+                onRefresh: fetchClients,
+                child: AddedList(
+                  loadStatus: serversProvider.clients.loadStatus,
+                  data: serversProvider.clients.loadStatus == 1
+                    ? serversProvider.clients.data!.clients : [], 
+                  fetchClients: fetchClients,
+                )
+              ),
+              RefreshIndicator(
+                onRefresh: fetchClients,
+                child: BlockedList(
+                  loadStatus: serversProvider.clients.loadStatus,
+                  data: serversProvider.clients.loadStatus == 1
+                    ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 
+                  fetchClients: fetchClients,
+                )
+              ),
+            ]
+          )
+        ),
+      )
+    );
   }
 }

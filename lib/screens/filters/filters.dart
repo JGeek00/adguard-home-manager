@@ -80,150 +80,86 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
 
-    switch (serversProvider.filtering.loadStatus) {
-      case 0:
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            AppBar(
+    return DefaultTabController(
+      length: 3,
+      child: NestedScrollView(
+        headerSliverBuilder: ((context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
               title: Text(AppLocalizations.of(context)!.filters),
               centerTitle: true,
-            ),
-            SizedBox(
-              width: double.maxFinite,
-              height: MediaQuery.of(context).size.height-171,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 30),
-                  Text(
-                    AppLocalizations.of(context)!.loadingFilters,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.grey,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        );
-      
-      case 1:
-        return DefaultTabController(
-          length: 3, 
-          child: NestedScrollView(
-            controller: scrollController,
-            headerSliverBuilder: ((context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  title: Text(AppLocalizations.of(context)!.filters),
-                  centerTitle: true,
-                  pinned: true,
-                  floating: true,
-                  forceElevated: innerBoxIsScrolled,
-                  bottom: TabBar(
-                    controller: tabController,
-                    tabs: [
-                      Tab(
-                        icon: const Icon(Icons.verified_user_rounded),
-                        text: AppLocalizations.of(context)!.whitelists,
-                      ),
-                      Tab(
-                        icon: const Icon(Icons.gpp_bad_rounded),
-                        text: AppLocalizations.of(context)!.blacklists,
-                      ),
-                      Tab(
-                        icon: const Icon(Icons.shield_rounded),
-                        text: AppLocalizations.of(context)!.customRules,
-                      ),
-                    ]
-                  )
-                )
-              ];
-            }), 
-            body: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Theme.of(context).brightness == Brightness.light
-                      ? const Color.fromRGBO(220, 220, 220, 1)
-                      : const Color.fromRGBO(50, 50, 50, 1)
-                  )
-                )
-              ),
-              child: TabBarView(
+              pinned: true,
+              floating: true,
+              forceElevated: innerBoxIsScrolled,
+              bottom: TabBar(
                 controller: tabController,
-                children: [
-                  RefreshIndicator(
-                    onRefresh: fetchFilters,
-                    child: FiltersList(
-                      scrollController: scrollController,
-                      type: 'whitelist',
-                      data: serversProvider.filtering.data!.whitelistFilters,
-                      fetchData: fetchFilters,
-                    )
+                tabs: [
+                  Tab(
+                    icon: const Icon(Icons.verified_user_rounded),
+                    text: AppLocalizations.of(context)!.whitelists,
                   ),
-                  RefreshIndicator(
-                    onRefresh: fetchFilters,
-                    child: FiltersList(
-                      scrollController: scrollController,
-                      type: 'blacklist',
-                      data: serversProvider.filtering.data!.filters,
-                      fetchData: fetchFilters,
-                    )
+                  Tab(
+                    icon: const Icon(Icons.gpp_bad_rounded),
+                    text: AppLocalizations.of(context)!.blacklists,
                   ),
-                  RefreshIndicator(
-                    onRefresh: fetchFilters,
-                    child: CustomRulesList(
-                      scrollController: scrollController,
-                      data: serversProvider.filtering.data!.userRules,
-                      fetchData: fetchFilters,
-                    )
+                  Tab(
+                    icon: const Icon(Icons.shield_rounded),
+                    text: AppLocalizations.of(context)!.customRules,
                   ),
-                ],
-              ),
+                ]
+              )
             )
-          )
-        );
-        
-      case 2:
-        return Column(
-          children: [
-            AppBar(
-              title: Text(AppLocalizations.of(context)!.filters),
-              centerTitle: true,
-            ),
-            SizedBox(
-              width: double.maxFinite,
-              height: MediaQuery.of(context).size.height-171,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                    size: 50,
-                  ),
-                  const SizedBox(height: 30),
-                  Text(
-                    AppLocalizations.of(context)!.filtersNotLoaded,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.grey,
-                    ),
-                  )
-                ],
+          ];
+        }), 
+        body: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: Theme.of(context).brightness == Brightness.light
+                  ? const Color.fromRGBO(220, 220, 220, 1)
+                  : const Color.fromRGBO(50, 50, 50, 1)
+              )
+            )
+          ),
+          child: TabBarView(
+            controller: tabController,
+            children: [
+              RefreshIndicator(
+                onRefresh: fetchFilters,
+                child: FiltersList(
+                  loadStatus: serversProvider.filtering.loadStatus,
+                  scrollController: scrollController,
+                  type: 'whitelist',
+                  data: serversProvider.filtering.loadStatus == 1
+                    ? serversProvider.filtering.data!.whitelistFilters : [],
+                  fetchData: fetchFilters,
+                )
               ),
-            ),
-          ],
-        );
-
-      default:
-        return const SizedBox();
-    }
+              RefreshIndicator(
+                onRefresh: fetchFilters,
+                child: FiltersList(
+                  loadStatus: serversProvider.filtering.loadStatus,
+                  scrollController: scrollController,
+                  type: 'blacklist',
+                  data: serversProvider.filtering.loadStatus == 1
+                    ? serversProvider.filtering.data!.filters : [],
+                  fetchData: fetchFilters,
+                )
+              ),
+              RefreshIndicator(
+                onRefresh: fetchFilters,
+                child: CustomRulesList(
+                  loadStatus: serversProvider.filtering.loadStatus,
+                  scrollController: scrollController,
+                  data: serversProvider.filtering.loadStatus == 1
+                    ? serversProvider.filtering.data!.userRules : [],
+                  fetchData: fetchFilters,
+                )
+              ),
+            ]
+          )
+        ),
+      )
+    );
   }
 }

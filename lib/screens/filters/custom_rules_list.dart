@@ -15,12 +15,14 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
 class CustomRulesList extends StatefulWidget {
+  final int loadStatus;
   final ScrollController scrollController;
   final List<String> data;
   final void Function() fetchData;
 
   const CustomRulesList({
     Key? key,
+    required this.loadStatus,
     required this.scrollController,
     required this.data,
     required this.fetchData
@@ -100,51 +102,104 @@ class _CustomRulesListState extends State<CustomRulesList> {
       );
     }
 
-    return Stack(
-      children: [
-        if (widget.data.isNotEmpty) ListView.builder(
-          padding: const EdgeInsets.only(top: 0),
-          itemCount: widget.data.length,
-          itemBuilder: (context, index) => ListTile(
-            title: Text(widget.data[index]),
-            trailing: IconButton(
-              onPressed: () => openRemoveCustomRuleModal(widget.data[index]),
-              icon: const Icon(Icons.delete)
-            ),
-          )
-        ),
-        if (widget.data.isEmpty) SizedBox(
+    switch (widget.loadStatus) {
+      case 0:
+        return SizedBox(
           width: double.maxFinite,
+          height: MediaQuery.of(context).size.height-171,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                AppLocalizations.of(context)!.noBlackLists,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: Colors.grey
-                ),
-              ),
+              const CircularProgressIndicator(),
               const SizedBox(height: 30),
-              TextButton.icon(
-                onPressed: widget.fetchData, 
-                icon: const Icon(Icons.refresh_rounded), 
-                label: Text(AppLocalizations.of(context)!.refresh),
+              Text(
+                AppLocalizations.of(context)!.loadingFilters,
+                style: const TextStyle(
+                  fontSize: 22,
+                  color: Colors.grey,
+                ),
               )
             ],
           ),
-        ),
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 100),
-          curve: Curves.easeInOut,
-          bottom: isVisible ? 20 : -70,
-          right: 20,
-          child: const FiltersFab(
-            type: 'custom_rule',
-          )
-        )
-      ],
-    );
+        );
+
+      case 1:
+        return Stack(
+          children: [
+            if (widget.data.isNotEmpty) ListView.builder(
+              padding: const EdgeInsets.only(top: 0),
+              itemCount: widget.data.length,
+              itemBuilder: (context, index) => ListTile(
+                title: Text(widget.data[index]),
+                trailing: IconButton(
+                  onPressed: () => openRemoveCustomRuleModal(widget.data[index]),
+                  icon: const Icon(Icons.delete)
+                ),
+              )
+            ),
+            if (widget.data.isEmpty) SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.noBlackLists,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.grey
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  TextButton.icon(
+                    onPressed: widget.fetchData, 
+                    icon: const Icon(Icons.refresh_rounded), 
+                    label: Text(AppLocalizations.of(context)!.refresh),
+                  )
+                ],
+              ),
+            ),
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              bottom: isVisible ? 20 : -70,
+              right: 20,
+              child: const FiltersFab(
+                type: 'custom_rule',
+              )
+            )
+          ],
+        );
+
+      case 2:
+        return SizedBox(
+          width: double.maxFinite,
+          height: MediaQuery.of(context).size.height-171,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 50,
+              ),
+              const SizedBox(height: 30),
+              Text(
+                AppLocalizations.of(context)!.filtersNotLoaded,
+                style: const TextStyle(
+                  fontSize: 22,
+                  color: Colors.grey,
+                ),
+              )
+            ],
+          ),
+        );
+
+      default:
+        return const SizedBox();
+    }
+
   }
 }

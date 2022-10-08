@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/server_status.dart';
+import 'package:adguard_home_manager/screens/home/appbar.dart';
 import 'package:adguard_home_manager/screens/home/top_items.dart';
 import 'package:adguard_home_manager/screens/home/chart.dart';
 
@@ -154,24 +155,27 @@ class Home extends StatelessWidget {
       }
     }
 
-    return RefreshIndicator(
-      color: Theme.of(context).primaryColor,
-      onRefresh: () async {
-        final result = await getServerStatus(serversProvider.selectedServer!);
-        if (result['result'] == 'success') {
-          serversProvider.setServerStatusData(result['data']);
-        }
-        else {
-          appConfigProvider.addLog(result['log']);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
-              backgroundColor: Colors.red,
-            )
-          );
-        }
-      },
-      child: status()
+    return Scaffold(
+      appBar: const HomeAppBar(),
+      body: RefreshIndicator(
+        color: Theme.of(context).primaryColor,
+        onRefresh: () async {
+          final result = await getServerStatus(serversProvider.selectedServer!);
+          if (result['result'] == 'success') {
+            serversProvider.setServerStatusData(result['data']);
+          }
+          else {
+            appConfigProvider.addLog(result['log']);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
+                backgroundColor: Colors.red,
+              )
+            );
+          }
+        },
+        child: status()
+      ),
     );
   }
 }

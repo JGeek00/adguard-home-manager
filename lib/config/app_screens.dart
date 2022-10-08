@@ -35,9 +35,7 @@ List<AppScreen> screensServerConnected = [
   const AppScreen(
     name: "home", 
     icon: Icons.home_rounded, 
-    appBar: HomeAppBar(),
     body: Home(),
-    fab: HomeFab()
   ),
   const AppScreen(
     name: "clients", 
@@ -48,7 +46,6 @@ List<AppScreen> screensServerConnected = [
     name: "logs", 
     icon: Icons.list_alt_rounded, 
     body: Logs(),
-    appBar: LogsAppBar()
   ),
   const AppScreen(
     name: "filters", 

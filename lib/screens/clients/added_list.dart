@@ -17,11 +17,13 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class AddedList extends StatelessWidget {
+  final int loadStatus;
   final List<Client> data;
   final Future Function() fetchClients;
 
   const AddedList({
     Key? key,
+    required this.loadStatus,
     required this.data,
     required this.fetchClients
   }) : super(key: key);
@@ -133,94 +135,144 @@ class AddedList extends StatelessWidget {
       );
     }
 
-    return Stack(
-      children: [
-        if (data.isNotEmpty) RefreshIndicator(
-          onRefresh: () async {},
-          child: ListView.builder(
-            padding: const EdgeInsets.only(top: 0),
-            itemCount: data.length,
-            itemBuilder: (context, index) => ListTile(
-              isThreeLine: true,
-              onLongPress: () => openOptionsModal(data[index]),
-              onTap: () => openClientModal(data[index]),
-              title: Padding(
-                padding: const EdgeInsets.only(bottom: 5),
-                child: Text(data[index].name),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), '')),
-                  const SizedBox(height: 7),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.filter_list_rounded,
-                        size: 19,
-                        color: data[index].filteringEnabled == true 
-                          ? Colors.green
-                          : Colors.red,
-                      ),
-                      const SizedBox(width: 10),
-                      Icon(
-                        Icons.vpn_lock_rounded,
-                        size: 18,
-                        color: data[index].safebrowsingEnabled == true 
-                          ? Colors.green
-                          : Colors.red,
-                      ),
-                      const SizedBox(width: 10),
-                      Icon(
-                        Icons.block,
-                        size: 18,
-                        color: data[index].parentalEnabled == true 
-                          ? Colors.green
-                          : Colors.red,
-                      ),
-                      const SizedBox(width: 10),
-                      Icon(
-                        Icons.search_rounded,
-                        size: 19,
-                        color: data[index].safesearchEnabled == true 
-                          ? Colors.green
-                          : Colors.red,
-                      )
-                    ],
-                  )
-                ],
-              ),
-            )
-          ),
-        ),
-        if (data.isEmpty) SizedBox(
+    switch (loadStatus) {
+      case 0:
+        return SizedBox(
           width: double.maxFinite,
+          height: MediaQuery.of(context).size.height-171,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                AppLocalizations.of(context)!.noClientsList,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: Colors.grey
-                ),
-              ),
+              const CircularProgressIndicator(),
               const SizedBox(height: 30),
-              TextButton.icon(
-                onPressed: fetchClients, 
-                icon: const Icon(Icons.refresh_rounded), 
-                label: Text(AppLocalizations.of(context)!.refresh),
+              Text(
+                AppLocalizations.of(context)!.loadingStatus,
+                style: const TextStyle(
+                  fontSize: 22,
+                  color: Colors.grey,
+                ),
               )
             ],
           ),
-        ),
-        const Positioned(
-          bottom: 20,
-          right: 20,
-          child: ClientsFab(tab: 1),
-        ),
-      ],
-    );
+        );
+
+      case 1:
+        return Stack(
+          children: [
+            if (data.isNotEmpty) ListView.builder(
+              padding: const EdgeInsets.only(top: 0),
+              itemCount: data.length,
+              itemBuilder: (context, index) => ListTile(
+                isThreeLine: true,
+                onLongPress: () => openOptionsModal(data[index]),
+                onTap: () => openClientModal(data[index]),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Text(data[index].name),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), '')),
+                    const SizedBox(height: 7),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.filter_list_rounded,
+                          size: 19,
+                          color: data[index].filteringEnabled == true 
+                            ? Colors.green
+                            : Colors.red,
+                        ),
+                        const SizedBox(width: 10),
+                        Icon(
+                          Icons.vpn_lock_rounded,
+                          size: 18,
+                          color: data[index].safebrowsingEnabled == true 
+                            ? Colors.green
+                            : Colors.red,
+                        ),
+                        const SizedBox(width: 10),
+                        Icon(
+                          Icons.block,
+                          size: 18,
+                          color: data[index].parentalEnabled == true 
+                            ? Colors.green
+                            : Colors.red,
+                        ),
+                        const SizedBox(width: 10),
+                        Icon(
+                          Icons.search_rounded,
+                          size: 19,
+                          color: data[index].safesearchEnabled == true 
+                            ? Colors.green
+                            : Colors.red,
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ),
+            if (data.isEmpty) SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.noClientsList,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.grey
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  TextButton.icon(
+                    onPressed: fetchClients, 
+                    icon: const Icon(Icons.refresh_rounded), 
+                    label: Text(AppLocalizations.of(context)!.refresh),
+                  )
+                ],
+              ),
+            ),
+            const Positioned(
+              bottom: 20,
+              right: 20,
+              child: ClientsFab(tab: 1),
+            ),
+          ],
+        );
+      
+      case 2:
+        return SizedBox(
+          width: double.maxFinite,
+          height: MediaQuery.of(context).size.height-171,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 50,
+              ),
+              const SizedBox(height: 30),
+              Text(
+                AppLocalizations.of(context)!.errorLoadServerStatus,
+                style: const TextStyle(
+                  fontSize: 22,
+                  color: Colors.grey,
+                ),
+              )
+            ],
+          ),
+        );
+
+      default:
+        return const SizedBox();
+    }
+
   }
 }
