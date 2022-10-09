@@ -154,8 +154,6 @@ class _HomeState extends State<Home> {
                 data: serversProvider.serverStatus.data!.stats.topClients,
                 type: 'topClients',
               ),
-
-              const SizedBox(height: 70) // To avoid content under fab
             ],
           );
         
