@@ -281,5 +281,11 @@
     "disallowClient": "Disallow client",
     "noDisallowedDomains": "No disallowed domains",
     "domainNotAdded": "The domain couldn't be added",
-    "statusSelected": "status selected"
+    "statusSelected": "status selected",
+    "updateLists": "Update lists",
+    "checkHostFiltered": "Check host",
+    "updatingLists": "Updating lists...",
+    "listsUpdated": "lists updated",
+    "listsNotUpdated": "Couldn't update lists",
+    "listsNotLoaded": "Lists couldn't be loaded"
 }

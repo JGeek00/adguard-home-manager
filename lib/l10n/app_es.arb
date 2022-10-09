@@ -281,5 +281,11 @@
     "disallowClient": "No permitir cliente",
     "noDisallowedDomains": "No hay dominios no permitidos",
     "domainNotAdded": "El dominio no pudo ser añadido",
-    "statusSelected": "estado/s seleccionados"
+    "statusSelected": "estado/s seleccionados",
+    "updateLists": "Actualizar listas",
+    "checkHostFiltered": "Comprobar host",
+    "updatingLists": "Actualizando listas...",
+    "listsUpdated": "listas actualizadas",
+    "listsNotUpdated": "No se pudieron actualizar las listas",
+    "listsNotLoaded": "No se pudieron cargar las listas"
 }

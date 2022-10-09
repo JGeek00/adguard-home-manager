@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -5,6 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/filters/filters_list.dart';
 import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -51,11 +55,11 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     if (mounted) {
       if (result['result'] == 'success') {
         widget.serversProvider.setFilteringData(result['data']);
-        widget.serversProvider.setFilteringLoadStatus(1, true);
+        widget.serversProvider.setFilteringLoadStatus(1, false);
       }
       else {
         widget.appConfigProvider.addLog(result['log']);
-        widget.serversProvider.setFilteringLoadStatus(2, true);
+        widget.serversProvider.setFilteringLoadStatus(2, false);
       }
     }
   }
@@ -79,6 +83,55 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    void fetchUpdateLists() async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.updatingLists);
+
+      final result = await updateLists(server: serversProvider.selectedServer!);
+
+      if (result['result'] == 'success') {
+        final result2 = await getFiltering(server: widget.serversProvider.selectedServer!);
+
+        processModal.close();
+
+        if (mounted) {
+          if (result2['result'] == 'success') {
+            widget.serversProvider.setFilteringData(result2['data']);
+
+            showSnacbkar(
+              context: context, 
+              appConfigProvider: appConfigProvider,
+              label: "${result['data']['updated']} ${AppLocalizations.of(context)!.listsUpdated}", 
+              color: Colors.green
+            );
+          }
+          else {
+            widget.appConfigProvider.addLog(result2['log']);
+
+            showSnacbkar(
+              context: context, 
+              appConfigProvider: appConfigProvider,
+              label:  AppLocalizations.of(context)!.listsNotLoaded, 
+              color: Colors.red
+            );
+          }
+        }
+        
+      }
+      else {
+        processModal.close();
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listsNotUpdated, 
+          color: Colors.red
+        );
+      }
+    }
 
     return DefaultTabController(
       length: 3,
@@ -92,10 +145,35 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                 top: false,
                 sliver: SliverAppBar(
                   title: Text(AppLocalizations.of(context)!.filters),
-                  centerTitle: true,
                   pinned: true,
                   floating: true,
                   forceElevated: innerBoxIsScrolled,
+                  actions: [
+                    PopupMenuButton(
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          onTap: fetchUpdateLists,
+                          child: Row(
+                            children: [
+                              const Icon(Icons.update),
+                              const SizedBox(width: 10),
+                              Text(AppLocalizations.of(context)!.updateLists)
+                            ],
+                          )
+                        ),
+                        PopupMenuItem(
+                          child: Row(
+                            children: [
+                              const Icon(Icons.shield_rounded),
+                              const SizedBox(width: 10),
+                              Text(AppLocalizations.of(context)!.checkHostFiltered)
+                            ],
+                          )
+                        ),
+                      ]
+                    ),
+                    const SizedBox(width: 5),
+                  ],
                   bottom: TabBar(
                     controller: tabController,
                     tabs: [

@@ -916,3 +916,48 @@ Future getServerInfo({
     return result;
   }
 }
+
+Future updateLists({
+  required Server server, 
+}) async {
+  final result = await Future.wait([
+    apiRequest(
+      urlPath: '/filtering/refresh', 
+      method: 'post',
+      server: server, 
+      body: {'whitelist': true},
+      type: 'update_lists'
+    ),
+    apiRequest(
+      urlPath: '/filtering/refresh', 
+      method: 'post',
+      server: server, 
+      body: {'whitelist': false},
+      type: 'update_lists'
+    ),
+  ]);
+
+  if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
+    if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
+      return {
+        'result': 'success',
+        'data': {'updated': jsonDecode(result[0]['body'])['updated']+jsonDecode(result[1]['body'])['updated']} 
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_lists', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
