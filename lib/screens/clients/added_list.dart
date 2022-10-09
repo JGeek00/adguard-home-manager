@@ -1,7 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:animations/animations.dart';
+import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -139,15 +140,21 @@ class _AddedListState extends State<AddedList> {
     }
 
     void openClientModal(Client client) {
-      showModalBottomSheet(
+      showFlexibleBottomSheet(
+        minHeight: 0.6,
+        initHeight: 0.6,
+        maxHeight: 0.95,
+        isCollapsible: true,
+        duration: const Duration(milliseconds: 250),
+        anchors: [0.95],
         context: context, 
-        builder: (ctx) => ClientModal(
+        builder: (ctx, controller, offset) => ClientModal(
+          scrollController: controller,
           client: client,
           onConfirm: confirmEditClient,
           onDelete: deleteClient,
         ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
+        bottomSheetColor: Colors.transparent
       );
     }
 

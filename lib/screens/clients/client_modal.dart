@@ -11,12 +11,14 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientModal extends StatefulWidget {
+  final ScrollController scrollController;
   final Client? client;
   final void Function(Client) onConfirm;
   final void Function(Client)? onDelete;
 
   const ClientModal({
     Key? key,
+    required this.scrollController,
     this.client,
     required this.onConfirm,
     this.onDelete,
@@ -249,458 +251,453 @@ class _ClientModalState extends State<ClientModal> {
 
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
-      child: DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        minChildSize: 0.6,
-        maxChildSize: 0.95,
-        builder: (context, scrollController) =>  Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).dialogBackgroundColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(28),
-              topRight: Radius.circular(28)
-            )
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  children: [
-                    const SizedBox(height: 28),
-                    const Icon(
-                      Icons.add,
-                      size: 26,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).dialogBackgroundColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
+          )
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                controller: widget.scrollController,
+                children: [
+                  const SizedBox(height: 28),
+                  const Icon(
+                    Icons.add,
+                    size: 26,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    AppLocalizations.of(context)!.addClient,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      AppLocalizations.of(context)!.addClient,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 24
+                  ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      enabled: widget.client != null ? false : true,
+                      controller: nameController,
+                      onChanged: (_) => checkValidValues(),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.badge_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        labelText: AppLocalizations.of(context)!.name,
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextFormField(
-                        enabled: widget.client != null ? false : true,
-                        controller: nameController,
-                        onChanged: (_) => checkValidValues(),
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.badge_rounded),
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10)
+                  ),
+                  sectionLabel(AppLocalizations.of(context)!.tags),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: editMode == true ? () => openTagsModal() : null,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.label_rounded,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.selectTags,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  selectedTags.isNotEmpty
+                                    ? "${selectedTags.length} ${AppLocalizations.of(context)!.tagsSelected}"
+                                    : AppLocalizations.of(context)!.noTagsSelected,
+                                  style: const TextStyle(
+                                    color: Colors.grey
+                                  ),
+                                )
+                              ],
                             )
-                          ),
-                          labelText: AppLocalizations.of(context)!.name,
+                          ],
                         ),
                       ),
                     ),
-                    sectionLabel(AppLocalizations.of(context)!.tags),
-                    Material(
-                      color: Colors.transparent,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      sectionLabel(AppLocalizations.of(context)!.identifiers),
+                      if (editMode == true) Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: IconButton(
+                          onPressed: () => setState(() => identifiersControllers.add({
+                            'id': uuid.v4(),
+                            'controller': TextEditingController()
+                          })),
+                          icon: const Icon(Icons.add)
+                        ),
+                      )
+                    ],
+                  ),
+                  if (identifiersControllers.isNotEmpty) ...identifiersControllers.map((controller) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: editMode == true 
+                              ? MediaQuery.of(context).size.width - 108
+                              : MediaQuery.of(context).size.width - 40,
+                            child: TextFormField(
+                              enabled: editMode,
+                              controller: controller['controller'],
+                              onChanged: (_) => checkValidValues(),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.tag),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                helperText: AppLocalizations.of(context)!.identifierHelper,
+                                labelText: AppLocalizations.of(context)!.identifier,
+                              ),
+                            ),
+                          ),
+                          if (editMode == true) ...[
+                            const SizedBox(width: 20),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 25),
+                              child: IconButton(
+                                onPressed: () => setState(
+                                  () => identifiersControllers = identifiersControllers.where((e) => e['id'] != controller['id']).toList()
+                                ), 
+                                icon: const Icon(Icons.remove_circle_outline_outlined)
+                              ),
+                            )
+                          ]
+                        ],
+                      ),
+                    ),
+                  )).toList(),
+                  if (identifiersControllers.isEmpty) Container(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      AppLocalizations.of(context)!.noIdentifiers,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey
+                      ),
+                    ),
+                  ),
+                  sectionLabel(AppLocalizations.of(context)!.settings),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Material(
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(28),
                       child: InkWell(
-                        onTap: editMode == true ? () => openTagsModal() : null,
+                        onTap: editMode 
+                          ? () => enableDisableGlobalSettingsFiltering()
+                          : null,
+                        borderRadius: BorderRadius.circular(28),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20
+                            horizontal: 20,
+                            vertical: 5
                           ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Icon(
-                                Icons.label_rounded,
-                                color: Colors.grey,
+                              Text(
+                                AppLocalizations.of(context)!.useGlobalSettings,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
                               ),
-                              const SizedBox(width: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.selectTags,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
+                              Switch(
+                                value: useGlobalSettingsFiltering, 
+                                onChanged: editMode == true
+                                  ? (value) => enableDisableGlobalSettingsFiltering()
+                                  : null,
+                                activeColor: Theme.of(context).primaryColor,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  settignsTile(
+                    label: AppLocalizations.of(context)!.enableFiltering,
+                    value: enableFiltering, 
+                    onChange: editMode == true
+                      ? (value) => setState(() => enableFiltering = value)
+                      : null
+                  ),
+                  settignsTile(
+                    label: AppLocalizations.of(context)!.enableSafeBrowsing,
+                    value: enableSafeBrowsing, 
+                    onChange: editMode == true
+                      ? (value) => setState(() => enableSafeBrowsing = value)
+                      : null
+                  ),
+                  settignsTile(
+                    label: AppLocalizations.of(context)!.enableParentalControl,
+                    value: enableParentalControl, 
+                    onChange: editMode == true
+                      ? (value) => setState(() => enableParentalControl = value)
+                      : null
+                  ),
+                  settignsTile(
+                    label: AppLocalizations.of(context)!.enableSafeSearch,
+                    value: enableSafeSearch, 
+                    onChange: editMode == true
+                      ? (value) => setState(() => enableSafeSearch = value)
+                      : null
+                  ),
+                  sectionLabel(AppLocalizations.of(context)!.blockedServices),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Material(
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(28),
+                      child: InkWell(
+                        onTap: editMode == true
+                          ? () => updateServicesGlobalSettings(!useGlobalSettingsServices)
+                          : null,
+                        borderRadius: BorderRadius.circular(28),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 5
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.useGlobalSettings,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Switch(
+                                value: useGlobalSettingsServices, 
+                                onChanged: editMode == true
+                                  ? (value) => updateServicesGlobalSettings(value)
+                                  : null,
+                                activeColor: Theme.of(context).primaryColor,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: editMode == true
+                        ? useGlobalSettingsServices == false
+                          ? openServicesModal
+                          : null
+                        : null,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.public,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.selectBlockedServices,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: useGlobalSettingsServices == false
+                                      ? null
+                                      : Colors.grey
                                   ),
+                                ),
+                                if (useGlobalSettingsServices == false) ...[
                                   const SizedBox(height: 5),
                                   Text(
-                                    selectedTags.isNotEmpty
-                                      ? "${selectedTags.length} ${AppLocalizations.of(context)!.tagsSelected}"
-                                      : AppLocalizations.of(context)!.noTagsSelected,
+                                    blockedServices.isNotEmpty
+                                      ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
+                                      :  AppLocalizations.of(context)!.noBlockedServicesSelected,
                                     style: const TextStyle(
                                       color: Colors.grey
                                     ),
                                   )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        sectionLabel(AppLocalizations.of(context)!.identifiers),
-                        if (editMode == true) Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: IconButton(
-                            onPressed: () => setState(() => identifiersControllers.add({
-                              'id': uuid.v4(),
-                              'controller': TextEditingController()
-                            })),
-                            icon: const Icon(Icons.add)
-                          ),
-                        )
-                      ],
-                    ),
-                    if (identifiersControllers.isNotEmpty) ...identifiersControllers.map((controller) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: editMode == true 
-                                ? MediaQuery.of(context).size.width - 108
-                                : MediaQuery.of(context).size.width - 40,
-                              child: TextFormField(
-                                enabled: editMode,
-                                controller: controller['controller'],
-                                onChanged: (_) => checkValidValues(),
-                                decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.tag),
-                                  border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10)
-                                    )
-                                  ),
-                                  helperText: AppLocalizations.of(context)!.identifierHelper,
-                                  labelText: AppLocalizations.of(context)!.identifier,
-                                ),
-                              ),
-                            ),
-                            if (editMode == true) ...[
-                              const SizedBox(width: 20),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 25),
-                                child: IconButton(
-                                  onPressed: () => setState(
-                                    () => identifiersControllers = identifiersControllers.where((e) => e['id'] != controller['id']).toList()
-                                  ), 
-                                  icon: const Icon(Icons.remove_circle_outline_outlined)
-                                ),
-                              )
-                            ]
-                          ],
-                        ),
-                      ),
-                    )).toList(),
-                    if (identifiersControllers.isEmpty) Container(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        AppLocalizations.of(context)!.noIdentifiers,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                    sectionLabel(AppLocalizations.of(context)!.settings),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Material(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(28),
-                        child: InkWell(
-                          onTap: editMode 
-                            ? () => enableDisableGlobalSettingsFiltering()
-                            : null,
-                          borderRadius: BorderRadius.circular(28),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 5
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.useGlobalSettings,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                Switch(
-                                  value: useGlobalSettingsFiltering, 
-                                  onChanged: editMode == true
-                                    ? (value) => enableDisableGlobalSettingsFiltering()
-                                    : null,
-                                  activeColor: Theme.of(context).primaryColor,
-                                )
+                                ]
                               ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    settignsTile(
-                      label: AppLocalizations.of(context)!.enableFiltering,
-                      value: enableFiltering, 
-                      onChange: editMode == true
-                        ? (value) => setState(() => enableFiltering = value)
-                        : null
-                    ),
-                    settignsTile(
-                      label: AppLocalizations.of(context)!.enableSafeBrowsing,
-                      value: enableSafeBrowsing, 
-                      onChange: editMode == true
-                        ? (value) => setState(() => enableSafeBrowsing = value)
-                        : null
-                    ),
-                    settignsTile(
-                      label: AppLocalizations.of(context)!.enableParentalControl,
-                      value: enableParentalControl, 
-                      onChange: editMode == true
-                        ? (value) => setState(() => enableParentalControl = value)
-                        : null
-                    ),
-                    settignsTile(
-                      label: AppLocalizations.of(context)!.enableSafeSearch,
-                      value: enableSafeSearch, 
-                      onChange: editMode == true
-                        ? (value) => setState(() => enableSafeSearch = value)
-                        : null
-                    ),
-                    sectionLabel(AppLocalizations.of(context)!.blockedServices),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Material(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(28),
-                        child: InkWell(
-                          onTap: editMode == true
-                            ? () => updateServicesGlobalSettings(!useGlobalSettingsServices)
-                            : null,
-                          borderRadius: BorderRadius.circular(28),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 5
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.useGlobalSettings,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                Switch(
-                                  value: useGlobalSettingsServices, 
-                                  onChanged: editMode == true
-                                    ? (value) => updateServicesGlobalSettings(value)
-                                    : null,
-                                  activeColor: Theme.of(context).primaryColor,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: editMode == true
-                          ? useGlobalSettingsServices == false
-                            ? openServicesModal
-                            : null
-                          : null,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.public,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(width: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.selectBlockedServices,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: useGlobalSettingsServices == false
-                                        ? null
-                                        : Colors.grey
-                                    ),
-                                  ),
-                                  if (useGlobalSettingsServices == false) ...[
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      blockedServices.isNotEmpty
-                                        ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
-                                        :  AppLocalizations.of(context)!.noBlockedServicesSelected,
-                                      style: const TextStyle(
-                                        color: Colors.grey
-                                      ),
-                                    )
-                                  ]
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        sectionLabel(AppLocalizations.of(context)!.upstreamServers),
-                        if (editMode == true) Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: IconButton(
-                            onPressed: () => setState(() => upstreamServers.add({
-                              'id': uuid.v4(),
-                              'controller': TextEditingController()
-                            })),
-                            icon: const Icon(Icons.add)
-                          ),
-                        )
-                      ],
-                    ),
-                    if (upstreamServers.isNotEmpty) ...upstreamServers.map((controller) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: editMode == true
-                                ? MediaQuery.of(context).size.width - 108
-                                : MediaQuery.of(context).size.width - 40,
-                              child: TextFormField(
-                                enabled: editMode,
-                                controller: controller['controller'],
-                                onChanged: (_) => checkValidValues(),
-                                decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.dns_rounded),
-                                  border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10)
-                                    )
-                                  ),
-                                  labelText: AppLocalizations.of(context)!.serverAddress,
-                                ),
-                              ),
-                            ),
-                            if (editMode == true) ...[
-                              const SizedBox(width: 20),
-                              IconButton(
-                                onPressed: () => setState(
-                                  () => upstreamServers = upstreamServers.where((e) => e['id'] != controller['id']).toList()
-                                ), 
-                                icon: const Icon(Icons.remove_circle_outline_outlined)
-                              )
-                            ]
-                          ],
-                        ),
-                      ),
-                    )).toList(),
-                    if (upstreamServers.isEmpty) Container(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Column(
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.noUpstreamServers,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            AppLocalizations.of(context)!.willBeUsedGeneralServers,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        if (widget.client != null && editMode == false) ...[
-                          IconButton(
-                            onPressed: () => setState(() => editMode = true), 
-                            icon: const Icon(Icons.edit)
-                          ),
-                          const SizedBox(width: 10),
-                        ],
-                        if (widget.client != null && widget.onDelete != null) IconButton(
-                          onPressed: openDeleteClientModal, 
-                          icon: const Icon(Icons.delete)
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context), 
-                          child: Text(AppLocalizations.of(context)!.cancel)
-                        ),
-                        if (widget.client == null || (widget.client != null && editMode == true)) ...[
-                          const SizedBox(width: 20),
-                          TextButton(
-                            onPressed: checkValidValues() == true
-                              ? () {
-                                  createClient();
-                                  Navigator.pop(context);
-                                }
-                              : null, 
-                            child: Text(
-                              widget.client != null && editMode == true
-                                ? AppLocalizations.of(context)!.save
-                                : AppLocalizations.of(context)!.confirm,
-                              style: TextStyle(
-                                color: checkValidValues() == true
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.grey
-                              ),
                             )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      sectionLabel(AppLocalizations.of(context)!.upstreamServers),
+                      if (editMode == true) Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: IconButton(
+                          onPressed: () => setState(() => upstreamServers.add({
+                            'id': uuid.v4(),
+                            'controller': TextEditingController()
+                          })),
+                          icon: const Icon(Icons.add)
+                        ),
+                      )
+                    ],
+                  ),
+                  if (upstreamServers.isNotEmpty) ...upstreamServers.map((controller) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: editMode == true
+                              ? MediaQuery.of(context).size.width - 108
+                              : MediaQuery.of(context).size.width - 40,
+                            child: TextFormField(
+                              enabled: editMode,
+                              controller: controller['controller'],
+                              onChanged: (_) => checkValidValues(),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.dns_rounded),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                labelText: AppLocalizations.of(context)!.serverAddress,
+                              ),
+                            ),
                           ),
-                        ]
+                          if (editMode == true) ...[
+                            const SizedBox(width: 20),
+                            IconButton(
+                              onPressed: () => setState(
+                                () => upstreamServers = upstreamServers.where((e) => e['id'] != controller['id']).toList()
+                              ), 
+                              icon: const Icon(Icons.remove_circle_outline_outlined)
+                            )
+                          ]
+                        ],
+                      ),
+                    ),
+                  )).toList(),
+                  if (upstreamServers.isEmpty) Container(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Column(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.noUpstreamServers,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          AppLocalizations.of(context)!.willBeUsedGeneralServers,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey
+                          ),
+                        ),
                       ],
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      if (widget.client != null && editMode == false) ...[
+                        IconButton(
+                          onPressed: () => setState(() => editMode = true), 
+                          icon: const Icon(Icons.edit)
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                      if (widget.client != null && widget.onDelete != null) IconButton(
+                        onPressed: openDeleteClientModal, 
+                        icon: const Icon(Icons.delete)
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context), 
+                        child: Text(AppLocalizations.of(context)!.cancel)
+                      ),
+                      if (widget.client == null || (widget.client != null && editMode == true)) ...[
+                        const SizedBox(width: 20),
+                        TextButton(
+                          onPressed: checkValidValues() == true
+                            ? () {
+                                createClient();
+                                Navigator.pop(context);
+                              }
+                            : null, 
+                          child: Text(
+                            widget.client != null && editMode == true
+                              ? AppLocalizations.of(context)!.save
+                              : AppLocalizations.of(context)!.confirm,
+                            style: TextStyle(
+                              color: checkValidValues() == true
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey
+                            ),
+                          )
+                        ),
+                      ]
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

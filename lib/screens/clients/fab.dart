@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/client_modal.dart';
@@ -113,13 +114,19 @@ class ClientsFab extends StatelessWidget {
     }
 
     void openAddClient() {
-      showModalBottomSheet(
+      showFlexibleBottomSheet(
+        minHeight: 0.6,
+        initHeight: 0.6,
+        maxHeight: 0.95,
+        isCollapsible: true,
+        duration: const Duration(milliseconds: 250),
+        anchors: [0.95],
         context: context, 
-        builder: (ctx) => ClientModal(
+        builder: (ctx, controller, offset) => ClientModal(
+          scrollController: controller,
           onConfirm: confirmAddClient
         ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
+        bottomSheetColor: Colors.transparent
       );
     }
 

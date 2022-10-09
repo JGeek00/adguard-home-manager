@@ -47,6 +47,7 @@ dependencies:
   fl_chart: ^0.55.2
   flutter_web_browser: ^0.17.1
   flutter_svg: ^1.1.5
+  bottom_sheet: ^3.1.2
 
 dev_dependencies:
   flutter_test:

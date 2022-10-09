@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_details_modal.dart';
@@ -123,14 +124,20 @@ class LogTile extends StatelessWidget {
     }
     
     void openLogDetailsModal() {
-      showModalBottomSheet(
+      showFlexibleBottomSheet(
+        minHeight: 0.6,
+        initHeight: 0.6,
+        maxHeight: 0.95,
+        isCollapsible: true,
+        duration: const Duration(milliseconds: 250),
+        anchors: [0.95],
         context: context, 
-        builder: (ctx) => LogDetailsModal(
+        builder: (ctx, controller, offset) => LogDetailsModal(
+          scrollController: controller,
           log: log,
           blockUnblock: blockUnblock,
         ),
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true
+        bottomSheetColor: Colors.transparent,
       );
     }
 

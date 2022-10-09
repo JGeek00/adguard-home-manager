@@ -7,6 +7,7 @@ import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 
 class ListDetailsModal extends StatelessWidget {
+  final ScrollController scrollController;
   final Filter list;
   final String type;
   final void Function(Filter, String) onDelete;
@@ -15,6 +16,7 @@ class ListDetailsModal extends StatelessWidget {
 
   const ListDetailsModal({
     Key? key,
+    required this.scrollController,
     required this.list,
     required this.type,
     required this.onDelete,
@@ -24,23 +26,22 @@ class ListDetailsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.6,
-      maxChildSize: list.lastUpdated != null
-        ? 740/MediaQuery.of(context).size.height
-        : 670/MediaQuery.of(context).size.height,
-      builder: (context, scrollController) => Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
-          ),
-          color: Theme.of(context).dialogBackgroundColor
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(28),
+          topRight: Radius.circular(28)
         ),
-        child: Column(
-          children: [
-            Expanded(
+        color: Theme.of(context).dialogBackgroundColor
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (overscroll) {
+                overscroll.disallowIndicator();
+                return false;
+              },
               child: ListView(
                 controller: scrollController,
                 children: [
@@ -126,40 +127,40 @@ class ListDetailsModal extends StatelessWidget {
                     subtitle: formatTimestampUTC(list.lastUpdated!, 'dd-MM-yyyy HH:mm'), 
                   ),
                 ],
-              )
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          edit(type);
-                        }, 
-                        icon: const Icon(Icons.edit)
-                      ),
-                      const SizedBox(width: 10),
-                      IconButton(
-                        onPressed: () {
-                          onDelete(list, type);
-                        }, 
-                        icon: const Icon(Icons.delete)
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context), 
-                    child: Text(AppLocalizations.of(context)!.close)
-                  )
-                ],
               ),
+            )
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        edit(type);
+                      }, 
+                      icon: const Icon(Icons.edit)
+                    ),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      onPressed: () {
+                        onDelete(list, type);
+                      }, 
+                      icon: const Icon(Icons.delete)
+                    ),
+                  ],
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context), 
+                  child: Text(AppLocalizations.of(context)!.close)
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

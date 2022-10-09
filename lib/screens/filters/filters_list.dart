@@ -2,8 +2,8 @@
 
 import 'dart:io';
 
-import 'package:adguard_home_manager/screens/filters/delete_list_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/filters/fab.dart';
 import 'package:adguard_home_manager/screens/filters/list_details_modal.dart';
 import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
+import 'package:adguard_home_manager/screens/filters/delete_list_modal.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -212,9 +213,16 @@ class _FiltersListState extends State<FiltersList> {
     }
 
     void openDetailsModal(Filter filter) {
-      showModalBottomSheet(
+      showFlexibleBottomSheet(
+        minHeight: 0.6,
+        initHeight: 0.6,
+        maxHeight: (filter.enabled == true ? 774 : 755)/MediaQuery.of(context).size.height,
+        isCollapsible: true,
+        duration: const Duration(milliseconds: 250),
+        anchors: [(filter.enabled == true ? 774 : 755)/MediaQuery.of(context).size.height],
         context: context, 
-        builder: (ctx) => ListDetailsModal(
+        builder: (ctx, controller, offset) => ListDetailsModal(
+          scrollController: controller,
           list: filter, 
           type: widget.type,
           onDelete: (Filter list, String type) {
@@ -242,8 +250,7 @@ class _FiltersListState extends State<FiltersList> {
           },
           onEnableDisable: enableDisableList,
         ),
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true
+        bottomSheetColor: Colors.transparent
       );
     }
 
