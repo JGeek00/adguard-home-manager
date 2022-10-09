@@ -287,5 +287,9 @@
     "updatingLists": "Actualizando listas...",
     "listsUpdated": "listas actualizadas",
     "listsNotUpdated": "No se pudieron actualizar las listas",
-    "listsNotLoaded": "No se pudieron cargar las listas"
+    "listsNotLoaded": "No se pudieron cargar las listas",
+    "domainNotValid": "Dominio no válido",
+    "check": "Comprobar",
+    "checkingHost": "Comprobando host...",
+    "errorCheckingHost": "No se pudo comprobar el host"
 }

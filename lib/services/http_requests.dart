@@ -961,3 +961,39 @@ Future updateLists({
     return result;
   }
 }
+
+Future checkHostFiltered({
+  required Server server, 
+  required String host,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/filtering/check_host?name=$host', 
+    method: 'get',
+    server: server, 
+    type: 'check_host_filtered'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {
+        'result': 'success',
+        'data': jsonDecode(result['body'])
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_lists', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

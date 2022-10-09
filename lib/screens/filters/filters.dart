@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/filters_list.dart';
+import 'package:adguard_home_manager/screens/filters/check_host_modal.dart';
 import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -133,6 +134,19 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
       }
     }
 
+    void showCheckHostModal() {
+      Future.delayed(const Duration(seconds: 0), () {
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) => const CheckHostModal(),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          isDismissible: false,
+          enableDrag: false
+        );
+      });
+    }
+
     return DefaultTabController(
       length: 3,
       child: NestedScrollView(
@@ -162,6 +176,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                           )
                         ),
                         PopupMenuItem(
+                          onTap: showCheckHostModal,
                           child: Row(
                             children: [
                               const Icon(Icons.shield_rounded),
