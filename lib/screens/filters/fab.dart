@@ -30,7 +30,7 @@ class FiltersFab extends StatelessWidget {
 
     void confirmAddRule(String rule) async {
       ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.updatingRules);
+      processModal.open(AppLocalizations.of(context)!.addingRule);
 
       final List<String> newRules = serversProvider.filtering.data!.userRules;
       newRules.add(rule);

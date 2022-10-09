@@ -302,5 +302,7 @@
     "example2": "Unblocks access to example.org and all its subdomains.",
     "example3": "Adds a comment.",
     "example4": "Block access to domains matching the specified regular expression.",
-    "moreInformation": "More information"
+    "moreInformation": "More information",
+    "addingRule": "Adding rule...",
+    "deletingRule": "Deleting rule..."
 }

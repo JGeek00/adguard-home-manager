@@ -24,18 +24,24 @@ class _AddCustomRuleState extends State<AddCustomRule> {
   final TextEditingController domainController = TextEditingController();
   String? domainError;
 
-  bool validValues = false;
-
   String preset = "block";
 
   bool addImportant = false;
 
-  void checkValidValues() {
-    if (domainController.text != '') {
-      setState(() => validValues = true);
+  bool checkValidValues() {
+    if (
+      domainController.text != '' && 
+      domainError == null && 
+      (
+        preset == 'block' ||
+        preset == 'unblock' ||
+        preset == 'custom'
+      )
+    ) {
+      return true;
     }
     else {
-      setState(() => validValues = false);
+      return false;
     }
   }
 
@@ -47,19 +53,22 @@ class _AddCustomRuleState extends State<AddCustomRule> {
     else {
       setState(() => domainError = AppLocalizations.of(context)!.domainNotValid);
     }
+    checkValidValues();
   }
 
-  String buildRule() {
+  String buildRule({String?value}) {
     String rule = "";
+
+    String fieldValue = value ?? domainController.text;
     
     if (preset == 'block') {
-      rule = "||${domainController.text.trim()}^";
+      rule = "||${fieldValue.trim()}^";
     }
     else if (preset == 'unblock') {
-      rule = "@@||${domainController.text.trim()}^";
+      rule = "@@||${fieldValue.trim()}^";
     }
     else {
-      rule = domainController.text.trim();
+      rule = fieldValue.trim();
     }
     
     if (addImportant == true) {
@@ -151,7 +160,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                     padding: const EdgeInsets.symmetric(horizontal: 28),
                     child: TextFormField(
                       controller: domainController,
-                      onChanged: validateDomain,
+                      onChanged: (value) => setState(() => {}),
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.link_rounded),
                         border: const OutlineInputBorder(
@@ -378,16 +387,16 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                   ),
                   const SizedBox(width: 20),
                   TextButton(
-                    onPressed: validValues == true
+                    onPressed: checkValidValues() == true
                       ? () {
                           Navigator.pop(context);
-                          widget.onConfirm(domainController.text);
+                          widget.onConfirm(buildRule());
                         }
                       : null, 
                     child: Text(
                       AppLocalizations.of(context)!.confirm,
                       style: TextStyle(
-                        color: validValues == true
+                        color: checkValidValues() == true
                           ? Theme.of(context).primaryColor
                           : Colors.grey
                       ),

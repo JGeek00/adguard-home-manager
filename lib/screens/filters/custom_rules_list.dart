@@ -64,7 +64,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
 
     void removeCustomRule(String rule) async {
       ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.updatingRules);
+      processModal.open(AppLocalizations.of(context)!.deletingRule);
 
       final List<String> newRules = serversProvider.filtering.data!.userRules.where((r) => r != rule).toList();
 
@@ -146,12 +146,16 @@ class _CustomRulesListState extends State<CustomRulesList> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    AppLocalizations.of(context)!.noBlackLists,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      color: Colors.grey
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width-100,
+                    child: Text(
+                      AppLocalizations.of(context)!.noBlackLists,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.grey
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),

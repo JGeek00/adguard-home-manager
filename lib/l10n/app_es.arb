@@ -302,5 +302,7 @@
     "example2": "Desbloquea el acceso al dominio ejemplo.org y a todos sus subdominios.",
     "example3": "Añade un comentario.",
     "example4": "Bloquea el acceso a los dominios que coincidan con la expresión regular especificada.",
-    "moreInformation": "Más información"
+    "moreInformation": "Más información",
+    "addingRule": "Añadiendo regla...",
+    "deletingRule": "Eliminando regla..."
 }
