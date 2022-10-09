@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/add_custom_rule.dart';
@@ -63,13 +64,19 @@ class FiltersFab extends StatelessWidget {
     }
 
     void openAddCustomRule() {
-      showModalBottomSheet(
+      showFlexibleBottomSheet(
+        minHeight: 0.7,
+        initHeight: 0.7,
+        maxHeight: 0.95,
+        isCollapsible: true,
+        duration: const Duration(milliseconds: 250),
+        anchors: [0.7, 0.95],
         context: context, 
-        builder: (ctx) => AddCustomRule(
+        builder: (ctx, controller, offset) => AddCustomRule(
+          scrollController: controller,
           onConfirm: confirmAddRule
         ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
+        bottomSheetColor: Colors.transparent
       );
     }
 

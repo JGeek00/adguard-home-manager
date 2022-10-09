@@ -291,5 +291,16 @@
     "domainNotValid": "Dominio no válido",
     "check": "Comprobar",
     "checkingHost": "Comprobando host...",
-    "errorCheckingHost": "No se pudo comprobar el host"
+    "errorCheckingHost": "No se pudo comprobar el host",
+    "block": "Bloquear",
+    "unblock": "Desbloquear",
+    "custom": "Personalizado",
+    "addImportant": "Añadir $important",
+    "howCreateRules": "Cómo crear reglas personalizadas",
+    "examples": "Ejemplos",
+    "example1": "Bloquea el acceso al dominio ejemplo.org y a todos sus subdominios.",
+    "example2": "Desbloquea el acceso al dominio ejemplo.org y a todos sus subdominios.",
+    "example3": "Añade un comentario.",
+    "example4": "Bloquea el acceso a los dominios que coincidan con la expresión regular especificada.",
+    "moreInformation": "Más información"
 }

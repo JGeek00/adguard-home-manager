@@ -28,59 +28,6 @@ class ClientsFab extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    void confirmRemoveDomain(String ip) async {
-      Map<String, List<String>> body = {};
-
-      final List<String> clients = [...serversProvider.clients.data!.clientsAllowedBlocked?.disallowedClients ?? [], ip];
-      body = {
-        "allowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.allowedClients ?? [],
-        "disallowed_clients": clients,
-        "blocked_hosts": serversProvider.clients.data!.clientsAllowedBlocked?.blockedHosts ?? [],
-      };
-
-      ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.addingClient);
-
-      final result = await requestAllowedBlockedClientsHosts(serversProvider.selectedServer!, body);
-
-      processModal.close();
-
-      if (result['result'] == 'success') {
-        serversProvider.setAllowedDisallowedClientsBlockedDomains(
-          ClientsAllowedBlocked(
-            allowedClients: body['allowed_clients'] ?? [], 
-            disallowedClients: body['disallowed_clients'] ?? [], 
-            blockedHosts: body['blocked_hosts'] ?? [], 
-          )
-        );
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
-          color: Colors.green
-        );
-      }
-      else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.clientAnotherList, 
-          color: Colors.red
-        );
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.clientNotAdded, 
-          color: Colors.red
-        );
-      }
-    }
-
     void confirmAddClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);

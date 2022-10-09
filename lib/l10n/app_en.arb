@@ -291,5 +291,16 @@
     "domainNotValid": "Domain not valid",
     "check": "Check",
     "checkingHost": "Checking host...",
-    "errorCheckingHost": "Host couldn't be checked"
+    "errorCheckingHost": "Host couldn't be checked",
+    "block": "Block",
+    "unblock": "Unblock",
+    "custom": "Custom",
+    "addImportant": "Add $important",
+    "howCreateRules": "How to create custom rules",
+    "examples": "Examples",
+    "example1": "Block access to example.org and all its subdomains.",
+    "example2": "Unblocks access to example.org and all its subdomains.",
+    "example3": "Adds a comment.",
+    "example4": "Block access to domains matching the specified regular expression.",
+    "moreInformation": "More information"
 }
