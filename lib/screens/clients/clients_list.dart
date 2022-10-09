@@ -32,6 +32,7 @@ class ClientsList extends StatelessWidget {
               const SizedBox(height: 30),
               Text(
                 AppLocalizations.of(context)!.loadingStatus,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 22,
                   color: Colors.grey,
@@ -102,6 +103,7 @@ class ClientsList extends StatelessWidget {
               const SizedBox(height: 30),
               Text(
                 AppLocalizations.of(context)!.errorLoadServerStatus,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 22,
                   color: Colors.grey,

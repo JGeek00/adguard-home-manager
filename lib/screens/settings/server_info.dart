@@ -82,6 +82,7 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
                     AppLocalizations.of(context)!.loadingServerInfo,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 22,
                       color: Colors.grey,
@@ -159,6 +160,7 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.serverInfoNotLoaded,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 22,
                     color: Colors.grey,

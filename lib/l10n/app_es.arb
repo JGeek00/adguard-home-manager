@@ -274,7 +274,7 @@
     "noAllowedClients": "No hay clientes permitidos",
     "allowedClientsDescription": "Si esta lista tiene entradas, AdGuard Home aceptará peticiones solo de estos clientes.",
     "blockedClientsDescription": "Si esta lista tiene entradas, AdGuard Home descartará las peticiones de estos clientes. Este campo será ignorado si hay entradas en clientes permitidos.",
-    "disallowedDomainsDescription": " AdGuard Home descartará las consultas DNS que coincidan con estos dominios, y estas consultas ni siquiera aparecerán en el registro de consultas",
+    "disallowedDomainsDescription": " AdGuard Home descartará las consultas DNS que coincidan con estos dominios, y estas consultas ni siquiera aparecerán en el registro de consultas.",
     "addClientFieldDescription": "CIDRs, Dirección IP, o ClientID",
     "clientIdentifier": "Identificador de cliente",
     "allowClient": "Permitir cliente",

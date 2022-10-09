@@ -68,6 +68,7 @@ class _HomeState extends State<Home> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.loadingStatus,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 22,
                     color: Colors.grey,
@@ -173,6 +174,7 @@ class _HomeState extends State<Home> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.errorLoadServerStatus,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 22,
                     color: Colors.grey,
@@ -208,7 +210,12 @@ class _HomeState extends State<Home> {
         },
         child: status()
       ),
-      floatingActionButton: isVisible ? const HomeFab() : null
+      floatingActionButton: appConfigProvider.showingSnackbar
+        ? null
+        : isVisible 
+          ? const HomeFab() 
+          : null
+        
     );
   }
 }

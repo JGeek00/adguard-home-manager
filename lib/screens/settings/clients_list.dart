@@ -219,6 +219,7 @@ class _ClientsListState extends State<ClientsList> {
               const SizedBox(height: 30),
               Text(
                 AppLocalizations.of(context)!.loadingClients,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 22,
                   color: Colors.grey,
@@ -340,6 +341,7 @@ class _ClientsListState extends State<ClientsList> {
               const SizedBox(height: 30),
               Text(
                 AppLocalizations.of(context)!.clientsNotLoaded,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 22,
                   color: Colors.grey,
