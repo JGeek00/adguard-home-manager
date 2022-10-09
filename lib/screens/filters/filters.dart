@@ -86,29 +86,35 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
         controller: scrollController,
         headerSliverBuilder: ((context, innerBoxIsScrolled) {
           return [
-            SliverAppBar(
-              title: Text(AppLocalizations.of(context)!.filters),
-              centerTitle: true,
-              pinned: true,
-              floating: true,
-              forceElevated: innerBoxIsScrolled,
-              bottom: TabBar(
-                controller: tabController,
-                tabs: [
-                  Tab(
-                    icon: const Icon(Icons.verified_user_rounded),
-                    text: AppLocalizations.of(context)!.whitelists,
-                  ),
-                  Tab(
-                    icon: const Icon(Icons.gpp_bad_rounded),
-                    text: AppLocalizations.of(context)!.blacklists,
-                  ),
-                  Tab(
-                    icon: const Icon(Icons.shield_rounded),
-                    text: AppLocalizations.of(context)!.customRules,
-                  ),
-                ]
-              )
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverSafeArea(
+                top: false,
+                sliver: SliverAppBar(
+                  title: Text(AppLocalizations.of(context)!.filters),
+                  centerTitle: true,
+                  pinned: true,
+                  floating: true,
+                  forceElevated: innerBoxIsScrolled,
+                  bottom: TabBar(
+                    controller: tabController,
+                    tabs: [
+                      Tab(
+                        icon: const Icon(Icons.verified_user_rounded),
+                        text: AppLocalizations.of(context)!.whitelists,
+                      ),
+                      Tab(
+                        icon: const Icon(Icons.gpp_bad_rounded),
+                        text: AppLocalizations.of(context)!.blacklists,
+                      ),
+                      Tab(
+                        icon: const Icon(Icons.shield_rounded),
+                        text: AppLocalizations.of(context)!.customRules,
+                      ),
+                    ]
+                  )
+                ),
+              ),
             )
           ];
         }), 

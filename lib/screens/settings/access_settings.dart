@@ -79,28 +79,34 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
           controller: scrollController,
           headerSliverBuilder: ((context, innerBoxIsScrolled) {
             return [
-              SliverAppBar(
-                title: Text(AppLocalizations.of(context)!.accessSettings),
-                pinned: true,
-                floating: true,
-                forceElevated: innerBoxIsScrolled,
-                bottom: TabBar(
-                  controller: tabController,
-                  tabs: [
-                    Tab(
-                      icon: const Icon(Icons.check),
-                      text: AppLocalizations.of(context)!.allowedClients,
-                    ),
-                    Tab(
-                      icon: const Icon(Icons.block),
-                      text: AppLocalizations.of(context)!.disallowedClients,
-                    ),
-                    Tab(
-                      icon: const Icon(Icons.link_rounded),
-                      text: AppLocalizations.of(context)!.disallowedDomains,
-                    ),
-                  ]
-                )
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverSafeArea(
+                  top: false,
+                  sliver: SliverAppBar(
+                    title: Text(AppLocalizations.of(context)!.accessSettings),
+                    pinned: true,
+                    floating: true,
+                    forceElevated: innerBoxIsScrolled,
+                    bottom: TabBar(
+                      controller: tabController,
+                      tabs: [
+                        Tab(
+                          icon: const Icon(Icons.check),
+                          text: AppLocalizations.of(context)!.allowedClients,
+                        ),
+                        Tab(
+                          icon: const Icon(Icons.block),
+                          text: AppLocalizations.of(context)!.disallowedClients,
+                        ),
+                        Tab(
+                          icon: const Icon(Icons.link_rounded),
+                          text: AppLocalizations.of(context)!.disallowedDomains,
+                        ),
+                      ]
+                    )
+                  ),
+                ),
               )
             ];
           }), 

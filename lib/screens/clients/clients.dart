@@ -95,25 +95,31 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
         controller: scrollController,
         headerSliverBuilder: ((context, innerBoxIsScrolled) {
           return [
-            SliverAppBar(
-              title: Text(AppLocalizations.of(context)!.clients),
-              centerTitle: true,
-              pinned: true,
-              floating: true,
-              forceElevated: innerBoxIsScrolled,
-              bottom: TabBar(
-                controller: tabController,
-                tabs: [
-                  Tab(
-                    icon: const Icon(Icons.devices),
-                    text: AppLocalizations.of(context)!.activeClients,
-                  ),
-                  Tab(
-                    icon: const Icon(Icons.add),
-                    text: AppLocalizations.of(context)!.added,
-                  ),
-                ]
-              )
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverSafeArea(
+                top: false,
+                sliver: SliverAppBar(
+                  title: Text(AppLocalizations.of(context)!.clients),
+                  centerTitle: true,
+                  pinned: true,
+                  floating: true,
+                  forceElevated: innerBoxIsScrolled,
+                  bottom: TabBar(
+                    controller: tabController,
+                    tabs: [
+                      Tab(
+                        icon: const Icon(Icons.devices),
+                        text: AppLocalizations.of(context)!.activeClients,
+                      ),
+                      Tab(
+                        icon: const Icon(Icons.add),
+                        text: AppLocalizations.of(context)!.added,
+                      ),
+                    ]
+                  )
+                ),
+              ),
             )
           ];
         }), 
