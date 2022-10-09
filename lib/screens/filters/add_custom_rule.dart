@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 
 import 'package:adguard_home_manager/widgets/custom_radio_toggle.dart';
+
+import 'package:adguard_home_manager/constants/urls.dart';
 
 class AddCustomRule extends StatefulWidget {
   final ScrollController scrollController;
@@ -65,6 +68,22 @@ class _AddCustomRuleState extends State<AddCustomRule> {
 
     return rule;
   }
+
+  void openDocsPage() {
+    FlutterWebBrowser.openWebPage(
+      url: Urls.customRuleDocs,
+      customTabsOptions: const CustomTabsOptions(
+        instantAppsEnabled: true,
+        showTitle: true,
+        urlBarHidingEnabled: false,
+      ),
+      safariVCOptions: const SafariViewControllerOptions(
+        barCollapsingEnabled: true,
+        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+        modalPresentationCapturesStatusBarAppearance: true,
+      )
+    );
+  } 
     
   @override
   Widget build(BuildContext context) {
@@ -316,7 +335,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () => {},
+                      onTap: openDocsPage,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
                         child: Row(
