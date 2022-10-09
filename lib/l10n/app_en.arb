@@ -280,5 +280,6 @@
     "allowClient": "Allow client",
     "disallowClient": "Disallow client",
     "noDisallowedDomains": "No disallowed domains",
-    "domainNotAdded": "The domain couldn't be added"
+    "domainNotAdded": "The domain couldn't be added",
+    "statusSelected": "status selected"
 }

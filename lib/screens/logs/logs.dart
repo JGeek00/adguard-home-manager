@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/logs/logs_filters_modal.dart';
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
-import 'package:adguard_home_manager/screens/logs/appbar.dart';
 
+import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -53,9 +54,14 @@ class _LogsWidgetState extends State<LogsWidget> {
 
   Future fetchLogs({
     int? inOffset,
-    bool? loadingMore
+    bool? loadingMore,
+    String? responseStatus,
+    String? searchText,
   }) async {
     int offst = inOffset ?? widget.logsProvider.offset;
+
+    String resStatus = responseStatus ?? widget.logsProvider.selectedResultStatus;
+    String? search = searchText ?? widget.logsProvider.searchText;
 
     if (loadingMore != null && loadingMore == true) {
       setState(() => isLoadingMore = true);
@@ -66,8 +72,8 @@ class _LogsWidgetState extends State<LogsWidget> {
       count: widget.logsProvider.logsQuantity, 
       offset: offst,
       olderThan: widget.logsProvider.logsOlderThan,
-      responseStatus: widget.logsProvider.selectedResultStatus,
-      search: widget.logsProvider.searchText
+      responseStatus: resStatus,
+      search: search
     );
 
     if (loadingMore != null && loadingMore == true) {
@@ -129,6 +135,26 @@ class _LogsWidgetState extends State<LogsWidget> {
   @override
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
+
+    void openFilersModal() {
+      showModalBottomSheet(
+        context: context, 
+        builder: (context) => const LogsFiltersModal(),
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true
+      );
+    }
+
+    final Map<String, String> translatedString = {
+      "all": AppLocalizations.of(context)!.all, 
+      "filtered": AppLocalizations.of(context)!.filtered, 
+      "processed": AppLocalizations.of(context)!.processed, 
+      "whitelisted": AppLocalizations.of(context)!.processedWhitelist, 
+      "blocked": AppLocalizations.of(context)!.blocked, 
+      "blocked_safebrowsing": AppLocalizations.of(context)!.blockedSafeBrowsing, 
+      "blocked_parental": AppLocalizations.of(context)!.blockedParental, 
+      "safe_search": AppLocalizations.of(context)!.safeSearch, 
+    };
 
     Widget generateBody() {
       switch (logsProvider.loadStatus) {
@@ -243,7 +269,94 @@ class _LogsWidgetState extends State<LogsWidget> {
     }
 
     return Scaffold(
-      appBar: const LogsAppBar(),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.logs),
+        actions: [
+          logsProvider.loadStatus == 1 
+            ? IconButton(
+                onPressed: openFilersModal, 
+                icon: const Icon(Icons.filter_list_rounded)
+              )
+            : const SizedBox(),
+          const SizedBox(width: 5),
+        ],
+        bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all'
+          ? PreferredSize(
+              preferredSize: const Size(double.maxFinite, 50),
+              child: Container(
+                height: 50,
+                width: double.maxFinite,
+                padding: const EdgeInsets.only(bottom: 10),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    if (logsProvider.appliedFilters.searchText != null) ...[
+                      const SizedBox(width: 15),
+                      Chip(
+                        label: Row(
+                          children: [
+                            const Icon(Icons.search),
+                            const SizedBox(width: 10),
+                            Text(logsProvider.appliedFilters.searchText!),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
+                        deleteIcon: const Icon(
+                          Icons.cancel_rounded,
+                          size: 20,
+                        ),
+                        onDeleted: () {
+                          logsProvider.setAppliedFilters(
+                            AppliedFiters(
+                              selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
+                              searchText: null
+                            )
+                          );
+                          logsProvider.setSearchText(null);
+                          fetchLogs(
+                            inOffset: 0,
+                            searchText: null
+                          );
+                        },
+                      ),
+                    ],
+                    if (logsProvider.appliedFilters.selectedResultStatus != 'all') ...[
+                      const SizedBox(width: 15),
+                      Chip(
+                        label: Row(
+                          children: [
+                            const Icon(Icons.shield_rounded),
+                            const SizedBox(width: 10),
+                            Text(translatedString[logsProvider.appliedFilters.selectedResultStatus]!),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
+                        deleteIcon: const Icon(
+                          Icons.cancel_rounded,
+                          size: 20,
+                        ),
+                        onDeleted: () {
+                          logsProvider.setAppliedFilters(
+                            AppliedFiters(
+                              selectedResultStatus: 'all', 
+                              searchText: logsProvider.appliedFilters.searchText
+                            )
+                          );
+                          logsProvider.setSelectedResultStatus('all');
+                          fetchLogs(
+                            inOffset: 0,
+                            responseStatus: 'all'
+                          );
+                        },
+                      ),
+                    ],
+                    const SizedBox(width: 15),
+                  ],
+                ),
+              )
+            )
+        : null,
+      ),
       body: generateBody()
     );
   }

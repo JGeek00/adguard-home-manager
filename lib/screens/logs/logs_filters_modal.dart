@@ -5,9 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/filter_status_modal.dart';
+
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
@@ -105,6 +107,13 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
         count: logsProvider.logsQuantity
       );
 
+      logsProvider.setAppliedFilters(
+        AppliedFiters(
+          selectedResultStatus: 'all', 
+          searchText: null
+        )
+      );
+
       if (result['result'] == 'success') {
         logsProvider.setLogsData(result['data']);
         logsProvider.setLoadStatus(1);
@@ -140,6 +149,14 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
         responseStatus: logsProvider.selectedResultStatus,
         search: logsProvider.searchText,
       );
+
+      logsProvider.setAppliedFilters(
+        AppliedFiters(
+          selectedResultStatus: logsProvider.selectedResultStatus,
+          searchText: logsProvider.searchText,
+        )
+      );
+
       if (result['result'] == 'success') {
         logsProvider.setLogsData(result['data']);
         logsProvider.setLoadStatus(1);

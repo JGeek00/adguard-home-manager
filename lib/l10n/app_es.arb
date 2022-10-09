@@ -280,5 +280,6 @@
     "allowClient": "Permitir cliente",
     "disallowClient": "No permitir cliente",
     "noDisallowedDomains": "No hay dominios no permitidos",
-    "domainNotAdded": "El dominio no pudo ser añadido"
+    "domainNotAdded": "El dominio no pudo ser añadido",
+    "statusSelected": "estado/s seleccionados"
 }

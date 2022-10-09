@@ -1,5 +1,7 @@
-import 'package:adguard_home_manager/models/logs.dart';
 import 'package:flutter/material.dart';
+
+import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/models/logs.dart';
 
 class LogsProvider with ChangeNotifier {
   int _loadStatus = 0;
@@ -11,6 +13,11 @@ class LogsProvider with ChangeNotifier {
 
   int _logsQuantity = 100;
   int _offset = 0;
+
+  AppliedFiters _appliedFilters = AppliedFiters(
+    selectedResultStatus: 'all', 
+    searchText: null
+  );
 
   int get loadStatus {
     return _loadStatus;
@@ -38,6 +45,10 @@ class LogsProvider with ChangeNotifier {
 
   int get offset {
     return _offset;
+  }
+
+  AppliedFiters get appliedFilters {
+    return _appliedFilters;
   }
 
 
@@ -77,8 +88,14 @@ class LogsProvider with ChangeNotifier {
     _selectedResultStatus = value;
     notifyListeners();
   }
+
   void setSearchText(String? value) {
     _searchText = value;
+    notifyListeners();
+  }
+
+  void setAppliedFilters(AppliedFiters value) {
+    _appliedFilters = value;
     notifyListeners();
   }
 }
