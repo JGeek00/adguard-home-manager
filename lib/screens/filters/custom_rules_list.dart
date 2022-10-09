@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/filters/fab.dart';
 import 'package:adguard_home_manager/screens/filters/remove_custom_rule_modal.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -75,22 +76,22 @@ class _CustomRulesListState extends State<CustomRulesList> {
         FilteringData filteringData = serversProvider.filtering.data!;
         filteringData.userRules = newRules;
         serversProvider.setFilteringData(filteringData);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.ruleRemovedSuccessfully),
-            backgroundColor: Colors.green,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.ruleRemovedSuccessfully, 
+          color: Colors.green
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.ruleNotRemoved),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.ruleNotRemoved, 
+          color: Colors.red
         );
       }
     }

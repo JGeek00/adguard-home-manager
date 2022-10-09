@@ -126,11 +126,8 @@ class AppConfigProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setShowingSnackbar() async {
-    _showingSnackbar = true;
-    notifyListeners();
-    await Future.delayed(const Duration(milliseconds: 4500));
-    _showingSnackbar = false;
+  void setShowingSnackbar(bool status) async {
+    _showingSnackbar = status;
     notifyListeners();
   }
 

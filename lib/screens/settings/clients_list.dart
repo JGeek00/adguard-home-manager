@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/settings/add_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -99,22 +100,21 @@ class _ClientsListState extends State<ClientsList> {
         );
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientAnotherList),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAnotherList, 
+          color: Colors.red
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientNotRemoved),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientNotRemoved, 
+          color: Colors.red
         );
       }
     }
@@ -153,26 +153,23 @@ class _ClientsListState extends State<ClientsList> {
         );
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientAnotherList),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAnotherList, 
+          color: Colors.red
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              type == 'allowed' || type == 'blocked'
-                ? AppLocalizations.of(context)!.clientNotRemoved
-                : AppLocalizations.of(context)!.domainNotAdded
-            ),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: type == 'allowed' || type == 'blocked'
+            ? AppLocalizations.of(context)!.clientNotRemoved
+            : AppLocalizations.of(context)!.domainNotAdded,
+          color: Colors.red
         );
       }
     }

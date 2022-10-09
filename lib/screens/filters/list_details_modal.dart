@@ -72,6 +72,7 @@ class ListDetailsModal extends StatelessWidget {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
+                          Navigator.pop(context);
                           onEnableDisable(list, !list.enabled);
                         }, 
                         label: Text(

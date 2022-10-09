@@ -12,6 +12,7 @@ import 'package:adguard_home_manager/screens/clients/fab.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/screens/clients/client_modal.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -87,22 +88,22 @@ class _AddedListState extends State<AddedList> {
           }
         }).toList();
         serversProvider.setClientsData(clientsData);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientUpdatedSuccessfully),
-            backgroundColor: Colors.green,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientUpdatedSuccessfully, 
+          color: Colors.green
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientNotUpdated),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientNotUpdated, 
+          color: Colors.red
         );
       }
     }
@@ -119,22 +120,22 @@ class _AddedListState extends State<AddedList> {
         ClientsData clientsData = serversProvider.clients.data!;
         clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
         serversProvider.setClientsData(clientsData);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientDeletedSuccessfully),
-            backgroundColor: Colors.green,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientDeletedSuccessfully, 
+          color: Colors.green
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientNotDeleted),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientNotDeleted, 
+          color: Colors.red
         );
       }
     }

@@ -212,7 +212,7 @@
     "addCustomRule": "Añadir regla personalizada",
     "removeCustomRule": "Eliminar regla personalizada",
     "removeCustomRuleMessage": "¿Estás seguro que deseas eliminar esta regla personalizada?",
-    "updatingRules": "Updating custom rules...",
+    "updatingRules": "Actualizando reglas personalizadas...",
     "ruleRemovedSuccessfully": "Regla eliminada correctamente",
     "ruleNotRemoved": "No se ha podido eliminar la regla",
     "ruleAddedSuccessfully": "Regla añadida correctamente",

@@ -1,12 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/add_custom_rule.dart';
+import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -41,22 +42,22 @@ class FiltersFab extends StatelessWidget {
         FilteringData filteringData = serversProvider.filtering.data!;
         filteringData.userRules = newRules;
         serversProvider.setFilteringData(filteringData);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.ruleAddedSuccessfully),
-            backgroundColor: Colors.green,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.ruleAddedSuccessfully, 
+          color: Colors.green
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.ruleNotAdded),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.ruleNotAdded, 
+          color: Colors.red
         );
       }
     }
@@ -98,56 +99,55 @@ class FiltersFab extends StatelessWidget {
 
           processModal.close();
 
-          appConfigProvider.setShowingSnackbar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("${AppLocalizations.of(context)!.listAdded} $items."),
-              backgroundColor: Colors.green,
-            )
+          showSnacbkar(
+            context: context, 
+            appConfigProvider: appConfigProvider,
+            label: "${AppLocalizations.of(context)!.listAdded} $items.", 
+            color: Colors.green
           );
         }
         else {
           processModal.close();
-          appConfigProvider.setShowingSnackbar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.listNotAdded),
-              backgroundColor: Colors.red,
-            )
+
+          showSnacbkar(
+            context: context, 
+            appConfigProvider: appConfigProvider,
+            label: AppLocalizations.of(context)!.listNotAdded, 
+            color: Colors.red
           );
         }
       }
       else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains("Couldn't fetch filter from url")) {
         processModal.close();
         appConfigProvider.addLog(result1['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar( 
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listUrlInvalid),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listUrlInvalid, 
+          color: Colors.red
         );
       }
       else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains('Filter URL already added')) {
         processModal.close();
         appConfigProvider.addLog(result1['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar( 
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listAlreadyAdded),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listAlreadyAdded, 
+          color: Colors.red
         );
       }
       else {
         processModal.close();
         appConfigProvider.addLog(result1['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listNotAdded),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listNotAdded, 
+          color: Colors.red
         );
       }
     }

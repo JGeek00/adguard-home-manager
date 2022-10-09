@@ -14,6 +14,7 @@ import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
 import 'package:adguard_home_manager/screens/filters/delete_list_modal.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -97,24 +98,21 @@ class _FiltersListState extends State<FiltersList> {
           serversProvider.setFilteringLoadStatus(2, true);
         }
 
-        processModal.close();
-
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listDataUpdated),
-            backgroundColor: Colors.green,
-          )
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listDataUpdated, 
+          color: Colors.green
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listDataNotUpdated),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listDataNotUpdated, 
+          color: Colors.red
         );
       }
     }
@@ -143,27 +141,26 @@ class _FiltersListState extends State<FiltersList> {
         else {
           appConfigProvider.addLog(result2['log']);
           serversProvider.setFilteringLoadStatus(2, true);
-          }
+        }
 
         processModal.close();
 
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listDataUpdated),
-            backgroundColor: Colors.green,
-          )
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listDataUpdated, 
+          color: Colors.green
         );
       }
       else {
         processModal.close();
         appConfigProvider.addLog(result1['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listDataNotUpdated),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listDataNotUpdated, 
+          color: Colors.red
         );
       }
     }
@@ -187,27 +184,26 @@ class _FiltersListState extends State<FiltersList> {
         else {
           appConfigProvider.addLog(result2['log']);
           serversProvider.setFilteringLoadStatus(2, true);
-          }
+        }
 
         processModal.close();
 
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listDeleted),
-            backgroundColor: Colors.green,
-          )
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listDeleted, 
+          color: Colors.green
         );
       }
       else {
         processModal.close();
         appConfigProvider.addLog(result1['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.listNotDeleted),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.listNotDeleted, 
+          color: Colors.red
         );
       }
     }

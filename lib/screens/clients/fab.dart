@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/client_modal.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
@@ -52,31 +53,30 @@ class ClientsFab extends StatelessWidget {
             blockedHosts: body['blocked_hosts'] ?? [], 
           )
         );
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientAddedSuccessfully),
-            backgroundColor: Colors.green,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
+          color: Colors.green
         );
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientAnotherList),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAnotherList, 
+          color: Colors.red
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientNotAdded),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientNotAdded, 
+          color: Colors.red
         );
       }
     }
@@ -93,22 +93,22 @@ class ClientsFab extends StatelessWidget {
         ClientsData clientsData = serversProvider.clients.data!;
         clientsData.clients.add(client);
         serversProvider.setClientsData(clientsData);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientAddedSuccessfully),
-            backgroundColor: Colors.green,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
+          color: Colors.green
         );
       }
       else {
         appConfigProvider.addLog(result['log']);
-        appConfigProvider.setShowingSnackbar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.clientNotAdded),
-            backgroundColor: Colors.red,
-          )
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientNotAdded, 
+          color: Colors.red
         );
       }
     }
