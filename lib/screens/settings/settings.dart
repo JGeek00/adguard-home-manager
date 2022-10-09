@@ -6,8 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
 import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
-import 'package:adguard_home_manager/screens/settings/server_info.dart';
-import 'package:adguard_home_manager/screens/settings/access_settings.dart';
+import 'package:adguard_home_manager/screens/settings/server_info/server_info.dart';
+import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
 import 'package:adguard_home_manager/screens/settings/appbar.dart';
 import 'package:adguard_home_manager/screens/servers/servers.dart';

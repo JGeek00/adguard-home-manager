@@ -99,9 +99,9 @@ class _AddClientModalState extends State<AddClientModal> {
                     Radius.circular(10)
                   )
                 ),
-                helperText: widget.type == 'allowed' || widget.type == 'blocked'
+                helperText: widget.type == 'allowed' || widget.type == 'disallowed'
                   ? AppLocalizations.of(context)!.addClientFieldDescription : null,
-                labelText: widget.type == 'allowed' || widget.type == 'blocked'
+                labelText: widget.type == 'allowed' || widget.type == 'disallowed'
                   ? AppLocalizations.of(context)!.clientIdentifier
                   : AppLocalizations.of(context)!.domain,
               ),
