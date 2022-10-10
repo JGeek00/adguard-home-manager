@@ -121,6 +121,12 @@ class ServersProvider with ChangeNotifier {
 
   void setFilteringProtectionStatus(bool status) {
     _serverStatus.data!.filteringEnabled = status;
+    _filtering.data!.enabled = status;
+    notifyListeners();
+  }
+
+  void setFiltersUpdateFrequency(int frequency) {
+    _filtering.data!.interval = frequency;
     notifyListeners();
   }
  

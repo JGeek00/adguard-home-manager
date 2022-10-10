@@ -18,8 +18,8 @@ class FilteringData {
   final List<Filter> filters;
   final List<Filter> whitelistFilters;
   List<String> userRules;
-  final int interval;
-  final bool enabled;
+  int interval;
+  bool enabled;
 
   FilteringData({
     required this.filters,

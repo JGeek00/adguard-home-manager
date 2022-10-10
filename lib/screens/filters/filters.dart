@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/filters/filters_list.dart';
 import 'package:adguard_home_manager/screens/filters/check_host_modal.dart';
 import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
+import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -179,6 +180,37 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
       }
     }
 
+    void setUpdateFrequency(int value) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.changingUpdateFrequency);
+
+      final result = await requestChangeUpdateFrequency(server: serversProvider.selectedServer!, data: {
+        "enabled": serversProvider.filtering.data!.enabled,
+        "interval": value
+      });
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        serversProvider.setFiltersUpdateFrequency(value);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.updateFrequencyChanged, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.updateFrequencyNotChanged, 
+          color: Colors.red
+        );
+      }
+    }
+
     return DefaultTabController(
       length: 3,
       child: NestedScrollView(
@@ -195,9 +227,9 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                   floating: true,
                   forceElevated: innerBoxIsScrolled,
                   actions: [
-                    IconButton(
+                    if (serversProvider.filtering.loadStatus == 1) IconButton(
                       onPressed: enableDisableFiltering, 
-                      tooltip: serversProvider.serverStatus.data!.filteringEnabled == true
+                      tooltip: serversProvider.filtering.data!.enabled == true
                         ? AppLocalizations.of(context)!.disableFiltering
                         : AppLocalizations.of(context)!.enableFiltering,
                       icon: Stack(
@@ -214,11 +246,11 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                                     color: Colors.white
                                   ),
                                   child: Icon(
-                                    serversProvider.serverStatus.data!.filteringEnabled == true
+                                    serversProvider.filtering.data!.enabled == true
                                       ? Icons.check_circle_rounded
                                       : Icons.cancel,
                                     size: 12,
-                                    color:  serversProvider.serverStatus.data!.filteringEnabled == true
+                                    color: serversProvider.filtering.data!.enabled == true
                                       ? Colors.green
                                       : Colors.red,
                                   ),
@@ -229,13 +261,27 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                         ],
                       )
                     ),
+                    if (serversProvider.filtering.loadStatus == 1) IconButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context, 
+                          builder: (context) => UpdateIntervalListsModal(
+                            interval: serversProvider.filtering.data!.interval,
+                            onChange: setUpdateFrequency
+                          ),
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true
+                        );
+                      }, 
+                      icon: const Icon(Icons.update_rounded)
+                    ),
                     PopupMenuButton(
                       itemBuilder: (context) => [
                         PopupMenuItem(
                           onTap: fetchUpdateLists,
                           child: Row(
                             children: [
-                              const Icon(Icons.update),
+                              const Icon(Icons.sync_rounded),
                               const SizedBox(width: 10),
                               Text(AppLocalizations.of(context)!.updateLists)
                             ],
@@ -253,7 +299,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                         ),
                       ]
                     ),
-                    const SizedBox(width: 5),
+                    const SizedBox(width: 10),
                   ],
                   bottom: TabBar(
                     controller: tabController,

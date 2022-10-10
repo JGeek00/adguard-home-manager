@@ -1006,3 +1006,37 @@ Future checkHostFiltered({
     return result;
   }
 }
+
+Future requestChangeUpdateFrequency({
+  required Server server, 
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/filtering/config', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'change_update_frequency'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'change_update_frequency', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

@@ -311,5 +311,15 @@
     "enablingFiltering": "Enabling filtering...",
     "disablingFiltering": "Disabling filtering...",
     "filteringStatusUpdated": "Filtering status updated successfully",
-    "filteringStatusNotUpdated": "Filtering status couldn't be updated"
+    "filteringStatusNotUpdated": "Filtering status couldn't be updated",
+    "updateFrequency": "Update frequency",
+    "never": "Never",
+    "hour1": "1 hour",
+    "hours12": "12 hours",
+    "hours24": "24 hours",
+    "days3": "3 days",
+    "days7": "7 days",
+    "changingUpdateFrequency": "Changing...",
+    "updateFrequencyChanged": "Update frequency changed successfully",
+    "updateFrequencyNotChanged": "Updare frecuency couldn't be changed"
 }

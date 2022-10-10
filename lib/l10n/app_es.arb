@@ -311,5 +311,15 @@
     "enablingFiltering": "Habilitando filtrado...",
     "disablingFiltering": "Deshabilitando filtrado...",
     "filteringStatusUpdated": "Estado de filtrado actualizado correctamente",
-    "filteringStatusNotUpdated": "El estado de filtrado no pudo ser actualizado"
+    "filteringStatusNotUpdated": "El estado de filtrado no pudo ser actualizado",
+    "updateFrequency": "Frecuencia de actualización",
+    "never": "Nunca",
+    "hour1": "1 hora",
+    "hours12": "12 horas",
+    "hours24": "24 horas",
+    "days3": "3 días",
+    "days7": "7 días",
+    "changingUpdateFrequency": "Cambiando...",
+    "updateFrequencyChanged": "Frecuencia de actualización cambiada correctamente",
+    "updateFrequencyNotChanged": "La frecuencia de actualización no pudo ser cambiada"
 }
