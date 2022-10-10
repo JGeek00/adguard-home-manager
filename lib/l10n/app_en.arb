@@ -306,5 +306,10 @@
     "addingRule": "Adding rule...",
     "deletingRule": "Deleting rule...",
     "enablingList": "Enabling list...",
-    "disablingList": "Disabling list..."
+    "disablingList": "Disabling list...",
+    "disableFiltering": "Disable filtering",
+    "enablingFiltering": "Enabling filtering...",
+    "disablingFiltering": "Disabling filtering...",
+    "filteringStatusUpdated": "Filtering status updated successfully",
+    "filteringStatusNotUpdated": "Filtering status couldn't be updated"
 }

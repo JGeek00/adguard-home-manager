@@ -118,6 +118,11 @@ class ServersProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void setFilteringProtectionStatus(bool status) {
+    _serverStatus.data!.filteringEnabled = status;
+    notifyListeners();
+  }
  
   Future<bool> createServer(Server server) async {
     final saved = await saveServerIntoDb(server);

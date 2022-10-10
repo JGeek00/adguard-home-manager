@@ -306,5 +306,10 @@
     "addingRule": "Añadiendo regla...",
     "deletingRule": "Eliminando regla...",
     "enablingList": "Habilitando lista...",
-    "disablingList": "Deshabilitando lista..."
+    "disablingList": "Deshabilitando lista...",
+    "disableFiltering": "Deshabilitar filtrado",
+    "enablingFiltering": "Habilitando filtrado...",
+    "disablingFiltering": "Deshabilitando filtrado...",
+    "filteringStatusUpdated": "Estado de filtrado actualizado correctamente",
+    "filteringStatusNotUpdated": "El estado de filtrado no pudo ser actualizado"
 }

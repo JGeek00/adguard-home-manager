@@ -147,6 +147,38 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
       });
     }
 
+    void enableDisableFiltering() async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(
+        serversProvider.serverStatus.data!.filteringEnabled == true
+          ? AppLocalizations.of(context)!.disableFiltering
+          : AppLocalizations.of(context)!.enableFiltering
+      );
+
+      final result = await updateFiltering(serversProvider.selectedServer!, !serversProvider.serverStatus.data!.filteringEnabled);
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        serversProvider.setFilteringProtectionStatus(!serversProvider.serverStatus.data!.filteringEnabled);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.filteringStatusUpdated, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.filteringStatusNotUpdated, 
+          color: Colors.red
+        );
+      }
+    }
+
     return DefaultTabController(
       length: 3,
       child: NestedScrollView(
@@ -163,6 +195,40 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                   floating: true,
                   forceElevated: innerBoxIsScrolled,
                   actions: [
+                    IconButton(
+                      onPressed: enableDisableFiltering, 
+                      tooltip: serversProvider.serverStatus.data!.filteringEnabled == true
+                        ? AppLocalizations.of(context)!.disableFiltering
+                        : AppLocalizations.of(context)!.enableFiltering,
+                      icon: Stack(
+                        children: [
+                          const Icon(Icons.power_settings_new_rounded),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: Colors.white
+                                  ),
+                                  child: Icon(
+                                    serversProvider.serverStatus.data!.filteringEnabled == true
+                                      ? Icons.check_circle_rounded
+                                      : Icons.cancel,
+                                    size: 12,
+                                    color:  serversProvider.serverStatus.data!.filteringEnabled == true
+                                      ? Colors.green
+                                      : Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      )
+                    ),
                     PopupMenuButton(
                       itemBuilder: (context) => [
                         PopupMenuItem(
