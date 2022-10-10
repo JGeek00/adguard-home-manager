@@ -958,7 +958,16 @@ Future updateLists({
     }
   }
   else {
-    return result;
+    return {
+      'result': 'error',
+      'log': AppLog(
+        type: 'update_lists', 
+        dateTime: DateTime.now(), 
+        message: 'no_response',
+        statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+        resBody: result.map((res) => res['body'] ?? 'null').toString(),
+      )
+    };
   }
 }
 
