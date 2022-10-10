@@ -19,7 +19,7 @@ Future<Map<String, dynamic>> apiRequest({
   required Server server, 
   required String method, 
   required String urlPath, 
-  Map<String, dynamic>? body,
+  dynamic body,
   required String type,
 }) async {
   try {
@@ -710,18 +710,29 @@ Future postDeleteClient({
 Future getFiltering({
   required Server server, 
 }) async {
-  final result = await apiRequest(
-    urlPath: '/filtering/status', 
-    method: 'get',
-    server: server, 
-    type: 'get_filtering_status'
-  );
+  final result = await Future.wait([
+    apiRequest(
+      urlPath: '/filtering/status', 
+      method: 'get',
+      server: server, 
+      type: 'get_filtering_status'
+    ),
+    apiRequest(
+      urlPath: '/blocked_services/list', 
+      method: 'get',
+      server: server, 
+      type: 'get_filtering_status'
+    ),
+  ]);
 
-  if (result['hasResponse'] == true) {
-    if (result['statusCode'] == 200) {
+  if (result[0]['hasResponse'] == true && result[0]['hasResponse'] == true) {
+    if (result[0]['statusCode'] == 200 && result[0]['statusCode'] == 200) {
       return {
         'result': 'success',
-        'data': FilteringData.fromJson(jsonDecode(result['body']))
+        'data': FilteringData.fromJson({
+          ...jsonDecode(result[0]['body']),
+          "blocked_services": jsonDecode(result[1]['body']),
+        })
       };
     }
     else {
@@ -731,14 +742,23 @@ Future getFiltering({
           type: 'get_filtering_status', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'].toString(),
-          resBody: result['body']
+          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+          resBody: result.map((res) => res['body'] ?? 'null').toString(),
         )
       };
     }
   }
   else {
-    return result;
+    return {
+      'result': 'error',
+      'log': AppLog(
+        type: 'get_filtering_status', 
+        dateTime: DateTime.now(), 
+        message: 'no_response',
+        statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+        resBody: result.map((res) => res['body'] ?? 'null').toString(),
+      )
+    };
   }
 }
 
@@ -1028,6 +1048,40 @@ Future requestChangeUpdateFrequency({
         'result': 'error',
         'log': AppLog(
           type: 'change_update_frequency', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'],
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future setBlockedServices({
+  required Server server, 
+  required List<String> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/blocked_services/set', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'update_blocked_services'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_blocked_services', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'],

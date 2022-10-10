@@ -321,5 +321,8 @@
     "days7": "7 days",
     "changingUpdateFrequency": "Changing...",
     "updateFrequencyChanged": "Update frequency changed successfully",
-    "updateFrequencyNotChanged": "Updare frecuency couldn't be changed"
+    "updateFrequencyNotChanged": "Updare frecuency couldn't be changed",
+    "updating": "Updating values...",
+    "blockedServicesUpdated": "Blocked services updated successfully",
+    "blockedServicesNotUpdated": "Blocked services couldn't be updated"
 }

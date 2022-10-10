@@ -18,6 +18,7 @@ class FilteringData {
   final List<Filter> filters;
   final List<Filter> whitelistFilters;
   List<String> userRules;
+  List<String> blockedServices;
   int interval;
   bool enabled;
 
@@ -25,6 +26,7 @@ class FilteringData {
     required this.filters,
     required this.whitelistFilters,
     required this.userRules,
+    required this.blockedServices,
     required this.interval,
     required this.enabled,
   });
@@ -33,6 +35,7 @@ class FilteringData {
     filters: json["filters"] != null ? List<Filter>.from(json["filters"].map((x) => Filter.fromJson(x))) : [],
     whitelistFilters: json["whitelist_filters"] != null ? List<Filter>.from(json["whitelist_filters"].map((x) => Filter.fromJson(x))) : [],
     userRules: json["user_rules"] != null ? List<String>.from(json["user_rules"].map((x) => x)).where((i) => i != '').toList() : [],
+    blockedServices: json["blocked_services"] != null ? List<String>.from(json["blocked_services"].map((x) => x)).where((i) => i != '').toList() : [],
     interval: json["interval"],
     enabled: json["enabled"],
   );
@@ -41,6 +44,7 @@ class FilteringData {
     "filters": List<dynamic>.from(filters.map((x) => x.toJson())),
     "whitelist_filters": List<dynamic>.from(whitelistFilters.map((x) => x.toJson())),
     "user_rules": List<dynamic>.from(userRules.map((x) => x)),
+    "blocked_services": List<dynamic>.from(blockedServices.map((x) => x)),
     "interval": interval,
     "enabled": enabled,
   };

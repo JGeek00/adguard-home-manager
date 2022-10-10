@@ -129,6 +129,11 @@ class ServersProvider with ChangeNotifier {
     _filtering.data!.interval = frequency;
     notifyListeners();
   }
+
+  void setBlockedServices(List<String> blockedServices) {
+    _filtering.data!.blockedServices = blockedServices;
+    notifyListeners();
+  }
  
   Future<bool> createServer(Server server) async {
     final saved = await saveServerIntoDb(server);

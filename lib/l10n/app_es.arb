@@ -321,5 +321,8 @@
     "days7": "7 días",
     "changingUpdateFrequency": "Cambiando...",
     "updateFrequencyChanged": "Frecuencia de actualización cambiada correctamente",
-    "updateFrequencyNotChanged": "La frecuencia de actualización no pudo ser cambiada"
+    "updateFrequencyNotChanged": "La frecuencia de actualización no pudo ser cambiada",
+    "updating": "Actualizando valores...",
+    "blockedServicesUpdated": "Servicios bloqueados actualizados correctamente",
+    "blockedServicesNotUpdated": "No se pudieron actualizar los servicios bloqueados"
 }
