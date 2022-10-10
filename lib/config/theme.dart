@@ -188,6 +188,13 @@ ThemeData lightThemeOldVersions() => ThemeData(
       overlayColor: MaterialStateProperty.all(primaryColor.withOpacity(0.1))
     ),
   ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      foregroundColor: MaterialStateProperty.all(primaryColor),
+      surfaceTintColor: MaterialStateProperty.all(primaryColor),
+      overlayColor: MaterialStateProperty.all(primaryColor.shade50),
+    )
+  ),
   navigationBarTheme: NavigationBarThemeData(
     surfaceTintColor: primaryColor,
     indicatorColor: primaryColor
@@ -275,6 +282,13 @@ ThemeData darkThemeOldVersions() => ThemeData(
       foregroundColor: MaterialStateProperty.all(primaryColor),
       overlayColor: MaterialStateProperty.all(primaryColor.withOpacity(0.1))
     ),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      foregroundColor: MaterialStateProperty.all(primaryColor),
+      surfaceTintColor: MaterialStateProperty.all(primaryColor),
+      overlayColor: MaterialStateProperty.all(primaryColor.shade50),
+    )
   ),
   inputDecorationTheme: InputDecorationTheme(
     floatingLabelStyle: TextStyle(

@@ -304,5 +304,7 @@
     "example4": "Bloquea el acceso a los dominios que coincidan con la expresión regular especificada.",
     "moreInformation": "Más información",
     "addingRule": "Añadiendo regla...",
-    "deletingRule": "Eliminando regla..."
+    "deletingRule": "Eliminando regla...",
+    "enablingList": "Habilitando lista...",
+    "disablingList": "Deshabilitando lista..."
 }

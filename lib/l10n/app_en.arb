@@ -304,5 +304,7 @@
     "example4": "Block access to domains matching the specified regular expression.",
     "moreInformation": "More information",
     "addingRule": "Adding rule...",
-    "deletingRule": "Deleting rule..."
+    "deletingRule": "Deleting rule...",
+    "enablingList": "Enabling list...",
+    "disablingList": "Disabling list..."
 }

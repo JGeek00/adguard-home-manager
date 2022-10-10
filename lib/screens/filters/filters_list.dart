@@ -72,7 +72,11 @@ class _FiltersListState extends State<FiltersList> {
 
     void enableDisableList(Filter list, bool enabled) async {
       ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.updatingListData);
+      processModal.open(
+        enabled == true
+          ? AppLocalizations.of(context)!.enablingList
+          : AppLocalizations.of(context)!.disablingList,
+      );
       
       final result = await updateFilterList(server: serversProvider.selectedServer!, data: {
         "data": {
