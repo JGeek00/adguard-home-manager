@@ -299,7 +299,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                         ),
                       ]
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 5),
                   ],
                   bottom: TabBar(
                     controller: tabController,
