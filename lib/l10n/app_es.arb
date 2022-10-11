@@ -324,5 +324,6 @@
     "updateFrequencyNotChanged": "La frecuencia de actualización no pudo ser cambiada",
     "updating": "Actualizando valores...",
     "blockedServicesUpdated": "Servicios bloqueados actualizados correctamente",
-    "blockedServicesNotUpdated": "No se pudieron actualizar los servicios bloqueados"
+    "blockedServicesNotUpdated": "No se pudieron actualizar los servicios bloqueados",
+    "insertDomain": "Inserta un dominio para comprobar su estado,"
 }

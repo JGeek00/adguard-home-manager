@@ -324,5 +324,6 @@
     "updateFrequencyNotChanged": "Updare frecuency couldn't be changed",
     "updating": "Updating values...",
     "blockedServicesUpdated": "Blocked services updated successfully",
-    "blockedServicesNotUpdated": "Blocked services couldn't be updated"
+    "blockedServicesNotUpdated": "Blocked services couldn't be updated",
+    "insertDomain": "Insert a domain to check it's stauts."
 }
