@@ -983,7 +983,7 @@ Future updateLists({
       'log': AppLog(
         type: 'update_lists', 
         dateTime: DateTime.now(), 
-        message: 'no_response',
+        message: [result[0]['log'].message, result[1]['log'].message].toString(),
         statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
         resBody: result.map((res) => res['body'] ?? 'null').toString(),
       )
