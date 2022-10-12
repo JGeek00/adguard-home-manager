@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
@@ -1092,5 +1093,62 @@ Future setBlockedServices({
   }
   else {
     return result;
+  }
+}
+
+Future getDhcpData({
+  required Server server, 
+}) async {
+  final result = await Future.wait([
+    apiRequest(
+      urlPath: '/dhcp/interfaces', 
+      method: 'get',
+      server: server, 
+      type: 'get_dhcp_data'
+    ),
+    apiRequest(
+      urlPath: '/dhcp/status', 
+      method: 'get',
+      server: server, 
+      type: 'get_dhcp_data'
+    ),
+  ]);
+
+  if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
+    if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
+      List<NetworkInterface> interfaces = List<NetworkInterface>.from(jsonDecode(result[0]['body']).entries.map((entry) => NetworkInterface.fromJson(entry.value)));
+
+      return {
+        'result': 'success',
+        'data': DhcpData(
+          networkInterfaces: interfaces, 
+          dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
+        )
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_dhcp_data', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+        )
+      };
+    }
+  }
+  else {
+    return {
+      'result': 'error',
+      'log': AppLog(
+        type: 'get_dhpc_data', 
+        dateTime: DateTime.now(), 
+        message: [result[0]['log'].message, result[1]['log'].message].toString(),
+        statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+        resBody: result.map((res) => res['body'] ?? 'null').toString(),
+      )
+    };
   }
 }

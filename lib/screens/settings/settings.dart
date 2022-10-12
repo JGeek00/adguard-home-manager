@@ -8,6 +8,7 @@ import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
 import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/server_info/server_info.dart';
 import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
+import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
 import 'package:adguard_home_manager/screens/settings/appbar.dart';
 import 'package:adguard_home_manager/screens/servers/servers.dart';
@@ -95,6 +96,18 @@ class Settings extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const AccessSettings()
+                  )
+                )
+              },
+            ),
+            CustomListTile(
+              leadingIcon: Icons.install_desktop_rounded,
+              label: AppLocalizations.of(context)!.dhcpSettings,
+              description: AppLocalizations.of(context)!.dhcpSettingsDescription,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Dhcp()
                   )
                 )
               },
