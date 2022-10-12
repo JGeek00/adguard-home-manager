@@ -22,14 +22,16 @@ Future<Map<String, dynamic>> apiRequest({
   required String urlPath, 
   dynamic body,
   required String type,
+  bool? overrideTimeout,
 }) async {
   try {
     HttpClient httpClient = HttpClient();
     if (method == 'get') {
       HttpClientRequest request = await httpClient.getUrl(Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"));
       request.headers.set('authorization', 'Basic ${server.authToken}');
-      HttpClientResponse response = await request.close().timeout(const Duration(seconds: 10));
-      response.timeout(const Duration(seconds: 10));
+      HttpClientResponse response = overrideTimeout == true 
+        ? await request.close()
+        : await request.close().timeout(const Duration(seconds: 10));
       String reply = await response.transform(utf8.decoder).join();
       httpClient.close();
       if (response.statusCode == 200) {
@@ -54,7 +56,9 @@ Future<Map<String, dynamic>> apiRequest({
       request.headers.set('authorization', 'Basic ${server.authToken}');
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(json.encode(body)));
-      HttpClientResponse response = await request.close().timeout(const Duration(seconds: 10));
+      HttpClientResponse response = overrideTimeout == true 
+        ? await request.close()
+        : await request.close().timeout(const Duration(seconds: 10));
       String reply = await response.transform(utf8.decoder).join();
       httpClient.close();
       if (response.statusCode == 200) {
@@ -80,6 +84,7 @@ Future<Map<String, dynamic>> apiRequest({
   } on SocketException {
     return {
       'result': 'no_connection', 
+      'message': 'SocketException',
       'log': AppLog(
         type: type, 
         dateTime: DateTime.now(), 
@@ -89,6 +94,7 @@ Future<Map<String, dynamic>> apiRequest({
   } on TimeoutException {
     return {
       'result': 'no_connection', 
+      'message': 'TimeoutException',
       'log': AppLog(
         type: type, 
         dateTime: DateTime.now(), 
@@ -102,12 +108,13 @@ Future<Map<String, dynamic>> apiRequest({
       'log': AppLog(
         type: type, 
         dateTime: DateTime.now(), 
-        message: 'TimeoutException'
+        message: 'HandshakeException'
       )
     };
   } catch (e) {
     return {
       'result': 'error', 
+      'message': e.toString(),
       'log': AppLog(
         type: type, 
         dateTime: DateTime.now(), 
@@ -947,14 +954,16 @@ Future updateLists({
       method: 'post',
       server: server, 
       body: {'whitelist': true},
-      type: 'update_lists'
+      type: 'update_lists',
+      overrideTimeout: true
     ),
     apiRequest(
       urlPath: '/filtering/refresh', 
       method: 'post',
       server: server, 
       body: {'whitelist': false},
-      type: 'update_lists'
+      type: 'update_lists',
+      overrideTimeout: true
     ),
   ]);
 
@@ -984,7 +993,7 @@ Future updateLists({
       'log': AppLog(
         type: 'update_lists', 
         dateTime: DateTime.now(), 
-        message: [result[0]['log'].message, result[1]['log'].message].toString(),
+        message: [result[0]['message'], result[1]['message']].toString(),
         statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
         resBody: result.map((res) => res['body'] ?? 'null').toString(),
       )
