@@ -174,9 +174,8 @@ class _CheckHostModalState extends State<CheckHostModal> {
                   child: Center(
                     child: Text(
                       AppLocalizations.of(context)!.insertDomain,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
-                        color: Theme.of(context).primaryColor
                       ),
                     ),
                   ),
