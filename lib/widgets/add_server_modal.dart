@@ -173,7 +173,7 @@ class _AddServerModalState extends State<AddServerModal> {
   void validateAddress(String? value) {
     if (value != null && value != '') {
       RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
-      RegExp domain = RegExp(r'^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$');
+      RegExp domain = RegExp(r'^([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$');
       if (ipAddress.hasMatch(value) == true || domain.hasMatch(value) == true) {
         setState(() {
           ipDomainError = null;
