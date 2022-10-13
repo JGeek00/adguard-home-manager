@@ -101,7 +101,7 @@ class DhcpStatus {
 }
 
 class IpVersion {
-  String ?gatewayIp;
+  String? gatewayIp;
   String? subnetMask;
   String rangeStart;
   String? rangeEnd;

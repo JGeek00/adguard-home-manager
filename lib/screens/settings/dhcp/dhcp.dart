@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bottom_sheet/bottom_sheet.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/select_interface_modal.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -45,6 +49,8 @@ class _DhcpWidgetState extends State<DhcpWidget> {
 
   NetworkInterface? selectedInterface;
 
+  bool enabled = false;
+
   final TextEditingController ipv4StartRangeController = TextEditingController();
   String? ipv4StartRangeError;
   final TextEditingController ipv4EndRangeController = TextEditingController();
@@ -60,12 +66,10 @@ class _DhcpWidgetState extends State<DhcpWidget> {
   String? ipv6StartRangeError;
   final TextEditingController ipv6EndRangeController = TextEditingController();
   String? ipv6EndRangeError;
-  final TextEditingController ipv6SubnetMaskController = TextEditingController();
-  String? ipv6SubnetMaskError;
-  final TextEditingController ipv6GatewayController = TextEditingController();
-  String? ipv6GatewayError;
   final TextEditingController ipv6LeaseTimeController = TextEditingController();
   String? ipv6LeaseTimeError;
+
+  bool dataValid = false;
 
   void loadDhcpStatus() async {
     final result = await getDhcpData(server: widget.serversProvider.selectedServer!);
@@ -75,12 +79,25 @@ class _DhcpWidgetState extends State<DhcpWidget> {
         setState(() {
           dhcp.loadStatus = 1;
           dhcp.data = result['data'];
+
+          if (result['data'].dhcpStatus.interfaceName != '') {
+            selectedInterface = result['data'].networkInterfaces.firstWhere((interface) => interface.name == result['data'].dhcpStatus.interfaceName);
+
+            enabled = result['data'].dhcpStatus.enabled;
+            ipv4StartRangeController.text = result['data'].dhcpStatus.v4.rangeStart;
+            ipv4StartRangeController.text = result['data'].dhcpStatus.v4.rangeStart;
+            ipv4EndRangeController.text = result['data'].dhcpStatus.v4.rangeEnd;
+            ipv4SubnetMaskController.text = result['data'].dhcpStatus.v4.subnetMask;
+            ipv4GatewayController.text = result['data'].dhcpStatus.v4.gatewayIp;
+            ipv4LeaseTimeController.text = result['data'].dhcpStatus.v4.leaseDuration.toString();
+          }
         });
       }
       else {
         setState(() => dhcp.loadStatus = 2);
       }
     }
+    checkDataValid();
   }
 
   void validateIpV4(String value, String errorVar, String errorMessage) {
@@ -110,6 +127,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
     else {
       setValue(errorMessage);
     }
+    checkDataValid();
   }
 
   void validateIpV6(String value, String errorVar, String errorMessage) {
@@ -121,10 +139,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
 
         case 'ipv6EndRangeError':
           setState(() => ipv4EndRangeError = error);
-          break;
-
-        case 'ipv6SubnetMaskError':
-          setState(() => ipv4SubnetMaskError = error);
           break;
 
         case 'ipv6GatewayError':
@@ -139,6 +153,52 @@ class _DhcpWidgetState extends State<DhcpWidget> {
     else {
       setValue(errorMessage);
     }
+    checkDataValid();
+  }
+
+  bool checkDataValid() {
+    if (
+      ipv4StartRangeController.text != '' &&
+      ipv4StartRangeError == null &&
+      ipv4EndRangeController.text != '' &&
+      ipv4EndRangeError == null &&
+      ipv4SubnetMaskController.text != '' && 
+      ipv4SubnetMaskError == null &&
+      ipv4GatewayController.text != '' &&
+      ipv4GatewayError == null 
+    ) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  void clearAll() {
+    setState(() {
+      selectedInterface = null;
+      enabled = false;
+
+      ipv4StartRangeController.text = '';
+      ipv4StartRangeError = null;
+      ipv4StartRangeController.text = '';
+      ipv4EndRangeError = null;
+      ipv4EndRangeController.text = '';
+      ipv4EndRangeError = null;
+      ipv4SubnetMaskController.text = '';
+      ipv4SubnetMaskError = null;
+      ipv4GatewayController.text = '';
+      ipv4GatewayError = null;
+      ipv4LeaseTimeController.text = '';
+      ipv4LeaseTimeError = null;
+
+      ipv6StartRangeController.text = '';
+      ipv6StartRangeError = null;
+      ipv6EndRangeController.text = '';
+      ipv6EndRangeError = null;
+      ipv6LeaseTimeController.text = '';
+      ipv6LeaseTimeError = null;
+    });
   }
 
   @override
@@ -149,6 +209,83 @@ class _DhcpWidgetState extends State<DhcpWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    void saveSettings() async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.savingSettings);
+
+      final result = await saveDhcpConfig(server: serversProvider.selectedServer!, data: {
+        "enabled": enabled,
+        "interface_name": selectedInterface!.name,
+        "v4": {
+          "gateway_ip": ipv4GatewayController.text,
+          "subnet_mask": ipv4SubnetMaskController.text,
+          "range_start": ipv4StartRangeController.text,
+          "range_end": ipv4EndRangeController.text,
+          "lease_duration": ipv4LeaseTimeController.text != '' ? int.parse(ipv4LeaseTimeController.text) : null
+        },
+        if (selectedInterface!.ipv6Addresses.isNotEmpty) "v6": {
+          "range_start": ipv6StartRangeController.text,
+          "range_end": ipv6EndRangeController.text,
+          "lease_duration": ipv6LeaseTimeController.text != '' ? int.parse(ipv6LeaseTimeController.text) : null
+        }
+      });
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.settingsSaved, 
+          color: Colors.green
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.settingsNotSaved, 
+          color: Colors.red
+        );
+      }
+    }
+
+    void restoreConfig() async {
+      Future.delayed(const Duration(seconds: 0), () async {
+        ProcessModal processModal = ProcessModal(context: context);
+        processModal.open(AppLocalizations.of(context)!.restoringConfig);
+
+        final result = await resetDhcpConfig(server: serversProvider.selectedServer!);
+
+        processModal.close();
+
+        if (result['result'] == 'success') {
+          clearAll();
+
+          showSnacbkar(
+            context: context, 
+            appConfigProvider: appConfigProvider,
+            label: AppLocalizations.of(context)!.configRestored, 
+            color: Colors.green
+          );
+        }
+        else {
+          appConfigProvider.addLog(result['log']);
+
+          showSnacbkar(
+            context: context, 
+            appConfigProvider: appConfigProvider,
+            label: AppLocalizations.of(context)!.configNotRestored, 
+            color: Colors.red
+          );
+        }
+      });
+    }
 
     void selectInterface() {
       Future.delayed(const Duration(seconds: 0), () {
@@ -163,7 +300,10 @@ class _DhcpWidgetState extends State<DhcpWidget> {
           builder: (ctx, controller, offset) => SelectInterfaceModal(
             interfaces: dhcp.data!.networkInterfaces, 
             scrollController: controller,
-            onSelect: (interface) => setState(() => selectedInterface = interface)
+            onSelect: (interface) => setState(() {
+              clearAll();
+              selectedInterface = interface;
+            })
           ),
           bottomSheetColor: Colors.transparent
         );
@@ -207,7 +347,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     borderRadius: BorderRadius.circular(28),
                     child: InkWell(
                       onTap: selectedInterface != null
-                        ? () => setState(() => dhcp.data!.dhcpStatus.enabled = !dhcp.data!.dhcpStatus.enabled)
+                        ? () => setState(() => enabled = !enabled)
                         : null,
                       borderRadius: BorderRadius.circular(28),
                       child: Padding(
@@ -239,9 +379,9 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                               ],
                             ),
                             Switch(
-                              value: dhcp.data!.dhcpStatus.enabled, 
+                              value: enabled, 
                               onChanged: selectedInterface != null
-                                ? (value) => setState(() => dhcp.data!.dhcpStatus.enabled = value)
+                                ? (value) => setState(() => enabled = value)
                                 : null,
                               activeColor: Theme.of(context).primaryColor,
                             ),
@@ -400,44 +540,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextFormField(
-                      controller: ipv6SubnetMaskController,
-                      onChanged: (value) => validateIpV4(value, 'ipv6SubnetMaskError', AppLocalizations.of(context)!.subnetMaskNotValid),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.hub_rounded),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10)
-                          )
-                        ),
-                        errorText: ipv6SubnetMaskError,
-                        labelText: AppLocalizations.of(context)!.subnetMask,
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      controller: ipv6GatewayController,
-                      onChanged: (value) => validateIpV4(value, 'ipv6GatewayError', AppLocalizations.of(context)!.gatewayNotValid),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.router_rounded),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10)
-                          )
-                        ),
-                        errorText: ipv6GatewayError,
-                        labelText: AppLocalizations.of(context)!.gateway,
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
                       controller: ipv6LeaseTimeController,
                       onChanged: (value) {
                         if (int.tryParse(value).runtimeType == int) {
@@ -525,7 +627,9 @@ class _DhcpWidgetState extends State<DhcpWidget> {
         title: Text(AppLocalizations.of(context)!.dhcpSettings),
         actions: selectedInterface != null ? [
           IconButton(
-            onPressed: () {}, 
+            onPressed: checkDataValid() == true
+              ? () => saveSettings()
+              : null, 
             icon: const Icon(Icons.save_rounded),
             tooltip: AppLocalizations.of(context)!.save,
           ),
@@ -542,6 +646,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 )
               ), 
               PopupMenuItem(
+                onTap: restoreConfig,
                 child: Row(
                   children: [
                     const Icon(Icons.restore),

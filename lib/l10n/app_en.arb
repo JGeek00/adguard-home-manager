@@ -349,5 +349,11 @@
     "seconds": "seconds",
     "leaseTimeNotValid": "Lease time not valid",
     "restoreConfiguration": "Restore configuration",
-    "changeInterface": "Change interface"
+    "changeInterface": "Change interface",
+    "savingSettings": "Saving settings...",
+    "settingsSaved": "Settings saved successfully",
+    "settingsNotSaved": "Settings couldn't be saved",
+    "restoringConfig": "Restoring configuration...",
+    "configRestored": "Configuration restored successfully",
+    "configNotRestored": "The configuration couldn't be restored"
 }

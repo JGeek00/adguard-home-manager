@@ -1026,7 +1026,7 @@ Future checkHostFiltered({
           type: 'update_lists', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body'],
         )
       };
@@ -1060,7 +1060,7 @@ Future requestChangeUpdateFrequency({
           type: 'change_update_frequency', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body'],
         )
       };
@@ -1094,7 +1094,7 @@ Future setBlockedServices({
           type: 'update_blocked_services', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
-          statusCode: result['statusCode'],
+          statusCode: result['statusCode'].toString(),
           resBody: result['body'],
         )
       };
@@ -1159,5 +1159,72 @@ Future getDhcpData({
         resBody: result.map((res) => res['body'] ?? 'null').toString(),
       )
     };
+  }
+}
+
+Future saveDhcpConfig({
+  required Server server, 
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/dhcp/set_config', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'save_dhcp_config'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'save_dhcp_config', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future resetDhcpConfig({
+  required Server server, 
+}) async {
+  final result = await apiRequest(
+    urlPath: '/dhcp/reset', 
+    method: 'post',
+    server: server, 
+    body: {},
+    type: 'reset_dhcp_config'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'reset_dhcp_config', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
   }
 }

@@ -349,5 +349,11 @@
     "seconds": "segundos",
     "leaseTimeNotValid": "Tiempo de asignación no válido",
     "restoreConfiguration": "Restaurar configuración",
-    "changeInterface": "Cambiar interfaz"
+    "changeInterface": "Cambiar interfaz",
+    "savingSettings": "Guardando configuración...",
+    "settingsSaved": "Configuración guardada correctamente",
+    "settingsNotSaved": "No se ha podido guardar la configuración",
+    "restoringConfig": "Restaurando configuración...",
+    "configRestored": "Configuración restaurada correctamente",
+    "configNotRestored": "La configuración no ha podido ser restaurada"
 }
