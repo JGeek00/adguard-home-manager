@@ -219,7 +219,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
       final result = await saveDhcpConfig(server: serversProvider.selectedServer!, data: {
         "enabled": enabled,
         "interface_name": selectedInterface!.name,
-        "v4": {
+        if (selectedInterface!.ipv4Addresses.isNotEmpty) "v4": {
           "gateway_ip": ipv4GatewayController.text,
           "subnet_mask": ipv4SubnetMaskController.text,
           "range_start": ipv4StartRangeController.text,
@@ -391,110 +391,112 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     ),
                   ),
                 ),
-                SectionLabel(
-                  label: AppLocalizations.of(context)!.ipv4settings,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: ipv4StartRangeController,
-                    onChanged: (value) => validateIpV4(value, 'ipv4StartRangeError', AppLocalizations.of(context)!.ipNotValid),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.skip_next_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
-                      ),
-                      errorText: ipv4StartRangeError,
-                      labelText: AppLocalizations.of(context)!.startOfRange,
-                    ),
-                    keyboardType: TextInputType.number,
+                if (selectedInterface!.ipv4Addresses.isNotEmpty) ...[
+                  SectionLabel(
+                    label: AppLocalizations.of(context)!.ipv4settings,
                   ),
-                ),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: ipv4EndRangeController,
-                    onChanged: (value) => validateIpV4(value, 'ipv4EndRangeError', AppLocalizations.of(context)!.ipNotValid),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.skip_previous_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: ipv4StartRangeController,
+                      onChanged: (value) => validateIpV4(value, 'ipv4StartRangeError', AppLocalizations.of(context)!.ipNotValid),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.skip_previous_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: ipv4StartRangeError,
+                        labelText: AppLocalizations.of(context)!.startOfRange,
                       ),
-                      errorText: ipv4EndRangeError,
-                      labelText: AppLocalizations.of(context)!.endOfRange,
+                      keyboardType: TextInputType.number,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
-                ),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: ipv4SubnetMaskController,
-                    onChanged: (value) => validateIpV4(value, 'ipv4SubnetMaskError', AppLocalizations.of(context)!.subnetMaskNotValid),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.hub_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: ipv4EndRangeController,
+                      onChanged: (value) => validateIpV4(value, 'ipv4EndRangeError', AppLocalizations.of(context)!.ipNotValid),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.skip_next_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: ipv4EndRangeError,
+                        labelText: AppLocalizations.of(context)!.endOfRange,
                       ),
-                      errorText: ipv4SubnetMaskError,
-                      labelText: AppLocalizations.of(context)!.subnetMask,
+                      keyboardType: TextInputType.number,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
-                ),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: ipv4GatewayController,
-                    onChanged: (value) => validateIpV4(value, 'ipv4GatewayError', AppLocalizations.of(context)!.gatewayNotValid),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.router_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: ipv4SubnetMaskController,
+                      onChanged: (value) => validateIpV4(value, 'ipv4SubnetMaskError', AppLocalizations.of(context)!.subnetMaskNotValid),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.hub_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: ipv4SubnetMaskError,
+                        labelText: AppLocalizations.of(context)!.subnetMask,
                       ),
-                      errorText: ipv4GatewayError,
-                      labelText: AppLocalizations.of(context)!.gateway,
+                      keyboardType: TextInputType.number,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
-                ),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    controller: ipv4LeaseTimeController,
-                    onChanged: (value) {
-                      if (int.tryParse(value).runtimeType == int) {
-                        setState(() => ipv4LeaseTimeError = null);
-                      }
-                      else {
-                        setState(() => ipv4LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
-                      }
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.timer),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: ipv4GatewayController,
+                      onChanged: (value) => validateIpV4(value, 'ipv4GatewayError', AppLocalizations.of(context)!.gatewayNotValid),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.router_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: ipv4GatewayError,
+                        labelText: AppLocalizations.of(context)!.gateway,
                       ),
-                      errorText: ipv4LeaseTimeError,
-                      labelText: AppLocalizations.of(context)!.leaseTime,
+                      keyboardType: TextInputType.number,
                     ),
-                    keyboardType: TextInputType.number,
                   ),
-                ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: ipv4LeaseTimeController,
+                      onChanged: (value) {
+                        if (int.tryParse(value).runtimeType == int) {
+                          setState(() => ipv4LeaseTimeError = null);
+                        }
+                        else {
+                          setState(() => ipv4LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
+                        }
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.timer),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: ipv4LeaseTimeError,
+                        labelText: AppLocalizations.of(context)!.leaseTime,
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
                 if (selectedInterface!.ipv6Addresses.isNotEmpty) ...[
                   SectionLabel(
                     label: AppLocalizations.of(context)!.ipv6settings,
