@@ -600,6 +600,52 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     ),
                   ),
                 ],
+                SectionLabel(
+                  label: AppLocalizations.of(context)!.dhcpLeases,
+                ),
+                if (serversProvider.dhcp.data!.dhcpStatus.leases.isNotEmpty) ListView.builder(
+                  padding: const EdgeInsets.only(top: 0),
+                  itemCount: serversProvider.dhcp.data!.dhcpStatus.leases.length,
+                  itemBuilder: (context, index) => Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: Column(
+                      children: [
+                        Text(
+                          serversProvider.dhcp.data!.dhcpStatus.leases[index].ip,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          serversProvider.dhcp.data!.dhcpStatus.leases[index].mac,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          serversProvider.dhcp.data!.dhcpStatus.leases[index].hostname,
+                          style: const TextStyle(
+                            fontSize: 14
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ),
+                if (serversProvider.dhcp.data!.dhcpStatus.leases.isEmpty) Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 28),
+                  child: Text(
+                    AppLocalizations.of(context)!.noLeases,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
                 Material(
                   color: Colors.transparent,

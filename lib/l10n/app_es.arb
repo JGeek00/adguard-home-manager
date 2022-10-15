@@ -376,5 +376,7 @@
     "restoreLeases": "Restaurar asignaciones",
     "restoringLeases": "Restaurando asignaciones...",
     "leasesRestored": "Asignaciones restauradas correctamente",
-    "leasesNotRestored": "Las asignaciones no pudieron ser restauradas"
+    "leasesNotRestored": "Las asignaciones no pudieron ser restauradas",
+    "dhcpLeases": "Asignaciones DHCP",
+    "noLeases": "No hay asignaciones DHCP disponibles"
 }

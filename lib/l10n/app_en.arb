@@ -376,5 +376,7 @@
     "restoreLeases": "Restore leases",
     "restoringLeases": "Restoring leases...",
     "leasesRestored": "Leases restored successfully",
-    "leasesNotRestored": "The leases couldn't be restored"
+    "leasesNotRestored": "The leases couldn't be restored",
+    "dhcpLeases": "DHCP leases",
+    "noLeases": "No DHCP leases available"
 }
