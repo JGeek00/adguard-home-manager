@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
+import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -33,6 +34,11 @@ class ServersProvider with ChangeNotifier {
   );
 
   final DhcpModel _dhcp = DhcpModel(
+    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    data: null
+  );
+
+  final RewriteRules _rewriteRules = RewriteRules(
     loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
     data: null
   );
@@ -69,6 +75,10 @@ class ServersProvider with ChangeNotifier {
 
   DhcpModel get dhcp {
     return _dhcp;
+  }
+
+  RewriteRules get rewriteRules {
+    return _rewriteRules;
   }
 
   void setDbInstance(Database db) {
@@ -152,6 +162,18 @@ class ServersProvider with ChangeNotifier {
 
   void setDhcpLoadStatus(int status, bool notify) {
     _dhcp.loadStatus = status;
+    if (notify == true) {
+      notifyListeners();
+    }
+  }
+  
+  void setRewriteRulesData(List<RewriteRulesData> data) {
+    _rewriteRules.data = data;
+    notifyListeners();
+  }
+
+  void setRewriteRulesLoadStatus(int status, bool notify) {
+    _rewriteRules.loadStatus = status;
     if (notify == true) {
       notifyListeners();
     }

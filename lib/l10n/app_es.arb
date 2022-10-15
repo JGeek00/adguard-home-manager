@@ -378,5 +378,11 @@
     "leasesRestored": "Asignaciones restauradas correctamente",
     "leasesNotRestored": "Las asignaciones no pudieron ser restauradas",
     "dhcpLeases": "Asignaciones DHCP",
-    "noLeases": "No hay asignaciones DHCP disponibles"
+    "noLeases": "No hay asignaciones DHCP disponibles",
+    "dnsRewrites": "Reescrituras DNS",
+    "dnsRewritesDescription": "Configurar reglas DNS personalizadas",
+    "loadingRewriteRules": "Cargando reescrituras DNS...",
+    "rewriteRulesNotLoaded": "No se han podido cargar las reescrituras DNS.",
+    "noRewriteRules": "No hay reescrituras DNS.",
+    "answer": "Respuesta"
 }

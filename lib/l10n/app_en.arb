@@ -378,5 +378,11 @@
     "leasesRestored": "Leases restored successfully",
     "leasesNotRestored": "The leases couldn't be restored",
     "dhcpLeases": "DHCP leases",
-    "noLeases": "No DHCP leases available"
+    "noLeases": "No DHCP leases available",
+    "dnsRewrites": "DNS rewrites",
+    "dnsRewritesDescription": "Configure custom DNS rules",
+    "loadingRewriteRules": "Loading rewrite rules...",
+    "rewriteRulesNotLoaded": "DNS rewrite rules could not be loaded.",
+    "noRewriteRules": "No DNS rewrite rules",
+    "answer": "Answer"
 }

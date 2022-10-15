@@ -9,6 +9,7 @@ import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
+import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/server_info.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -1343,6 +1344,45 @@ Future restoreAllLeases({
         'result': 'error',
         'log': AppLog(
           type: 'restore_all_leases', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future getDnsRewriteRules({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/rewrite/list', 
+    method: 'get',
+    server: server, 
+    type: 'get_dns_rewrite_rules'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      final List<RewriteRulesData> data = List<RewriteRulesData>.from(
+        jsonDecode(result['body']).map((item) => RewriteRulesData.fromJson(item))
+      );
+
+      return {
+        'result': 'success',
+        'data': data
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_dns_rewrite_rules', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),
