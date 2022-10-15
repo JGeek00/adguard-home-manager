@@ -392,5 +392,14 @@
     "addDnsRewrite": "Añadir reescritura DNS",
     "addingRewrite": "Añadiend reescritura...",
     "dnsRewriteRuleAdded": "Regla de reescritura DNS añadida correctamente",
-    "dnsRewriteRuleNotAdded": "La regla de reescritura DNS no ha podido ser añadida"
+    "dnsRewriteRuleNotAdded": "La regla de reescritura DNS no ha podido ser añadida",
+    "logsSettings": "Ajustes de registros",
+    "enableLog": "Habilitar registro",
+    "clearLogs": "Borrar registros",
+    "anonymizeClientIp": "Anonimizar IP de los clientes",
+    "hours6": "6 horas",
+    "days30": "30 días",
+    "days90": "90 días",
+    "retentionTime": "Tiempo de retención",
+    "selectOneItem": "Selecciona un elemento"
 }

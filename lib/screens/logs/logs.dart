@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/logs_filters_modal.dart';
+import 'package:adguard_home_manager/screens/logs/logs_config_modal.dart';
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
@@ -268,6 +269,14 @@ class _LogsWidgetState extends State<LogsWidget> {
       }
     }
 
+    void updateConfig(Map<String, dynamic> data) async {
+
+    }
+
+    void clearQueries() async {
+
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.logs),
@@ -278,6 +287,20 @@ class _LogsWidgetState extends State<LogsWidget> {
                 icon: const Icon(Icons.filter_list_rounded)
               )
             : const SizedBox(),
+          IconButton(
+            onPressed: () => {
+              showModalBottomSheet(
+                context: context, 
+                builder: (context) => LogsConfigModal(
+                  onConfirm: updateConfig,
+                  onClear: clearQueries,
+                ),
+                backgroundColor: Colors.transparent,
+                isScrollControlled: true
+              )
+            }, 
+            icon: const Icon(Icons.settings)
+          ),
           const SizedBox(width: 5),
         ],
         bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all'

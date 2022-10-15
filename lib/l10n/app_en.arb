@@ -392,5 +392,14 @@
     "addDnsRewrite": "Add DNS rewrite",
     "addingRewrite": "Adding rewrite...",
     "dnsRewriteRuleAdded": "DNS rewrite rule addded successfully",
-    "dnsRewriteRuleNotAdded": "DNS rewrite rule could not be added"
+    "dnsRewriteRuleNotAdded": "DNS rewrite rule could not be added",
+    "logsSettings": "Logs settings",
+    "enableLog": "Enable log",
+    "clearLogs": "Clear logs",
+    "anonymizeClientIp": "Anonymize client IP",
+    "hours6": "6 hours",
+    "days30": "30 days",
+    "days90": "90 days",
+    "retentionTime": "Retention time",
+    "selectOneItem": "Select one item"
 }
