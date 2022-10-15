@@ -1395,3 +1395,37 @@ Future getDnsRewriteRules({
     return result;
   }
 }
+
+Future deleteDnsRewriteRule({
+  required Server server,
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/rewrite/delete', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'delete_dns_rewrite_rule'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'delete_dns_rewrite_rule', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

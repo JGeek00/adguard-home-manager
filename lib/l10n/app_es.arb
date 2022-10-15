@@ -384,5 +384,9 @@
     "loadingRewriteRules": "Cargando reescrituras DNS...",
     "rewriteRulesNotLoaded": "No se han podido cargar las reescrituras DNS.",
     "noRewriteRules": "No hay reescrituras DNS.",
-    "answer": "Respuesta"
+    "answer": "Respuesta",
+    "deleteDnsRewrite": "Eliminar reescritura DNS",
+    "deleteDnsRewriteMessage": "¿Estás seguro que deseas eliminar esta reescritura DNS? Esta acción no se puede deshacer.",
+    "dnsRewriteRuleDeleted": "Reescritura DNS eliminada correctamente",
+    "dnsRewriteRuleNotDeleted": "La reescritura DNS no pudo ser eliminada"
 }
