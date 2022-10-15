@@ -8,6 +8,8 @@ import 'package:adguard_home_manager/screens/logs/logs_filters_modal.dart';
 import 'package:adguard_home_manager/screens/logs/logs_config_modal.dart';
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -135,7 +137,66 @@ class _LogsWidgetState extends State<LogsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
+
+    void updateConfig(Map<String, dynamic> data) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.updatingSettings);
+
+      final result = await updateQueryLogParameters(server: serversProvider.selectedServer!, data: data);
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.logsConfigUpdated, 
+          color: Colors.green
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.logsConfigNotUpdated, 
+          color: Colors.red
+        );
+      }
+    }
+
+    void clearQueries() async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.updatingSettings);
+
+      final result = await clearLogs(server: serversProvider.selectedServer!);
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.logsCleared, 
+          color: Colors.green
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.logsNotCleared, 
+          color: Colors.red
+        );
+      }
+    }
+
 
     void openFilersModal() {
       showModalBottomSheet(
@@ -267,14 +328,6 @@ class _LogsWidgetState extends State<LogsWidget> {
         default:
           return const SizedBox();
       }
-    }
-
-    void updateConfig(Map<String, dynamic> data) async {
-
-    }
-
-    void clearQueries() async {
-
     }
 
     return Scaffold(

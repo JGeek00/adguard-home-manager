@@ -401,5 +401,12 @@
     "days30": "30 days",
     "days90": "90 days",
     "retentionTime": "Retention time",
-    "selectOneItem": "Select one item"
+    "selectOneItem": "Select one item",
+    "logSettingsNotLoaded": "Log settings couldn't be loaded.",
+    "updatingSettings": "Updating settings...",
+    "logsConfigUpdated": "Logs settings updated successfully",
+    "logsConfigNotUpdated": "Logs settings couldn't be updated",
+    "deletingLogs": "Clearing logs...",
+    "logsCleared": "Logs cleared successfully",
+    "logsNotCleared": "Logs could not be cleared"
 }

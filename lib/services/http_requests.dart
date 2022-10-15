@@ -1463,3 +1463,105 @@ Future addDnsRewriteRule({
     return result;
   }
 }
+
+Future getQueryLogInfo({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/querylog_info', 
+    method: 'get',
+    server: server, 
+    type: 'get_query_log_info'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 
+        'result': 'success', 
+        'data': jsonDecode(result['body']) 
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_query_log_info', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future updateQueryLogParameters({
+  required Server server,
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/querylog_config', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'update_query_log_config'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_query_log_config', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future clearLogs({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/querylog_clear', 
+    method: 'post',
+    server: server, 
+    body: {},
+    type: 'clear_query_logs'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'clear_query_logs', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

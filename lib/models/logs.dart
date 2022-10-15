@@ -38,7 +38,7 @@ class Log {
   final bool answerDnssec;
   final bool cached;
   final String client;
-  final ClientInfo clientInfo;
+  final ClientInfo? clientInfo;
   final String clientProto;
   final String elapsedMs;
   final Question question;
@@ -56,7 +56,7 @@ class Log {
     required this.answerDnssec,
     required this.cached,
     required this.client,
-    required this.clientInfo,
+    this.clientInfo,
     required this.clientProto,
     required this.elapsedMs,
     required this.question,
@@ -75,7 +75,7 @@ class Log {
     answerDnssec: json["answer_dnssec"],
     cached: json["cached"],
     client: json["client"],
-    clientInfo: ClientInfo.fromJson(json["client_info"]),
+    clientInfo: json["client_info"] != null ? ClientInfo.fromJson(json["client_info"]) : null,
     clientProto: json["client_proto"],
     elapsedMs: json["elapsedMs"],
     question: Question.fromJson(json["question"]),
@@ -94,7 +94,7 @@ class Log {
     "answer_dnssec": answerDnssec,
     "cached": cached,
     "client": client,
-    "client_info": clientInfo.toJson(),
+    "client_info": clientInfo?.toJson(),
     "client_proto": clientProto,
     "elapsedMs": elapsedMs,
     "question": question.toJson(),

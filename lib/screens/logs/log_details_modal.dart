@@ -173,10 +173,10 @@ class LogDetailsModal extends StatelessWidget {
                   title: AppLocalizations.of(context)!.deviceIp,
                   subtitle: log.client
                 ),
-                if (log.clientInfo.name != '') LogListTile(
+                if (log.clientInfo != null && log.clientInfo!.name != '') LogListTile(
                   icon: Icons.abc_rounded, 
                   title: AppLocalizations.of(context)!.deviceName,
-                  subtitle: log.clientInfo.name
+                  subtitle: log.clientInfo!.name
                 ),
               ],
             )

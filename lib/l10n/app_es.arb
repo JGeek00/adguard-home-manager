@@ -401,5 +401,12 @@
     "days30": "30 días",
     "days90": "90 días",
     "retentionTime": "Tiempo de retención",
-    "selectOneItem": "Selecciona un elemento"
+    "selectOneItem": "Selecciona un elemento",
+    "logSettingsNotLoaded": "Los ajustes de registros no han podido ser cargados.",
+    "updatingSettings": "Actualizando ajustes...",
+    "logsConfigUpdated": "Configuración de registros actualizada correctamente",
+    "logsConfigNotUpdated": "La configuración de registros no ha podido ser actualizada",
+    "deletingLogs": "Borrando registros...",
+    "logsCleared": "Registros borrados correctamente",
+    "logsNotCleared": "No se han podido borrar los registros"
 }
