@@ -372,6 +372,7 @@
     "staticLeaseCreated": "Asignación DHCP estática creada correctamente",
     "staticLeaseNotCreated": "No se ha podido crear la asignación DHCP estática",
     "staticLeaseExists": "La asignación DHCP estática ya existe",
+    "serverNotConfigured": "El servidor no está configurado",
     "restoreLeases": "Restaurar asignaciones",
     "restoringLeases": "Restaurando asignaciones...",
     "leasesRestored": "Asignaciones restauradas correctamente",

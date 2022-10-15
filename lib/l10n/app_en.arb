@@ -372,6 +372,7 @@
     "staticLeaseCreated": "DHCP static lease created successfully",
     "staticLeaseNotCreated": "The DHCP static lease couldn't be created",
     "staticLeaseExists": "The DHCP static lease already exists",
+    "serverNotConfigured": "Server not configured",
     "restoreLeases": "Restore leases",
     "restoringLeases": "Restoring leases...",
     "leasesRestored": "Leases restored successfully",

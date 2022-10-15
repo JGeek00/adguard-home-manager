@@ -96,6 +96,15 @@ class DhcpStatic extends StatelessWidget {
           color: Colors.red
         );
       }
+      else if (result['result'] == 'error' && result['message'] == 'server_not_configured' ) {
+        appConfigProvider.addLog(result['log']);
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.serverNotConfigured, 
+          color: Colors.red
+        );
+      }
       else {
         appConfigProvider.addLog(result['log']);
         showSnacbkar(

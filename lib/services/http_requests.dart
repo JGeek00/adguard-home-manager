@@ -1292,6 +1292,19 @@ Future createStaticLease({
         )
       };
     }
+    else if (result['statusCode'] == 400 && result['body'].contains('server is unconfigured')) {
+      return {
+        'result': 'error',
+        'message': 'server_not_configured',
+        'log': AppLog(
+          type: 'add_static_lease', 
+          dateTime: DateTime.now(), 
+          message: 'server_not_configured',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
     else {
       return {
         'result': 'error',
