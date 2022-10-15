@@ -68,8 +68,8 @@ class DhcpStatus {
   String interfaceName;
   IpVersion v4;
   IpVersion v6;
-  List<dynamic> leases;
-  List<dynamic> staticLeases;
+  List<Lease> leases;
+  List<Lease> staticLeases;
   bool enabled;
 
   DhcpStatus({
@@ -85,8 +85,8 @@ class DhcpStatus {
     interfaceName: json["interface_name"],
     v4: IpVersion.fromJson(json["v4"]),
     v6: IpVersion.fromJson(json["v6"]),
-    leases: List<dynamic>.from(json["leases"].map((x) => x)),
-    staticLeases: List<dynamic>.from(json["static_leases"].map((x) => x)),
+    leases: List<Lease>.from(json["leases"].map((x) => Lease.fromJson(x))),
+    staticLeases: List<Lease>.from(json["static_leases"].map((x) => Lease.fromJson(x))),
     enabled: json["enabled"],
   );
 
@@ -94,8 +94,8 @@ class DhcpStatus {
     "interface_name": interfaceName,
     "v4": v4.toJson(),
     "v6": v6.toJson(),
-    "leases": List<dynamic>.from(leases.map((x) => x)),
-    "static_leases": List<dynamic>.from(staticLeases.map((x) => x)),
+    "leases": List<Lease>.from(leases.map((x) => x)),
+    "static_leases": List<Lease>.from(staticLeases.map((x) => x)),
     "enabled": enabled,
   };
 }
@@ -129,5 +129,29 @@ class IpVersion {
     "range_start": rangeStart,
     "range_end": rangeEnd,
     "lease_duration": leaseDuration,
+  };
+}
+
+class Lease {
+  final String mac;
+  final String hostname;
+  final String ip;
+
+  Lease({
+    required this.mac,
+    required this.hostname,
+    required this.ip,
+  });
+
+  factory Lease.fromJson(Map<String, dynamic> json) => Lease(
+    mac: json["mac"],
+    hostname: json["hostname"],
+    ip: json["ip"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "mac": mac,
+    "hostname": hostname,
+    "ip": ip,
   };
 }

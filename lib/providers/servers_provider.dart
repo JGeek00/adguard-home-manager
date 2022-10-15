@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:adguard_home_manager/models/filtering.dart';
+import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -27,6 +28,11 @@ class ServersProvider with ChangeNotifier {
   );
 
   final Filtering _filtering = Filtering(
+    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    data: null
+  );
+
+  final DhcpModel _dhcp = DhcpModel(
     loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
     data: null
   );
@@ -59,6 +65,10 @@ class ServersProvider with ChangeNotifier {
 
   Filtering get filtering {
     return _filtering;
+  }
+
+  DhcpModel get dhcp {
+    return _dhcp;
   }
 
   void setDbInstance(Database db) {
@@ -133,6 +143,18 @@ class ServersProvider with ChangeNotifier {
   void setBlockedServices(List<String> blockedServices) {
     _filtering.data!.blockedServices = blockedServices;
     notifyListeners();
+  }
+
+  void setDhcpData(DhcpData data) {
+    _dhcp.data = data;
+    notifyListeners();
+  }
+
+  void setDhcpLoadStatus(int status, bool notify) {
+    _dhcp.loadStatus = status;
+    if (notify == true) {
+      notifyListeners();
+    }
   }
  
   Future<bool> createServer(Server server) async {

@@ -1228,3 +1228,117 @@ Future resetDhcpConfig({
     return result;
   }
 }
+
+Future deleteStaticLease({
+  required Server server, 
+  required Map<String, dynamic> data
+}) async {
+  final result = await apiRequest(
+    urlPath: '/dhcp/remove_static_lease', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'remove_static_lease'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'remove_static_lease', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future createStaticLease({
+  required Server server, 
+  required Map<String, dynamic> data
+}) async {
+  final result = await apiRequest(
+    urlPath: '/dhcp/add_static_lease', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'add_static_lease'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else if (result['statusCode'] == 400 && result['body'].contains('static lease already exists')) {
+      return {
+        'result': 'error',
+        'message': 'already_exists',
+        'log': AppLog(
+          type: 'add_static_lease', 
+          dateTime: DateTime.now(), 
+          message: 'already_exists',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'add_static_lease', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future restoreAllLeases({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/dhcp/reset_leases', 
+    method: 'post',
+    server: server, 
+    body: {},
+    type: 'restore_all_leases'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'restore_all_leases', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

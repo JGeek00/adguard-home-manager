@@ -6,6 +6,7 @@ import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
+import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_static.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/select_interface_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -45,8 +46,6 @@ class DhcpWidget extends StatefulWidget {
 }
 
 class _DhcpWidgetState extends State<DhcpWidget> {
-  DhcpModel dhcp = DhcpModel(loadStatus: 0);
-
   NetworkInterface? selectedInterface;
 
   bool enabled = false;
@@ -72,14 +71,15 @@ class _DhcpWidgetState extends State<DhcpWidget> {
   bool dataValid = false;
 
   void loadDhcpStatus() async {
+    widget.serversProvider.setDhcpLoadStatus(0, false);
+
     final result = await getDhcpData(server: widget.serversProvider.selectedServer!);
 
     if (mounted) {
       if (result['result'] == 'success') {
+        widget.serversProvider.setDhcpLoadStatus(1, true);
+        widget.serversProvider.setDhcpData(result['data']);
         setState(() {
-          dhcp.loadStatus = 1;
-          dhcp.data = result['data'];
-
           if (result['data'].dhcpStatus.interfaceName != '') {
             selectedInterface = result['data'].networkInterfaces.firstWhere((interface) => interface.name == result['data'].dhcpStatus.interfaceName);
 
@@ -94,7 +94,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
         });
       }
       else {
-        setState(() => dhcp.loadStatus = 2);
+        widget.serversProvider.setDhcpLoadStatus(2, true);
       }
     }
     checkDataValid();
@@ -287,6 +287,41 @@ class _DhcpWidgetState extends State<DhcpWidget> {
       });
     }
 
+    void restoreLeases() async {
+      Future.delayed(const Duration(seconds: 0), () async {
+        ProcessModal processModal = ProcessModal(context: context);
+        processModal.open(AppLocalizations.of(context)!.restoringLeases);
+
+        final result = await restoreAllLeases(server: serversProvider.selectedServer!);
+
+        processModal.close();
+
+        if (result['result'] == 'success') {
+          DhcpData data = serversProvider.dhcp.data!;
+          data.dhcpStatus.staticLeases = [];
+          data.dhcpStatus.leases = [];
+          serversProvider.setDhcpData(data);
+
+          showSnacbkar(
+            context: context, 
+            appConfigProvider: appConfigProvider,
+            label: AppLocalizations.of(context)!.leasesRestored, 
+            color: Colors.green
+          );
+        }
+        else {
+          appConfigProvider.addLog(result['log']);
+
+          showSnacbkar(
+            context: context, 
+            appConfigProvider: appConfigProvider,
+            label: AppLocalizations.of(context)!.leasesNotRestored, 
+            color: Colors.red
+          );
+        }
+      });
+    }
+
     void selectInterface() {
       Future.delayed(const Duration(seconds: 0), () {
         showFlexibleBottomSheet(
@@ -298,7 +333,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
           anchors: [0.95],
           context: context, 
           builder: (ctx, controller, offset) => SelectInterfaceModal(
-            interfaces: dhcp.data!.networkInterfaces, 
+            interfaces: serversProvider.dhcp.data!.networkInterfaces, 
             scrollController: controller,
             onSelect: (interface) => setState(() {
               clearAll();
@@ -311,7 +346,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
     }
 
     Widget generateBody() {
-      switch (dhcp.loadStatus) {
+      switch (serversProvider.dhcp.loadStatus) {
         case 0:
           return SizedBox(
             width: double.maxFinite,
@@ -564,7 +599,36 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                       keyboardType: TextInputType.number,
                     ),
                   ),
-                ]
+                ],
+                const SizedBox(height: 20),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => DhcpStatic(
+                          items: serversProvider.dhcp.data!.dhcpStatus.staticLeases
+                        )
+                      ));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.dhcpStatic,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16
+                            ),
+                          ),
+                          const Icon(Icons.arrow_forward_rounded)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             );
           } 
@@ -589,7 +653,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 ElevatedButton(
                   onPressed: selectInterface, 
                   child: Text(AppLocalizations.of(context)!.selectInterface)
-                )
+                ),
               ],
             );
           }
@@ -648,6 +712,16 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 )
               ), 
               PopupMenuItem(
+                onTap: restoreLeases,
+                child: Row(
+                  children: [
+                    const Icon(Icons.settings_backup_restore_rounded),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.restoreLeases)
+                  ],
+                )
+              ),
+              PopupMenuItem(
                 onTap: restoreConfig,
                 child: Row(
                   children: [
@@ -656,7 +730,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     Text(AppLocalizations.of(context)!.restoreConfiguration)
                   ],
                 )
-              )
+              ),
             ] 
           ),
           const SizedBox(width: 10)
