@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/dns_rewrites/add_dns_rewrite_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dns_rewrites/delete_dns_rewrite.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -98,6 +99,40 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
           context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotDeleted, 
+          color: Colors.red
+        );
+      }
+    }
+
+    void addDnsRewrite(RewriteRulesData rule) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.addingRewrite);
+
+      final result = await addDnsRewriteRule(server: serversProvider.selectedServer!, data: {
+        "domain": rule.domain,
+        "answer": rule.answer
+      });
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        List<RewriteRulesData> data = serversProvider.rewriteRules.data!;
+        data.add(rule);
+        serversProvider.setRewriteRulesData(data);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.dnsRewriteRuleAdded, 
+          color: Colors.green
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.dnsRewriteRuleNotAdded, 
           color: Colors.red
         );
       }
@@ -241,6 +276,19 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
         title: Text(AppLocalizations.of(context)!.dnsRewrites),
       ),
       body: generateBody(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {
+          showModalBottomSheet(
+            context: context, 
+            builder: (context) => AddDnsRewriteModal(
+              onConfirm: addDnsRewrite,
+            ),
+            backgroundColor: Colors.transparent,
+            isScrollControlled: true
+          )
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

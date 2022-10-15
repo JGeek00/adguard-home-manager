@@ -1429,3 +1429,37 @@ Future deleteDnsRewriteRule({
     return result;
   }
 }
+
+Future addDnsRewriteRule({
+  required Server server,
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/rewrite/add', 
+    method: 'post',
+    server: server, 
+    body: data,
+    type: 'add_dns_rewrite_rule'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'add_dns_rewrite_rule', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

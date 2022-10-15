@@ -388,5 +388,9 @@
     "deleteDnsRewrite": "Delete DNS rewrite",
     "deleteDnsRewriteMessage": "Are you sure you want to delete this DNS rewrite? This action cannot be undone.",
     "dnsRewriteRuleDeleted": "DNS rewrite rule deleted successfully",
-    "dnsRewriteRuleNotDeleted": "The DNS rewrite rule could not be deleted"
+    "dnsRewriteRuleNotDeleted": "The DNS rewrite rule could not be deleted",
+    "addDnsRewrite": "Add DNS rewrite",
+    "addingRewrite": "Adding rewrite...",
+    "dnsRewriteRuleAdded": "DNS rewrite rule addded successfully",
+    "dnsRewriteRuleNotAdded": "DNS rewrite rule could not be added"
 }

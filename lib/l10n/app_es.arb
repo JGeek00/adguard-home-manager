@@ -388,5 +388,9 @@
     "deleteDnsRewrite": "Eliminar reescritura DNS",
     "deleteDnsRewriteMessage": "¿Estás seguro que deseas eliminar esta reescritura DNS? Esta acción no se puede deshacer.",
     "dnsRewriteRuleDeleted": "Reescritura DNS eliminada correctamente",
-    "dnsRewriteRuleNotDeleted": "La reescritura DNS no pudo ser eliminada"
+    "dnsRewriteRuleNotDeleted": "La reescritura DNS no pudo ser eliminada",
+    "addDnsRewrite": "Añadir reescritura DNS",
+    "addingRewrite": "Añadiend reescritura...",
+    "dnsRewriteRuleAdded": "Regla de reescritura DNS añadida correctamente",
+    "dnsRewriteRuleNotAdded": "La regla de reescritura DNS no ha podido ser añadida"
 }
