@@ -503,9 +503,15 @@ class _AddServerModalState extends State<AddServerModal> {
                 controller: nameController, 
                 icon: Icons.badge_rounded,
                 error: nameError,
-                onChanged: (value) => value == ''
-                  ? setState(() => nameError = AppLocalizations.of(context)!.nameNotEmpty)
-                  : setState(() => nameError = null)
+                onChanged: (value) {
+                  if (value != '') {
+                    setState(() => nameError = null);
+                  }
+                  else {
+                    setState(() => nameError = AppLocalizations.of(context)!.nameNotEmpty);
+                  } 
+                  checkDataValid();
+                }
               ),
               sectionLabel(AppLocalizations.of(context)!.connection),
               Row(
