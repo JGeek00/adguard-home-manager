@@ -408,5 +408,7 @@
     "logsConfigNotUpdated": "La configuración de registros no ha podido ser actualizada",
     "deletingLogs": "Borrando registros...",
     "logsCleared": "Registros borrados correctamente",
-    "logsNotCleared": "No se han podido borrar los registros"
+    "logsNotCleared": "No se han podido borrar los registros",
+    "runningHomeAssistant": "Ejecutando en Home Assistant",
+    "serverError": "Error del servidor"
 }

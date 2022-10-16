@@ -22,4 +22,9 @@ class AppLog {
       'resBody': resBody.toString()
     };
   }
+
+  @override
+  String toString() {
+    return toMap().toString();
+  }
 }

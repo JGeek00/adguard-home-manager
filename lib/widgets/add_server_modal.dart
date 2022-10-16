@@ -51,6 +51,8 @@ class _AddServerModalState extends State<AddServerModal> {
 
   bool defaultServer = false;
 
+  bool homeAssistant = false;
+
   bool allDataValid = false;
 
   bool isConnecting = false;
@@ -254,11 +256,19 @@ class _AddServerModalState extends State<AddServerModal> {
         user: userController.text, 
         password: passwordController.text, 
         defaultServer: defaultServer,
-        authToken: ''
+        authToken: homeAssistant == true 
+          ? encodeBase64UserPass(userController.text, passwordController.text)
+          : '',
+        runningOnHa: homeAssistant
       );
       setState(() => isConnecting = true);
-      final result = await login(serverObj);
+
+      final result = homeAssistant == true 
+        ? await loginHA(serverObj)
+        : await login(serverObj);
+
       setState(() => isConnecting = false);
+
       if (result['result'] == 'success') {
         serverObj.authToken = encodeBase64UserPass(serverObj.user, serverObj.password);
         final serverCreated = await serversProvider.createServer(serverObj);
@@ -320,6 +330,15 @@ class _AddServerModalState extends State<AddServerModal> {
           )
         );
       }
+      else if (result['result'] == 'server_error') {
+        appConfigProvider.addLog(result['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.serverError),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
       else {
         appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -341,9 +360,16 @@ class _AddServerModalState extends State<AddServerModal> {
         user: userController.text, 
         password: passwordController.text, 
         defaultServer: defaultServer,
-        authToken: ''
+        authToken: homeAssistant == true 
+          ? encodeBase64UserPass(userController.text, passwordController.text)
+          : '',
+        runningOnHa: homeAssistant
       );
-      final result = await login(serverObj);
+      
+      final result = homeAssistant == true 
+        ? await loginHA(serverObj)
+        : await login(serverObj);
+
       if (result['result'] == 'success') {
         serverObj.authToken = encodeBase64UserPass(serverObj.user, serverObj.password);
         final serverSaved = await serversProvider.editServer(serverObj);
@@ -391,6 +417,15 @@ class _AddServerModalState extends State<AddServerModal> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.sslError),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+      else if (result['result'] == 'server_error') {
+        appConfigProvider.addLog(result['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.serverError),
             backgroundColor: Colors.red,
           )
         );
@@ -557,6 +592,36 @@ class _AddServerModalState extends State<AddServerModal> {
                           value: defaultServer, 
                           onChanged: widget.server == null 
                             ? (value) => setState(() => defaultServer = value)
+                            : null,
+                          activeColor: Theme.of(context).primaryColor,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: widget.server == null
+                    ? () => setState(() => homeAssistant = !homeAssistant)
+                    : null,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.runningHomeAssistant,
+                          style: const TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                        Switch(
+                          value: homeAssistant, 
+                          onChanged: widget.server == null 
+                            ? (value) => setState(() => homeAssistant = value)
                             : null,
                           activeColor: Theme.of(context).primaryColor,
                         )

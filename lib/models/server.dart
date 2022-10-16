@@ -9,6 +9,7 @@ class Server {
   String password;
   bool defaultServer;
   String authToken;
+  bool runningOnHa;
 
   Server({
     required this.id,
@@ -20,6 +21,7 @@ class Server {
     required this.user,
     required this.password,
     required this.defaultServer,
-    required this.authToken
+    required this.authToken,
+    required this.runningOnHa,
   });
 }

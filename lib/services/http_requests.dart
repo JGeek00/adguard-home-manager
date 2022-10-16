@@ -29,7 +29,7 @@ Future<Map<String, dynamic>> apiRequest({
     HttpClient httpClient = HttpClient();
     if (method == 'get') {
       HttpClientRequest request = await httpClient.getUrl(Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"));
-      request.headers.set('authorization', 'Basic ${server.authToken}');
+      request.headers.set('Authorization', 'Basic ${server.authToken}');
       HttpClientResponse response = overrideTimeout == true 
         ? await request.close()
         : await request.close().timeout(const Duration(seconds: 10));
@@ -54,7 +54,7 @@ Future<Map<String, dynamic>> apiRequest({
     }
     else if (method == 'post') {
       HttpClientRequest request = await httpClient.postUrl(Uri.parse("${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}/control$urlPath"));
-      request.headers.set('authorization', 'Basic ${server.authToken}');
+      request.headers.set('Authorization', 'Basic ${server.authToken}');
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(json.encode(body)));
       HttpClientResponse response = overrideTimeout == true 
@@ -165,11 +165,66 @@ Future login(Server server) async {
         )
       };
     }
+    else if (result['statusCode'] == 500) {
+      return {
+        'result': 'server_error',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'server_error',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
     else {
       return {
         'result': 'error',
         'log': AppLog(
           type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future loginHA(Server server) async {
+  print(server.authToken);
+  final result = await apiRequest(
+    server: server,
+    method: 'get',
+    urlPath: '/status', 
+    type: 'login_ha'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else if (result['statusCode'] == 401) {
+      return {
+        'result': 'invalid_username_password',
+        'log': AppLog(
+          type: 'login', 
+          dateTime: DateTime.now(), 
+          message: 'invalid_username_password',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'login_ha', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),

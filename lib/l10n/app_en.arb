@@ -408,5 +408,7 @@
     "logsConfigNotUpdated": "Logs settings couldn't be updated",
     "deletingLogs": "Clearing logs...",
     "logsCleared": "Logs cleared successfully",
-    "logsNotCleared": "Logs could not be cleared"
+    "logsNotCleared": "Logs could not be cleared",
+    "runningHomeAssistant": "Running on Home Assistant",
+    "serverError": "Server error"
 }

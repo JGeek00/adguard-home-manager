@@ -60,7 +60,9 @@ class ServersList extends StatelessWidget {
       final ProcessModal process = ProcessModal(context: context);
       process.open(AppLocalizations.of(context)!.connecting);
 
-      final result = await login(server);
+      final result = server.runningOnHa == true 
+        ? await loginHA(server)
+        : await login(server);
 
       if (result['result'] == 'success') {
         serversProvider.setSelectedServer(server);

@@ -362,7 +362,7 @@ class ServersProvider with ChangeNotifier {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawInsert(
-          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer, authToken) VALUES ("${server.id}", "${server.name}", "${server.connectionMethod}", "${server.domain}", ${server.path != null ? "${server.path}" : null}, ${server.port}, "${server.user}", "${server.password}", 0, "${server.authToken}")',
+          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer, authToken, runningOnHa) VALUES ("${server.id}", "${server.name}", "${server.connectionMethod}", "${server.domain}", ${server.path != null ? "${server.path}" : null}, ${server.port}, "${server.user}", "${server.password}", 0, "${server.authToken}", ${convertFromBoolToInt(server.runningOnHa)})',
         );
         return true;
       });
@@ -375,7 +375,7 @@ class ServersProvider with ChangeNotifier {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawUpdate(
-          'UPDATE servers SET name = "${server.name}", connectionMethod = "${server.connectionMethod}", domain = "${server.domain}", path = ${server.path != null ? "${server.path}" : null}, port = ${server.port}, user = "${server.user}", password = "${server.password}", authToken = "${server.authToken}" WHERE id = "${server.id}"',
+          'UPDATE servers SET name = "${server.name}", connectionMethod = "${server.connectionMethod}", domain = "${server.domain}", path = ${server.path != null ? "${server.path}" : null}, port = ${server.port}, user = "${server.user}", password = "${server.password}", authToken = "${server.authToken}", runningOnHa = ${convertFromBoolToInt(server.runningOnHa)} WHERE id = "${server.id}"',
         );
         return true;
       });
@@ -426,7 +426,8 @@ class ServersProvider with ChangeNotifier {
           user: server['user'],
           password: server['password'],
           defaultServer: convertFromIntToBool(server['defaultServer'])!,
-          authToken: server['authToken']
+          authToken: server['authToken'],
+          runningOnHa: convertFromIntToBool(server['runningOnHa'])!,
         );
         _serversList.add(serverObj);
         if (convertFromIntToBool(server['defaultServer']) == true) {
