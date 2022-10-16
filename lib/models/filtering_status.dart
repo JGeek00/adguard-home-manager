@@ -21,8 +21,8 @@ class FilteringStatus {
 
   factory FilteringStatus.fromJson(Map<String, dynamic> json) => FilteringStatus(
     filters: List<Filter>.from(json["filters"].map((x) => Filter.fromJson(x))),
-    whitelistFilters: List<Filter>.from(json["whitelist_filters"].map((x) => Filter.fromJson(x))),
-    userRules: List<String>.from(json["user_rules"].map((x) => x)),
+    whitelistFilters: json["whitelist_filters"] != null ? List<Filter>.from(json["whitelist_filters"].map((x) => Filter.fromJson(x))) : [],
+    userRules: json["user_rules"] != null ? List<String>.from(json["user_rules"].map((x) => x)) : [],
     interval: json["interval"],
     enabled: json["enabled"],
   );
@@ -56,7 +56,7 @@ class Filter {
   factory Filter.fromJson(Map<String, dynamic> json) => Filter(
     url: json["url"],
     name: json["name"],
-    lastUpdated: json["last_updated"] == null ? null : DateTime.parse(json["last_updated"]),
+    lastUpdated: json["last_updated"] != '' ? DateTime.parse(json["last_updated"]) : null,
     id: json["id"],
     rulesCount: json["rules_count"],
     enabled: json["enabled"],
@@ -65,7 +65,7 @@ class Filter {
     Map<String, dynamic> toJson() => {
         "url": url,
         "name": name,
-        "last_updated": lastUpdated == null ? null : lastUpdated!.toIso8601String(),
+        "last_updated": lastUpdated != null ? lastUpdated!.toIso8601String() : null,
         "id": id,
         "rules_count": rulesCount,
         "enabled": enabled,
