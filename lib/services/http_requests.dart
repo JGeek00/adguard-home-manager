@@ -141,7 +141,7 @@ Future login(Server server) async {
     if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
-    else if (result['statusCode'] == 400) {
+    else if (result['statusCode'] == 400 || result['statusCode'] == 401 || result['statusCode'] == 403) {
       return {
         'result': 'invalid_username_password',
         'log': AppLog(
@@ -196,7 +196,6 @@ Future login(Server server) async {
 }
 
 Future loginHA(Server server) async {
-  print(server.authToken);
   final result = await apiRequest(
     server: server,
     method: 'get',
@@ -208,7 +207,7 @@ Future loginHA(Server server) async {
     if (result['statusCode'] == 200) {
       return {'result': 'success'};
     }
-    else if (result['statusCode'] == 401) {
+    else if (result['statusCode'] == 401 || result['statusCode'] == 403) {
       return {
         'result': 'invalid_username_password',
         'log': AppLog(
