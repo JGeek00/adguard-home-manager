@@ -144,8 +144,6 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
           builder: (context) => const CheckHostModal(),
           backgroundColor: Colors.transparent,
           isScrollControlled: true,
-          isDismissible: false,
-          enableDrag: false
         );
       });
     }

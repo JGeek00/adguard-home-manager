@@ -325,7 +325,7 @@
     "updating": "Actualizando valores...",
     "blockedServicesUpdated": "Servicios bloqueados actualizados correctamente",
     "blockedServicesNotUpdated": "No se pudieron actualizar los servicios bloqueados",
-    "insertDomain": "Inserta un dominio para comprobar su estado,",
+    "insertDomain": "Inserta un dominio para comprobar su estado.",
     "dhcpSettings": "Configuración de DHCP",
     "dhcpSettingsDescription": "Configura el servidor DHCP",
     "dhcpSettingsNotLoaded": "No se ha podido cargar la configuración de DHCP",
