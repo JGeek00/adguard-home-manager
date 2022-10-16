@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/models/app_log.dart';
 
@@ -40,10 +41,26 @@ class _AppLogDetailsModalState extends State<AppLogDetailsModal> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Log details"),
+      title: Column(
+        children: [
+          const Icon(
+            Icons.description_rounded,
+            size: 26,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            AppLocalizations.of(context)!.logDetails,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 24
+            ),
+          )
+        ],
+      ),
       scrollable: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 20),
           Row(
@@ -96,8 +113,13 @@ class _AppLogDetailsModalState extends State<AppLogDetailsModal> {
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.easeInOut,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).primaryColor
+                      border: Border(
+                        top: BorderSide(
+                          color: Theme.of(context).primaryColor
+                        ),
+                        bottom: BorderSide(
+                          color: Theme.of(context).primaryColor
+                        ),
                       ),
                       color: valueToShow == 'statusCode'  
                         ? Theme.of(context).primaryColor
