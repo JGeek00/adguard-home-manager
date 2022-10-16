@@ -214,6 +214,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                     ),
                     label: Text(AppLocalizations.of(context)!.retentionTime)
                   ),
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
               Expanded(
