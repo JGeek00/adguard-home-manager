@@ -55,6 +55,19 @@ class TopItems extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
+          if (data.isEmpty) Padding(
+            padding: const EdgeInsets.only(
+              bottom: 20,
+              top: 10
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.noItems,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.grey
+              ),
+            ),
+          ),
           if (data.isNotEmpty) rowItem(data[0]),
           if (data.length >= 2) rowItem(data[1]),
           if (data.length >= 3) rowItem(data[2]),

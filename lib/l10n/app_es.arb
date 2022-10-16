@@ -410,5 +410,6 @@
     "logsCleared": "Registros borrados correctamente",
     "logsNotCleared": "No se han podido borrar los registros",
     "runningHomeAssistant": "Ejecutando en Home Assistant",
-    "serverError": "Error del servidor"
+    "serverError": "Error del servidor",
+    "noItems": "No hay elementos para mostrar aquí"
 }

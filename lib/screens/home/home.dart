@@ -103,7 +103,7 @@ class _HomeState extends State<Home> {
                 data: serversProvider.serverStatus.data!.stats.blockedFiltering, 
                 label: AppLocalizations.of(context)!.blockedFilters, 
                 primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numBlockedFiltering, Platform.localeName), 
-                secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
+                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.red,
               ),
 
@@ -111,7 +111,7 @@ class _HomeState extends State<Home> {
                 data: serversProvider.serverStatus.data!.stats.replacedSafebrowsing, 
                 label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
                 primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing, Platform.localeName), 
-                secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
+                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.green,
               ),
 
@@ -119,7 +119,7 @@ class _HomeState extends State<Home> {
                 data: serversProvider.serverStatus.data!.stats.replacedParental, 
                 label: AppLocalizations.of(context)!.blockedAdultWebsites, 
                 primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedParental, Platform.localeName), 
-                secondaryValue: "${doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName)}%",
+                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.orange,
               ),
 
