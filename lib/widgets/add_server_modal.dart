@@ -234,6 +234,7 @@ class _AddServerModalState extends State<AddServerModal> {
       userController.text = widget.server!.user;
       passwordController.text = widget.server!.password;
       defaultServer = widget.server!.defaultServer;
+      homeAssistant = widget.server!.runningOnHa;
     }
     checkDataValid();
     super.initState();
@@ -604,9 +605,7 @@ class _AddServerModalState extends State<AddServerModal> {
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: widget.server == null
-                    ? () => setState(() => homeAssistant = !homeAssistant)
-                    : null,
+                  onTap: () => setState(() => homeAssistant = !homeAssistant),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
@@ -620,9 +619,7 @@ class _AddServerModalState extends State<AddServerModal> {
                         ),
                         Switch(
                           value: homeAssistant, 
-                          onChanged: widget.server == null 
-                            ? (value) => setState(() => homeAssistant = value)
-                            : null,
+                          onChanged: (value) => setState(() => homeAssistant = value),
                           activeColor: Theme.of(context).primaryColor,
                         )
                       ],
