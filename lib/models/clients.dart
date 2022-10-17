@@ -119,10 +119,10 @@ class Client {
 
   factory Client.fromJson(Map<String, dynamic> json) => Client(
     name: json["name"],
-    blockedServices: List<String>.from(json["blocked_services"]),
-    ids: List<String>.from(json["ids"].map((x) => x)),
-    tags: List<String>.from(json["tags"].map((x) => x)),
-    upstreams: List<dynamic>.from(json["upstreams"].map((x) => x)),
+    blockedServices: json["blocked_services"] != null ? List<String>.from(json["blocked_services"]) : [],
+    ids: json["ids"] != null ? List<String>.from(json["ids"].map((x) => x)) : [],
+    tags: json["tags"] != null ? List<String>.from(json["tags"].map((x) => x)) : [],
+    upstreams: json["upstreams"] != null ? List<dynamic>.from(json["upstreams"].map((x) => x)) : [],
     filteringEnabled: json["filtering_enabled"],
     parentalEnabled: json["parental_enabled"],
     safebrowsingEnabled: json["safebrowsing_enabled"],
