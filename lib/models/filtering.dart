@@ -70,7 +70,7 @@ class Filter {
   factory Filter.fromJson(Map<String, dynamic> json) => Filter(
     url: json["url"],
     name: json["name"],
-    lastUpdated: json["last_updated"] != '' ? DateTime.parse(json["last_updated"]) : null,
+    lastUpdated: json["last_updated"] != null && json["last_updated"] != '' ? DateTime.parse(json["last_updated"]) : null,
     id: json["id"],
     rulesCount: json["rules_count"],
     enabled: json["enabled"],

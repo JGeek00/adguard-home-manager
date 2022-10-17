@@ -20,7 +20,7 @@ class FilteringStatus {
   });
 
   factory FilteringStatus.fromJson(Map<String, dynamic> json) => FilteringStatus(
-    filters: List<Filter>.from(json["filters"].map((x) => Filter.fromJson(x))),
+    filters: json["filters"] != null ? List<Filter>.from(json["filters"].map((x) => Filter.fromJson(x))) : [],
     whitelistFilters: json["whitelist_filters"] != null ? List<Filter>.from(json["whitelist_filters"].map((x) => Filter.fromJson(x))) : [],
     userRules: json["user_rules"] != null ? List<String>.from(json["user_rules"].map((x) => x)) : [],
     interval: json["interval"],
@@ -56,7 +56,7 @@ class Filter {
   factory Filter.fromJson(Map<String, dynamic> json) => Filter(
     url: json["url"],
     name: json["name"],
-    lastUpdated: json["last_updated"] != '' ? DateTime.parse(json["last_updated"]) : null,
+    lastUpdated: json["last_updated"] != '' && json["last_updated"] != null ? DateTime.parse(json["last_updated"]) : null,
     id: json["id"],
     rulesCount: json["rules_count"],
     enabled: json["enabled"],
