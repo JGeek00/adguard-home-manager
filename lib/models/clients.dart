@@ -71,11 +71,23 @@ class AutoClient {
 }
 
 class WhoisInfo {
-  WhoisInfo();
+  final String? country;
+  final String? orgname;
 
-  factory WhoisInfo.fromJson(Map<String, dynamic> json) => WhoisInfo();
+  WhoisInfo({
+    this.country,
+    this.orgname,
+  });
 
-  Map<String, dynamic> toJson() => {};
+  factory WhoisInfo.fromJson(Map<String, dynamic> json) => WhoisInfo(
+    country: json["country"],
+    orgname: json["orgname"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "country": country,
+    "orgname": orgname,
+  };
 }
 
 class Client {
