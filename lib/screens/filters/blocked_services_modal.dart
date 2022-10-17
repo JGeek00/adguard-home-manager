@@ -67,9 +67,11 @@ class _BlockedServicesModalState extends State<BlockedServicesModal> {
       ),
       child: Column(
         children: [
-          Column(
-            children: [
-              const Padding(
+          Expanded(
+            child: ListView(
+              controller: widget.scrollController,
+              children: [
+                const Padding(
                   padding: EdgeInsets.only(top: 28),
                   child: Icon(
                     Icons.block,
@@ -83,41 +85,41 @@ class _BlockedServicesModalState extends State<BlockedServicesModal> {
                   style: const TextStyle(
                     fontSize: 24
                   ),
-                )
-            ],
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              controller: widget.scrollController,
-              itemCount: services.length,
-              itemBuilder: (context, index) => Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => updateValues(!(values[index]['checked'] as bool), services[index]),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          services[index]['label']!,
-                          style: const TextStyle(
-                            fontSize: 16
-                          ),
-                        ),
-                        Checkbox(
-                          value: values[index]['checked'], 
-                          onChanged: (value) => updateValues(value!, services[index]),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
                 ),
-              )
+                const SizedBox(height: 20),
+                ListView.builder(
+                  primary: false,
+                  shrinkWrap: true,
+                  itemCount: services.length,
+                  itemBuilder: (context, index) => Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => updateValues(!(values[index]['checked'] as bool), services[index]),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              services[index]['label']!,
+                              style: const TextStyle(
+                                fontSize: 16
+                              ),
+                            ),
+                            Checkbox(
+                              value: values[index]['checked'], 
+                              onChanged: (value) => updateValues(value!, services[index]),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ),
+              ],
             ),
           ),
           Padding(
