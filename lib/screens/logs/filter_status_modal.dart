@@ -64,7 +64,6 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
                       label,
                       style: const TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w500
                       ),
                     )
                   ],
