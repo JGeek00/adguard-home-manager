@@ -42,26 +42,27 @@ class LogDetailsModal extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(
-              top: 24,
-              bottom: 20,
-            ),
-            child: Icon(
-              Icons.list_rounded,
-              size: 26,
-            ),
-          ),
-          Text(
-            AppLocalizations.of(context)!.logDetails,
-            style: const TextStyle(
-              fontSize: 24
-            ),
-          ),
           Expanded(
             child: ListView(
               controller: scrollController,
               children: [
+                const Padding(
+                  padding: EdgeInsets.only(
+                    top: 28,
+                    bottom: 20,
+                  ),
+                  child: Icon(
+                    Icons.list_rounded,
+                    size: 26,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.logDetails,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 24
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: Text(
@@ -179,7 +180,7 @@ class LogDetailsModal extends StatelessWidget {
                   subtitle: log.clientInfo!.name
                 ),
               ],
-            )
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(20),
