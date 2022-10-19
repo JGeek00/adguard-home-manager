@@ -133,7 +133,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
           controller: controller,
           onChanged: onChanged,
           decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.timer_rounded),
+            prefixIcon: const Icon(Icons.storage_rounded),
             border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10)
