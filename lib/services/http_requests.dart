@@ -1655,3 +1655,49 @@ Future getDnsInfo({
     return result;
   }
 }
+
+Future setDnsConfig({
+  required Server server,
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/dns_config', 
+    method: 'post',
+    server: server,
+    body: data, 
+    type: 'set_dns_config'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    if (result['statusCode'] == 400) {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'set_dns_config', 
+          dateTime: DateTime.now(), 
+          message: 'data_not_valid',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'set_dns_config', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

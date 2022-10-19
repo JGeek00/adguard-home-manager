@@ -469,5 +469,9 @@
     "blockingIpv4Description": "Dirección IP devolverá una petición A bloqueada",
     "blockingIpv6": "Bloqueo de IPv6",
     "blockingIpv6Description": "Dirección IP devolverá una petición AAAA bloqueada",
-    "invalidIp": "Dirección IP no válida"
+    "invalidIp": "Dirección IP no válida",
+    "dnsConfigSaved": "La configuración del servidor DNS se ha guardado correctamente",
+    "dnsConfigNotSaved": "La configuración del servidor DNS no ha podido ser guardada",
+    "savingConfig": "Guardando configuración...",
+    "someValueNotValid": "Algún valor no es válido"
 }

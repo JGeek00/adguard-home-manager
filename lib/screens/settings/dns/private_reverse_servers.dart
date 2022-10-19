@@ -1,9 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/models/dns_info.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/services/http_requests.dart';
 
 class PrivateReverseDnsServersScreen extends StatefulWidget {
   final ServersProvider serversProvider;
@@ -48,7 +56,6 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
     if (
       (
         editReverseResolvers == true &&
-        reverseResolversControllers.isNotEmpty &&
         reverseResolversControllers.every((element) => element['controller'].text != '') &&
         reverseResolversControllers.every((element) => element['error'] == null)
       ) == true
@@ -68,10 +75,10 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
     for (var item in widget.serversProvider.dnsInfo.data!.localPtrUpstreams) {
       final controller = TextEditingController();
       controller.text = item;
-      reverseResolversControllers.add({
+      reverseResolversControllers = [{
         'controller': controller,
         'error': null
-      });
+      }];
     }
     if (widget.serversProvider.dnsInfo.data!.localPtrUpstreams.isNotEmpty) {
       editReverseResolvers = true;
@@ -84,13 +91,70 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
 
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    void saveData() async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.savingConfig);
+
+      final result = await setDnsConfig(server: serversProvider.selectedServer!, data: editReverseResolvers == true
+        ? {
+          "local_ptr_upstreams": List<String>.from(reverseResolversControllers.map((e) => e['controller'].text)),
+          "use_private_ptr_resolvers": usePrivateReverseDnsResolvers,
+          "resolve_clients": enableReverseResolve
+        } : {
+          "use_private_ptr_resolvers": usePrivateReverseDnsResolvers,
+          "resolve_clients": enableReverseResolve
+        });
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        DnsInfoData data = serversProvider.dnsInfo.data!;
+        if (editReverseResolvers == true) {
+          data.localPtrUpstreams = List<String>.from(reverseResolversControllers.map((e) => e['controller'].text));
+        }
+        data.usePrivatePtrResolvers = usePrivateReverseDnsResolvers;
+        data.resolveClients = enableReverseResolve;
+        serversProvider.setDnsInfoData(data);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.dnsConfigSaved, 
+          color: Colors.green
+        );
+      }
+      else if (result['log'] != null && result['log'].statusCode == '400') {
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.someValueNotValid, 
+          color: Colors.red
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.dnsConfigNotSaved, 
+          color: Colors.red
+        );
+      } 
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.privateReverseDnsServers),
         actions: [
           IconButton(
             onPressed: validValues == true
-              ? () => {}
+              ? () => saveData()
               : null, 
             icon: const Icon(Icons.save_rounded),
             tooltip: AppLocalizations.of(context)!.save,

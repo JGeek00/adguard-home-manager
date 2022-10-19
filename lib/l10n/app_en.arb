@@ -469,5 +469,9 @@
     "blockingIpv4Description": "IP address to be returned for a blocked A request",
     "blockingIpv6": "Blocking IPv6",
     "blockingIpv6Description": "IP address to be returned for a blocked AAAA request",
-    "invalidIp": "Invalid IP address"
+    "invalidIp": "Invalid IP address",
+    "dnsConfigSaved": "DNS server configuration saved successfully",
+    "dnsConfigNotSaved": "The DNS server configuration could not be saved",
+    "savingConfig": "Saving configuration...",
+    "someValueNotValid": "Some value is not valid"
 }
