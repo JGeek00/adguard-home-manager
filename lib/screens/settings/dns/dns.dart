@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/dns/cache_config.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns_server_settings.dart';
 import 'package:adguard_home_manager/screens/settings/dns/bootstrap_dns.dart';
 import 'package:adguard_home_manager/screens/settings/dns/private_reverse_servers.dart';
@@ -63,6 +64,18 @@ class DnsSettings extends StatelessWidget {
             ),
             onTap: () => Navigator.push(context, MaterialPageRoute(
               builder: (context) => const DnsServerSettingsScreen()
+            )),
+          ),
+          ListTile(
+            title: Text(
+              AppLocalizations.of(context)!.dnsCacheConfig,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal
+              ),
+            ),
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+              builder: (context) => const CacheConfigDnsScreen()
             )),
           ),
         ],

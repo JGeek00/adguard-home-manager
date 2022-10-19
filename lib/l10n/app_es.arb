@@ -453,5 +453,14 @@
     "nullIp": "IP nula",
     "nullIpDescription": "Responde con dirección IP cero (0.0.0.0 para A; :: para AAAA)",
     "customIp": "IP personalizada",
-    "customIpDescription": "Responde con una dirección IP establecida manualmente."
+    "customIpDescription": "Responde con una dirección IP establecida manualmente.",
+    "dnsCacheConfig": "Configuración de la caché DNS",
+    "cacheSize": "Tamaño de la caché",
+    "inBytes": "En bytes",
+    "overrideMinimumTtl": "Anular TTL mínimo",
+    "overrideMinimumTtlDescription": "Amplía el corto tiempo de vida (segundos) de los valores recibidos del servidor DNS de subida al almacenar en caché las respuestas DNS.",
+    "overrideMaximumTtl": "Anular TTL máximo",
+    "overrideMaximumTtlDescription": "Establece un valor de tiempo de vida (segundos) máximo para las entradas en la caché DNS.",
+    "optimisticCaching": "Optimistic caching",
+    "optimisticCachingDescription": "Haz que AdGuard Home responda desde la caché incluso cuando las entradas estén expiradas y también intente actualizarlas."
 }

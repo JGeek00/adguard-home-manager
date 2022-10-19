@@ -453,5 +453,14 @@
     "nullIp": "Null IP",
     "nullIpDescription": "Respond with zero IP address (0.0.0.0 for A; :: for AAAA)",
     "customIp": "Custom IP",
-    "customIpDescription": "Respond with a manually set IP address"
+    "customIpDescription": "Respond with a manually set IP address",
+    "dnsCacheConfig": "DNS cache configuration",
+    "cacheSize": "Cache size",
+    "inBytes": "In bytes",
+    "overrideMinimumTtl": "Override minimum TTL",
+    "overrideMinimumTtlDescription": "Extend short time-to-live values (seconds) received from the upstream server when caching DNS responses.",
+    "overrideMaximumTtl": "Override maximum TTL",
+    "overrideMaximumTtlDescription": "Set a maximum time-to-live value (seconds) for entries in the DNS cache.",
+    "optimisticCaching": "Optimistic caching",
+    "optimisticCachingDescription": "Make AdGuard Home respond from the cache even when the entries are expired and also try to refresh them."
 }
