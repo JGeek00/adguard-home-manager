@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
+import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
@@ -43,6 +44,11 @@ class ServersProvider with ChangeNotifier {
     data: null
   );
 
+  final DnsInfo _dnsInfo = DnsInfo(
+    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    data: null
+  );
+
   FilteringStatus? _filteringStatus;
 
   List<Server> get serversList {
@@ -79,6 +85,10 @@ class ServersProvider with ChangeNotifier {
 
   RewriteRules get rewriteRules {
     return _rewriteRules;
+  }
+
+  DnsInfo get dnsInfo {
+    return _dnsInfo;
   }
 
   void setDbInstance(Database db) {
@@ -174,6 +184,18 @@ class ServersProvider with ChangeNotifier {
 
   void setRewriteRulesLoadStatus(int status, bool notify) {
     _rewriteRules.loadStatus = status;
+    if (notify == true) {
+      notifyListeners();
+    }
+  }
+  
+  void setDnsInfoData(DnsInfoData data) {
+    _dnsInfo.data = data;
+    notifyListeners();
+  }
+
+  void setDnsInfoLoadStatus(int status, bool notify) {
+    _dnsInfo.loadStatus = status;
     if (notify == true) {
       notifyListeners();
     }

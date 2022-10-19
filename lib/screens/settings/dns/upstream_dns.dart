@@ -4,19 +4,35 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_radio_list_tile.dart';
 
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+
 class UpstreamDnsScreen extends StatefulWidget {
-  const UpstreamDnsScreen({Key? key}) : super(key: key);
+  final ServersProvider serversProvider;
+
+  const UpstreamDnsScreen({
+    Key? key,
+    required this.serversProvider,
+  }) : super(key: key);
 
   @override
   State<UpstreamDnsScreen> createState() => _UpstreamDnsScreenState();
 }
 
 class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
-  List<TextEditingController> upstreamControllers = [
-    TextEditingController()
-  ];
+  List<TextEditingController> upstreamControllers = [];
 
   String upstreamMode = "load_balancing";
+
+  @override
+  void initState() {
+    for (var item in widget.serversProvider.dnsInfo.data!.upstreamDns) {
+      final controller = TextEditingController();
+      controller.text = item;
+      upstreamControllers.add(controller);
+    }
+    upstreamMode = widget.serversProvider.dnsInfo.data!.upstreamMode;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +104,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
           SectionLabel(label: AppLocalizations.of(context)!.dnsMode),
           CustomRadioListTile(
             groupValue: upstreamMode, 
-            value: "load_balancing", 
+            value: "", 
             radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
             title: AppLocalizations.of(context)!.loadBalancing,
             subtitle: AppLocalizations.of(context)!.loadBalancingDescription,
@@ -96,7 +112,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
           ),
           CustomRadioListTile(
             groupValue: upstreamMode, 
-            value: "parallel_requests", 
+            value: "parallel", 
             radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
             title: AppLocalizations.of(context)!.parallelRequests,
             subtitle: AppLocalizations.of(context)!.parallelRequestsDescription,
@@ -104,7 +120,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
           ),
           CustomRadioListTile(
             groupValue: upstreamMode, 
-            value: "fastest_ip_address", 
+            value: "fastest_addr", 
             radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
             title: AppLocalizations.of(context)!.fastestIpAddress,
             subtitle: AppLocalizations.of(context)!.fastestIpAddressDescription,

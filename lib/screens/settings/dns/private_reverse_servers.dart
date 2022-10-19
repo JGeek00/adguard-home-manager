@@ -3,23 +3,46 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+
 class PrivateReverseDnsServersScreen extends StatefulWidget {
-  const PrivateReverseDnsServersScreen({Key? key}) : super(key: key);
+  final ServersProvider serversProvider;
+
+  const PrivateReverseDnsServersScreen({
+    Key? key,
+    required this.serversProvider,
+  }) : super(key: key);
 
   @override
   State<PrivateReverseDnsServersScreen> createState() => _PrivateReverseDnsServersScreenState();
 }
 
 class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServersScreen> {
-  List<TextEditingController> privateControllers = [];
-
-  List<String> defaultReverseResolvers = ["80.58.61.250", "80.58.61.251"];
+  List<String> defaultReverseResolvers = [];
   bool editReverseResolvers = false;
   List<TextEditingController> reverseResolversControllers = [
     TextEditingController()
   ];
   bool usePrivateReverseDnsResolvers = false;
   bool enableReverseResolve = false;
+
+  @override
+  void initState() {
+    for (var item in widget.serversProvider.dnsInfo.data!.defaultLocalPtrUpstreams) {
+      defaultReverseResolvers.add(item);
+    }
+    for (var item in widget.serversProvider.dnsInfo.data!.localPtrUpstreams) {
+      final controller = TextEditingController();
+      controller.text = item;
+      reverseResolversControllers.add(controller);
+    }
+    if (widget.serversProvider.dnsInfo.data!.localPtrUpstreams.isNotEmpty) {
+      editReverseResolvers = true;
+    }
+    usePrivateReverseDnsResolvers = widget.serversProvider.dnsInfo.data!.usePrivatePtrResolvers;
+    enableReverseResolve = widget.serversProvider.dnsInfo.data!.resolveClients;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

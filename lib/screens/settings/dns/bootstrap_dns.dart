@@ -1,17 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+
 class BootstrapDnsScreen extends StatefulWidget {
-  const BootstrapDnsScreen({Key? key}) : super(key: key);
+  final ServersProvider serversProvider;
+
+  const BootstrapDnsScreen({
+    Key? key,
+    required this.serversProvider,
+  }) : super(key: key);
 
   @override
   State<BootstrapDnsScreen> createState() => _BootstrapDnsScreenState();
 }
 
 class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
-  List<TextEditingController> bootstrapControllers = [
-    TextEditingController()
-  ];
+  List<TextEditingController> bootstrapControllers = [];
+
+  @override
+  void initState() {
+    for (var item in widget.serversProvider.dnsInfo.data!.bootstrapDns) {
+      final controller = TextEditingController();
+      controller.text = item;
+      bootstrapControllers.add(controller);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

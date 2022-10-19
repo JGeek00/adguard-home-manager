@@ -461,6 +461,12 @@
     "overrideMinimumTtlDescription": "Amplía el corto tiempo de vida (segundos) de los valores recibidos del servidor DNS de subida al almacenar en caché las respuestas DNS.",
     "overrideMaximumTtl": "Anular TTL máximo",
     "overrideMaximumTtlDescription": "Establece un valor de tiempo de vida (segundos) máximo para las entradas en la caché DNS.",
-    "optimisticCaching": "Optimistic caching",
-    "optimisticCachingDescription": "Haz que AdGuard Home responda desde la caché incluso cuando las entradas estén expiradas y también intente actualizarlas."
+    "optimisticCaching": "Cacheado optimista",
+    "optimisticCachingDescription": "Haz que AdGuard Home responda desde la caché incluso cuando las entradas estén expiradas y también intente actualizarlas.",
+    "loadingDnsConfig": "Cargando configuración de DNS...",
+    "dnsConfigNotLoaded": "No se ha podido cargar la configuración de DNS.",
+    "blockingIpv4": "Bloqueo de IPv4",
+    "blockingIpv4Description": "Dirección IP devolverá una petición A bloqueada",
+    "blockingIpv6": "Bloqueo de IPv6",
+    "blockingIpv6Description": "Dirección IP devolverá una petición AAAA bloqueada"
 }

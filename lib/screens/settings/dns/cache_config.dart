@@ -3,8 +3,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+
 class CacheConfigDnsScreen extends StatefulWidget {
-  const CacheConfigDnsScreen({Key? key}) : super(key: key);
+  final ServersProvider serversProvider;
+
+  const CacheConfigDnsScreen({
+    Key? key,
+    required this.serversProvider
+  }) : super(key: key);
 
   @override
   State<CacheConfigDnsScreen> createState() => _CacheConfigDnsScreenState();
@@ -23,6 +30,15 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
   bool optimisticCache = false;
 
   @override
+  void initState() {
+    cacheSizeController.text = widget.serversProvider.dnsInfo.data!.cacheSize.toString();
+    overrideMinTtlController.text = widget.serversProvider.dnsInfo.data!.cacheTtlMin.toString();
+    overrideMaxTtlController.text = widget.serversProvider.dnsInfo.data!.cacheTtlMax.toString();
+    optimisticCache = widget.serversProvider.dnsInfo.data!.cacheOptimistic;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     Widget numericField({
@@ -35,7 +51,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: TextFormField(
-          controller: overrideMinTtlController,
+          controller: controller,
           onChanged: onChanged,
           decoration: InputDecoration(
             prefixIcon: const Icon(Icons.timer_rounded),

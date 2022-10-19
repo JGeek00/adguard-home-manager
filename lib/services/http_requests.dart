@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:adguard_home_manager/models/dhcp.dart';
+import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
@@ -1607,6 +1608,41 @@ Future clearLogs({
         'result': 'error',
         'log': AppLog(
           type: 'clear_query_logs', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future getDnsInfo({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/dns_info', 
+    method: 'get',
+    server: server, 
+    type: 'get_dns_info'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {
+        'result': 'success' ,
+        'data': DnsInfoData.fromJson(jsonDecode(result['body']))
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_dns_info', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),

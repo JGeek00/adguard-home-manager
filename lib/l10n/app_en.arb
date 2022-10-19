@@ -462,5 +462,11 @@
     "overrideMaximumTtl": "Override maximum TTL",
     "overrideMaximumTtlDescription": "Set a maximum time-to-live value (seconds) for entries in the DNS cache.",
     "optimisticCaching": "Optimistic caching",
-    "optimisticCachingDescription": "Make AdGuard Home respond from the cache even when the entries are expired and also try to refresh them."
+    "optimisticCachingDescription": "Make AdGuard Home respond from the cache even when the entries are expired and also try to refresh them.",
+    "loadingDnsConfig": "Loading DNS configuration...",
+    "dnsConfigNotLoaded": "DNS config could not be loaded.",
+    "blockingIpv4": "Blocking IPv4",
+    "blockingIpv4Description": "IP address to be returned for a blocked A request",
+    "blockingIpv6": "Blocking IPv6",
+    "blockingIpv6Description": "IP address to be returned for a blocked AAAA request"
 }
