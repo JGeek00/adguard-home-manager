@@ -29,12 +29,31 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
 
   bool optimisticCache = false;
 
+  bool validData = false;
+
+  void checkValidData() {
+    if (
+      cacheSizeController.text != '' &&
+      cacheSizeError == null &&
+      overrideMinTtlController.text != '' && 
+      overrideMinTtlError == null && 
+      overrideMaxTtlController.text != '' && 
+      overrideMaxTtlError == null
+    ) {
+      setState(() => validData = true);
+    }
+    else {
+      setState(() => validData = false);
+    }
+  }
+
   @override
   void initState() {
     cacheSizeController.text = widget.serversProvider.dnsInfo.data!.cacheSize.toString();
     overrideMinTtlController.text = widget.serversProvider.dnsInfo.data!.cacheTtlMin.toString();
     overrideMaxTtlController.text = widget.serversProvider.dnsInfo.data!.cacheTtlMax.toString();
     optimisticCache = widget.serversProvider.dnsInfo.data!.cacheOptimistic;
+    validData = true;
     super.initState();
   }
 
@@ -73,6 +92,16 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dnsCacheConfig),
+        actions: [
+          IconButton(
+            onPressed: validData == true
+              ? () => {}
+              : null, 
+            icon: const Icon(Icons.save_rounded),
+            tooltip: AppLocalizations.of(context)!.save,
+          ),
+          const SizedBox(width: 10)
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.only(top: 10),
@@ -89,6 +118,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
               else {
                 setState(() => cacheSizeError = AppLocalizations.of(context)!.valueNotNumber);
               }
+              checkValidData();
             }
           ),
           const SizedBox(height: 30),
@@ -104,6 +134,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
               else {
                 setState(() => overrideMinTtlError = AppLocalizations.of(context)!.valueNotNumber);
               }
+              checkValidData();
             }
           ),
           const SizedBox(height: 30),
@@ -119,6 +150,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
               else {
                 setState(() => overrideMaxTtlError = AppLocalizations.of(context)!.valueNotNumber);
               }
+              checkValidData();
             }
           ),
           const SizedBox(height: 10),

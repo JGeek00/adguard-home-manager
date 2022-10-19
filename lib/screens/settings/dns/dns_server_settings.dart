@@ -33,6 +33,52 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
   final TextEditingController ipv6controller = TextEditingController();
   String? ipv6error;
 
+  bool isDataValid = false;
+
+  void validateIpv4(String value) {
+    RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$');
+    if (ipAddress.hasMatch(value) == true) {
+      setState(() => ipv4error = null);
+    }
+    else {
+      setState(() => ipv4error = AppLocalizations.of(context)!.invalidIp);
+    }
+    validateData();
+  }
+
+  void validateIpv6(String value) {
+    RegExp ipAddress = RegExp(r'(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$)|(?:^(?:(?:[a-fA-F\d]{1,4}:){7}(?:[a-fA-F\d]{1,4}|:)|(?:[a-fA-F\d]{1,4}:){6}(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|:[a-fA-F\d]{1,4}|:)|(?:[a-fA-F\d]{1,4}:){5}(?::(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,2}|:)|(?:[a-fA-F\d]{1,4}:){4}(?:(?::[a-fA-F\d]{1,4}){0,1}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,3}|:)|(?:[a-fA-F\d]{1,4}:){3}(?:(?::[a-fA-F\d]{1,4}){0,2}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,4}|:)|(?:[a-fA-F\d]{1,4}:){2}(?:(?::[a-fA-F\d]{1,4}){0,3}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,5}|:)|(?:[a-fA-F\d]{1,4}:){1}(?:(?::[a-fA-F\d]{1,4}){0,4}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,6}|:)|(?::(?:(?::[a-fA-F\d]{1,4}){0,5}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,7}|:)))(?:%[0-9a-zA-Z]{1,})?$)');
+    if (ipAddress.hasMatch(value) == true) {
+      setState(() => ipv6error = null);
+    }
+    else {
+      setState(() => ipv6error = AppLocalizations.of(context)!.invalidIp);
+    }
+    validateData();
+  }
+
+  void validateData() {
+    if (
+      limitRequestsController.text != '' &&
+      limitRequestsError == null &&
+      (
+        blockingMode != 'custom_ip' ||
+        (
+          blockingMode == 'custom_ip' && 
+          ipv4controller.text != '' &&
+          ipv4error == null &&
+          ipv6controller.text != '' &&
+          ipv6error == null
+        )
+      ) == true
+    ) {
+      setState(() => isDataValid = true);
+    }
+    else {
+      setState(() => isDataValid = false);
+    }
+  }
+
   @override
   void initState() {
     limitRequestsController.text = widget.serversProvider.dnsInfo.data!.ratelimit.toString();
@@ -42,6 +88,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
     blockingMode = widget.serversProvider.dnsInfo.data!.blockingMode;
     ipv4controller.text = widget.serversProvider.dnsInfo.data!.blockingIpv4;
     ipv6controller.text = widget.serversProvider.dnsInfo.data!.blockingIpv6;
+    isDataValid = true;
     super.initState();
   }
 
@@ -56,11 +103,22 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
         ipv6error = null;
       }
       setState(() => blockingMode = mode);
+      validateData();
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dnsServerSettings),
+        actions: [
+          IconButton(
+            onPressed: isDataValid == true
+              ? () => {}
+              : null, 
+            icon: const Icon(Icons.save_rounded),
+            tooltip: AppLocalizations.of(context)!.save,
+          ),
+          const SizedBox(width: 10)
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.only(top: 10),
@@ -76,6 +134,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
                 else {
                   setState(() => limitRequestsError = AppLocalizations.of(context)!.valueNotNumber);
                 }
+                validateData();
               },
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.looks_one_rounded),
@@ -156,7 +215,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: TextFormField(
                 controller: ipv4controller,
-                // onChanged: onChanged,
+                onChanged: validateIpv4,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.link_rounded),
                   border: const OutlineInputBorder(
@@ -177,7 +236,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: TextFormField(
                 controller: ipv6controller,
-                // onChanged: onChanged,
+                onChanged: validateIpv6,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.link_rounded),
                   border: const OutlineInputBorder(

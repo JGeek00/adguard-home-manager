@@ -21,7 +21,21 @@ class UpstreamDnsScreen extends StatefulWidget {
 class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
   List<TextEditingController> upstreamControllers = [];
 
-  String upstreamMode = "load_balancing";
+  String upstreamMode = "";
+
+  bool validValues = false;
+
+  checkValidValues() {
+    if (
+      upstreamControllers.isNotEmpty &&
+      upstreamControllers.every((element) => element.text != '')
+    ) {
+      setState(() => validValues = true);
+    }
+    else {
+      setState(() => validValues = false);
+    }
+  }
 
   @override
   void initState() {
@@ -31,6 +45,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
       upstreamControllers.add(controller);
     }
     upstreamMode = widget.serversProvider.dnsInfo.data!.upstreamMode;
+    validValues = true;
     super.initState();
   }
 
@@ -39,6 +54,16 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.upstreamDns),
+        actions: [
+          IconButton(
+            onPressed: validValues == true
+              ? () => {}
+              : null, 
+            icon: const Icon(Icons.save_rounded),
+            tooltip: AppLocalizations.of(context)!.save,
+          ),
+          const SizedBox(width: 10)
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.only(top: 10),
@@ -71,7 +96,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                   width: MediaQuery.of(context).size.width-90,
                   child: TextFormField(
                     controller: c,
-                    // onChanged: (_) => checkValidValues(),
+                    onChanged: (_) => checkValidValues(),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.dns_rounded),
                       border: const OutlineInputBorder(
@@ -84,7 +109,10 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => setState(() => upstreamControllers = upstreamControllers.where((con) => con != c).toList()), 
+                  onPressed: () {
+                    setState(() => upstreamControllers = upstreamControllers.where((con) => con != c).toList());
+                    checkValidValues();
+                  }, 
                   icon: const Icon(Icons.remove_circle_outline)
                 )
               ],
@@ -95,7 +123,10 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton.icon(
-                onPressed: () => setState(() => upstreamControllers.add(TextEditingController())), 
+                onPressed: () {
+                  setState(() => upstreamControllers.add(TextEditingController()));
+                  checkValidValues();
+                }, 
                 icon: const Icon(Icons.add), 
                 label: Text(AppLocalizations.of(context)!.addItem)
               ),

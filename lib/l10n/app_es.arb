@@ -468,5 +468,6 @@
     "blockingIpv4": "Bloqueo de IPv4",
     "blockingIpv4Description": "Dirección IP devolverá una petición A bloqueada",
     "blockingIpv6": "Bloqueo de IPv6",
-    "blockingIpv6Description": "Dirección IP devolverá una petición AAAA bloqueada"
+    "blockingIpv6Description": "Dirección IP devolverá una petición AAAA bloqueada",
+    "invalidIp": "Dirección IP no válida"
 }

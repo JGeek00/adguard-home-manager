@@ -20,11 +20,45 @@ class PrivateReverseDnsServersScreen extends StatefulWidget {
 class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServersScreen> {
   List<String> defaultReverseResolvers = [];
   bool editReverseResolvers = false;
-  List<TextEditingController> reverseResolversControllers = [
-    TextEditingController()
+  List<Map<String, dynamic>> reverseResolversControllers = [
+    {
+      'controller': TextEditingController(),
+      'error': null
+    }
   ];
   bool usePrivateReverseDnsResolvers = false;
   bool enableReverseResolve = false;
+
+  bool validValues = false;
+
+  void validateAddress(Map<String, dynamic> item ,String value) {
+    RegExp ipAddress = RegExp(r'(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$)|(?:^(?:(?:[a-fA-F\d]{1,4}:){7}(?:[a-fA-F\d]{1,4}|:)|(?:[a-fA-F\d]{1,4}:){6}(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|:[a-fA-F\d]{1,4}|:)|(?:[a-fA-F\d]{1,4}:){5}(?::(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,2}|:)|(?:[a-fA-F\d]{1,4}:){4}(?:(?::[a-fA-F\d]{1,4}){0,1}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,3}|:)|(?:[a-fA-F\d]{1,4}:){3}(?:(?::[a-fA-F\d]{1,4}){0,2}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,4}|:)|(?:[a-fA-F\d]{1,4}:){2}(?:(?::[a-fA-F\d]{1,4}){0,3}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,5}|:)|(?:[a-fA-F\d]{1,4}:){1}(?:(?::[a-fA-F\d]{1,4}){0,4}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,6}|:)|(?::(?:(?::[a-fA-F\d]{1,4}){0,5}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-fA-F\d]{1,4}){1,7}|:)))(?:%[0-9a-zA-Z]{1,})?$)');
+    RegExp domain = RegExp(r'^((http|https|tls|udp|tcp|quic|sdns):\/\/)?([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$');
+    if (ipAddress.hasMatch(value) == true || domain.hasMatch(value) == true) {
+      setState(() => item['error'] = null);
+    }
+    else {
+      setState(() => item['error'] = AppLocalizations.of(context)!.invalidIpDomain);
+    }
+
+    checkDataValid();
+  }
+
+  void checkDataValid() {
+    if (
+      (
+        editReverseResolvers == true &&
+        reverseResolversControllers.isNotEmpty &&
+        reverseResolversControllers.every((element) => element['controller'].text != '') &&
+        reverseResolversControllers.every((element) => element['error'] == null)
+      ) == true
+    ) {
+      setState(() => validValues = true);
+    }
+    else {
+      setState(() => validValues = false);
+    }
+  }
 
   @override
   void initState() {
@@ -34,13 +68,17 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
     for (var item in widget.serversProvider.dnsInfo.data!.localPtrUpstreams) {
       final controller = TextEditingController();
       controller.text = item;
-      reverseResolversControllers.add(controller);
+      reverseResolversControllers.add({
+        'controller': controller,
+        'error': null
+      });
     }
     if (widget.serversProvider.dnsInfo.data!.localPtrUpstreams.isNotEmpty) {
       editReverseResolvers = true;
     }
     usePrivateReverseDnsResolvers = widget.serversProvider.dnsInfo.data!.usePrivatePtrResolvers;
     enableReverseResolve = widget.serversProvider.dnsInfo.data!.resolveClients;
+    validValues = true;
     super.initState();
   }
 
@@ -49,6 +87,16 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.privateReverseDnsServers),
+        actions: [
+          IconButton(
+            onPressed: validValues == true
+              ? () => {}
+              : null, 
+            icon: const Icon(Icons.save_rounded),
+            tooltip: AppLocalizations.of(context)!.save,
+          ),
+          const SizedBox(width: 10)
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.only(top: 10),
@@ -90,7 +138,10 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: () => setState(() => editReverseResolvers = true), 
+                    onPressed: () {
+                      setState(() => editReverseResolvers = true);
+                      checkDataValid();
+                    }, 
                     icon: const Icon(Icons.edit), 
                     label: Text(AppLocalizations.of(context)!.edit)
                   ),
@@ -110,8 +161,8 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
                   SizedBox(
                     width: MediaQuery.of(context).size.width-90,
                     child: TextFormField(
-                      controller: c,
-                      // onChanged: (_) => checkValidValues(),
+                      controller: c['controller'],
+                      onChanged: (value) => validateAddress(c, value),
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.dns_rounded),
                         border: const OutlineInputBorder(
@@ -119,12 +170,16 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
                             Radius.circular(10)
                           )
                         ),
+                        errorText: c['error'],
                         labelText: AppLocalizations.of(context)!.serverAddress,
                       )
                     ),
                   ),
                   IconButton(
-                    onPressed: () => setState(() => reverseResolversControllers = reverseResolversControllers.where((con) => con != c).toList()), 
+                    onPressed: () {
+                      setState(() => reverseResolversControllers = reverseResolversControllers.where((con) => con != c).toList());
+                      checkDataValid();
+                    }, 
                     icon: const Icon(Icons.remove_circle_outline)
                   )
                 ],
@@ -152,7 +207,13 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: () => setState(() => reverseResolversControllers.add(TextEditingController())), 
+                    onPressed: () {
+                      setState(() => reverseResolversControllers.add({
+                        'controller': TextEditingController(),
+                        'error': null
+                      }));
+                      checkDataValid();
+                    }, 
                     icon: const Icon(Icons.add), 
                     label: Text(AppLocalizations.of(context)!.addItem)
                   ),

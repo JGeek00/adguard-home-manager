@@ -468,5 +468,6 @@
     "blockingIpv4": "Blocking IPv4",
     "blockingIpv4Description": "IP address to be returned for a blocked A request",
     "blockingIpv6": "Blocking IPv6",
-    "blockingIpv6Description": "IP address to be returned for a blocked AAAA request"
+    "blockingIpv6Description": "IP address to be returned for a blocked AAAA request",
+    "invalidIp": "Invalid IP address"
 }
