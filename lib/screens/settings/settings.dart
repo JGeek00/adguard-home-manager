@@ -10,6 +10,7 @@ import 'package:adguard_home_manager/screens/settings/server_info/server_info.da
 import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
+import 'package:adguard_home_manager/screens/settings/dns/dns.dart';
 import 'package:adguard_home_manager/screens/settings/dns_rewrites/dns_rewrites.dart';
 import 'package:adguard_home_manager/screens/settings/appbar.dart';
 import 'package:adguard_home_manager/screens/servers/servers.dart';
@@ -109,6 +110,18 @@ class Settings extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const Dhcp()
+                  )
+                )
+              },
+            ),
+            CustomListTile(
+              leadingIcon: Icons.dns_rounded,
+              label: AppLocalizations.of(context)!.dnsSettings,
+              description: AppLocalizations.of(context)!.dnsSettingsDescription,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const DnsSettings()
                   )
                 )
               },

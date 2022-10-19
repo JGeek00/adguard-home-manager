@@ -411,5 +411,18 @@
     "logsNotCleared": "Logs could not be cleared",
     "runningHomeAssistant": "Running on Home Assistant",
     "serverError": "Server error",
-    "noItems": "No items to show here"
+    "noItems": "No items to show here",
+    "dnsSettings": "DNS settings",
+    "dnsSettingsDescription": "Configure connection with DNS servers",
+    "upstreamDns": "Upstream DNS servers",
+    "bootstrapDns": "Bootstrap DNS servers",
+    "noUpstreamDns": "No upstream DNS servers added.",
+    "dnsMode": "DNS mode",
+    "noDnsMode": "No DNS mode selected",
+    "loadBalancing": "Load balancing",
+    "parallelRequests": "Parallel requests",
+    "fastestIpAddress": "Fastest IP address",
+    "loadBalancingDescription": "Query one upstream server at a time. AdGuard Home uses its weighted random algorithm to pick the server so that the fastest server is used more often.",
+    "parallelRequestsDescription": "Use parallel queries to speed up resolving by querying all upstream servers simultaneously.",
+    "fastestIpAddressDescription": "Query all DNS servers and return the fastest IP address among all responses. This slows down DNS queries as AdGuard Home has to wait for responses from all DNS servers, but improves the overall connectivity."
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomRadio extends StatelessWidget {
-  final int value;
-  final int groupValue;
-  final Function(int)? onChange;
+  final dynamic value;
+  final dynamic groupValue;
+  final Function(dynamic)? onChange;
   final Color backgroundColor;
 
   const CustomRadio({
@@ -20,8 +20,8 @@ class CustomRadio extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Container(
-          width: 20,
-          height: 20,
+          width: 18,
+          height: 18,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(40),
             color: value == groupValue 
@@ -32,16 +32,18 @@ class CustomRadio extends StatelessWidget {
           ),
         ),
         Container(
-          width: 16,
-          height: 16,
+          width: 14,
+          height: 14,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(35),
             color: backgroundColor
           ),
         ),
-        Container(
-          width: 12,
-          height: 12,
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          width: 9.5,
+          height: 9.5,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             color: value == groupValue 

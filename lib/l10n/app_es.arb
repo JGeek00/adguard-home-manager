@@ -411,5 +411,18 @@
     "logsNotCleared": "No se han podido borrar los registros",
     "runningHomeAssistant": "Ejecutando en Home Assistant",
     "serverError": "Error del servidor",
-    "noItems": "No hay elementos para mostrar aquí"
+    "noItems": "No hay elementos para mostrar aquí",
+    "dnsSettings": "Configuración de DNS",
+    "dnsSettingsDescription": "Configurar conexión con servidores DNS",
+    "upstreamDns": "Servidores DNS de subida",
+    "bootstrapDns": "Servidores DNS de arranque",
+    "noUpstreamDns": "No hay servidores DNS de subida añadidos.",
+    "dnsMode": "Modo DNS",
+    "noDnsMode": "No se ha seleccionado modo DNS",
+    "loadBalancing": "Balanceo de carga",
+    "parallelRequests": "Peticiones paralelas",
+    "fastestIpAddress": "Dirección IP más rápida",
+    "loadBalancingDescription": "Consulta un servidor DNS de subida a la vez. AdGuard Home utiliza su algoritmo aleatorio ponderado para elegir el servidor más rápido y sea utilizado con más frecuencia.",
+    "parallelRequestsDescription": "Usar consultas paralelas para acelerar la resolución al consultar simultáneamente a todos los servidores DNS de subida.",
+    "fastestIpAddressDescription": "Consulta todos los servidores DNS y devuelve la dirección IP más rápida de todas las respuestas. Esto ralentiza las consultas DNS ya que AdGuard Home tiene que esperar las respuestas de todos los servidores DNS, pero mejora la conectividad general."
 }
