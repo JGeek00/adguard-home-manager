@@ -424,5 +424,16 @@
     "fastestIpAddress": "Fastest IP address",
     "loadBalancingDescription": "Query one upstream server at a time. AdGuard Home uses its weighted random algorithm to pick the server so that the fastest server is used more often.",
     "parallelRequestsDescription": "Use parallel queries to speed up resolving by querying all upstream servers simultaneously.",
-    "fastestIpAddressDescription": "Query all DNS servers and return the fastest IP address among all responses. This slows down DNS queries as AdGuard Home has to wait for responses from all DNS servers, but improves the overall connectivity."
+    "fastestIpAddressDescription": "Query all DNS servers and return the fastest IP address among all responses. This slows down DNS queries as AdGuard Home has to wait for responses from all DNS servers, but improves the overall connectivity.",
+    "noBootstrapDns": "No bootstrap DNS servers added.",
+    "bootstrapDnsServersInfo": "Bootstrap DNS servers are used to resolve IP addresses of the DoH/DoT resolvers you specify as upstreams.",
+    "privateReverseDnsServers": "Private reverse DNS servers",
+    "privateReverseDnsServersDescription": "The DNS servers that AdGuard Home uses for local PTR queries. These servers are used to resolve PTR requests for addresses in private IP ranges, for example \"192.168.12.34\", using reverse DNS. If not set, AdGuard Home uses the addresses of the default DNS resolvers of your OS except for the addresses of AdGuard Home itself.",
+    "reverseDnsDefault": "By default, AdGuard Home uses the following reverse DNS resolvers",
+    "addItem": "Add item",
+    "noServerAddressesAdded": "No server addresses added.",
+    "usePrivateReverseDnsResolvers": "Use private reverse DNS resolvers",
+    "usePrivateReverseDnsResolversDescription": "Perform reverse DNS lookups for locally served addresses using these upstream servers. If disabled, AdGuard Home responds with NXDOMAIN to all such PTR requests except for clients known from DHCP, /etc/hosts, and so on.",
+    "enableReverseResolving": "Enable reverse resolving of clients' IP addresses",
+    "enableReverseResolvingDescription": "Reversely resolve clients' IP addresses into their hostnames by sending PTR queries to corresponding resolvers (private DNS servers for local clients, upstream servers for clients with public IP addresses)."
 }

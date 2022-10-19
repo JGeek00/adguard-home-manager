@@ -424,5 +424,16 @@
     "fastestIpAddress": "Dirección IP más rápida",
     "loadBalancingDescription": "Consulta un servidor DNS de subida a la vez. AdGuard Home utiliza su algoritmo aleatorio ponderado para elegir el servidor más rápido y sea utilizado con más frecuencia.",
     "parallelRequestsDescription": "Usar consultas paralelas para acelerar la resolución al consultar simultáneamente a todos los servidores DNS de subida.",
-    "fastestIpAddressDescription": "Consulta todos los servidores DNS y devuelve la dirección IP más rápida de todas las respuestas. Esto ralentiza las consultas DNS ya que AdGuard Home tiene que esperar las respuestas de todos los servidores DNS, pero mejora la conectividad general."
+    "fastestIpAddressDescription": "Consulta todos los servidores DNS y devuelve la dirección IP más rápida de todas las respuestas. Esto ralentiza las consultas DNS ya que AdGuard Home tiene que esperar las respuestas de todos los servidores DNS, pero mejora la conectividad general.",
+    "noBootstrapDns": "No hay servidores DNS de arranque añadidos.",
+    "bootstrapDnsServersInfo": "Los servidores DNS de arranque se utilizan para resolver las direcciones IP de los resolutores DoH/DoT que especifiques como DNS de subida.",
+    "privateReverseDnsServers": "Servidores DNS privados e inversos",
+    "privateReverseDnsServersDescription": "Los servidores DNS que AdGuard Home utiliza para las consultas PTR locales. Estos servidores se utilizan para resolver las peticiones PTR de direcciones en rangos de IP privadas, por ejemplo \"192.168.12.34\", utilizando DNS inverso. Si no está establecido, AdGuard Home utilizará los resolutores DNS predeterminados de tu sistema operativo, excepto las direcciones del propio AdGuard Home.",
+    "reverseDnsDefault": "Por defecto, AdGuard Home utiliza los siguientes resolutores DNS inversos",
+    "addItem": "Añadir elemento",
+    "noServerAddressesAdded": "No hay direcciones de servidores añadidas.",
+    "usePrivateReverseDnsResolvers": "Usar resolutores DNS inversos y privados",
+    "usePrivateReverseDnsResolversDescription": "Realiza búsquedas DNS inversas para direcciones servidas localmente utilizando estos servidores DNS de subida. Si está deshabilitado, AdGuard Home responderá con NXDOMAIN a todas las peticiones PTR de este tipo, excepto para los clientes conocidos por DHCP, /etc/hosts, etc.",
+    "enableReverseResolving": "Habilitar la resolución inversa de las direcciones IP de clientes",
+    "enableReverseResolvingDescription": "Resuelve de manera inversa las direcciones IP de los clientes a sus nombres de hosts enviando consultas PTR a los resolutores correspondientes (servidores DNS privados para clientes locales, servidores DNS de subida para clientes con direcciones IP públicas)."
 }
