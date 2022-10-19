@@ -61,6 +61,7 @@ class ClientsFab extends StatelessWidget {
     }
 
     void openAddClient() {
+      ScaffoldMessenger.of(context).clearSnackBars();
       showFlexibleBottomSheet(
         minHeight: 0.6,
         initHeight: 0.6,

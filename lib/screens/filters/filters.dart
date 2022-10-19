@@ -240,6 +240,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     }
 
     void openBlockedServicesModal() {
+      ScaffoldMessenger.of(context).clearSnackBars();
       Future.delayed(const Duration(seconds: 0), () {
         showFlexibleBottomSheet(
           minHeight: 0.6,

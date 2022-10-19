@@ -64,6 +64,7 @@ class FiltersFab extends StatelessWidget {
     }
 
     void openAddCustomRule() {
+      ScaffoldMessenger.of(context).clearSnackBars();
       showFlexibleBottomSheet(
         minHeight: 0.7,
         initHeight: 0.7,

@@ -213,6 +213,7 @@ class _FiltersListState extends State<FiltersList> {
     }
 
     void openDetailsModal(Filter filter) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       showFlexibleBottomSheet(
         minHeight: 0.6,
         initHeight: 0.6,

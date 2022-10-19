@@ -323,6 +323,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
     }
 
     void selectInterface() {
+      ScaffoldMessenger.of(context).clearSnackBars();
       Future.delayed(const Duration(seconds: 0), () {
         showFlexibleBottomSheet(
           minHeight: 0.6,

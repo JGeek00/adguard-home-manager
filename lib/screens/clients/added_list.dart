@@ -141,6 +141,7 @@ class _AddedListState extends State<AddedList> {
     }
 
     void openClientModal(Client client) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       showFlexibleBottomSheet(
         minHeight: 0.6,
         initHeight: 0.6,
