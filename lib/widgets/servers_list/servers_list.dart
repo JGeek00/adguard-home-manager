@@ -176,7 +176,6 @@ class ServersList extends StatelessWidget {
               children: [
                 Text(
                   "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
-                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500
