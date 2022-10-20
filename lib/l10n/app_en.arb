@@ -473,5 +473,10 @@
     "dnsConfigSaved": "DNS server configuration saved successfully",
     "dnsConfigNotSaved": "The DNS server configuration could not be saved",
     "savingConfig": "Saving configuration...",
-    "someValueNotValid": "Some value is not valid"
+    "someValueNotValid": "Some value is not valid",
+    "upstreamDnsDescription": "Configure upstream servers and DNS mode",
+    "bootstrapDnsDescription": "Configure the bootstrap DNS servers",
+    "privateReverseDnsDescription": "Configure custom DNS resolvers and enable private reverse DNS resolving",
+    "dnsServerSettingsDescription": "Configure a rate limit, the blocking mode and more",
+    "dnsCacheConfigDescription": "Configure how the server should manage the DNS cache"
 }

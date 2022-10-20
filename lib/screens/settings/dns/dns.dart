@@ -7,6 +7,7 @@ import 'package:adguard_home_manager/screens/settings/dns/dns_server_settings.da
 import 'package:adguard_home_manager/screens/settings/dns/bootstrap_dns.dart';
 import 'package:adguard_home_manager/screens/settings/dns/private_reverse_servers.dart';
 import 'package:adguard_home_manager/screens/settings/dns/upstream_dns.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -95,75 +96,55 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
         case 1:
           return ListView(
             children: [
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.upstreamDns,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
+              CustomListTile(
+                title: AppLocalizations.of(context)!.upstreamDns,
+                subtitle: AppLocalizations.of(context)!.upstreamDnsDescription,
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                   builder: (context) => UpstreamDnsScreen(
                     serversProvider: serversProvider
                   )
                 )),
+                icon: Icons.upload_rounded,
               ),
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.bootstrapDns,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
+              CustomListTile(
+                title: AppLocalizations.of(context)!.bootstrapDns,
+                subtitle: AppLocalizations.of(context)!.bootstrapDnsDescription,
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                   builder: (context) => BootstrapDnsScreen(
                     serversProvider: serversProvider
                   )
                 )),
+                icon: Icons.dns_rounded,
               ),
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.privateReverseDnsServers,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
+              CustomListTile(
+                title: AppLocalizations.of(context)!.privateReverseDnsServers,
+                subtitle: AppLocalizations.of(context)!.privateReverseDnsDescription,
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                   builder: (context) => PrivateReverseDnsServersScreen(
                     serversProvider: serversProvider
                   )
                 )),
+                icon: Icons.person_rounded,
               ),
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.dnsServerSettings,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
+              CustomListTile(
+                title: AppLocalizations.of(context)!.dnsServerSettings,
+                subtitle: AppLocalizations.of(context)!.dnsServerSettingsDescription,
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                   builder: (context) => DnsServerSettingsScreen(
                     serversProvider: serversProvider
                   )
                 )),
+                icon: Icons.settings,
               ),
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.dnsCacheConfig,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
+              CustomListTile(
+                title: AppLocalizations.of(context)!.dnsCacheConfig,
+                subtitle: AppLocalizations.of(context)!.dnsCacheConfigDescription,
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                   builder: (context) => CacheConfigDnsScreen(
                     serversProvider: serversProvider
                   )
                 )),
+                icon: Icons.storage_rounded,
               ),
             ],
           );
