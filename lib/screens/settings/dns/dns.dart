@@ -43,8 +43,8 @@ class DnsSettingsWidget extends StatefulWidget {
 
 class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
 
-  void fetchData() async {
-    widget.serversProvider.setDnsInfoLoadStatus(0, false);
+  void fetchData({bool? showRefreshIndicator}) async {
+    widget.serversProvider.setDnsInfoLoadStatus(0, showRefreshIndicator ?? false);
 
     final result = await getDnsInfo(server: widget.serversProvider.selectedServer!);
 
@@ -182,6 +182,14 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
     return Scaffold(
       appBar: AppBar(
         title:  Text(AppLocalizations.of(context)!.dnsSettings),
+        actions: [
+          IconButton(
+            onPressed: () => fetchData(showRefreshIndicator: true), 
+            icon: const Icon(Icons.refresh_rounded),
+            tooltip: AppLocalizations.of(context)!.refresh,
+          ),
+          const SizedBox(width: 10)
+        ],
       ),
       body: generateBody(),
     );
