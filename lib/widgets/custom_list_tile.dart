@@ -35,7 +35,6 @@ class CustomListTile extends StatelessWidget {
                     if (icon != null) ...[
                       Icon(
                         icon,
-                        color: Theme.of(context).listTileTheme.iconColor,
                       ),
                       const SizedBox(width: 20),
                     ],

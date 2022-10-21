@@ -307,9 +307,8 @@ class _ClientModalState extends State<ClientModal> {
                         ),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.label_rounded,
-                              color: Theme.of(context).listTileTheme.iconColor,
                             ),
                             const SizedBox(width: 20),
                             Column(
@@ -530,7 +529,7 @@ class _ClientModalState extends State<ClientModal> {
                             Icon(
                               Icons.public,
                               color: useGlobalSettingsServices == false
-                                ? Theme.of(context).listTileTheme.iconColor
+                                ? null
                                 : Colors.grey,
                             ),
                             const SizedBox(width: 20),

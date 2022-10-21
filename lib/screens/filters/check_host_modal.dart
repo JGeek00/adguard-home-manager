@@ -161,32 +161,28 @@ class _CheckHostModalState extends State<CheckHostModal> {
                         ),
                       ),
                     ),
-                    if (resultWidget != null) Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 20,
-                          left: 20,
-                          right: 20
-                        ),
-                        child: resultWidget,
+                    if (resultWidget != null) Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        left: 20,
+                        right: 20
                       ),
+                      child: resultWidget,
                     ),
-                    if (resultWidget == null) Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 20,
-                          left: 20,
-                          right: 20
-                        ),
-                        child: Center(
-                          child: Text(
-                            AppLocalizations.of(context)!.insertDomain,
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
+                    if (resultWidget == null) Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        left: 20,
+                        right: 20
+                      ),
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.insertDomain,
+                          style: const TextStyle(
+                            fontSize: 16,
                           ),
                         ),
-                      )
+                      ),
                     ),
                   ],
                 ),

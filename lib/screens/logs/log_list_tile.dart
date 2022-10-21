@@ -30,7 +30,6 @@ class LogListTile extends StatelessWidget {
               Icon(
                 icon,
                 size: 24,
-                color: Theme.of(context).listTileTheme.iconColor,
               ),
               const SizedBox(width: 20),
               Column(

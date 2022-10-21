@@ -218,7 +218,7 @@ class _FiltersListState extends State<FiltersList> {
         : 0.95;
       
       ScaffoldMessenger.of(context).clearSnackBars();
-      print(height);
+
       showFlexibleBottomSheet(
         minHeight: 0.6,
         initHeight: 0.6,

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -170,7 +171,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 380,
+        height: 400,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -182,7 +183,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
           children: [
             Expanded(
               child: ListView(
-                physics: 380 < MediaQuery.of(context).size.height
+                physics: 400 < MediaQuery.of(context).size.height
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
@@ -278,44 +279,11 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                   //     ),
                   //   ),
                   // ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: openSelectFilterStatus,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.shield_rounded,
-                              size: 24,
-                              color: Theme.of(context).listTileTheme.iconColor,
-                            ),
-                            const SizedBox(width: 20),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.responseStatus,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  "${translatedString[logsProvider.selectedResultStatus]}",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Theme.of(context).listTileTheme.iconColor,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                  CustomListTile(
+                    title: AppLocalizations.of(context)!.responseStatus,
+                    subtitle: "${translatedString[logsProvider.selectedResultStatus]}",
+                    onTap: openSelectFilterStatus,
+                    icon: Icons.shield_rounded,
                   ),
                 ],
               ),
