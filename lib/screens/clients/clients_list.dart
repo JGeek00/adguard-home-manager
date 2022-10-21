@@ -51,7 +51,11 @@ class ClientsList extends StatelessWidget {
               title: Text(
                 data[index].name != '' 
                   ? data[index].name!
-                  : data[index].ip
+                  : data[index].ip,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal
+                ),
               ),
               subtitle: data[index].name != ''
                 ? Text(

@@ -12,6 +12,7 @@ import 'package:adguard_home_manager/screens/filters/fab.dart';
 import 'package:adguard_home_manager/screens/filters/list_details_modal.dart';
 import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
 import 'package:adguard_home_manager/screens/filters/delete_list_modal.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -288,53 +289,18 @@ class _FiltersListState extends State<FiltersList> {
             if (widget.data.isNotEmpty) ListView.builder(
               padding: const EdgeInsets.only(top: 0),
               itemCount: widget.data.length,
-              itemBuilder: (context, index) => Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => openDetailsModal(widget.data[index]),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width-130,
-                              child: Text(
-                                widget.data[index].name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              "${intFormat(widget.data[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).listTileTheme.iconColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          widget.data[index].enabled == true
-                            ? AppLocalizations.of(context)!.enabled
-                            : AppLocalizations.of(context)!.disabled,
-                          style: TextStyle(
-                            color: widget.data[index].enabled == true
-                              ? Colors.green
-                              : Colors.red,
-                            fontWeight: FontWeight.w500
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+              itemBuilder: (context, index) => CustomListTile(
+                title: widget.data[index].name,
+                subtitle: "${intFormat(widget.data[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
+                trailing: Icon(
+                  widget.data[index].enabled == true
+                    ? Icons.check_circle_rounded
+                    : Icons.cancel,
+                  color: widget.data[index].enabled == true
+                    ? Colors.green
+                    : Colors.red,
                 ),
+                onTap: () => openDetailsModal(widget.data[index]),
               ),
             ),
             if (widget.data.isEmpty) if (widget.data.isEmpty) SizedBox(

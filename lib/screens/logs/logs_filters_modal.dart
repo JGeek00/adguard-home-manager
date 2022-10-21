@@ -57,12 +57,12 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     final Map<String, String> translatedString = {
       "all": AppLocalizations.of(context)!.all, 
       "filtered": AppLocalizations.of(context)!.filtered, 
-      "processed": AppLocalizations.of(context)!.processed, 
-      "whitelisted": AppLocalizations.of(context)!.processedWhitelist, 
+      "processed": AppLocalizations.of(context)!.processedRow, 
+      "whitelisted": AppLocalizations.of(context)!.processedWhitelistRow, 
       "blocked": AppLocalizations.of(context)!.blocked, 
-      "blocked_safebrowsing": AppLocalizations.of(context)!.blockedSafeBrowsing, 
-      "blocked_parental": AppLocalizations.of(context)!.blockedParental, 
-      "safe_search": AppLocalizations.of(context)!.safeSearch, 
+      "blocked_safebrowsing": AppLocalizations.of(context)!.blockedSafeBrowsingRow, 
+      "blocked_parental": AppLocalizations.of(context)!.blockedParentalRow, 
+      "safe_search": AppLocalizations.of(context)!.blockedSafeSearchRow, 
     };
 
     void selectTime() async {

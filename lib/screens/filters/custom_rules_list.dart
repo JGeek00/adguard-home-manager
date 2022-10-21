@@ -105,6 +105,16 @@ class _CustomRulesListState extends State<CustomRulesList> {
       );
     }
 
+    bool checkIfComment(String value) {
+      final regex = RegExp(r'^(!|#).*$');
+      if (regex.hasMatch(value)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
     switch (widget.loadStatus) {
       case 0:
         return SizedBox(
@@ -134,7 +144,17 @@ class _CustomRulesListState extends State<CustomRulesList> {
               padding: const EdgeInsets.only(top: 0),
               itemCount: widget.data.length,
               itemBuilder: (context, index) => ListTile(
-                title: Text(widget.data[index]),
+                title: Text(
+                  widget.data[index],
+                  style: TextStyle(
+                    color: checkIfComment(widget.data[index]) == true
+                      ? Theme.of(context).brightness == Brightness.light
+                        ? const Color.fromRGBO(100, 100, 100, 1)
+                        : const Color.fromRGBO(200, 200, 200, 1)
+                      : null,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
                 trailing: IconButton(
                   onPressed: () => openRemoveCustomRuleModal(widget.data[index]),
                   icon: const Icon(Icons.delete)

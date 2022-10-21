@@ -22,7 +22,7 @@ class LogDetailsModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget getResult() {
-      final filter = getFilteredStatus(context, log.reason);
+      final filter = getFilteredStatus(context, log.reason, true);
       return Text(
         filter['label'],
         style: TextStyle(
@@ -189,11 +189,11 @@ class LogDetailsModal extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () {
-                    blockUnblock(log, getFilteredStatus(context, log.reason)['filtered'] == true ? 'unblock' : 'block');
+                    blockUnblock(log, getFilteredStatus(context, log.reason, true)['filtered'] == true ? 'unblock' : 'block');
                     Navigator.pop(context);
                   },
                   child: Text(
-                    getFilteredStatus(context, log.reason)['filtered'] == true
+                    getFilteredStatus(context, log.reason, true)['filtered'] == true
                       ? AppLocalizations.of(context)!.unblockDomain
                       : AppLocalizations.of(context)!.blockDomain
                     )

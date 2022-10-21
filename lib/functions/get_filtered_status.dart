@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
-Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
+Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, bool isRow) {
   switch (filterKey) {
     case 'NotFilteredNotFound':
       return {
         'filtered': false,
-        'label': AppLocalizations.of(context)!.processed,
+        'label': isRow == true
+          ? AppLocalizations.of(context)!.processedRow
+          : AppLocalizations.of(context)!.processed,
         'color': Colors.green,
         'icon': Icons.verified_user_rounded,
       };
@@ -15,7 +17,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
     case 'NotFilteredWhiteList':
       return {
         'filtered': false,
-        'label': AppLocalizations.of(context)!.processedWhitelist,
+        'label': isRow == true
+          ? AppLocalizations.of(context)!.processedWhitelistRow
+          : AppLocalizations.of(context)!.processedWhitelist,
         'color': Colors.green,
         'icon': Icons.verified_user_rounded,
       };
@@ -23,7 +27,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
     case 'NotFilteredError':
       return {
         'filtered': false,
-        'label': AppLocalizations.of(context)!.processedError,
+        'label': isRow == true 
+          ? AppLocalizations.of(context)!.processedErrorRow
+          : AppLocalizations.of(context)!.processedError,
         'color': Colors.green,
         'icon': Icons.verified_user_rounded,
       };
@@ -31,7 +37,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
     case 'FilteredBlackList':
       return {
         'filtered': true,
-        'label': AppLocalizations.of(context)!.blockedBlacklist,
+        'label': isRow == true
+          ? AppLocalizations.of(context)!.blockedBlacklistRow
+          : AppLocalizations.of(context)!.blockedBlacklist,
         'color': Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
@@ -39,7 +47,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
     case 'FilteredSafeBrowsing':
       return {
         'filtered': true,
-        'label': AppLocalizations.of(context)!.blockedSafeBrowsing,
+        'label': isRow == true
+          ? AppLocalizations.of(context)!.blockedSafeBrowsingRow
+          : AppLocalizations.of(context)!.blockedSafeBrowsing,
         'color': Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
@@ -47,7 +57,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
     case 'FilteredParental':
       return {
         'filtered': true,
-        'label': AppLocalizations.of(context)!.blockedParental,
+        'label': isRow == true
+          ? AppLocalizations.of(context)!.blockedParentalRow
+          : AppLocalizations.of(context)!.blockedParental,
         'color': Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
@@ -55,7 +67,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
     case 'FilteredInvalid':
       return {
         'filtered': true,
-        'label': AppLocalizations.of(context)!.blockedInvalid,
+        'label': isRow == true
+          ? AppLocalizations.of(context)!.blockedInvalidRow
+          : AppLocalizations.of(context)!.blockedInvalid,
         'color': Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
@@ -63,7 +77,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
     case 'FilteredSafeSearch':
       return {
         'filtered': true,
-        'label': AppLocalizations.of(context)!.blockedSafeSearch,
+        'label': isRow == true 
+          ? AppLocalizations.of(context)!.blockedSafeSearchRow
+          : AppLocalizations.of(context)!.blockedSafeSearch,
         'color': Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
@@ -71,7 +87,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey) {
     case 'FilteredBlockedService':
       return {
         'filtered': true,
-        'label': AppLocalizations.of(context)!.blockedService,
+        'label': isRow == true
+          ? AppLocalizations.of(context)!.blockedServiceRow
+          : AppLocalizations.of(context)!.blockedService,
         'color': Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };

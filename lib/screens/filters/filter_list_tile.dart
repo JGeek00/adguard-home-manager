@@ -34,8 +34,7 @@ class FilterListTile extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 5),

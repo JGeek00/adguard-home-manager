@@ -27,6 +27,7 @@ class CustomListTile extends StatelessWidget {
         child: Padding(
           padding: padding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 child: Row(

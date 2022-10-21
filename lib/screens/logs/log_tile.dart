@@ -40,28 +40,30 @@ class LogTile extends StatelessWidget {
       required Color color, 
       required String text
     }) {
-      return Row(
-        children: [
-          Icon(
-            icon,
-            color: color,
-            size: 14,
-          ),
-          const SizedBox(width: 10),
-          Text(
-            text,
-            style: TextStyle(
+      return Flexible(
+        child: Column(
+          children: [
+            Icon(
+              icon,
               color: color,
-              fontWeight: FontWeight.bold,
-              fontSize: 12
-            ),  
-          )
-        ]
+              size: 14,
+            ),
+            const SizedBox(height: 5),
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: color,
+                fontSize: 12
+              ),  
+            )
+          ]
+        ),
       );
     }
     
     Widget generateLogStatus() {
-      final filter = getFilteredStatus(context, log.reason);
+      final filter = getFilteredStatus(context, log.reason, false);
       return logStatusWidget(
         icon: filter['icon'],
         color: filter['color'],
@@ -148,7 +150,7 @@ class LogTile extends StatelessWidget {
         onTap: openLogDetailsModal,
         child: Container(
           width: double.maxFinite,
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           decoration: BoxDecoration(
             border: index < length
               ? Border(
@@ -161,39 +163,110 @@ class LogTile extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  generateLogStatus(),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: width-100,
-                    child: Text(
+              SizedBox(
+                width: width-130,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       log.question.name,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16
+                        fontSize: 18
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: width-100,
-                    child: Text(
-                      log.client,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Theme.of(context).listTileTheme.iconColor,
-                        fontSize: 13
-                      ),
+                    const SizedBox(height: 10),
+                    if (log.client.length <= 15) Row(
+                      children: [
+                        ...[
+                          Icon(
+                            Icons.smartphone_rounded,
+                            size: 16,
+                            color: Theme.of(context).listTileTheme.iconColor,
+                          ),
+                          const SizedBox(width: 5),
+                          SizedBox(
+                            child: Text(
+                              log.client,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Theme.of(context).listTileTheme.iconColor,
+                                fontSize: 13
+                              ),
+                            ),
+                          )
+                        ],
+                        const SizedBox(width: 15),
+                        ...[
+                          Icon(
+                            Icons.schedule_rounded,
+                            size: 16,
+                            color: Theme.of(context).listTileTheme.iconColor,
+                          ),
+                          const SizedBox(width: 5),
+                          SizedBox(
+                            child: Text(
+                              formatTimestampUTCFromAPI(log.time, 'HH:mm:ss'),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Theme.of(context).listTileTheme.iconColor,
+                                fontSize: 13
+                              ),
+                            ),
+                          )
+                        ],
+                      ],
                     ),
-                  )
-                ],
+                    if (log.client.length > 15) Column(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.smartphone_rounded,
+                              size: 16,
+                              color: Theme.of(context).listTileTheme.iconColor,
+                            ),
+                            const SizedBox(width: 15),
+                            SizedBox(
+                              child: Text(
+                                log.client,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Theme.of(context).listTileTheme.iconColor,
+                                  fontSize: 13
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.schedule_rounded,
+                              size: 16,
+                              color: Theme.of(context).listTileTheme.iconColor,
+                            ),
+                            const SizedBox(width: 15),
+                            SizedBox(
+                              child: Text(
+                                formatTimestampUTCFromAPI(log.time, 'HH:mm:ss'),
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Theme.of(context).listTileTheme.iconColor,
+                                  fontSize: 13
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                formatTimestampUTCFromAPI(log.time, 'HH:mm:ss')
-              ),
+              const SizedBox(width: 10),
+              generateLogStatus()
             ],
           ),
         ),

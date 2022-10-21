@@ -214,7 +214,13 @@ class _AddedListState extends State<AddedList> {
                 onTap: () => openClientModal(widget.data[index]),
                 title: Padding(
                   padding: const EdgeInsets.only(bottom: 5),
-                  child: Text(widget.data[index].name),
+                  child: Text(
+                    widget.data[index].name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal
+                    ),
+                  ),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -21,7 +21,7 @@ class LogListTile extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -38,8 +38,7 @@ class LogListTile extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500
+                      fontSize: 18,
                     ),
                   ),
                   const SizedBox(height: 5),
@@ -47,7 +46,6 @@ class LogListTile extends StatelessWidget {
                     width: width-100,
                     child: Text(
                       subtitle!,
-                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context).listTileTheme.iconColor,

@@ -130,13 +130,13 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
                 filterStatusListItem(
                   id: "processed",
                   icon: Icons.verified_user_rounded, 
-                  label: AppLocalizations.of(context)!.processed, 
+                  label: AppLocalizations.of(context)!.processedRow, 
                   onChanged: (value) => setState(() => selectedResultStatus = value!)
                 ),
                 filterStatusListItem(
                   id: "whitelisted",
                   icon: Icons.verified_user_rounded, 
-                  label: AppLocalizations.of(context)!.processedWhitelist, 
+                  label: AppLocalizations.of(context)!.processedWhitelistRow, 
                   onChanged: (value) => setState(() => selectedResultStatus = value!)
                 ),
                 filterStatusListItem(
@@ -148,19 +148,19 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
                 filterStatusListItem(
                   id: "blocked_safebrowsing",
                   icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedSafeBrowsing, 
+                  label: AppLocalizations.of(context)!.blockedSafeBrowsingRow, 
                   onChanged: (value) => setState(() => selectedResultStatus = value!)
                 ),
                 filterStatusListItem(
                   id: "blocked_parental",
                   icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedParental, 
+                  label: AppLocalizations.of(context)!.blockedParentalRow, 
                   onChanged: (value) => setState(() => selectedResultStatus = value!)
                 ),
                 filterStatusListItem(
                   id: "safe_search",
                   icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedSafeSearch, 
+                  label: AppLocalizations.of(context)!.blockedSafeSearchRow, 
                   onChanged: (value) => setState(() => selectedResultStatus = value!)
                 ),
                
