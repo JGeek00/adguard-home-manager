@@ -65,9 +65,10 @@ class _AddServerModalState extends State<AddServerModal> {
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
+          color: Theme.of(context).primaryColor
         ),
       ),
     );
