@@ -177,8 +177,7 @@ class ServersList extends StatelessWidget {
                 Text(
                   "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500
+                    fontSize: 17,
                   ),
                 ),
                 Column(
