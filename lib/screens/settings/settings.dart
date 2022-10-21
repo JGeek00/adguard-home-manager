@@ -5,8 +5,8 @@ import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
-import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/server_info/server_info.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
@@ -91,9 +91,9 @@ class Settings extends StatelessWidget {
           if (serversProvider.selectedServer != null) ...[
             SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
             CustomListTile(
-              leadingIcon: Icons.lock_rounded,
-              label: AppLocalizations.of(context)!.accessSettings,
-              description: AppLocalizations.of(context)!.accessSettingsDescription,
+              icon: Icons.lock_rounded,
+              title: AppLocalizations.of(context)!.accessSettings,
+              subtitle: AppLocalizations.of(context)!.accessSettingsDescription,
               onTap: () => {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -103,9 +103,9 @@ class Settings extends StatelessWidget {
               },
             ),
             CustomListTile(
-              leadingIcon: Icons.install_desktop_rounded,
-              label: AppLocalizations.of(context)!.dhcpSettings,
-              description: AppLocalizations.of(context)!.dhcpSettingsDescription,
+              icon: Icons.install_desktop_rounded,
+              title: AppLocalizations.of(context)!.dhcpSettings,
+              subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
               onTap: () => {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -115,9 +115,9 @@ class Settings extends StatelessWidget {
               },
             ),
             CustomListTile(
-              leadingIcon: Icons.dns_rounded,
-              label: AppLocalizations.of(context)!.dnsSettings,
-              description: AppLocalizations.of(context)!.dnsSettingsDescription,
+              icon: Icons.dns_rounded,
+              title: AppLocalizations.of(context)!.dnsSettings,
+              subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
               onTap: () => {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -127,9 +127,9 @@ class Settings extends StatelessWidget {
               },
             ),
             CustomListTile(
-              leadingIcon: Icons.route_rounded,
-              label: AppLocalizations.of(context)!.dnsRewrites,
-              description: AppLocalizations.of(context)!.dnsRewritesDescription,
+              icon: Icons.route_rounded,
+              title: AppLocalizations.of(context)!.dnsRewrites,
+              subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
               onTap: () => {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -139,9 +139,9 @@ class Settings extends StatelessWidget {
               },
             ),
             CustomListTile(
-              leadingIcon: Icons.info_rounded,
-              label: AppLocalizations.of(context)!.serverInformation,
-              description: AppLocalizations.of(context)!.serverInformationDescription,
+              icon: Icons.info_rounded,
+              title: AppLocalizations.of(context)!.serverInformation,
+              subtitle: AppLocalizations.of(context)!.serverInformationDescription,
               onTap: () => {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -153,15 +153,15 @@ class Settings extends StatelessWidget {
           ],
           SectionLabel(label: AppLocalizations.of(context)!.appSettings),
           CustomListTile(
-            leadingIcon: Icons.light_mode_rounded,
-            label: AppLocalizations.of(context)!.theme, 
-            description: getThemeString(),
+            icon: Icons.light_mode_rounded,
+            title: AppLocalizations.of(context)!.theme, 
+            subtitle: getThemeString(),
             onTap: openThemeModal,
           ),
           CustomListTile(
-            leadingIcon: Icons.storage_rounded,
-            label: AppLocalizations.of(context)!.servers,
-            description: serversProvider.selectedServer != null
+            icon: Icons.storage_rounded,
+            title: AppLocalizations.of(context)!.servers,
+            subtitle: serversProvider.selectedServer != null
               ? serversProvider.serverStatus.data != null
                 ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
                 : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
@@ -169,9 +169,9 @@ class Settings extends StatelessWidget {
             onTap: navigateServers,
           ),
           CustomListTile(
-            leadingIcon: Icons.settings,
-            label: AppLocalizations.of(context)!.generalSettings,
-            description: AppLocalizations.of(context)!.generalSettingsDescription,
+            icon: Icons.settings,
+            title: AppLocalizations.of(context)!.generalSettings,
+            subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
             onTap: () => {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -181,9 +181,9 @@ class Settings extends StatelessWidget {
             },
           ),
           CustomListTile(
-            leadingIcon: Icons.build_outlined,
-            label: AppLocalizations.of(context)!.advancedSettings,
-            description: AppLocalizations.of(context)!.advancedSetupDescription,
+            icon: Icons.build_outlined,
+            title: AppLocalizations.of(context)!.advancedSettings,
+            subtitle: AppLocalizations.of(context)!.advancedSetupDescription,
             onTap: () => {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -194,12 +194,12 @@ class Settings extends StatelessWidget {
           ),
           SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
           CustomListTile(
-            label: AppLocalizations.of(context)!.appVersion, 
-            description: appConfigProvider.getAppInfo!.version,
+            title: AppLocalizations.of(context)!.appVersion, 
+            subtitle: appConfigProvider.getAppInfo!.version,
           ),
           CustomListTile(
-            label: AppLocalizations.of(context)!.createdBy, 
-            description: Strings.createdBy,
+            title: AppLocalizations.of(context)!.createdBy, 
+            subtitle: Strings.createdBy,
           ),
           Padding(
             padding: const EdgeInsets.all(15),

@@ -25,7 +25,12 @@ class DnsAddressesModal extends StatelessWidget {
         width: double.minPositive,
         child: ListView(
           children: dnsAddresses.map((address) => ListTile(
-            title: Text(address),
+            title: Text(
+              address,
+              style: const TextStyle(
+                fontWeight: FontWeight.normal
+              ),
+            ),
           )).toList(),
         ),
       ),

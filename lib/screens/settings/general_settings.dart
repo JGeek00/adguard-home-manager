@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -42,9 +42,9 @@ class GeneralSettings extends StatelessWidget {
       body: ListView(
         children: [
           CustomListTile(
-            leadingIcon: Icons.exposure_zero_rounded,
-            label: AppLocalizations.of(context)!.hideZeroValues,
-            description: AppLocalizations.of(context)!.hideZeroValuesDescription,
+            icon: Icons.exposure_zero_rounded,
+            title: AppLocalizations.of(context)!.hideZeroValues,
+            subtitle: AppLocalizations.of(context)!.hideZeroValuesDescription,
             trailing: Switch(
               value: appConfigProvider.hideZeroValues, 
               onChanged: updateHideZeroValues,

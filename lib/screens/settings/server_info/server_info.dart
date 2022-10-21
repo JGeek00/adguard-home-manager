@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/server_info/dns_addresses_modal.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -97,8 +97,8 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
           return ListView(
             children: [
               CustomListTile(
-                label: AppLocalizations.of(context)!.dnsAddresses,
-                description: AppLocalizations.of(context)!.seeDnsAddresses,
+                title: AppLocalizations.of(context)!.dnsAddresses,
+                subtitle: AppLocalizations.of(context)!.seeDnsAddresses,
                 onTap: () {
                   showModal(
                     context: context, 
@@ -109,38 +109,38 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
                 },
               ),
               CustomListTile(
-                label: AppLocalizations.of(context)!.dnsPort,
-                description: serverInfo.data!.dnsPort.toString(),
+                title: AppLocalizations.of(context)!.dnsPort,
+                subtitle: serverInfo.data!.dnsPort.toString(),
               ),
               CustomListTile(
-                label: AppLocalizations.of(context)!.httpPort,
-                description: serverInfo.data!.httpPort.toString(),
+                title: AppLocalizations.of(context)!.httpPort,
+                subtitle: serverInfo.data!.httpPort.toString(),
               ),
               CustomListTile(
-                label: AppLocalizations.of(context)!.protectionEnabled,
-                description: serverInfo.data!.protectionEnabled == true 
+                title: AppLocalizations.of(context)!.protectionEnabled,
+                subtitle: serverInfo.data!.protectionEnabled == true 
                   ? AppLocalizations.of(context)!.yes
                   : AppLocalizations.of(context)!.no,
               ),
               CustomListTile(
-                label: AppLocalizations.of(context)!.dhcpAvailable,
-                description: serverInfo.data!.dhcpAvailable == true 
+                title: AppLocalizations.of(context)!.dhcpAvailable,
+                subtitle: serverInfo.data!.dhcpAvailable == true 
                   ? AppLocalizations.of(context)!.yes
                   : AppLocalizations.of(context)!.no,
               ),
               CustomListTile(
-                label: AppLocalizations.of(context)!.serverRunning,
-                description: serverInfo.data!.running == true 
+                title: AppLocalizations.of(context)!.serverRunning,
+                subtitle: serverInfo.data!.running == true 
                   ? AppLocalizations.of(context)!.yes
                   : AppLocalizations.of(context)!.no,
               ),
               CustomListTile(
-                label: AppLocalizations.of(context)!.serverVersion,
-                description: serverInfo.data!.version,
+                title: AppLocalizations.of(context)!.serverVersion,
+                subtitle: serverInfo.data!.version,
               ),
               CustomListTile(
-                label: AppLocalizations.of(context)!.serverLanguage,
-                description: serverInfo.data!.language,
+                title: AppLocalizations.of(context)!.serverLanguage,
+                subtitle: serverInfo.data!.language,
               ),
             ]
           );

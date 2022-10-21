@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/settings/custom_list_tile.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/app_logs/app_logs.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -43,9 +43,9 @@ class AdvancedSettings extends StatelessWidget {
       body: ListView(
         children: [
           CustomListTile(
-            leadingIcon: Icons.lock,
-            label: AppLocalizations.of(context)!.dontCheckCertificate,
-            description: AppLocalizations.of(context)!.dontCheckCertificateDescription,
+            icon: Icons.lock,
+            title: AppLocalizations.of(context)!.dontCheckCertificate,
+            subtitle: AppLocalizations.of(context)!.dontCheckCertificateDescription,
             trailing: Switch(
               value: appConfigProvider.overrideSslCheck, 
               onChanged: updateSslCheck,
@@ -60,9 +60,9 @@ class AdvancedSettings extends StatelessWidget {
             )
           ),
           CustomListTile(
-            leadingIcon: Icons.list_rounded,
-            label: AppLocalizations.of(context)!.logs,
-            description: AppLocalizations.of(context)!.checkAppLogs,
+            icon: Icons.list_rounded,
+            title: AppLocalizations.of(context)!.logs,
+            subtitle: AppLocalizations.of(context)!.checkAppLogs,
             onTap: () => {
               Navigator.of(context).push(
                 MaterialPageRoute(
