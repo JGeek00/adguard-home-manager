@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientsList extends StatelessWidget {
@@ -47,20 +49,12 @@ class ClientsList extends StatelessWidget {
           return ListView.builder(
             padding: const EdgeInsets.only(top: 0),
             itemCount: data.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(
-                data[index].name != '' 
-                  ? data[index].name!
-                  : data[index].ip,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal
-                ),
-              ),
-              subtitle: data[index].name != ''
-                ? Text(
-                    data[index].ip
-                  )
+            itemBuilder: (context, index) => CustomListTile(
+              title: data[index].name != '' 
+                ? data[index].name!
+                : data[index].ip,
+              subtitle: data[index].name != '' 
+                ? data[index].ip 
                 : null,
               trailing: Text(data[index].source),
             )
