@@ -130,9 +130,13 @@ class ManagementModal extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Column(
-            children: [
-              const Padding(
+          Expanded(
+            child: ListView(
+              physics: 540 < MediaQuery.of(context).size.height
+                ? const NeverScrollableScrollPhysics() 
+                : null,
+              children: [
+                const Padding(
                 padding: EdgeInsets.only(top: 24),
                 child: Icon(
                   Icons.shield_rounded,
@@ -143,6 +147,7 @@ class ManagementModal extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Text(
                   AppLocalizations.of(context)!.manageServer,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 22
                   ),
@@ -178,7 +183,8 @@ class ManagementModal extends StatelessWidget {
                 (value) => updateBlocking(value, 'safeSearch'),
                 serversProvider.protectionsManagementProcess.contains('safeSearch')
               ),
-            ],
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(24),

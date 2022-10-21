@@ -120,150 +120,153 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
         case 1:
           return Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 28),
-                child: Icon(
-                  Icons.settings,
-                  size: 26,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                AppLocalizations.of(context)!.logsSettings,
-                style: const TextStyle(
-                  fontSize: 24
-                ), 
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Material(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(28),
-                  child: InkWell(
-                    onTap: () => setState(() => generalSwitch = !generalSwitch),
-                    borderRadius: BorderRadius.circular(28),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 8
+              Expanded(
+                child: ListView(
+                  physics: 450 < MediaQuery.of(context).size.height
+                    ? const NeverScrollableScrollPhysics() 
+                    : null,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 28),
+                      child: Icon(
+                        Icons.settings,
+                        size: 26,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.enableLog,
-                            style: const TextStyle(
-                              fontSize: 18,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      AppLocalizations.of(context)!.logsSettings,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24
+                      ), 
+                    ),
+                    const SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Material(
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(28),
+                        child: InkWell(
+                          onTap: () => setState(() => generalSwitch = !generalSwitch),
+                          borderRadius: BorderRadius.circular(28),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 8
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.enableLog,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Switch(
+                                  value: generalSwitch, 
+                                  onChanged: (value) => setState(() => generalSwitch = value),
+                                  activeColor: Theme.of(context).primaryColor,
+                                )
+                              ],
                             ),
                           ),
-                          Switch(
-                            value: generalSwitch, 
-                            onChanged: (value) => setState(() => generalSwitch = value),
-                            activeColor: Theme.of(context).primaryColor,
-                          )
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => setState(() => anonymizeClientIp = !anonymizeClientIp),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.anonymizeClientIp,
-                          style: const TextStyle(
-                            fontSize: 16
+                    const SizedBox(height: 20),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => setState(() => anonymizeClientIp = !anonymizeClientIp),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.anonymizeClientIp,
+                                style: const TextStyle(
+                                  fontSize: 16
+                                ),
+                              ),
+                              Switch(
+                                value: anonymizeClientIp, 
+                                onChanged: (value) => setState(() => anonymizeClientIp = value),
+                                activeColor: Theme.of(context).primaryColor,
+                              )
+                            ],
                           ),
                         ),
-                        Switch(
-                          value: anonymizeClientIp, 
-                          onChanged: (value) => setState(() => anonymizeClientIp = value),
-                          activeColor: Theme.of(context).primaryColor,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: DropdownButtonFormField(
-                  items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
-                    return DropdownMenuItem<String>(
-                      value: item['value'].toString(),
-                      child: Text(item['label']),
-                    );
-                  }).toList(),
-                  value: retentionTime,
-                  onChanged: (value) => setState(() => retentionTime = value),
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10)
-                      )
-                    ),
-                    label: Text(AppLocalizations.of(context)!.retentionTime)
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              widget.onClear();
-                            }, 
-                            child: Text(AppLocalizations.of(context)!.clearLogs)
-                          ),
-                          Row(
-                            children: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context), 
-                                child: Text(AppLocalizations.of(context)!.cancel)
-                              ),
-                              const SizedBox(width: 20),
-                              TextButton(
-                                onPressed: retentionTime != ''
-                                  ? () {
-                                    Navigator.pop(context);
-                                    widget.onConfirm({
-                                      "enabled": generalSwitch,
-                                      "interval": double.parse(retentionTime!),
-                                      "anonymize_client_ip": anonymizeClientIp
-                                    });
-                                  }
-                                  : null, 
-                                child: Text(
-                                  AppLocalizations.of(context)!.confirm,
-                                  style: TextStyle(
-                                    color: retentionTime != ''
-                                      ? Theme.of(context).primaryColor
-                                      : Colors.grey
-                                  ),
-                                )
-                              ),
-                            ],
-                          )
-                        ],
                       ),
+                    ),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 28),
+                      child: DropdownButtonFormField(
+                        items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
+                          return DropdownMenuItem<String>(
+                            value: item['value'].toString(),
+                            child: Text(item['label']),
+                          );
+                        }).toList(),
+                        value: retentionTime,
+                        onChanged: (value) => setState(() => retentionTime = value),
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10)
+                            )
+                          ),
+                          label: Text(AppLocalizations.of(context)!.retentionTime)
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        widget.onClear();
+                      }, 
+                      child: Text(AppLocalizations.of(context)!.clearLogs)
+                    ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context), 
+                          child: Text(AppLocalizations.of(context)!.cancel)
+                        ),
+                        const SizedBox(width: 20),
+                        TextButton(
+                          onPressed: retentionTime != ''
+                            ? () {
+                              Navigator.pop(context);
+                              widget.onConfirm({
+                                "enabled": generalSwitch,
+                                "interval": double.parse(retentionTime!),
+                                "anonymize_client_ip": anonymizeClientIp
+                              });
+                            }
+                            : null, 
+                          child: Text(
+                            AppLocalizations.of(context)!.confirm,
+                            style: TextStyle(
+                              color: retentionTime != ''
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey
+                            ),
+                          )
+                        ),
+                      ],
                     )
                   ],
                 ),

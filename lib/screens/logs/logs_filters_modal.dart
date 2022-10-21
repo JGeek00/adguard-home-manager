@@ -180,27 +180,30 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
         ),
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(
-                top: 24,
-                bottom: 20,
-              ),
-              child: Icon(
-                Icons.filter_list_rounded,
-                size: 26,
-              ),
-            ),
-            Text(
-              AppLocalizations.of(context)!.filters,
-              style: const TextStyle(
-                fontSize: 24
-              ),
-            ),
-            const SizedBox(height: 20),
             Expanded(
               child: ListView(
-                physics: const NeverScrollableScrollPhysics(),
+                physics: 380 < MediaQuery.of(context).size.height
+                  ? const NeverScrollableScrollPhysics() 
+                  : null,
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.only(
+                      top: 24,
+                      bottom: 20,
+                    ),
+                    child: Icon(
+                      Icons.filter_list_rounded,
+                      size: 26,
+                    ),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.filters,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     child: Row(
