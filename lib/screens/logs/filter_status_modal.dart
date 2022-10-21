@@ -57,7 +57,7 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
                     Icon(
                       icon,
                       size: 24,
-                      color: Colors.grey,
+                      color: Theme.of(context).listTileTheme.iconColor,
                     ),
                     const SizedBox(width: 20),
                     Text(

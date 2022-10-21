@@ -55,8 +55,8 @@ class CustomRadioListTile extends StatelessWidget {
                       width: MediaQuery.of(context).size.width-110,
                       child: Text(
                         subtitle!,
-                        style: const TextStyle(
-                          color: Colors.grey,
+                        style: TextStyle(
+                          color: Theme.of(context).listTileTheme.iconColor,
                           fontSize: 14
                         ),
                       ),

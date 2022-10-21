@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:adguard_home_manager/screens/connect/fab.dart';
-import 'package:adguard_home_manager/screens/connect/appbar.dart';
 import 'package:adguard_home_manager/screens/filters/filters.dart';
 import 'package:adguard_home_manager/screens/logs/logs.dart';
 import 'package:adguard_home_manager/screens/connect/connect.dart';
 import 'package:adguard_home_manager/screens/home/home.dart';
 import 'package:adguard_home_manager/screens/clients/clients.dart';
-import 'package:adguard_home_manager/screens/settings/appbar.dart';
 import 'package:adguard_home_manager/screens/settings/settings.dart';
 
 import 'package:adguard_home_manager/models/app_screen.dart';

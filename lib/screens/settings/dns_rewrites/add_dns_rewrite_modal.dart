@@ -61,98 +61,100 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
         ),
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 28),
-              child: Icon(
-                Icons.add,
-                size: 26,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              AppLocalizations.of(context)!.addDnsRewrite,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24
-              ),
-            ),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: TextFormField(
-                controller: domainController,
-                onChanged: validateDomain,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.link_rounded),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10)
-                    )
-                  ),
-                  errorText: domainError,
-                  labelText: AppLocalizations.of(context)!.domain,
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: TextFormField(
-                controller: answerController,
-                onChanged: (_) => checkValidValues(),
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.system_update_alt_rounded),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10)
-                    )
-                  ),
-                  labelText: AppLocalizations.of(context)!.answer,
-                ),
-              ),
-            ),
             Expanded(
-              child: Column(
+              child: ListView(
+                physics: 410 < MediaQuery.of(context).size.height
+                  ? const NeverScrollableScrollPhysics() 
+                  : null,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 28),
+                    child: Icon(
+                      Icons.add,
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    AppLocalizations.of(context)!.addDnsRewrite,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: TextFormField(
+                      controller: domainController,
+                      onChanged: validateDomain,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.link_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: domainError,
+                        labelText: AppLocalizations.of(context)!.domain,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: TextFormField(
+                      controller: answerController,
+                      onChanged: (_) => checkValidValues(),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.system_update_alt_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        labelText: AppLocalizations.of(context)!.answer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                bottom: 20,
+                right: 28
+              ),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 20,
-                      bottom: 20,
-                      right: 28
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(AppLocalizations.of(context)!.cancel),
+                  ),
+                  const SizedBox(width: 20),
+                  TextButton(
+                    onPressed: validData == true
+                      ? () {
+                        Navigator.pop(context);
+                        widget.onConfirm(
+                          RewriteRulesData(
+                            domain: domainController.text, 
+                            answer: answerController.text
+                          )
+                        );
+                      }
+                      : null,
+                    child: Text(
+                      AppLocalizations.of(context)!.confirm,
+                      style: TextStyle(
+                        color: validData == true
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey
+                      ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(AppLocalizations.of(context)!.cancel),
-                        ),
-                        const SizedBox(width: 20),
-                        TextButton(
-                          onPressed: validData == true
-                            ? () {
-                              Navigator.pop(context);
-                              widget.onConfirm(
-                                RewriteRulesData(
-                                  domain: domainController.text, 
-                                  answer: answerController.text
-                                )
-                              );
-                            }
-                            : null,
-                          child: Text(
-                            AppLocalizations.of(context)!.confirm,
-                            style: TextStyle(
-                              color: validData == true
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
+                  ),
                 ],
               ),
             )

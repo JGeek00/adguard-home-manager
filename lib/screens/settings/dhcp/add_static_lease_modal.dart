@@ -68,9 +68,7 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: MediaQuery.of(context).viewInsets.bottom > 0
-          ? MediaQuery.of(context).size.height-MediaQuery.of(context).viewInsets.bottom-25
-          : 550,
+        height: 550,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -80,13 +78,11 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
         ),
         child: Column(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).viewInsets.bottom > 0
-                ? MediaQuery.of(context).size.height-425
-                : MediaQuery.of(context).size.height-400,
+            Expanded(
               child: ListView(
-                shrinkWrap: true,
-                primary: false,
+                physics: 550 < MediaQuery.of(context).size.height
+                  ? const NeverScrollableScrollPhysics() 
+                  : null,
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(top: 28),
@@ -168,45 +164,38 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
                 ],
               ),
             ),
-            Expanded(
-              child: Column(
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context), 
-                          child: Text(AppLocalizations.of(context)!.cancel),
-                        ),
-                        const SizedBox(width: 20),
-                        TextButton(
-                          onPressed: validData == true
-                            ? () {
-                              Navigator.pop(context);
-                              widget.onConfirm(
-                                Lease(
-                                  mac: macController.text, 
-                                  hostname: hostNameController.text, 
-                                  ip: ipController.text
-                                )
-                              );
-                            }
-                            : null,
-                          child: Text(
-                            AppLocalizations.of(context)!.confirm,
-                            style: TextStyle(
-                              color: validData == true
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey
-                            ),
-                          ),
-                        ),
-                      ],
+                  TextButton(
+                    onPressed: () => Navigator.pop(context), 
+                    child: Text(AppLocalizations.of(context)!.cancel),
+                  ),
+                  const SizedBox(width: 20),
+                  TextButton(
+                    onPressed: validData == true
+                      ? () {
+                        Navigator.pop(context);
+                        widget.onConfirm(
+                          Lease(
+                            mac: macController.text, 
+                            hostname: hostNameController.text, 
+                            ip: ipController.text
+                          )
+                        );
+                      }
+                      : null,
+                    child: Text(
+                      AppLocalizations.of(context)!.confirm,
+                      style: TextStyle(
+                        color: validData == true
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             )

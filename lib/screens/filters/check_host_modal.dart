@@ -122,64 +122,74 @@ class _CheckHostModalState extends State<CheckHostModal> {
         child: Center(
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 24),
-                child: Icon(
-                  Icons.shield_rounded,
-                  size: 26,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                AppLocalizations.of(context)!.checkHostFiltered,
-                style: const TextStyle(
-                  fontSize: 24
-                ),
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextFormField(
-                  controller: domainController,
-                  onChanged: validateDomain,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.link_rounded),
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10)
-                      )
-                    ),
-                    errorText: domainError,
-                    labelText: AppLocalizations.of(context)!.domain,
-                  ),
-                ),
-              ),
-              if (resultWidget != null) Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 20,
-                    left: 20,
-                    right: 20
-                  ),
-                  child: resultWidget,
-                ),
-              ),
-              if (resultWidget == null) Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 20,
-                    left: 20,
-                    right: 20
-                  ),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.insertDomain,
-                      style: const TextStyle(
-                        fontSize: 16,
+              Expanded(
+                child: ListView(
+                  physics: 350 < MediaQuery.of(context).size.height
+                    ? const NeverScrollableScrollPhysics() 
+                    : null,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 24),
+                      child: Icon(
+                        Icons.shield_rounded,
+                        size: 26,
                       ),
                     ),
-                  ),
-                )
+                    const SizedBox(height: 20),
+                    Text(
+                      AppLocalizations.of(context)!.checkHostFiltered,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextFormField(
+                        controller: domainController,
+                        onChanged: validateDomain,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.link_rounded),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10)
+                            )
+                          ),
+                          errorText: domainError,
+                          labelText: AppLocalizations.of(context)!.domain,
+                        ),
+                      ),
+                    ),
+                    if (resultWidget != null) Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 20,
+                          left: 20,
+                          right: 20
+                        ),
+                        child: resultWidget,
+                      ),
+                    ),
+                    if (resultWidget == null) Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 20,
+                          left: 20,
+                          right: 20
+                        ),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.insertDomain,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      )
+                    ),
+                  ],
+                ),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,

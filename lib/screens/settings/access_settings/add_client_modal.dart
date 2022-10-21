@@ -77,67 +77,70 @@ class _AddClientModalState extends State<AddClientModal> {
         ),
         child: Column(
           children: [
-            Icon(
-              icon(),
-              size: 26,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              title(),
-              style: const TextStyle(
-                fontSize: 24
-              ),
-            ),
-            const SizedBox(height: 30),
-            TextFormField(
-              controller: fieldController,
-              onChanged: (_) => checkValidValues(),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.link_rounded),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10)
-                  )
-                ),
-                helperText: widget.type == 'allowed' || widget.type == 'disallowed'
-                  ? AppLocalizations.of(context)!.addClientFieldDescription : null,
-                labelText: widget.type == 'allowed' || widget.type == 'disallowed'
-                  ? AppLocalizations.of(context)!.clientIdentifier
-                  : AppLocalizations.of(context)!.domain,
-              ),
-            ),
             Expanded(
-              child: Column(
+              child: ListView(
+                physics: 322 < MediaQuery.of(context).size.height
+                  ? const NeverScrollableScrollPhysics() 
+                  : null,
+                children: [
+                  Icon(
+                    icon(),
+                    size: 26,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    title(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  TextFormField(
+                    controller: fieldController,
+                    onChanged: (_) => checkValidValues(),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.link_rounded),
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10)
+                        )
+                      ),
+                      helperText: widget.type == 'allowed' || widget.type == 'disallowed'
+                        ? AppLocalizations.of(context)!.addClientFieldDescription : null,
+                      labelText: widget.type == 'allowed' || widget.type == 'disallowed'
+                        ? AppLocalizations.of(context)!.clientIdentifier
+                        : AppLocalizations.of(context)!.domain,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context), 
-                          child: Text(AppLocalizations.of(context)!.cancel)
-                        ),
-                        const SizedBox(width: 20),
-                        TextButton(
-                          onPressed: validData == true
-                            ? () {
-                                Navigator.pop(context);
-                                widget.onConfirm(fieldController.text, widget.type);
-                              }
-                            : null, 
-                          child: Text(
-                            AppLocalizations.of(context)!.confirm,
-                            style: TextStyle(
-                              color: validData == true
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey
-                            ),
-                          )
-                        ),
-                      ],
-                    ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context), 
+                    child: Text(AppLocalizations.of(context)!.cancel)
+                  ),
+                  const SizedBox(width: 20),
+                  TextButton(
+                    onPressed: validData == true
+                      ? () {
+                          Navigator.pop(context);
+                          widget.onConfirm(fieldController.text, widget.type);
+                        }
+                      : null, 
+                    child: Text(
+                      AppLocalizations.of(context)!.confirm,
+                      style: TextStyle(
+                        color: validData == true
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey
+                      ),
+                    )
                   ),
                 ],
               ),

@@ -286,10 +286,10 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.shield_rounded,
                               size: 24,
-                              color: Colors.grey,
+                              color: Theme.of(context).listTileTheme.iconColor,
                             ),
                             const SizedBox(width: 20),
                             Column(
@@ -305,9 +305,9 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                                 const SizedBox(height: 5),
                                 Text(
                                   "${translatedString[logsProvider.selectedResultStatus]}",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.grey
+                                    color: Theme.of(context).listTileTheme.iconColor,
                                   ),
                                 )
                               ],

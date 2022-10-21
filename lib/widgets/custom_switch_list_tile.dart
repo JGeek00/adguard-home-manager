@@ -45,9 +45,9 @@ class CustomSwitchListTile extends StatelessWidget {
                       width: MediaQuery.of(context).size.width-110,
                       child: Text(
                         subtitle!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey
+                          color: Theme.of(context).listTileTheme.iconColor,
                         ),
                       ),
                     ),

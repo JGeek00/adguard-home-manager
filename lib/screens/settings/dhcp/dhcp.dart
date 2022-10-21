@@ -406,9 +406,9 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                                 if (selectedInterface != null) ...[
                                   Text(
                                     selectedInterface!.name,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.grey
+                                      color: Theme.of(context).listTileTheme.iconColor,
                                     ),
                                   )
                                 ]

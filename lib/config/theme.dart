@@ -53,7 +53,8 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   ),
   dividerColor: Colors.black12,
   listTileTheme: const ListTileThemeData(
-    tileColor: Colors.transparent
+    tileColor: Colors.transparent,
+    iconColor: Color.fromRGBO(138, 138, 138, 1),
   ),
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
@@ -124,8 +125,9 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     ),
   ),
   dividerColor: Colors.white12,
-    listTileTheme: const ListTileThemeData(
-    tileColor: Colors.transparent
+  listTileTheme: const ListTileThemeData(
+    tileColor: Colors.transparent,
+    iconColor: Color.fromRGBO(187, 187, 187, 1),
   ),
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
@@ -217,7 +219,8 @@ ThemeData lightThemeOldVersions() => ThemeData(
   ),
   dividerColor: Colors.black12,
   listTileTheme: const ListTileThemeData(
-    tileColor: Colors.transparent
+    tileColor: Colors.transparent,
+    iconColor: Color.fromRGBO(138, 138, 138, 1),
   ),
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
@@ -315,8 +318,9 @@ ThemeData darkThemeOldVersions() => ThemeData(
     ),
   ),
   dividerColor: Colors.white12,
-    listTileTheme: const ListTileThemeData(
-    tileColor: Colors.transparent
+  listTileTheme: const ListTileThemeData(
+    tileColor: Colors.transparent,
+    iconColor: Color.fromRGBO(187, 187, 187, 1),
   ),
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),

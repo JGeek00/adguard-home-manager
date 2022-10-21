@@ -69,8 +69,7 @@ class _AddListModalState extends State<AddListModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 408,
-        padding: const EdgeInsets.all(24),
+        height: 410,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(28),
@@ -80,100 +79,114 @@ class _AddListModalState extends State<AddListModal> {
         ),
         child: Column(
           children: [
-            Icon(
-              widget.type == 'whitelist'
-                ? Icons.verified_user_rounded
-                : Icons.gpp_bad_rounded,
-              size: 26,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              widget.list != null
-                ? widget.type == 'whitelist'
-                  ? AppLocalizations.of(context)!.editWhitelist
-                  : AppLocalizations.of(context)!.editBlacklist
-                : widget.type == 'whitelist'
-                  ? AppLocalizations.of(context)!.addWhitelist
-                  : AppLocalizations.of(context)!.addBlacklist,
-              style: const TextStyle(
-                fontSize: 24
-              ),
-            ),
-            const SizedBox(height: 30),
-            TextFormField(
-              controller: nameController,
-              onChanged: (_) => checkValidValues(),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.badge_rounded),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10)
-                  )
-                ),
-                labelText: AppLocalizations.of(context)!.name,
-              ),
-            ),
-            const SizedBox(height: 30),
-            TextFormField(
-              controller: urlController,
-              onChanged: validateUrl,
-              enabled: widget.list != null ? false : true,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.link_rounded),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10)
-                  )
-                ),
-                errorText: urlError,
-                labelText: AppLocalizations.of(context)!.urlAbsolutePath,
-              ),
-            ),
-            const SizedBox(height: 20),
             Expanded(
-              child: Column(
+              child: ListView(
+                physics: 410 < MediaQuery.of(context).size.height
+                  ? const NeverScrollableScrollPhysics() 
+                  : null,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 28),
+                    child: Icon(
+                      widget.type == 'whitelist'
+                        ? Icons.verified_user_rounded
+                        : Icons.gpp_bad_rounded,
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    widget.list != null
+                      ? widget.type == 'whitelist'
+                        ? AppLocalizations.of(context)!.editWhitelist
+                        : AppLocalizations.of(context)!.editBlacklist
+                      : widget.type == 'whitelist'
+                        ? AppLocalizations.of(context)!.addWhitelist
+                        : AppLocalizations.of(context)!.addBlacklist,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: TextFormField(
+                      controller: nameController,
+                      onChanged: (_) => checkValidValues(),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.badge_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        labelText: AppLocalizations.of(context)!.name,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: TextFormField(
+                      controller: urlController,
+                      onChanged: validateUrl,
+                      enabled: widget.list != null ? false : true,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.link_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: urlError,
+                        labelText: AppLocalizations.of(context)!.urlAbsolutePath,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context), 
-                        child: Text(AppLocalizations.of(context)!.cancel)
-                      ),
-                      const SizedBox(width: 20),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          if (widget.list != null) {
-                            final Filter newList = Filter(
-                              url: urlController.text,
-                              name: nameController.text, 
-                              lastUpdated: widget.list!.lastUpdated, 
-                              id: widget.list!.id, 
-                              rulesCount: widget.list!.rulesCount, 
-                              enabled: widget.list!.enabled
-                            );
-                            widget.onEdit!(
-                              list: newList,
-                              type: widget.type
-                            );
-                          }
-                          else {
-                            widget.onConfirm!(
-                              name: nameController.text,
-                              url: urlController.text,
-                              type: widget.type
-                            );
-                          }
-                        }, 
-                        child: Text(
-                          widget.list != null
-                            ? AppLocalizations.of(context)!.save
-                            : AppLocalizations.of(context)!.confirm
-                        )
-                      ),
-                    ],
+                  TextButton(
+                    onPressed: () => Navigator.pop(context), 
+                    child: Text(AppLocalizations.of(context)!.cancel)
+                  ),
+                  const SizedBox(width: 20),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      if (widget.list != null) {
+                        final Filter newList = Filter(
+                          url: urlController.text,
+                          name: nameController.text, 
+                          lastUpdated: widget.list!.lastUpdated, 
+                          id: widget.list!.id, 
+                          rulesCount: widget.list!.rulesCount, 
+                          enabled: widget.list!.enabled
+                        );
+                        widget.onEdit!(
+                          list: newList,
+                          type: widget.type
+                        );
+                      }
+                      else {
+                        widget.onConfirm!(
+                          name: nameController.text,
+                          url: urlController.text,
+                          type: widget.type
+                        );
+                      }
+                    }, 
+                    child: Text(
+                      widget.list != null
+                        ? AppLocalizations.of(context)!.save
+                        : AppLocalizations.of(context)!.confirm
+                    )
                   ),
                 ],
               ),

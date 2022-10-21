@@ -35,7 +35,7 @@ class CustomListTile extends StatelessWidget {
                     if (icon != null) ...[
                       Icon(
                         icon,
-                        color: const Color.fromRGBO(104, 104, 104, 1),
+                        color: Theme.of(context).listTileTheme.iconColor,
                       ),
                       const SizedBox(width: 20),
                     ],
@@ -54,8 +54,8 @@ class CustomListTile extends StatelessWidget {
                             const SizedBox(height: 5),
                             Text(
                               subtitle!,
-                              style: const TextStyle(
-                                color: Color.fromRGBO(104, 104, 104, 1),
+                              style: TextStyle(
+                                color: Theme.of(context).listTileTheme.iconColor,
                                 fontSize: 14
                               ),
                             ),

@@ -30,7 +30,7 @@ class LogListTile extends StatelessWidget {
               Icon(
                 icon,
                 size: 24,
-                color: Colors.grey,
+                color: Theme.of(context).listTileTheme.iconColor,
               ),
               const SizedBox(width: 20),
               Column(
@@ -49,9 +49,9 @@ class LogListTile extends StatelessWidget {
                     child: Text(
                       subtitle!,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey
+                        color: Theme.of(context).listTileTheme.iconColor,
                       ),
                     ),
                   )

@@ -233,12 +233,12 @@ class _ClientModalState extends State<ClientModal> {
                       onChanged: onChange,
                       activeColor: Theme.of(context).primaryColor,
                     )
-                  : const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 14),
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
                       child: Text(
                         "Global",
                         style: TextStyle(
-                          color: Colors.grey
+                          color: Theme.of(context).listTileTheme.iconColor,
                         ),
                       ),
                     )
@@ -307,9 +307,9 @@ class _ClientModalState extends State<ClientModal> {
                         ),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.label_rounded,
-                              color: Colors.grey,
+                              color: Theme.of(context).listTileTheme.iconColor,
                             ),
                             const SizedBox(width: 20),
                             Column(
@@ -326,8 +326,8 @@ class _ClientModalState extends State<ClientModal> {
                                   selectedTags.isNotEmpty
                                     ? "${selectedTags.length} ${AppLocalizations.of(context)!.tagsSelected}"
                                     : AppLocalizations.of(context)!.noTagsSelected,
-                                  style: const TextStyle(
-                                    color: Colors.grey
+                                  style: TextStyle(
+                                    color: Theme.of(context).listTileTheme.iconColor,
                                   ),
                                 )
                               ],
@@ -527,9 +527,11 @@ class _ClientModalState extends State<ClientModal> {
                         ),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.public,
-                              color: Colors.grey,
+                              color: useGlobalSettingsServices == false
+                                ? Theme.of(context).listTileTheme.iconColor
+                                : Colors.grey,
                             ),
                             const SizedBox(width: 20),
                             Column(
@@ -541,7 +543,7 @@ class _ClientModalState extends State<ClientModal> {
                                     fontSize: 16,
                                     color: useGlobalSettingsServices == false
                                       ? null
-                                      : Colors.grey
+                                      : Theme.of(context).listTileTheme.iconColor,
                                   ),
                                 ),
                                 if (useGlobalSettingsServices == false) ...[
@@ -550,8 +552,8 @@ class _ClientModalState extends State<ClientModal> {
                                     blockedServices.isNotEmpty
                                       ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
                                       :  AppLocalizations.of(context)!.noBlockedServicesSelected,
-                                    style: const TextStyle(
-                                      color: Colors.grey
+                                    style: TextStyle(
+                                      color: Theme.of(context).listTileTheme.iconColor,
                                     ),
                                   )
                                 ]

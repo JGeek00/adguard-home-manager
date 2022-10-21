@@ -36,12 +36,8 @@ class _ThemeModalState extends State<ThemeModal> {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    final mediaQuery = MediaQuery.of(context);
-
     return Container(
-      height: mediaQuery.orientation == Orientation.landscape
-        ? mediaQuery.size.height - (widget.statusBarHeight)
-        : Platform.isIOS ? 408 : 388,
+      height: 395,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30),
@@ -51,12 +47,14 @@ class _ThemeModalState extends State<ThemeModal> {
       ),
       child: Column(
         children: [
-          SizedBox(
-            height: 300,
-            child: Column(
+          Expanded(
+            child: ListView(
+              physics: 395 < MediaQuery.of(context).size.height
+                ? const NeverScrollableScrollPhysics() 
+                : null,
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(top: 24),
+                  padding: EdgeInsets.only(top: 28),
                   child: Icon(
                     Icons.light_mode_rounded,
                     size: 26,

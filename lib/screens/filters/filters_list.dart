@@ -213,14 +213,19 @@ class _FiltersListState extends State<FiltersList> {
     }
 
     void openDetailsModal(Filter filter) {
+      final height = (filter.enabled == true ? 774 : 755)/MediaQuery.of(context).size.height < 1
+        ? (filter.enabled == true ? 774 : 755)/MediaQuery.of(context).size.height
+        : 0.95;
+      
       ScaffoldMessenger.of(context).clearSnackBars();
+      print(height);
       showFlexibleBottomSheet(
         minHeight: 0.6,
         initHeight: 0.6,
-        maxHeight: (filter.enabled == true ? 774 : 755)/MediaQuery.of(context).size.height,
+        maxHeight: height,
         isCollapsible: true,
         duration: const Duration(milliseconds: 250),
-        anchors: [(filter.enabled == true ? 774 : 755)/MediaQuery.of(context).size.height],
+        anchors: [height],
         context: context, 
         builder: (ctx, controller, offset) => ListDetailsModal(
           scrollController: controller,
@@ -308,9 +313,9 @@ class _FiltersListState extends State<FiltersList> {
                             const SizedBox(height: 5),
                             Text(
                               "${intFormat(widget.data[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey
+                                color: Theme.of(context).listTileTheme.iconColor,
                               ),
                             ),
                           ],

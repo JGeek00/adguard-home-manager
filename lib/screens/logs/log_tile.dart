@@ -183,8 +183,8 @@ class LogTile extends StatelessWidget {
                     child: Text(
                       log.client,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.grey,
+                      style: TextStyle(
+                        color: Theme.of(context).listTileTheme.iconColor,
                         fontSize: 13
                       ),
                     ),

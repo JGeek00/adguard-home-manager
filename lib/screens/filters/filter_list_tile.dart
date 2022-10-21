@@ -26,7 +26,7 @@ class FilterListTile extends StatelessWidget {
           Icon(
             icon,
             size: 26,
-            color: Colors.grey,
+            color: Theme.of(context).listTileTheme.iconColor,
           ),
           const SizedBox(width: 20),
           Column(
@@ -46,7 +46,7 @@ class FilterListTile extends StatelessWidget {
                   subtitle,
                   style: TextStyle(
                     fontSize: 14,
-                    color: color ?? Colors.grey,
+                    color: color ?? Theme.of(context).listTileTheme.iconColor,
                     fontWeight: bold == true ? FontWeight.bold : null
                   ),
                 ),
