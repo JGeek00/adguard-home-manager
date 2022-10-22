@@ -7,11 +7,12 @@ import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
+import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
-import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/models/server.dart';
+import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/functions/conversions.dart';
 
 class ServersProvider with ChangeNotifier {
   Database? _dbInstance;
@@ -46,6 +47,11 @@ class ServersProvider with ChangeNotifier {
 
   final DnsInfo _dnsInfo = DnsInfo(
     loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    data: null
+  );
+
+  final Encryption _encryptionSettings = Encryption(
+    loadStatus: 0,  // 0 = loading, 1 = loaded, 2 = error,
     data: null
   );
 
@@ -89,6 +95,10 @@ class ServersProvider with ChangeNotifier {
 
   DnsInfo get dnsInfo {
     return _dnsInfo;
+  }
+
+  Encryption get encryptionSettings {
+    return _encryptionSettings;
   }
 
   void setDbInstance(Database db) {
@@ -196,6 +206,18 @@ class ServersProvider with ChangeNotifier {
 
   void setDnsInfoLoadStatus(int status, bool notify) {
     _dnsInfo.loadStatus = status;
+    if (notify == true) {
+      notifyListeners();
+    }
+  }
+ 
+  void setEncryptionSettings(EncryptionData data) {
+    _encryptionSettings.data = data;
+    notifyListeners();
+  }
+
+  void setEncryptionSettingsLoadStatus(int status, bool notify) {
+    _encryptionSettings.loadStatus = status;
     if (notify == true) {
       notifyListeners();
     }

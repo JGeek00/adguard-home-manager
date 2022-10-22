@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
+import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
@@ -1693,6 +1694,41 @@ Future setDnsConfig({
         'result': 'error',
         'log': AppLog(
           type: 'set_dns_config', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future getEncryptionSettings({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/tls/status', 
+    method: 'get',
+    server: server,
+    type: 'get_encryption_settings'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 
+        'result': 'success',
+        'data': EncryptionData.fromJson(jsonDecode(result['body']))
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_encryption_settings', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),

@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
 import 'package:adguard_home_manager/screens/settings/server_info/server_info.dart';
-import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+import 'package:adguard_home_manager/screens/settings/encryption/encryption.dart';
 import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
@@ -16,6 +16,8 @@ import 'package:adguard_home_manager/screens/settings/appbar.dart';
 import 'package:adguard_home_manager/screens/servers/servers.dart';
 import 'package:adguard_home_manager/screens/settings/advanced_setings.dart';
 import 'package:adguard_home_manager/screens/settings/general_settings.dart';
+
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/constants/strings.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
@@ -122,6 +124,18 @@ class Settings extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const DnsSettings()
+                  )
+                )
+              },
+            ),
+            CustomListTile(
+              icon: Icons.security_rounded,
+              title: AppLocalizations.of(context)!.encryptionSettings,
+              subtitle: AppLocalizations.of(context)!.encryptionSettingsDescription,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const EncryptionSettings()
                   )
                 )
               },
