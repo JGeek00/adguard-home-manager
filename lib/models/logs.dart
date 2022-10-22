@@ -103,7 +103,7 @@ class Log {
     "status": status,
     "time": time.toIso8601String(),
     "upstream": upstream,
-    "answer": answer == null ? null : List<dynamic>.from(answer!.map((x) => x.toJson())),
+    "answer": List<dynamic>.from(answer.map((x) => x.toJson())),
     "filterId": filterId,
     "rule": rule,
     "original_answer": originalAnswer == null ? null : List<dynamic>.from(originalAnswer!.map((x) => x.toJson())),
