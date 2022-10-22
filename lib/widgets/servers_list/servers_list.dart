@@ -176,6 +176,7 @@ class ServersList extends StatelessWidget {
               children: [
                 Text(
                   "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 17,
                   ),
