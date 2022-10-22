@@ -487,5 +487,8 @@
     "bootstrapDnsDescription": "Configura los servidores DNS de arranque",
     "privateReverseDnsDescription": "Configura DNS resolutores personalizados y habilita resolutores internos y privados",
     "dnsServerSettingsDescription": "Configura el límite de peticiones, el modo de bloqueo y más",
-    "dnsCacheConfigDescription": "Configura cómo el servidor debe manejar la caché del DNS"
+    "dnsCacheConfigDescription": "Configura cómo el servidor debe manejar la caché del DNS",
+    "comment": "Comentario",
+    "address": "Dirección",
+    "commentsDescription": "Los comentarios siempre van precedidos por #. No necesitas añadirlo. Se añadirá automáticamente."
 }

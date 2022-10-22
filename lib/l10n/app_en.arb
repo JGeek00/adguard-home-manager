@@ -487,5 +487,8 @@
     "bootstrapDnsDescription": "Configure the bootstrap DNS servers",
     "privateReverseDnsDescription": "Configure custom DNS resolvers and enable private reverse DNS resolving",
     "dnsServerSettingsDescription": "Configure a rate limit, the blocking mode and more",
-    "dnsCacheConfigDescription": "Configure how the server should manage the DNS cache"
+    "dnsCacheConfigDescription": "Configure how the server should manage the DNS cache",
+    "comment": "Comment",
+    "address": "Address",
+    "commentsDescription": "Comments are always preceded by #. You don't have to add it, it will be added automatically."
 }

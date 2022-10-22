@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
+import 'package:adguard_home_manager/screens/settings/dns/comment_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_radio_list_tile.dart';
 
 import 'package:adguard_home_manager/models/dns_info.dart';
@@ -27,7 +28,7 @@ class UpstreamDnsScreen extends StatefulWidget {
 }
 
 class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
-  List<TextEditingController> upstreamControllers = [];
+  List<Map<String, dynamic>> dnsServers = [];
 
   String upstreamMode = "";
 
@@ -35,8 +36,8 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
 
   checkValidValues() {
     if (
-      upstreamControllers.isNotEmpty &&
-      upstreamControllers.every((element) => element.text != '')
+      dnsServers.isNotEmpty &&
+      dnsServers.every((element) => element['controller'] != null ? element['controller.text'] != '' : true)
     ) {
       setState(() => validValues = true);
     }
@@ -48,9 +49,18 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
   @override
   void initState() {
     for (var item in widget.serversProvider.dnsInfo.data!.upstreamDns) {
-      final controller = TextEditingController();
-      controller.text = item;
-      upstreamControllers.add(controller);
+      if (item[0] == '#') {
+        dnsServers.add({
+          'comment': item
+        });
+      }
+      else {
+        final controller = TextEditingController();
+        controller.text = item;
+        dnsServers.add({
+          'controller': controller
+        });
+      }
     }
     upstreamMode = widget.serversProvider.dnsInfo.data!.upstreamMode;
     validValues = true;
@@ -62,12 +72,43 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    void openAddCommentModal() {
+      showModalBottomSheet(
+        context: context, 
+        builder: (context) => CommentModal(
+          onConfirm: (value) {
+            dnsServers.add({
+              'comment': value
+            });
+          },
+        ),
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        isDismissible: true
+      );
+    }
+
+    void openEditCommentModal(Map<String, dynamic> item, int position) {
+      showModalBottomSheet(
+        context: context, 
+        builder: (context) => CommentModal(
+          comment: item['comment'],
+          onConfirm: (value) {
+            setState(() => dnsServers[position] = { 'comment': value });
+          },
+        ),
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        isDismissible: true
+      );
+    }
+
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
       final result = await setDnsConfig(server: serversProvider.selectedServer!, data: {
-        "upstream_dns": upstreamControllers.map((e) => e.text).toList(),
+        "upstream_dns": dnsServers.map((e) => e['controller'] != null ? e['controller'].text : e['comment']).toList(),
         "upstream_mode": upstreamMode
       });
 
@@ -75,7 +116,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
 
       if (result['result'] == 'success') {
         DnsInfoData data = serversProvider.dnsInfo.data!;
-        data.upstreamDns = upstreamControllers.map((e) => e.text).toList();
+        data.upstreamDns = List<String>.from(dnsServers.map((e) => e['controller'] != null ? e['controller'].text : e['comment']));
         data.upstreamMode = upstreamMode;
         serversProvider.setDnsInfoData(data);
 
@@ -125,7 +166,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
       body: ListView(
         padding: const EdgeInsets.only(top: 10),
         children: [
-          if (upstreamControllers.isEmpty) Column(
+          if (dnsServers.isEmpty) Column(
             children: [
               Padding(
                 padding: const EdgeInsets.all(10),
@@ -142,17 +183,17 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
               const SizedBox(height: 20),
             ],
           ),
-          ...upstreamControllers.map((c) => Padding(
+          ...dnsServers.map((item) => Padding(
             padding: const EdgeInsets.only(
               left: 24, right: 10, bottom: 20
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
+                if (item['controller'] != null) SizedBox(
                   width: MediaQuery.of(context).size.width-90,
                   child: TextFormField(
-                    controller: c,
+                    controller: item['controller'],
                     onChanged: (_) => checkValidValues(),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.dns_rounded),
@@ -165,27 +206,54 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                     )
                   ),
                 ),
+                if (item['comment'] != null) Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        item['comment'],
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).listTileTheme.iconColor
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => openEditCommentModal(item, dnsServers.indexOf(item)), 
+                        icon: const Icon(Icons.edit),
+                        tooltip:  AppLocalizations.of(context)!.edit,
+                      )
+                    ],
+                  ),
+                ),
                 IconButton(
                   onPressed: () {
-                    setState(() => upstreamControllers = upstreamControllers.where((con) => con != c).toList());
+                    setState(() => dnsServers = dnsServers.where((i) => i != item).toList());
                     checkValidValues();
                   }, 
-                  icon: const Icon(Icons.remove_circle_outline)
+                  icon: const Icon(Icons.remove_circle_outline),
+                  tooltip:  AppLocalizations.of(context)!.remove,
                 )
               ],
             ),
           )).toList(),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton.icon(
+                onPressed: openAddCommentModal, 
+                icon: const Icon(Icons.add), 
+                label: Text(AppLocalizations.of(context)!.comment)
+              ),
+              ElevatedButton.icon(
                 onPressed: () {
-                  setState(() => upstreamControllers.add(TextEditingController()));
+                  setState(() => dnsServers.add({
+                    'controller': TextEditingController()
+                  }));
                   checkValidValues();
                 }, 
                 icon: const Icon(Icons.add), 
-                label: Text(AppLocalizations.of(context)!.addItem)
+                label: Text(AppLocalizations.of(context)!.address)
               ),
             ],
           ),
