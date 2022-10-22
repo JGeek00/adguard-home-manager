@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CustomListTile extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final Widget? subtitleWidget;
   final void Function()? onTap;
   final IconData? icon;
   final Widget? trailing;
@@ -12,6 +13,7 @@ class CustomListTile extends StatelessWidget {
     Key? key,
     required this.title,
     this.subtitle,
+    this.subtitleWidget,
     this.onTap,
     this.icon,
     this.trailing,
@@ -50,9 +52,10 @@ class CustomListTile extends StatelessWidget {
                               fontWeight: FontWeight.normal
                             ),
                           ),
-                          if (subtitle != null) ...[
+                          if (subtitle != null || subtitleWidget != null) ...[
                             const SizedBox(height: 5),
-                            Text(
+                            if (subtitle == null && subtitleWidget != null) subtitleWidget!,
+                            if (subtitle != null && subtitleWidget == null) Text(
                               subtitle!,
                               style: TextStyle(
                                 color: Theme.of(context).listTileTheme.iconColor,

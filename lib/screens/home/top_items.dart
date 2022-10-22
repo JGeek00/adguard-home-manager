@@ -1,25 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 class TopItems extends StatelessWidget {
   final String type;
   final String label;
   final List<Map<String, dynamic>> data;
+  final bool? clients;
 
   const TopItems({
     Key? key,
     required this.type,
     required this.label,
     required this.data,
+    this.clients
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final serversProvider = Provider.of<ServersProvider>(context);
 
     Widget rowItem(Map<String, dynamic> item) {
+      String? name;
+      if (clients != null && clients == true) {
+        try {
+          name = serversProvider.serverStatus.data!.clients.firstWhere((c) => c.ids.contains(item.keys.toList()[0])).name;
+        } catch (e) {
+          // ---- //
+        }
+      }
+
       return Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
@@ -28,14 +41,29 @@ class TopItems extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
-              width: width-100,
-              child: Text(
-                item.keys.toList()[0],
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16
-                ),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.keys.toList()[0],
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16
+                    ),
+                  ),
+                  if (name != null) ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      name,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).listTileTheme.iconColor
+                      ),
+                    ),
+                  ]
+                ],
               ),
             ),
             Text(item.values.toList()[0].toString())
@@ -86,6 +114,7 @@ class TopItems extends StatelessWidget {
                         builder: (context) => TopItemsScreen(
                           type: type,
                           title: label,
+                          isClient: clients,
                         )
                       )
                     ),

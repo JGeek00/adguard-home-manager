@@ -246,6 +246,7 @@ Future getServerStatus(Server server) async {
     apiRequest(server: server, method: 'get', urlPath: '/safesearch/status', type: 'server_status'),
     apiRequest(server: server, method: 'get', urlPath: '/safebrowsing/status', type: 'server_status'),
     apiRequest(server: server, method: 'get', urlPath: '/parental/status', type: 'server_status'),
+    apiRequest(server: server, method: 'get', urlPath: '/clients', type: 'server_status'),
   ]);
 
   if (
@@ -254,7 +255,8 @@ Future getServerStatus(Server server) async {
     result[2]['hasResponse'] == true &&
     result[3]['hasResponse'] == true &&
     result[4]['hasResponse'] == true &&
-    result[5]['hasResponse'] == true
+    result[5]['hasResponse'] == true &&
+    result[6]['hasResponse'] == true
   ) {
     if (
       result[0]['statusCode'] == 200 &&
@@ -262,10 +264,12 @@ Future getServerStatus(Server server) async {
       result[2]['statusCode'] == 200 &&
       result[3]['statusCode'] == 200 &&
       result[4]['statusCode'] == 200 &&
-      result[5]['statusCode'] == 200 
+      result[5]['statusCode'] == 200 &&
+      result[6]['statusCode'] == 200 
     ) {
       final Map<String, dynamic> mappedData = {
         'stats': jsonDecode(result[0]['body']),
+        'clients': jsonDecode(result[6]['body'])['clients'],
         'generalEnabled': jsonDecode(result[1]['body']),
         'filteringEnabled': jsonDecode(result[2]['body']),
         'safeSearchEnabled': jsonDecode(result[3]['body']),

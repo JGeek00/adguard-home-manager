@@ -153,6 +153,7 @@ class _HomeState extends State<Home> {
                 label: AppLocalizations.of(context)!.topClients, 
                 data: serversProvider.serverStatus.data!.stats.topClients,
                 type: 'topClients',
+                clients: true,
               ),
             ],
           );
