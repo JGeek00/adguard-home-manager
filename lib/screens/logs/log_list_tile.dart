@@ -18,45 +18,47 @@ class LogListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(
-                icon,
-                size: 24,
-              ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  subtitleWidget ?? SizedBox(
-                    width: width-100,
-                    child: Text(
-                      subtitle!,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).listTileTheme.iconColor,
+          Flexible(
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 24,
+                ),
+                const SizedBox(width: 20),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            ],
+                      const SizedBox(height: 5),
+                      subtitleWidget ?? Text(
+                        subtitle!,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).listTileTheme.iconColor,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          if (trailing != null) trailing!
+          if (trailing != null) ...[
+            const SizedBox(width: 10),
+            trailing!
+          ]
         ],
       ),
     );

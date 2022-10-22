@@ -47,7 +47,7 @@ class Log {
   final String status;
   final DateTime time;
   final String upstream;
-  final List<Answer>? answer;
+  final List<Answer> answer;
   final int? filterId;
   final String? rule;
   final List<Answer>? originalAnswer;
@@ -65,7 +65,7 @@ class Log {
     required this.status,
     required this.time,
     required this.upstream,
-    this.answer,
+    required this.answer,
     this.filterId,
     this.rule,
     this.originalAnswer,
@@ -84,7 +84,7 @@ class Log {
     status: json["status"],
     time: DateTime.parse(json["time"]),
     upstream: json["upstream"],
-    answer: json["answer"] == null ? null : List<Answer>.from(json["answer"].map((x) => Answer.fromJson(x))),
+    answer: json["answer"] != null ? List<Answer>.from(json["answer"].map((x) => Answer.fromJson(x))) : [],
     filterId: json["filterId"],
     rule: json["rule"],
     originalAnswer: json["original_answer"] == null ? null : List<Answer>.from(json["original_answer"].map((x) => Answer.fromJson(x))),

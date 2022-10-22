@@ -179,6 +179,39 @@ class LogDetailsModal extends StatelessWidget {
                   title: AppLocalizations.of(context)!.deviceName,
                   subtitle: log.clientInfo!.name
                 ),
+                if (log.answer.isNotEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      AppLocalizations.of(context)!.answer,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).primaryColor
+                      ),
+                    ),
+                  ),
+                  ...log.answer.map((a) => LogListTile(
+                    icon: Icons.download_rounded, 
+                    title: a.value,
+                    subtitle: "TTL: ${a.ttl.toString()}",
+                    trailing: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).listTileTheme.iconColor,
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: Text(
+                        a.type,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500
+                        ),
+                      ),
+                    )
+                  )).toList()
+                ]
               ],
             ),
           ),
