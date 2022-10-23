@@ -1741,3 +1741,74 @@ Future getEncryptionSettings({
     return result;
   }
 }
+
+Future checkEncryptionSettings({
+  required Server server,
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/tls/validate', 
+    method: 'post',
+    server: server,
+    body: data,
+    type: 'check_encryption_settings'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {
+        'result': 'success',
+        'data': jsonDecode(result['body'])
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'check_encryption_settings', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future saveEncryptionSettings({
+  required Server server,
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/tls/configure', 
+    method: 'post',
+    server: server,
+    body: data,
+    type: 'update_encryption_settings'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_encryption_settings', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}

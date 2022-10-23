@@ -5,12 +5,14 @@ class CustomSwitchListTile extends StatelessWidget {
   final void Function(bool) onChanged;
   final String title;
   final String? subtitle;
+  final bool? disabled;
 
   const CustomSwitchListTile({
     Key? key,
     required this.value,
     required this.onChanged,
     required this.title,
+    this.disabled,
     this.subtitle,
   }) : super(key: key);
 
@@ -19,7 +21,9 @@ class CustomSwitchListTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => onChanged(!value),
+        onTap: disabled != null && disabled == true
+          ? null
+          : () => onChanged(!value),
         child: Padding(
           padding: const EdgeInsets.only(
             top: 20, left: 24, right: 10, bottom: 20
@@ -34,8 +38,11 @@ class CustomSwitchListTile extends StatelessWidget {
                     width: MediaQuery.of(context).size.width-110,
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
+                        color: disabled != null && disabled == true
+                            ? Colors.grey
+                            : null,
                       ),
                     ),
                   ),
@@ -47,7 +54,9 @@ class CustomSwitchListTile extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Theme.of(context).listTileTheme.iconColor,
+                          color: disabled != null && disabled == true
+                            ? Colors.grey
+                            : Theme.of(context).listTileTheme.iconColor,
                         ),
                       ),
                     ),
@@ -56,7 +65,9 @@ class CustomSwitchListTile extends StatelessWidget {
               ),
               Switch(
                 value: value, 
-                onChanged: onChanged,
+                onChanged: disabled != null && disabled == true
+                  ? null
+                  : onChanged,
                 activeColor: Theme.of(context).primaryColor,
               )
             ],

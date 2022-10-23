@@ -515,5 +515,13 @@
     "privateKeyFile": "Set a private key file",
     "pastePrivateKey": "Paste the private key contents",
     "usePreviousKey": "Use the previously saved key",
-    "privateKeyPath": "Private key path"
+    "privateKeyPath": "Private key path",
+    "invalidCertificate": "Invalid certificate",
+    "invalidPrivateKey": "Invalid private key",
+    "validatingData": "Validating data",
+    "dataValid": "Data is valid",
+    "dataNotValid": "Data not valid",
+    "encryptionConfigSaved": "Encryption configuration saved successfully",
+    "encryptionConfigNotSaved": "Encryption configuration could not be saved",
+    "configError": "Configuration error"
 }

@@ -17,16 +17,20 @@ String encryptionDataToJson(EncryptionData data) => json.encode(data.toJson());
 class EncryptionData {
   final bool validCert;
   final bool validChain;
+  final String? subject;
+  final String? issuer;
   final DateTime notBefore;
   final DateTime notAfter;
-  final dynamic dnsNames;
+  final List<String> dnsNames;
   final bool validKey;
+  final String? keyType;
   final bool validPair;
   final bool enabled;
+  final String? serverName;
   final bool forceHttps;
-  final int portHttps;
-  final int portDnsOverTls;
-  final int portDnsOverQuic;
+  final int? portHttps;
+  final int? portDnsOverTls;
+  final int? portDnsOverQuic;
   final int portDnscrypt;
   final String dnscryptConfigFile;
   final bool allowUnencryptedDoh;
@@ -39,16 +43,20 @@ class EncryptionData {
   EncryptionData({
     required this.validCert,
     required this.validChain,
+    this.subject,
+    this.issuer,
     required this.notBefore,
     required this.notAfter,
     required this.dnsNames,
     required this.validKey,
+    this.keyType,
     required this.validPair,
     required this.enabled,
+    this.serverName,
     required this.forceHttps,
-    required this.portHttps,
-    required this.portDnsOverTls,
-    required this.portDnsOverQuic,
+    this.portHttps,
+    this.portDnsOverTls,
+    this.portDnsOverQuic,
     required this.portDnscrypt,
     required this.dnscryptConfigFile,
     required this.allowUnencryptedDoh,
@@ -63,12 +71,16 @@ class EncryptionData {
   factory EncryptionData.fromJson(Map<String, dynamic> json) => EncryptionData(
     validCert: json["valid_cert"],
     validChain: json["valid_chain"],
+    subject: json["subject"],
+    issuer: json["issuer"],
     notBefore: DateTime.parse(json["not_before"]),
     notAfter: DateTime.parse(json["not_after"]),
-    dnsNames: json["dns_names"],
+    dnsNames: json["dns_names"] != null ? List<String>.from(json["dns_names"].map((x) => x)) : [],
     validKey: json["valid_key"],
+    keyType: json["key_type"],
     validPair: json["valid_pair"],
     enabled: json["enabled"],
+    serverName: json["server_name"],
     forceHttps: json["force_https"],
     portHttps: json["port_https"],
     portDnsOverTls: json["port_dns_over_tls"],
@@ -86,12 +98,16 @@ class EncryptionData {
   Map<String, dynamic> toJson() => {
     "valid_cert": validCert,
     "valid_chain": validChain,
+    "subject": subject,
+    "issuer": issuer,
     "not_before": notBefore.toIso8601String(),
     "not_after": notAfter.toIso8601String(),
-    "dns_names": dnsNames,
+    "dns_names": List<dynamic>.from(dnsNames.map((x) => x)),
     "valid_key": validKey,
+    "key_type": keyType,
     "valid_pair": validPair,
     "enabled": enabled,
+    "server_name": serverName,
     "force_https": forceHttps,
     "port_https": portHttps,
     "port_dns_over_tls": portDnsOverTls,

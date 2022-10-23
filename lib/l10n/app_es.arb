@@ -515,5 +515,13 @@
     "privateKeyFile": "Establecer un archivo de clave privada",
     "pastePrivateKey": "Pegar el contenido de la clave privada",
     "usePreviousKey": "Usar la clave privada guardada previamente",
-    "privateKeyPath": "Ruta de la clave privada"
+    "privateKeyPath": "Ruta de la clave privada",
+    "invalidCertificate": "Certificado no válido",
+    "invalidPrivateKey": "Clave privada no válida",
+    "validatingData": "Validando datos",
+    "dataValid": "Datos válidos",
+    "dataNotValid": "Datos no válidos",
+    "encryptionConfigSaved": "Configuración de cifrado guardada correctamente",
+    "encryptionConfigNotSaved": "No se pudo guardar la configuración de encriptado",
+    "configError": "Configuration error"
 }
