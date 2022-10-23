@@ -88,9 +88,9 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
     final result = await getEncryptionSettings(server: widget.serversProvider.selectedServer!);
 
     if (mounted) {
-      await checkValidDataApi();
-
       if (result['result'] == 'success') {
+        await checkValidDataApi(data: result['data'].toJson());
+
         setState(() {
           enabled = result['data'].enabled;
           domainNameController.text = result['data'].serverName ?? '';
@@ -229,10 +229,10 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
     checkDataValid();
   }
 
-  Future checkValidDataApi() async {
+  Future checkValidDataApi({Map<String, dynamic>? data}) async {
     setState(() => dataValidApi = 0);
 
-    final result = await checkEncryptionSettings(server: widget.serversProvider.selectedServer!, data: {
+    final result = await checkEncryptionSettings(server: widget.serversProvider.selectedServer!, data: data ?? {
       "enabled": enabled,
       "server_name": domainNameController.text,
       "force_https": redirectHttps,
@@ -791,7 +791,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
         title: Text(AppLocalizations.of(context)!.encryptionSettings),
         actions: [
           IconButton(
-            onPressed: validData == true && dataValidApi == 2 && validDataError != null
+            onPressed: dataValidApi == 2 && validDataError != null
               ? () => {
                 showDialog(
                   context: context, 
@@ -802,7 +802,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
             tooltip: generateStatusString()
           ),
           IconButton(
-            onPressed: dataValidApi == 1
+            onPressed: validData == true && dataValidApi == 1
               ? () => saveData()
               : null, 
             icon: const Icon(Icons.save),
