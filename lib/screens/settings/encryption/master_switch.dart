@@ -1,0 +1,69 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+class EncryptionMasterSwitch extends StatelessWidget {
+  final bool value;
+  final void Function(bool) onChange;
+
+  const EncryptionMasterSwitch({
+    Key? key,
+    required this.value,
+    required this.onChange
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 10,
+        left: 12, 
+        right: 12
+      ),
+      child: Material(
+        color: Theme.of(context).primaryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(28),
+        child: InkWell(
+          onTap: () => onChange(!value),
+          borderRadius: BorderRadius.circular(28),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 12
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.enableEncryption,
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        AppLocalizations.of(context)!.enableEncryptionTypes,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).listTileTheme.iconColor,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: value, 
+                  onChanged: (value) => onChange(value),
+                  activeColor: Theme.of(context).primaryColor,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

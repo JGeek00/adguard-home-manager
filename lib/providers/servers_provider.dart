@@ -50,11 +50,6 @@ class ServersProvider with ChangeNotifier {
     data: null
   );
 
-  final Encryption _encryptionSettings = Encryption(
-    loadStatus: 0,  // 0 = loading, 1 = loaded, 2 = error,
-    data: null
-  );
-
   FilteringStatus? _filteringStatus;
 
   List<Server> get serversList {
@@ -95,10 +90,6 @@ class ServersProvider with ChangeNotifier {
 
   DnsInfo get dnsInfo {
     return _dnsInfo;
-  }
-
-  Encryption get encryptionSettings {
-    return _encryptionSettings;
   }
 
   void setDbInstance(Database db) {
@@ -206,18 +197,6 @@ class ServersProvider with ChangeNotifier {
 
   void setDnsInfoLoadStatus(int status, bool notify) {
     _dnsInfo.loadStatus = status;
-    if (notify == true) {
-      notifyListeners();
-    }
-  }
- 
-  void setEncryptionSettings(EncryptionData data) {
-    _encryptionSettings.data = data;
-    notifyListeners();
-  }
-
-  void setEncryptionSettingsLoadStatus(int status, bool notify) {
-    _encryptionSettings.loadStatus = status;
     if (notify == true) {
       notifyListeners();
     }
