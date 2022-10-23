@@ -15,12 +15,14 @@ import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class DhcpStatic extends StatelessWidget {
+class DhcpLeases extends StatelessWidget {
   final List<Lease> items;
+  final bool staticLeases;
 
-  const DhcpStatic({
+  const DhcpLeases({
     Key? key,
     required this.items,
+    required this.staticLeases,
   }) : super(key: key);
 
   @override
@@ -129,7 +131,11 @@ class DhcpStatic extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.dhcpStatic),
+        title: Text(
+          staticLeases == true
+            ? AppLocalizations.of(context)!.dhcpStatic
+            : AppLocalizations.of(context)!.dhcpLeases,
+        ),
       ),
       body: items.isNotEmpty
         ? ListView.builder(
@@ -145,33 +151,42 @@ class DhcpStatic extends StatelessWidget {
                   Text(items[index].hostname),
                 ],
               ),
-              trailing: IconButton(
-                onPressed: () {
-                  showModal(
-                    context: context,
-                    builder: (context) => DeleteStaticLeaseModal(
-                      onConfirm: () => deleteLease(items[index])
-                    )
-                  );
-                }, 
-                icon: const Icon(Icons.delete)
-              ),
+              trailing: staticLeases == true
+                ? IconButton(
+                    onPressed: () {
+                      showModal(
+                        context: context,
+                        builder: (context) => DeleteStaticLeaseModal(
+                          onConfirm: () => deleteLease(items[index])
+                        )
+                      );
+                    }, 
+                    icon: const Icon(Icons.delete)
+                  )
+                : null,
             ),
           )
         : Center(
-            child: Text(
-              AppLocalizations.of(context)!.noDhcpStaticLeases,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 22
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                staticLeases == true
+                  ? AppLocalizations.of(context)!.noDhcpStaticLeases
+                  : AppLocalizations.of(context)!.noLeases,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 22
+                ),
               ),
             ),
           ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: openAddStaticLease,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: staticLeases == true
+        ? FloatingActionButton(
+            onPressed: openAddStaticLease,
+            child: const Icon(Icons.add),
+          )
+        : null,
     );
   }
 }

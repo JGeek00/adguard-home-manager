@@ -6,7 +6,7 @@ import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/section_label.dart';
-import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_static.dart';
+import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_leases.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/select_interface_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -601,60 +601,47 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     ),
                   ),
                 ],
+                const SizedBox(height: 20),
                 SectionLabel(
                   label: AppLocalizations.of(context)!.dhcpLeases,
                 ),
-                if (serversProvider.dhcp.data!.dhcpStatus.leases.isNotEmpty) ListView.builder(
-                  padding: const EdgeInsets.only(top: 0),
-                  itemCount: serversProvider.dhcp.data!.dhcpStatus.leases.length,
-                  itemBuilder: (context, index) => Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: Column(
-                      children: [
-                        Text(
-                          serversProvider.dhcp.data!.dhcpStatus.leases[index].ip,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          serversProvider.dhcp.data!.dhcpStatus.leases[index].mac,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          serversProvider.dhcp.data!.dhcpStatus.leases[index].hostname,
-                          style: const TextStyle(
-                            fontSize: 14
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ),
-                if (serversProvider.dhcp.data!.dhcpStatus.leases.isEmpty) Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 28),
-                  child: Text(
-                    AppLocalizations.of(context)!.noLeases,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => DhcpStatic(
-                          items: serversProvider.dhcp.data!.dhcpStatus.staticLeases
+                        builder: (context) => DhcpLeases(
+                          items: serversProvider.dhcp.data!.dhcpStatus.leases,
+                          staticLeases: false,
+                        )
+                      ));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.dhcpLeases,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16
+                            ),
+                          ),
+                          const Icon(Icons.arrow_forward_rounded)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => DhcpLeases(
+                          items: serversProvider.dhcp.data!.dhcpStatus.staticLeases,
+                          staticLeases: true,
                         )
                       ));
                     },
@@ -676,6 +663,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 10)
               ],
             );
           } 
