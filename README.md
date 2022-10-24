@@ -8,8 +8,11 @@ AdGuard Home Manager is an unofficial client developed with Flutter.
 <p>▶ Supports HTTP and HTTPS connections.</p>
 <p>▶ Enable and disable the different protections with only one switch.</p>
 <p>▶ Add multiple servers to the app, and manage all of them from here.</p>
-<p>▶ Material You interface with dynamic theming (only Android 12+)</p>
-<p>And more coming...</p>
+<p>▶ See and filter the query logs.</p>
+<p>▶ Manage your filtering lists.</p>
+<p>▶ See the clients list and create a custom configuration for a client.</p>
+<p>▶ Configure the allowed devices, DHCP, DNS or rewrites among others.</p>
+<p>▶ Material You interface with dynamic theming (only Android 12+).</p>
 
 ## Privacy policy
 AdGuard Home Manager does not collect any personal user data. All data stored into the application is kept on the user's device.
