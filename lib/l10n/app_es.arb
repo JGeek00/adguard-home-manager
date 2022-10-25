@@ -525,5 +525,8 @@
     "encryptionConfigNotSaved": "No se pudo guardar la configuración de encriptado",
     "configError": "Configuration error",
     "enterOnlyCertificate": "Introduce sólo el certificado. No introduzcas las líneas ---BEGIN--- y ---END---.",
-    "enterOnlyPrivateKey": "Introduce sólo la clave privada. No introduzcas las líneas ---BEGIN--- y ---END---."
+    "enterOnlyPrivateKey": "Introduce sólo la clave privada. No introduzcas las líneas ---BEGIN--- y ---END---.",
+    "noItemsSearch": "No hay items para esa búsqueda.",
+    "clearSearch": "Limpiar búsqueda",
+    "exitSearch": "Salir de la búsqueda"
 }

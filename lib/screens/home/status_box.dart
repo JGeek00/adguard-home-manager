@@ -24,7 +24,7 @@ class StatusBox extends StatelessWidget {
         color: isEnabled == true 
           ? Colors.green
           : Colors.red,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular(16)
       ),
       child: Row(
         children: [

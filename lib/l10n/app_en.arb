@@ -525,5 +525,8 @@
     "encryptionConfigNotSaved": "Encryption configuration could not be saved",
     "configError": "Configuration error",
     "enterOnlyCertificate": "Enter only the certificate. Do not input the ---BEGIN--- and ---END--- lines.",
-    "enterOnlyPrivateKey": "Enter only the key. Do not input the ---BEGIN--- and ---END--- lines."
+    "enterOnlyPrivateKey": "Enter only the key. Do not input the ---BEGIN--- and ---END--- lines.",
+    "noItemsSearch": "No items for that search.",
+    "clearSearch": "Clear search",
+    "exitSearch": "Exit search"
 }

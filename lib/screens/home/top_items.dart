@@ -72,6 +72,22 @@ class TopItems extends StatelessWidget {
       );
     }
 
+    List<Map<String, dynamic>> generateData() {
+      switch (type) {
+        case 'topQueriedDomains':
+          return serversProvider.serverStatus.data!.stats.topQueriedDomains;
+          
+        case 'topBlockedDomains':
+          return serversProvider.serverStatus.data!.stats.topBlockedDomains;
+
+        case 'topClients':
+          return serversProvider.serverStatus.data!.stats.topClients;
+
+        default:
+          return [];
+      }
+    }
+
     return SizedBox(
       child: Column(
         children: [
@@ -115,6 +131,7 @@ class TopItems extends StatelessWidget {
                           type: type,
                           title: label,
                           isClient: clients,
+                          data: generateData(),
                         )
                       )
                     ),

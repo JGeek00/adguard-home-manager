@@ -151,15 +151,6 @@ class LogTile extends StatelessWidget {
         child: Container(
           width: double.maxFinite,
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          decoration: BoxDecoration(
-            border: index < length
-              ? Border(
-                  bottom: BorderSide(
-                    color: Theme.of(context).dividerColor
-                  )
-                )
-              : null
-          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
