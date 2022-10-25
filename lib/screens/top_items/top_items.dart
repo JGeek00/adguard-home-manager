@@ -64,22 +64,25 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: searchActive == true
-          ? TextFormField(
-              controller: searchController,
-              onChanged: search,
-              decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.search,
-                hintStyle: const TextStyle(
+          ? Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: TextFormField(
+                controller: searchController,
+                onChanged: search,
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.search,
+                  hintStyle: const TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 18
+                  ),
+                  border: InputBorder.none,
+                ),
+                style: const TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 18
                 ),
-                border: InputBorder.none,
               ),
-              style: const TextStyle(
-                fontWeight: FontWeight.normal,
-                fontSize: 18
-              ),
-            )
+          )
           : Text(widget.title),
         leading: searchActive == true ?
           IconButton(
