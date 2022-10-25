@@ -209,6 +209,7 @@ class _AddedListState extends State<AddedList> {
               padding: const EdgeInsets.only(top: 0),
               itemCount: widget.data.length,
               itemBuilder: (context, index) => ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 isThreeLine: true,
                 onLongPress: () => openOptionsModal(widget.data[index]),
                 onTap: () => openClientModal(widget.data[index]),

@@ -9,7 +9,7 @@ import 'package:adguard_home_manager/screens/settings/server_info/server_info.da
 import 'package:adguard_home_manager/screens/settings/encryption/encryption.dart';
 import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
-import 'package:adguard_home_manager/screens/settings/section_label.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns.dart';
 import 'package:adguard_home_manager/screens/settings/dns_rewrites/dns_rewrites.dart';
 import 'package:adguard_home_manager/screens/settings/appbar.dart';

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class SectionLabel extends StatelessWidget {
   final String label;
+  final EdgeInsets? padding;
 
   const SectionLabel({
     Key? key,
-    required this.label
+    required this.label,
+    this.padding
   }) : super(key: key);
 
   @override
@@ -14,7 +16,7 @@ class SectionLabel extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(25),
+          padding: padding ?? const EdgeInsets.all(25),
           child: Text(
             label,
             style: TextStyle(

@@ -17,7 +17,7 @@ import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/screens/settings/section_label.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class SearchClients extends StatelessWidget {
@@ -243,13 +243,19 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
         ? ListView(
             children: [
               if (clientsScreen.isNotEmpty) ...[
-                SectionLabel(label: AppLocalizations.of(context)!.added),
+                SectionLabel(
+                  label: AppLocalizations.of(context)!.added,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+                ),
                 ListView.builder(
                   shrinkWrap: true,
                   primary: false,
                   itemCount: clientsScreen.length,
                   padding: const EdgeInsets.only(bottom: 0),
                   itemBuilder: (context, index) => ListTile(
+                    contentPadding: index == 0 
+                      ? const EdgeInsets.symmetric(horizontal: 20, vertical: 0)
+                      : const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     isThreeLine: true,
                     onLongPress: () => openOptionsModal(clientsScreen[index]),
                     onTap: () => openClientModal(clientsScreen[index]),
@@ -309,7 +315,10 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                 )
               ],
               if (autoClientsScreen.isNotEmpty) ...[
-                SectionLabel(label: AppLocalizations.of(context)!.activeClients),
+                SectionLabel(
+                  label: AppLocalizations.of(context)!.activeClients,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+                ),
                 ListView.builder(                  
                   shrinkWrap: true,
                   primary: false,
@@ -323,6 +332,9 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                       ? autoClientsScreen[index].ip 
                       : null,
                     trailing: Text(autoClientsScreen[index].source),
+                    padding: index == 0
+                      ? const EdgeInsets.symmetric(horizontal: 20)
+                      : null,
                   )
                 )
               ]
