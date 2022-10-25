@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -154,11 +155,32 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                         ),
                         const SizedBox(height: 5),
                       ],
-                      Text(
-                        "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
-                        style: TextStyle(
-                          color: Theme.of(context).listTileTheme.iconColor
-                        ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 50,
+                            child: Text(
+                              "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
+                              style: TextStyle(
+                                color: Theme.of(context).listTileTheme.iconColor
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: LinearPercentIndicator(
+                              animation: true,
+                              lineHeight: 4,
+                              animationDuration: 500,
+                              curve: Curves.easeOut,
+                              percent: screenData[index].values.toList()[0]/total,
+                              barRadius: const Radius.circular(5),
+                              progressColor: Theme.of(context).primaryColor,
+                               backgroundColor: Theme.of(context).primaryColor.withOpacity(0.15),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                        ],
                       ),
                     ],
                   )

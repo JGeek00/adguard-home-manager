@@ -38,6 +38,7 @@ This is an unofficial application. The AdGuard Home team and the development of 
 - [flutter web browser](https://pub.dev/packages/flutter_web_browser)
 - [flutter svg](https://pub.dev/packages/flutter_svg)
 - [bottom sheet](https://pub.dev/packages/bottom_sheet)
+- [percent indicator](https://pub.dev/packages/percent_indicator)
 
 <br>
 
