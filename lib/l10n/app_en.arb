@@ -528,5 +528,7 @@
     "enterOnlyPrivateKey": "Enter only the key. Do not input the ---BEGIN--- and ---END--- lines.",
     "noItemsSearch": "No items for that search.",
     "clearSearch": "Clear search",
-    "exitSearch": "Exit search"
+    "exitSearch": "Exit search",
+    "searchClients": "Search clients",
+    "noClientsSearch": "No clients with that search."
 }

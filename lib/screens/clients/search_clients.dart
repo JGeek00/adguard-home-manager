@@ -1,0 +1,346 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:flutter/material.dart';
+import 'package:animations/animations.dart';
+import 'package:bottom_sheet/bottom_sheet.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:adguard_home_manager/screens/clients/client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/options_modal.dart';
+
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+
+import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/models/clients.dart';
+import 'package:adguard_home_manager/screens/settings/section_label.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+
+class SearchClients extends StatelessWidget {
+  const SearchClients({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
+
+    return SearchClientsWidget(
+      serversProvider: serversProvider,
+    );
+  }
+}
+
+class SearchClientsWidget extends StatefulWidget {
+  final ServersProvider serversProvider;
+
+  const SearchClientsWidget({
+    Key? key,
+    required this.serversProvider,
+  }) : super(key: key);
+
+  @override
+  State<SearchClientsWidget> createState() => _SearchClientsWidgetState();
+}
+
+class _SearchClientsWidgetState extends State<SearchClientsWidget> {
+  final TextEditingController searchController = TextEditingController();
+
+  List<Client> clients = [];
+  List<AutoClient> autoClients = [];
+
+  List<Client> clientsScreen = [];
+  List<AutoClient> autoClientsScreen = [];
+
+  void search(String value) {
+    setState(() {
+      clientsScreen = clients.where((client) => client.name.contains(value) || client.ids.where((e) => e.contains(value)).isNotEmpty).toList();
+      autoClientsScreen = autoClients.where((client) => (client.name != null ? client.name!.contains(value) : true) || client.ip.contains(value)).toList();
+    });
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      clients = widget.serversProvider.clients.data!.clients;
+      autoClients = widget.serversProvider.clients.data!.autoClientsData;
+
+      clientsScreen = widget.serversProvider.clients.data!.clients;
+      autoClientsScreen = widget.serversProvider.clients.data!.autoClientsData;
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {    
+    final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    void deleteClient(Client client) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.removingClient);
+      
+      final result = await postDeleteClient(server: serversProvider.selectedServer!, name: client.name);
+    
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        ClientsData clientsData = serversProvider.clients.data!;
+        clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
+        serversProvider.setClientsData(clientsData);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientDeletedSuccessfully, 
+          color: Colors.green
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientNotDeleted, 
+          color: Colors.red
+        );
+      }
+    }
+
+    void confirmEditClient(Client client) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.addingClient);
+      
+      final result = await postUpdateClient(server: serversProvider.selectedServer!, data: {
+        'name': client.name,
+        'data': client.toJson()
+      });
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        ClientsData clientsData = serversProvider.clients.data!;
+        clientsData.clients = clientsData.clients.map((e) {
+          if (e.name == client.name) {
+            return client;
+          }
+          else {
+            return e;
+          }
+        }).toList();
+        serversProvider.setClientsData(clientsData);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientUpdatedSuccessfully, 
+          color: Colors.green
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientNotUpdated, 
+          color: Colors.red
+        );
+      }
+    }
+
+    void openClientModal(Client client) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      showFlexibleBottomSheet(
+        minHeight: 0.6,
+        initHeight: 0.6,
+        maxHeight: 0.95,
+        isCollapsible: true,
+        duration: const Duration(milliseconds: 250),
+        anchors: [0.95],
+        context: context, 
+        builder: (ctx, controller, offset) => ClientModal(
+          scrollController: controller,
+          client: client,
+          onConfirm: confirmEditClient,
+          onDelete: deleteClient,
+        ),
+        bottomSheetColor: Colors.transparent
+      );
+    }
+
+    void openDeleteModal(Client client) {
+      showModal(
+        context: context, 
+        builder: (ctx) => RemoveClientModal(
+          onConfirm: () => deleteClient(client)
+        )
+      );
+    }
+
+    void openOptionsModal(Client client) {
+      showModal(
+        context: context, 
+        builder: (ctx) => OptionsModal(
+          onDelete: () => openDeleteModal(client),
+          onEdit: () => openClientModal(client),
+        )
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 60,
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 3),
+          child: TextFormField(
+            controller: searchController,
+            onChanged: search,
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.search,
+              hintStyle: const TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: 18
+              ),
+              border: InputBorder.none,
+            ),
+            style: const TextStyle(
+              fontWeight: FontWeight.normal,
+              fontSize: 18
+            ),
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: searchController.text != '' 
+              ? () => setState(() {
+                  searchController.text = '';
+                  autoClientsScreen = autoClients;
+                  clientsScreen = clients;
+                })
+              : null, 
+            icon: const Icon(Icons.clear_rounded),
+            tooltip: AppLocalizations.of(context)!.clearSearch,
+          ),
+          const SizedBox(width: 10)
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size(double.maxFinite, 1),
+          child: Container(
+            width: double.maxFinite,
+            height: 1,
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.5)
+            ),
+          ),
+        ),
+      ),
+      body: clientsScreen.isNotEmpty || autoClientsScreen.isNotEmpty 
+        ? ListView(
+            children: [
+              if (clientsScreen.isNotEmpty) ...[
+                SectionLabel(label: AppLocalizations.of(context)!.added),
+                ListView.builder(
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: clientsScreen.length,
+                  padding: const EdgeInsets.only(bottom: 0),
+                  itemBuilder: (context, index) => ListTile(
+                    isThreeLine: true,
+                    onLongPress: () => openOptionsModal(clientsScreen[index]),
+                    onTap: () => openClientModal(clientsScreen[index]),
+                    title: Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Text(
+                        clientsScreen[index].name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.normal
+                        ),
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(clientsScreen[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), '')),
+                        const SizedBox(height: 7),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.filter_list_rounded,
+                              size: 19,
+                              color: clientsScreen[index].filteringEnabled == true 
+                                ? Colors.green
+                                : Colors.red,
+                            ),
+                            const SizedBox(width: 10),
+                            Icon(
+                              Icons.vpn_lock_rounded,
+                              size: 18,
+                              color: clientsScreen[index].safebrowsingEnabled == true 
+                                ? Colors.green
+                                : Colors.red,
+                            ),
+                            const SizedBox(width: 10),
+                            Icon(
+                              Icons.block,
+                              size: 18,
+                              color: clientsScreen[index].parentalEnabled == true 
+                                ? Colors.green
+                                : Colors.red,
+                            ),
+                            const SizedBox(width: 10),
+                            Icon(
+                              Icons.search_rounded,
+                              size: 19,
+                              color: clientsScreen[index].safesearchEnabled == true 
+                                ? Colors.green
+                                : Colors.red,
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                )
+              ],
+              if (autoClientsScreen.isNotEmpty) ...[
+                SectionLabel(label: AppLocalizations.of(context)!.activeClients),
+                ListView.builder(                  
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: autoClientsScreen.length,
+                  padding: const EdgeInsets.only(bottom: 0),
+                  itemBuilder: (context, index) => CustomListTile(
+                    title: autoClientsScreen[index].name != '' 
+                      ? autoClientsScreen[index].name!
+                      : autoClientsScreen[index].ip,
+                    subtitle: autoClientsScreen[index].name != '' 
+                      ? autoClientsScreen[index].ip 
+                      : null,
+                    trailing: Text(autoClientsScreen[index].source),
+                  )
+                )
+              ]
+            ],
+          )
+        : Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                AppLocalizations.of(context)!.noClientsSearch,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 22
+                ),
+              ),
+            ),
+          )
+    );
+  }
+}

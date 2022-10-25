@@ -528,5 +528,7 @@
     "enterOnlyPrivateKey": "Introduce sólo la clave privada. No introduzcas las líneas ---BEGIN--- y ---END---.",
     "noItemsSearch": "No hay items para esa búsqueda.",
     "clearSearch": "Limpiar búsqueda",
-    "exitSearch": "Salir de la búsqueda"
+    "exitSearch": "Salir de la búsqueda",
+    "searchClients": "Buscar clientes",
+    "noClientsSearch": "No hay clientes con esa búsqueda."
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
+import 'package:adguard_home_manager/screens/clients/search_clients.dart';
 import 'package:adguard_home_manager/screens/clients/added_list.dart';
 
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -101,10 +102,23 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                 top: false,
                 sliver: SliverAppBar(
                   title: Text(AppLocalizations.of(context)!.clients),
-                  centerTitle: true,
                   pinned: true,
                   floating: true,
                   forceElevated: innerBoxIsScrolled,
+                  actions: [
+                    if (serversProvider.clients.loadStatus == 1) ...[
+                      IconButton(
+                        onPressed: () => {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const SearchClients()
+                          ))
+                        }, 
+                        icon: const Icon(Icons.search),
+                        tooltip: AppLocalizations.of(context)!.searchClients,
+                      ),
+                      const SizedBox(width: 10),
+                    ]
+                  ],
                   bottom: TabBar(
                     controller: tabController,
                     tabs: [
