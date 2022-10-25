@@ -91,6 +91,10 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
         ClientsData clientsData = serversProvider.clients.data!;
         clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
         serversProvider.setClientsData(clientsData);
+        setState(() {
+          clients = clientsData.clients;
+        });
+        search(searchController.text);
 
         showSnacbkar(
           context: context, 
@@ -133,6 +137,11 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
           }
         }).toList();
         serversProvider.setClientsData(clientsData);
+
+        setState(() {
+          clients = clientsData.clients;
+        });
+        search(searchController.text);
 
         showSnacbkar(
           context: context, 
