@@ -14,6 +14,7 @@ import 'package:adguard_home_manager/base.dart';
 
 import 'package:adguard_home_manager/classes/http_override.dart';
 import 'package:adguard_home_manager/services/database.dart';
+import 'package:adguard_home_manager/constants/colors.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -30,7 +31,17 @@ void main() async {
   ServersProvider serversProvider = ServersProvider();
   LogsProvider logsProvider = LogsProvider();
 
-  final dbData = await loadDb();
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  if (Platform.isAndroid) {
+    final androidInfo = await deviceInfo.androidInfo;
+    appConfigProvider.setAndroidInfo(androidInfo);
+  }
+  if (Platform.isIOS) {
+    final iosInfo = await deviceInfo.iosInfo;
+    appConfigProvider.setIosInfo(iosInfo);
+  }
+
+  final dbData = await loadDb(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31);
 
   if (dbData['appConfig']['overrideSslCheck'] == 1) {
     HttpOverrides.global = MyHttpOverrides();
@@ -42,16 +53,6 @@ void main() async {
 
   PackageInfo appInfo = await PackageInfo.fromPlatform();
   appConfigProvider.setAppInfo(appInfo);
-
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  if (Platform.isAndroid) {
-    final androidInfo = await deviceInfo.androidInfo;
-    appConfigProvider.setAndroidInfo(androidInfo);
-  }
-  if (Platform.isIOS) {
-    final iosInfo = await deviceInfo.iosInfo;
-    appConfigProvider.setIosInfo(iosInfo);
-  }
 
   runApp(
     MultiProvider(
@@ -103,11 +104,15 @@ class _MainState extends State<Main> {
       builder: (lightDynamic, darkDynamic) => MaterialApp(
         title: 'AdGuard Home Manager',
         theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31
-            ? lightTheme(lightDynamic)
-            : lightThemeOldVersions(),
+            ? appConfigProvider.useDynamicColor == true
+              ? lightTheme(lightDynamic)
+              : lightThemeOldVersions(colors[appConfigProvider.staticColor])
+            : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
           darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31
-            ? darkTheme(darkDynamic)
-            : darkThemeOldVersions(),
+            ? appConfigProvider.useDynamicColor == true
+              ? darkTheme(darkDynamic)
+              : darkThemeOldVersions(colors[appConfigProvider.staticColor])
+            : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
         themeMode: appConfigProvider.selectedTheme,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [

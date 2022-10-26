@@ -530,5 +530,20 @@
     "clearSearch": "Limpiar búsqueda",
     "exitSearch": "Salir de la búsqueda",
     "searchClients": "Buscar clientes",
-    "noClientsSearch": "No hay clientes con esa búsqueda."
+    "noClientsSearch": "No hay clientes con esa búsqueda.",
+    "customization": "Personalización",
+    "customizationDescription": "Personaliza esta aplicación",
+    "color": "Color",
+    "useDynamicTheme": "Usar tema dinámico",
+    "red": "Rojo",
+    "green": "Verde",
+    "blue": "Azul",
+    "yellow": "Amarillo",
+    "orange": "Naranja",
+    "brown": "Marrón",
+    "cyan": "Cyan",
+    "purple": "Morado",
+    "pink": "Rosa",
+    "deepOrange": "Naranja oscuro",
+    "indigo": "Índigo"
 }

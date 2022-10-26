@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqlite_api.dart';
 
+import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 
 class AppConfigProvider with ChangeNotifier {
@@ -18,6 +19,8 @@ class AppConfigProvider with ChangeNotifier {
   bool _showingSnackbar = false;
 
   int _selectedTheme = 0;
+  bool _useDynamicColor = true;
+  int _staticColor = 0;
 
   int _selectedClientsTab = 0;
   int _selectedFiltersTab = 0;
@@ -88,6 +91,14 @@ class AppConfigProvider with ChangeNotifier {
 
   bool get showingSnackbar {
     return _showingSnackbar;
+  }
+
+  bool get useDynamicColor {
+    return _useDynamicColor;
+  }
+
+  int get staticColor {
+    return _staticColor;
   }
 
   void setDbInstance(Database db) {
@@ -167,11 +178,61 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setUseDynamicColor(bool value) async {
+    final updated = await _updateDynamicColorDb(value == true ? 1 : 0);
+    if (updated == true) {
+      _useDynamicColor = value;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  Future<bool> setStaticColor(int value) async {
+    final updated = await _updateStaticColorDb(value);
+    if (updated == true) {
+      _staticColor = value;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   Future<bool> _updateThemeDb(int value) async {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawUpdate(
           'UPDATE appConfig SET theme = $value',
+        );
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> _updateDynamicColorDb(int value) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawUpdate(
+          'UPDATE appConfig SET useDynamicColor = $value',
+        );
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> _updateStaticColorDb(int value) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawUpdate(
+          'UPDATE appConfig SET staticColor = $value',
         );
         return true;
       });
@@ -210,6 +271,8 @@ class AppConfigProvider with ChangeNotifier {
     _selectedTheme = dbData['theme'];
     _overrideSslCheck = dbData['overrideSslCheck'];
     _hideZeroValues = dbData['hideZeroValues'];
+    _useDynamicColor = convertFromIntToBool(dbData['useDynamicColor'])!;
+    _staticColor = dbData['staticColor'];
 
     _dbInstance = dbInstance;
     notifyListeners();

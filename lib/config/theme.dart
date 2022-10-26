@@ -1,24 +1,11 @@
 import 'package:flutter/material.dart';
 
-Map<int, Color> swatch = {
-  50: const Color.fromRGBO(25, 180, 119, .1),
-  100: const Color.fromRGBO(25, 180, 119, .2),
-  200: const Color.fromRGBO(25, 180, 119, .3),
-  300: const Color.fromRGBO(25, 180, 119, .4),
-  400: const Color.fromRGBO(25, 180, 119, .5),
-  500: const Color.fromRGBO(25, 180, 119, .6),
-  600: const Color.fromRGBO(25, 180, 119, .7),
-  700: const Color.fromRGBO(25, 180, 119, .8),
-  800: const Color.fromRGBO(25, 180, 119, .9),
-  900: const Color.fromRGBO(25, 180, 119, 1),
-};
-
-MaterialColor primaryColor = MaterialColor(0xff19b477, swatch);
+import 'package:adguard_home_manager/constants/adguard_green_color.dart';
 
 ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   useMaterial3: true,
-  colorScheme: dynamicColorScheme ?? ColorScheme.fromSwatch(primarySwatch: primaryColor),
-  primaryColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
+  colorScheme: dynamicColorScheme ?? ColorScheme.fromSwatch(primarySwatch: adguardGreenColor),
+  primaryColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor,
   scaffoldBackgroundColor: dynamicColorScheme != null ? dynamicColorScheme.background : Colors.white,
   snackBarTheme: SnackBarThemeData(
     behavior: SnackBarBehavior.floating,
@@ -39,15 +26,15 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
-    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStateProperty.all(
-        dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+        dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
       ),
       overlayColor: MaterialStateProperty.all(
-        dynamicColorScheme != null ? dynamicColorScheme.primary.withOpacity(0.1) : primaryColor.withOpacity(0.1)
+        dynamicColorScheme != null ? dynamicColorScheme.primary.withOpacity(0.1) : adguardGreenColor.withOpacity(0.1)
       ),
     ),
   ),
@@ -59,22 +46,22 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
     fillColor: MaterialStateProperty.all(
-      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+      dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
     ),
   ),
   tabBarTheme: TabBarTheme(
     unselectedLabelColor: Colors.black,
-    labelColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
+    labelColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor,
     indicator: UnderlineTabIndicator(
       borderSide: BorderSide(
-        color: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
+        color: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor,
         width: 2
       )
     )
   ),
   radioTheme: RadioThemeData(
     fillColor: MaterialStateProperty.all(
-      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+      dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
     ),
   ),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
@@ -82,14 +69,14 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
 
 ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   useMaterial3: true,
-  colorScheme: dynamicColorScheme ?? ColorScheme.fromSwatch(primarySwatch: primaryColor).copyWith(
+  colorScheme: dynamicColorScheme ?? ColorScheme.fromSwatch(primarySwatch: adguardGreenColor).copyWith(
     brightness: Brightness.dark
   ),
-  primaryColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
+  primaryColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor,
   scaffoldBackgroundColor: dynamicColorScheme != null ? dynamicColorScheme.background :const Color.fromRGBO(18, 18, 18, 1),
   dialogBackgroundColor: dynamicColorScheme != null ? dynamicColorScheme.background : const Color.fromRGBO(44, 44, 44, 1),
   navigationBarTheme: NavigationBarThemeData(
-    indicatorColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
+    indicatorColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor,
   ),
   snackBarTheme: SnackBarThemeData(
     contentTextStyle: const TextStyle(
@@ -103,15 +90,15 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
-    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStateProperty.all(
-        dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+        dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
       ),
       overlayColor: MaterialStateProperty.all(
-        dynamicColorScheme != null ? dynamicColorScheme.primary.withOpacity(0.1) : primaryColor.withOpacity(0.1)
+        dynamicColorScheme != null ? dynamicColorScheme.primary.withOpacity(0.1) : adguardGreenColor.withOpacity(0.1)
       ),
     ),
   ),
@@ -132,28 +119,28 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
     fillColor: MaterialStateProperty.all(
-      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+      dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
     ),
   ),
   tabBarTheme: TabBarTheme(
     unselectedLabelColor: Colors.white,
-    labelColor: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
+    labelColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor,
     indicator: UnderlineTabIndicator(
       borderSide: BorderSide(
-        color: dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor,
+        color: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor,
         width: 2
       )
     )
   ),
   radioTheme: RadioThemeData(
     fillColor: MaterialStateProperty.all(
-      dynamicColorScheme != null ? dynamicColorScheme.primary : primaryColor
+      dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
     ),
   ),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch
 );
 
-ThemeData lightThemeOldVersions() => ThemeData(
+ThemeData lightThemeOldVersions(MaterialColor primaryColor) => ThemeData(
   useMaterial3: true,
   primaryColor: primaryColor,
   appBarTheme: AppBarTheme(
@@ -246,7 +233,7 @@ ThemeData lightThemeOldVersions() => ThemeData(
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
 );
 
-ThemeData darkThemeOldVersions() => ThemeData(
+ThemeData darkThemeOldVersions(MaterialColor primaryColor) => ThemeData(
   useMaterial3: true,
   primaryColor: primaryColor,
   scaffoldBackgroundColor: const Color.fromRGBO(18, 18, 18, 1),
@@ -260,7 +247,7 @@ ThemeData darkThemeOldVersions() => ThemeData(
     )
   ),
   appBarTheme: AppBarTheme(
-    color: const Color.fromRGBO(18, 18, 18, 1),
+    color: Color.fromRGBO(18, 18, 18, 1),
     foregroundColor: Colors.white,
     elevation: 0,
     surfaceTintColor: primaryColor

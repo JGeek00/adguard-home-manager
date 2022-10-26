@@ -530,5 +530,20 @@
     "clearSearch": "Clear search",
     "exitSearch": "Exit search",
     "searchClients": "Search clients",
-    "noClientsSearch": "No clients with that search."
+    "noClientsSearch": "No clients with that search.",
+    "customization": "Customization",
+    "customizationDescription": "Customize this application",
+    "color": "Color",
+    "useDynamicTheme": "Use dynamic theme",
+    "red": "Red",
+    "green": "Green",
+    "blue": "Blue",
+    "yellow": "Yellow",
+    "orange": "Orange",
+    "brown": "Brown",
+    "cyan": "Cyan",
+    "purple": "Purple",
+    "pink": "Pink",
+    "deepOrange": "Deep orange",
+    "indigo": "Indigo"
 }

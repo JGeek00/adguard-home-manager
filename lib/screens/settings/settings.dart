@@ -4,10 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/settings/theme_modal.dart';
 import 'package:adguard_home_manager/screens/settings/server_info/server_info.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/encryption.dart';
 import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
+import 'package:adguard_home_manager/screens/settings/customization/customization.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns.dart';
@@ -31,36 +31,6 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final serversProvider = Provider.of<ServersProvider>(context);
-
-    final statusBarHeight = MediaQuery.of(context).viewInsets.top;
-
-    String getThemeString() {
-      switch (appConfigProvider.selectedThemeNumber) {
-        case 0:
-          return AppLocalizations.of(context)!.systemDefined;
-
-        case 1:
-          return AppLocalizations.of(context)!.light;
-
-        case 2:
-          return AppLocalizations.of(context)!.dark;
-
-        default:
-          return "";
-      }
-    }
-
-    void openThemeModal() {
-      showModalBottomSheet(
-        context: context, 
-        isScrollControlled: true,
-        builder: (context) => ThemeModal(
-          statusBarHeight: statusBarHeight,
-          selectedTheme: appConfigProvider.selectedThemeNumber,
-        ),
-        backgroundColor: Colors.transparent,
-      );
-    }
 
     void navigateServers() {
       Future.delayed(const Duration(milliseconds: 0), (() {
@@ -167,10 +137,12 @@ class Settings extends StatelessWidget {
           ],
           SectionLabel(label: AppLocalizations.of(context)!.appSettings),
           CustomListTile(
-            icon: Icons.light_mode_rounded,
-            title: AppLocalizations.of(context)!.theme, 
-            subtitle: getThemeString(),
-            onTap: openThemeModal,
+            icon: Icons.palette_rounded,
+            title: AppLocalizations.of(context)!.customization, 
+            subtitle: AppLocalizations.of(context)!.customizationDescription,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+              builder: (context) => const Customization()
+            ))
           ),
           CustomListTile(
             icon: Icons.storage_rounded,

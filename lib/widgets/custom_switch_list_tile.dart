@@ -26,7 +26,7 @@ class CustomSwitchListTile extends StatelessWidget {
           : () => onChanged(!value),
         child: Padding(
           padding: const EdgeInsets.only(
-            top: 20, left: 24, right: 10, bottom: 20
+            top: 15, left: 24, right: 15, bottom: 15
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
