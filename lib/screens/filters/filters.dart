@@ -300,8 +300,12 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                                       : Icons.cancel,
                                     size: 12,
                                     color: serversProvider.filtering.data!.enabled == true
-                                      ? Colors.green
-                                      : Colors.red,
+                                      ? appConfigProvider.useThemeColorForStatus == true
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.green
+                                      : appConfigProvider.useThemeColorForStatus == true
+                                        ? Colors.grey
+                                        : Colors.red
                                   ),
                                 ),
                               ],

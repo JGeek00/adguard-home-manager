@@ -297,8 +297,12 @@ class _FiltersListState extends State<FiltersList> {
                     ? Icons.check_circle_rounded
                     : Icons.cancel,
                   color: widget.data[index].enabled == true
-                    ? Colors.green
-                    : Colors.red,
+                    ? appConfigProvider.useThemeColorForStatus == true
+                      ? Theme.of(context).primaryColor
+                      : Colors.green
+                    : appConfigProvider.useThemeColorForStatus == true
+                      ? Colors.grey
+                      : Colors.red
                 ),
                 onTap: () => openDetailsModal(widget.data[index]),
               ),

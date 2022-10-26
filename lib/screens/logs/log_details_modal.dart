@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 
 class LogDetailsModal extends StatelessWidget {
@@ -21,8 +23,10 @@ class LogDetailsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
     Widget getResult() {
-      final filter = getFilteredStatus(context, log.reason, true);
+      final filter = getFilteredStatus(context, appConfigProvider, log.reason, true);
       return Text(
         filter['label'],
         style: TextStyle(
@@ -222,11 +226,11 @@ class LogDetailsModal extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () {
-                    blockUnblock(log, getFilteredStatus(context, log.reason, true)['filtered'] == true ? 'unblock' : 'block');
+                    blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block');
                     Navigator.pop(context);
                   },
                   child: Text(
-                    getFilteredStatus(context, log.reason, true)['filtered'] == true
+                    getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
                       ? AppLocalizations.of(context)!.unblockDomain
                       : AppLocalizations.of(context)!.blockDomain
                     )

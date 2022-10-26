@@ -63,7 +63,7 @@ class LogTile extends StatelessWidget {
     }
     
     Widget generateLogStatus() {
-      final filter = getFilteredStatus(context, log.reason, false);
+      final filter = getFilteredStatus(context, appConfigProvider, log.reason, false);
       return logStatusWidget(
         icon: filter['icon'],
         color: filter['color'],

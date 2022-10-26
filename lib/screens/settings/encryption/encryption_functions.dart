@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
+
 String? validateDomain(BuildContext context, String domain) {
   RegExp regExp = RegExp(r'^([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$');
   if (regExp.hasMatch(domain)) {
@@ -50,7 +52,7 @@ String? validatePath(BuildContext context, String cert) {
   }
 }
 
-Widget generateStatus(bool localValidation, int dataValidApi) {
+Widget generateStatus(BuildContext context, AppConfigProvider appConfigProvider, bool localValidation, int dataValidApi) {
   if (localValidation == true) {
     if (dataValidApi == 0) {
       return const SizedBox(
@@ -62,15 +64,19 @@ Widget generateStatus(bool localValidation, int dataValidApi) {
       );
     }
     else if (dataValidApi == 1) {
-      return const Icon(
+      return Icon(
         Icons.check_circle_rounded,
-        color: Colors.green,
+        color: appConfigProvider.useThemeColorForStatus == true
+          ? Theme.of(context).primaryColor
+          : Colors.green,
       );
     }
     else if (dataValidApi == 2) {
-      return const Icon(
+      return Icon(
         Icons.cancel_rounded,
-        color: Colors.red,
+        color: appConfigProvider.useThemeColorForStatus == true
+          ? Theme.of(context).listTileTheme.iconColor
+          : Colors.red,
       );
     }
     else {

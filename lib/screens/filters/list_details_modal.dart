@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/filter_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/format_time.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 
 class ListDetailsModal extends StatelessWidget {
@@ -26,6 +28,8 @@ class ListDetailsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
@@ -96,8 +100,12 @@ class ListDetailsModal extends StatelessWidget {
                       ? AppLocalizations.of(context)!.enabled
                       : AppLocalizations.of(context)!.disabled,
                     color: list.enabled == true
-                      ? Colors.green
-                      : Colors.red,
+                      ? appConfigProvider.useThemeColorForStatus == true
+                        ? Theme.of(context).primaryColor
+                        : Colors.green
+                      :  appConfigProvider.useThemeColorForStatus == true
+                        ? Colors.grey
+                        : Colors.red,
                     bold: true,
                   ),
                   FilterListTile(

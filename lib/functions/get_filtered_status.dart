@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
-Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, bool isRow) {
+Map<String, dynamic> getFilteredStatus(BuildContext context, AppConfigProvider appConfigProvider, String filterKey, bool isRow) {
   switch (filterKey) {
     case 'NotFilteredNotFound':
       return {
@@ -10,7 +11,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true
           ? AppLocalizations.of(context)!.processedRow
           : AppLocalizations.of(context)!.processed,
-        'color': Colors.green,
+        'color': appConfigProvider.useThemeColorForStatus == true
+            ? Theme.of(context).primaryColor
+            : Colors.green,
         'icon': Icons.verified_user_rounded,
       };
 
@@ -20,7 +23,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true
           ? AppLocalizations.of(context)!.processedWhitelistRow
           : AppLocalizations.of(context)!.processedWhitelist,
-        'color': Colors.green,
+        'color': appConfigProvider.useThemeColorForStatus == true
+          ? Theme.of(context).primaryColor
+          : Colors.green,
         'icon': Icons.verified_user_rounded,
       };
 
@@ -30,7 +35,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true 
           ? AppLocalizations.of(context)!.processedErrorRow
           : AppLocalizations.of(context)!.processedError,
-        'color': Colors.green,
+        'color': appConfigProvider.useThemeColorForStatus == true
+          ? Theme.of(context).primaryColor
+          : Colors.green,
         'icon': Icons.verified_user_rounded,
       };
 
@@ -40,7 +47,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true
           ? AppLocalizations.of(context)!.blockedBlacklistRow
           : AppLocalizations.of(context)!.blockedBlacklist,
-        'color': Colors.red,
+        'color': appConfigProvider.useThemeColorForStatus == true
+          ? Colors.grey
+          : Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
 
@@ -50,7 +59,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true
           ? AppLocalizations.of(context)!.blockedSafeBrowsingRow
           : AppLocalizations.of(context)!.blockedSafeBrowsing,
-        'color': Colors.red,
+        'color': appConfigProvider.useThemeColorForStatus == true
+          ? Colors.grey
+          : Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
 
@@ -60,7 +71,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true
           ? AppLocalizations.of(context)!.blockedParentalRow
           : AppLocalizations.of(context)!.blockedParental,
-        'color': Colors.red,
+        'color': appConfigProvider.useThemeColorForStatus == true
+          ? Colors.grey
+          : Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
 
@@ -70,7 +83,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true
           ? AppLocalizations.of(context)!.blockedInvalidRow
           : AppLocalizations.of(context)!.blockedInvalid,
-        'color': Colors.red,
+        'color': appConfigProvider.useThemeColorForStatus == true
+          ? Colors.grey
+          : Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
 
@@ -80,7 +95,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true 
           ? AppLocalizations.of(context)!.blockedSafeSearchRow
           : AppLocalizations.of(context)!.blockedSafeSearch,
-        'color': Colors.red,
+        'color': appConfigProvider.useThemeColorForStatus == true
+          ? Colors.grey
+          : Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
 
@@ -90,7 +107,9 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, String filterKey, b
         'label': isRow == true
           ? AppLocalizations.of(context)!.blockedServiceRow
           : AppLocalizations.of(context)!.blockedService,
-        'color': Colors.red,
+        'color': appConfigProvider.useThemeColorForStatus == true
+          ? Colors.grey
+          : Colors.red,
         'icon': Icons.gpp_bad_rounded,
       };
 

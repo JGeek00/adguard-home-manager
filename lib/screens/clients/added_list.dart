@@ -234,32 +234,48 @@ class _AddedListState extends State<AddedList> {
                           Icons.filter_list_rounded,
                           size: 19,
                           color: widget.data[index].filteringEnabled == true 
-                            ? Colors.green
-                            : Colors.red,
+                            ? appConfigProvider.useThemeColorForStatus == true
+                              ? Theme.of(context).primaryColor
+                              : Colors.green
+                            : appConfigProvider.useThemeColorForStatus == true
+                              ? Colors.grey
+                              : Colors.red,
                         ),
                         const SizedBox(width: 10),
                         Icon(
                           Icons.vpn_lock_rounded,
                           size: 18,
                           color: widget.data[index].safebrowsingEnabled == true 
-                            ? Colors.green
-                            : Colors.red,
+                            ? appConfigProvider.useThemeColorForStatus == true
+                              ? Theme.of(context).primaryColor
+                              : Colors.green
+                            : appConfigProvider.useThemeColorForStatus == true
+                              ? Colors.grey
+                              : Colors.red,
                         ),
                         const SizedBox(width: 10),
                         Icon(
                           Icons.block,
                           size: 18,
                           color: widget.data[index].parentalEnabled == true 
-                            ? Colors.green
-                            : Colors.red,
+                            ? appConfigProvider.useThemeColorForStatus == true
+                              ? Theme.of(context).primaryColor
+                              : Colors.green
+                            : appConfigProvider.useThemeColorForStatus == true
+                              ? Colors.grey
+                              : Colors.red,
                         ),
                         const SizedBox(width: 10),
                         Icon(
                           Icons.search_rounded,
                           size: 19,
                           color: widget.data[index].safesearchEnabled == true 
-                            ? Colors.green
-                            : Colors.red,
+                            ? appConfigProvider.useThemeColorForStatus == true
+                              ? Theme.of(context).primaryColor
+                              : Colors.green
+                            : appConfigProvider.useThemeColorForStatus == true
+                              ? Colors.grey
+                              : Colors.red,
                         )
                       ],
                     )

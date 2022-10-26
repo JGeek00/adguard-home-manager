@@ -542,7 +542,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                   builder: (context) => EncryptionErrorModal(error: validDataError!)
                 )
               } : null, 
-            icon: generateStatus(localValidationValid, dataValidApi),
+            icon: generateStatus(context, appConfigProvider, localValidationValid, dataValidApi),
             tooltip: generateStatusString(context, localValidationValid, dataValidApi)
           ),
           IconButton(

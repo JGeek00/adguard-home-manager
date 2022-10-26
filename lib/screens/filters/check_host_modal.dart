@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -48,6 +49,7 @@ class _CheckHostModalState extends State<CheckHostModal> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void checkHost() async {
       if (mounted) {
@@ -56,7 +58,7 @@ class _CheckHostModalState extends State<CheckHostModal> {
         final result = await checkHostFiltered(server: serversProvider.selectedServer!, host: domainController.text);
 
         if (result['result'] == 'success') {
-          final status = getFilteredStatus(context, result['data']['reason'], true);
+          final status = getFilteredStatus(context, appConfigProvider, result['data']['reason'], true);
           if (mounted) {
             setState(() => resultWidget = Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -65,16 +67,24 @@ class _CheckHostModalState extends State<CheckHostModal> {
                   status['icon'],
                   size: 18,
                   color: status['filtered'] == true
-                    ? Colors.red
-                    : Colors.green,
+                    ? appConfigProvider.useThemeColorForStatus == true
+                      ? Colors.grey
+                      : Colors.red
+                    : appConfigProvider.useThemeColorForStatus
+                      ? Theme.of(context).primaryColor
+                      : Colors.green,
                 ),
                 const SizedBox(width: 10),
                 Text(
                   status['label'],
                   style: TextStyle(
                     color: status['filtered'] == true
-                    ? Colors.red
-                    : Colors.green,
+                      ? appConfigProvider.useThemeColorForStatus == true
+                        ? Colors.grey
+                        : Colors.red
+                      : appConfigProvider.useThemeColorForStatus
+                        ? Theme.of(context).primaryColor
+                        : Colors.green,
                     fontWeight: FontWeight.w500
                   ),
                 )
