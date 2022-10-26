@@ -263,7 +263,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                   padding: const EdgeInsets.only(bottom: 0),
                   itemBuilder: (context, index) => ListTile(
                     contentPadding: index == 0 
-                      ? const EdgeInsets.symmetric(horizontal: 20, vertical: 0)
+                      ? const EdgeInsets.only(left: 20, right: 20, bottom: 15)
                       : const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     isThreeLine: true,
                     onLongPress: () => openOptionsModal(clientsScreen[index]),
@@ -342,7 +342,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                       : null,
                     trailing: Text(autoClientsScreen[index].source),
                     padding: index == 0
-                      ? const EdgeInsets.symmetric(horizontal: 20)
+                      ? const EdgeInsets.only(left: 20, right: 20, bottom: 15)
                       : null,
                   )
                 )
