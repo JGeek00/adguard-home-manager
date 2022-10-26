@@ -24,6 +24,9 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
       color: Colors.black
     ),
   ),
+  navigationBarTheme: NavigationBarThemeData(
+    indicatorColor: dynamicColorScheme != null ? dynamicColorScheme.primaryContainer : adguardGreenColor,
+  ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
     backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
@@ -76,7 +79,7 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   scaffoldBackgroundColor: dynamicColorScheme != null ? dynamicColorScheme.background :const Color.fromRGBO(18, 18, 18, 1),
   dialogBackgroundColor: dynamicColorScheme != null ? dynamicColorScheme.background : const Color.fromRGBO(44, 44, 44, 1),
   navigationBarTheme: NavigationBarThemeData(
-    indicatorColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor,
+    indicatorColor: dynamicColorScheme != null ? dynamicColorScheme.primaryContainer : adguardGreenColor,
   ),
   snackBarTheme: SnackBarThemeData(
     contentTextStyle: const TextStyle(

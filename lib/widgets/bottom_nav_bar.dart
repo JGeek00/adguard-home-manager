@@ -50,7 +50,16 @@ class BottomNavBar extends StatelessWidget {
     return NavigationBar(
       selectedIndex: appConfigProvider.selectedScreen,
       destinations: screens.map((screen) => NavigationDestination(
-        icon: Icon(screen.icon), 
+        icon: Icon(
+          screen.icon,
+          color: screens.indexOf(screen) == appConfigProvider.selectedScreen
+            ? Theme.of(context).navigationBarTheme.indicatorColor!.computeLuminance() > 0.5 ? 
+              appConfigProvider.useDynamicColor == true
+                ? Theme.of(context).primaryColor
+                : Colors.black
+               : Colors.white
+            : null,
+        ), 
         label: translatedName(screen.name)
       )).toList(),
       onDestinationSelected: (value) {
