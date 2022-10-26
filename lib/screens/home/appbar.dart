@@ -7,6 +7,7 @@ import 'package:adguard_home_manager/screens/servers/servers.dart';
 
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
   const HomeAppBar({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   PreferredSizeWidget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final Server? server =  serversProvider.selectedServer;
 
@@ -60,8 +62,12 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
                   size: 30,
                   color: serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
                     ? serversProvider.serverStatus.data!.generalEnabled == true 
-                      ? Colors.green
-                      : Colors.red
+                      ? appConfigProvider.useThemeColorForStatus
+                        ? Theme.of(context).primaryColor
+                        : Colors.green
+                      : appConfigProvider.useThemeColorForStatus == true
+                        ? Colors.grey
+                        : Colors.red
                     : Colors.grey,
                 ),
                 const SizedBox(width: 20),

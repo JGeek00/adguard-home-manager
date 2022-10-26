@@ -21,6 +21,7 @@ class AppConfigProvider with ChangeNotifier {
   int _selectedTheme = 0;
   bool _useDynamicColor = true;
   int _staticColor = 0;
+  bool _useThemeColorForStatus = false;
 
   int _selectedClientsTab = 0;
   int _selectedFiltersTab = 0;
@@ -99,6 +100,10 @@ class AppConfigProvider with ChangeNotifier {
 
   int get staticColor {
     return _staticColor;
+  }
+
+  bool get useThemeColorForStatus {
+    return _useThemeColorForStatus;
   }
 
   void setDbInstance(Database db) {
@@ -190,6 +195,18 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setUseThemeColorForStatus(bool value) async {
+    final updated = await _updateUseThemeColorForStatusDb(value == true ? 1 : 0);
+    if (updated == true) {
+      _useThemeColorForStatus = value;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   Future<bool> setStaticColor(int value) async {
     final updated = await _updateStaticColorDb(value);
     if (updated == true) {
@@ -220,6 +237,19 @@ class AppConfigProvider with ChangeNotifier {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawUpdate(
           'UPDATE appConfig SET useDynamicColor = $value',
+        );
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> _updateUseThemeColorForStatusDb(int value) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawUpdate(
+          'UPDATE appConfig SET useThemeColorForStatus = $value',
         );
         return true;
       });
@@ -273,6 +303,7 @@ class AppConfigProvider with ChangeNotifier {
     _hideZeroValues = dbData['hideZeroValues'];
     _useDynamicColor = convertFromIntToBool(dbData['useDynamicColor'])!;
     _staticColor = dbData['staticColor'];
+    _useThemeColorForStatus = convertFromIntToBool(dbData['useThemeColorForStatus'])!;
 
     _dbInstance = dbInstance;
     notifyListeners();

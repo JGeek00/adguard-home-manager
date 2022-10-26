@@ -545,5 +545,7 @@
     "purple": "Purple",
     "pink": "Pink",
     "deepOrange": "Deep orange",
-    "indigo": "Indigo"
+    "indigo": "Indigo",
+    "useThemeColorStatus": "Use theme color for status",
+    "useThemeColorStatusDescription": "Replaces green and red status colors with theme color and grey"
 }

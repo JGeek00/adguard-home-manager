@@ -545,5 +545,7 @@
     "purple": "Morado",
     "pink": "Rosa",
     "deepOrange": "Naranja oscuro",
-    "indigo": "Índigo"
+    "indigo": "Índigo",
+    "useThemeColorStatus": "Usar el color del tema para estados",
+    "useThemeColorStatusDescription": "Reemplaza el verde y rojo por el color del tema y gris"
 }

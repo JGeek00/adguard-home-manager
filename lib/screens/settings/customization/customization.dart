@@ -41,12 +41,14 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
   int selectedTheme = 0;
   bool dynamicColor = true;
   int selectedColor = 0;
+  bool useThemeColorInsteadGreenRed = false;
 
   @override
   void initState() {
     selectedTheme = widget.appConfigProvider.selectedTheme == ThemeMode.light ? 1 : 2;
     dynamicColor = widget.appConfigProvider.useDynamicColor;
     selectedColor = widget.appConfigProvider.staticColor;
+    useThemeColorInsteadGreenRed = widget.appConfigProvider.useThemeColorForStatus;
     super.initState();
   }
 
@@ -167,14 +169,23 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
                 top: 10
               ),
               child: Text(
-                colorTranslation(context, selectedColor!),
+                colorTranslation(context, selectedColor),
                 style: TextStyle(
                   color: Theme.of(context).listTileTheme.iconColor,
                   fontSize: 16
                 ),
               ),
+            )
+          ],
+          CustomSwitchListTile(
+            value: useThemeColorInsteadGreenRed, 
+            onChanged: (value) {
+              setState(() => useThemeColorInsteadGreenRed = value);
+              appConfigProvider.setUseThemeColorForStatus(value);
+            }, 
+            title: AppLocalizations.of(context)!.useThemeColorStatus,
+            subtitle: AppLocalizations.of(context)!.useThemeColorStatusDescription,
           )
-          ]
         ],
       ),
     );
