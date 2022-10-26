@@ -110,6 +110,18 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
           ),
           const SizedBox(width: 10)
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size(double.maxFinite, 1),
+          child: Container(
+            width: double.maxFinite,
+            height: 1,
+            decoration: BoxDecoration(
+              color: searchActive == true
+                ? Colors.grey.withOpacity(0.5)
+                : Colors.transparent
+            ),
+          ),
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
