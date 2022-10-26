@@ -28,16 +28,19 @@ class ColorItem extends StatelessWidget {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.6),
+              color: color,
               borderRadius: BorderRadius.circular(50)
             ),
-            child: selectedValue != null && selectedValue == numericValue
-            ? Icon(
+            child: AnimatedOpacity(
+              opacity: numericValue == selectedValue ? 1 : 0,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              child: Icon(
                 Icons.check,
                 size: 30,
                 color: color.computeLuminance() > 0.5 ? Colors.black : Colors.white,
-              )
-            : null,
+              ),
+            ),
           ),
         ),
       ),
