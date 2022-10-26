@@ -287,7 +287,10 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
             isScrollControlled: true
           )
         },
-        child: const Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+        ),
       ),
     );
   }

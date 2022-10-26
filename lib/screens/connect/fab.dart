@@ -17,7 +17,10 @@ class FabConnect extends StatelessWidget {
 
     return FloatingActionButton(
       onPressed: openAddServerModal,
-      child: const Icon(Icons.add_rounded),
+      child: Icon(
+        Icons.add_rounded,
+        color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+      ),
     );
   }
 }

@@ -176,7 +176,10 @@ class FiltersFab extends StatelessWidget {
       onPressed: type == 'blacklist' || type == 'whitelist'
         ? () => openAddWhitelistBlacklist()
         : () => openAddCustomRule(),
-      child: const Icon(Icons.add),
+      child: Icon(
+        Icons.add,
+        color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+      ),
     );
   }
 }
