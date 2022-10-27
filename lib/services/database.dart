@@ -37,7 +37,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
     });
   }
 
-    Future upgradeDbToV5(Database db) async {
+  Future upgradeDbToV5(Database db) async {
     await db.execute("ALTER TABLE appConfig ADD COLUMN useDynamicColor NUMERIC");
     await db.execute("ALTER TABLE appConfig ADD COLUMN staticColor NUMERIC");
     await db.execute("ALTER TABLE appConfig ADD COLUMN useThemeColorForStatus NUMERIC");
@@ -50,13 +50,24 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
     });
   }
 
+  Future upgradeDbToV6(Database db) async {
+    await db.execute("ALTER TABLE appConfig ADD COLUMN showNameTimeLogs NUMERIC");
+    await db.execute("UPDATE appConfig SET showNameTimeLogs = 0");
+
+    await db.transaction((txn) async{
+      await txn.rawQuery(
+        'SELECT * FROM appConfig',
+      );
+    });
+  }
+
   Database db = await openDatabase(
     'adguard_home_manager.db',
-    version: 5,
+    version: 6,
     onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE servers (id TEXT PRIMARY KEY, name TEXT, connectionMethod TEXT, domain TEXT, path TEXT, port INTEGER, user TEXT, password TEXT, defaultServer INTEGER, authToken TEXT, runningOnHa INTEGER)");
-      await db.execute("CREATE TABLE appConfig (theme NUMERIC, overrideSslCheck NUMERIC, hideZeroValues NUMERIC, useDynamicColor NUMERIC, staticColor NUMERIC, useThemeColorForStatus NUMERIC)");
-      await db.execute("INSERT INTO appConfig (theme, overrideSslCheck, hideZeroValues, useDynamicColor, staticColor, useThemeColorForStatus) VALUES (0, 0, 0, ${acceptsDynamicTheme == true ? 1 : 0}, 0, 0)");
+      await db.execute("CREATE TABLE appConfig (theme NUMERIC, overrideSslCheck NUMERIC, hideZeroValues NUMERIC, useDynamicColor NUMERIC, staticColor NUMERIC, useThemeColorForStatus NUMERIC, showNameTimeLogs NUMERIC)");
+      await db.execute("INSERT INTO appConfig (theme, overrideSslCheck, hideZeroValues, useDynamicColor, staticColor, useThemeColorForStatus, showNameTimeLogs) VALUES (0, 0, 0, ${acceptsDynamicTheme == true ? 1 : 0}, 0, 0, 0)");
     },
     onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion == 1) {
@@ -64,18 +75,25 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
         await upgradeDbToV3(db);
         await upgradeDbToV4(db);
         await upgradeDbToV5(db);
+        await upgradeDbToV6(db);
       }
       if (oldVersion == 2) {
         await upgradeDbToV3(db);
         await upgradeDbToV4(db);
         await upgradeDbToV5(db);
+        await upgradeDbToV6(db);
       }
       if (oldVersion == 3) {
         await upgradeDbToV4(db);
         await upgradeDbToV5(db);
+        await upgradeDbToV6(db);
       }
       if (oldVersion == 4) {
         await upgradeDbToV5(db);
+        await upgradeDbToV6(db);
+      }
+      if (oldVersion == 5) {
+        await upgradeDbToV6(db);
       }
     },
     onOpen: (Database db) async {

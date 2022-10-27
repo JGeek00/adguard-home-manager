@@ -32,6 +32,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _hideZeroValues = 0;
 
+  int _showNameTimeLogs = 0;
+
   PackageInfo? get getAppInfo {
     return _appInfo;
   }
@@ -106,6 +108,10 @@ class AppConfigProvider with ChangeNotifier {
     return _useThemeColorForStatus;
   }
 
+  bool get showNameTimeLogs {
+    return _showNameTimeLogs == 1 ? true : false;
+  }
+
   void setDbInstance(Database db) {
     _dbInstance = db;
   }
@@ -163,6 +169,18 @@ class AppConfigProvider with ChangeNotifier {
     final updated = await _updateSetHideZeroValues(status == true ? 1 : 0);
     if (updated == true) {
       _hideZeroValues = status == true ? 1 : 0;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  Future<bool> setShowNameTimeLogs(bool status) async {
+    final updated = await _updateShowNameTimeLogsDb(status == true ? 1 : 0);
+    if (updated == true) {
+      _showNameTimeLogs = status == true ? 1 : 0;
       notifyListeners();
       return true;
     }
@@ -297,6 +315,19 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> _updateShowNameTimeLogsDb(int value) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawUpdate(
+          'UPDATE appConfig SET showNameTimeLogs = $value',
+        );
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
   void saveFromDb(Database dbInstance, Map<String, dynamic> dbData) {
     _selectedTheme = dbData['theme'];
     _overrideSslCheck = dbData['overrideSslCheck'];
@@ -304,6 +335,7 @@ class AppConfigProvider with ChangeNotifier {
     _useDynamicColor = convertFromIntToBool(dbData['useDynamicColor'])!;
     _staticColor = dbData['staticColor'];
     _useThemeColorForStatus = convertFromIntToBool(dbData['useThemeColorForStatus'])!;
+    _showNameTimeLogs = dbData['showNameTimeLogs'];
 
     _dbInstance = dbInstance;
     notifyListeners();

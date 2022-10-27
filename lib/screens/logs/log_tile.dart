@@ -167,7 +167,7 @@ class LogTile extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    if (log.client.length <= 15) Row(
+                    if (log.client.length <= 15 && appConfigProvider.showNameTimeLogs == false) Row(
                       children: [
                         ...[
                           Icon(
@@ -204,11 +204,11 @@ class LogTile extends StatelessWidget {
                                 fontSize: 13
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ],
                     ),
-                    if (log.client.length > 15) Column(
+                    if (log.client.length > 15 || appConfigProvider.showNameTimeLogs == true) Column(
                       children: [
                         Row(
                           children: [
@@ -230,6 +230,29 @@ class LogTile extends StatelessWidget {
                             )
                           ],
                         ),
+                        if (appConfigProvider.showNameTimeLogs == true && log.clientInfo!.name != '') ...[
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.badge_rounded,
+                                size: 16,
+                                color: Theme.of(context).listTileTheme.iconColor,
+                              ),
+                              const SizedBox(width: 15),
+                              SizedBox(
+                                child: Text(
+                                  log.clientInfo!.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Theme.of(context).listTileTheme.iconColor,
+                                    fontSize: 13
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
                         const SizedBox(height: 10),
                         Row(
                           children: [
@@ -251,6 +274,29 @@ class LogTile extends StatelessWidget {
                             )
                           ],
                         ),
+                        if (appConfigProvider.showNameTimeLogs == true && log.elapsedMs != '') ...[
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.timer,
+                                size: 16,
+                                color: Theme.of(context).listTileTheme.iconColor,
+                              ),
+                              const SizedBox(width: 15),
+                              SizedBox(
+                                child: Text(
+                                  "${double.parse(log.elapsedMs).toStringAsFixed(2)} ms",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Theme.of(context).listTileTheme.iconColor,
+                                    fontSize: 13
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
                       ],
                     ),
                   ],

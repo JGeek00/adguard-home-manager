@@ -35,6 +35,26 @@ class GeneralSettings extends StatelessWidget {
       }
     }
 
+    Future updateShowNameTimeLogs(bool newStatus) async {
+      final result = await appConfigProvider.setShowNameTimeLogs(newStatus);
+      if (result == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.settingsUpdatedSuccessfully),
+            backgroundColor: Colors.green,
+          )
+        );
+      }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.cannotUpdateSettings),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.generalSettings) ,
@@ -51,6 +71,23 @@ class GeneralSettings extends StatelessWidget {
               activeColor: Theme.of(context).primaryColor,
             ),
             onTap: () => updateHideZeroValues(!appConfigProvider.hideZeroValues),
+            padding: const EdgeInsets.only(
+              top: 10,
+              bottom: 10,
+              left: 20,
+              right: 10
+            )
+          ),
+          CustomListTile(
+            icon: Icons.more,
+            title: AppLocalizations.of(context)!.nameTimeLogs,
+            subtitle: AppLocalizations.of(context)!.nameTimeLogsDescription,
+            trailing: Switch(
+              value: appConfigProvider.showNameTimeLogs, 
+              onChanged: updateShowNameTimeLogs,
+              activeColor: Theme.of(context).primaryColor,
+            ),
+            onTap: () => updateShowNameTimeLogs(!appConfigProvider.showNameTimeLogs),
             padding: const EdgeInsets.only(
               top: 10,
               bottom: 10,

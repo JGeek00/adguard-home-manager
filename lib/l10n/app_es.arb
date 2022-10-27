@@ -555,5 +555,7 @@
     "expires": "Expira",
     "validPrivateKey": "Clave privada válida",
     "expirationDate": "Fecha de expiración",
-    "keysNotMatch": "Certificado o clave inválido: tls: la clave privada no corresponde con la clave pública"
+    "keysNotMatch": "Certificado o clave inválido: tls: la clave privada no corresponde con la clave pública",
+    "nameTimeLogs": "Nombre y tiempo en logs",
+    "nameTimeLogsDescription": "Mostrar el nombre del cliente y el tiempo de procesamiento en la lista de logs"
 }

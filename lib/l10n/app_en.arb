@@ -555,5 +555,7 @@
     "expires": "Expires",
     "validPrivateKey": "Valid private key",
     "expirationDate": "Expiration date",
-    "keysNotMatch": "Invalid certificate or key: tls: private key does not match public key"
+    "keysNotMatch": "Invalid certificate or key: tls: private key does not match public key",
+    "nameTimeLogs": "Name and time on logs",
+    "nameTimeLogsDescription": "Show client name and processing time on logs list"
 }
