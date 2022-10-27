@@ -87,9 +87,11 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
 
   bool localValidationValid = false;
   String? validDataError;
-  int dataValidApi = 0;
+  int certKeyValidApi = 0;
 
-  Map<String, dynamic>? dataValid;
+  Map<String, dynamic>? certKeyValid;
+
+  bool formEdited = false;
 
   void fetchData({bool? showRefreshIndicator}) async {
     setState(() => loadStatus = 0);
@@ -109,7 +111,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
           dnsOverQuicPortController.text = result['data'].portDnsOverQuic != null ? result['data'].portDnsOverQuic.toString() : '';
           if (result['data'].certificateChain != '' && result['data'].certificatePath == '') {
             certificateOption = 1;
-            certificateContentController.text = result['data'].certificateChain;
+            certificateContentController.text = "-----BEGIN CERTIFICATE-----\n${result['data'].certificateChain}\n-----END CERTIFICATE-----";
           }
           else if (result['data'].certificateChain == '' && result['data'].certificatePath != '') {
             certificateOption = 0;
@@ -117,7 +119,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
           }
           if (result['data'].privateKey != '' && result['data'].privateKeyPath == '') {
             privateKeyOption = 1;
-            pastePrivateKeyController.text = result['data'].privateKey;
+            pastePrivateKeyController.text = "-----BEGIN PRIVATE KEY-----\n${result['data'].privateKey}\n-----END PRIVATE KEY-----";
           }
           else if (result['data'].privateKey == '' && result['data'].privateKeyPath != '') {
             privateKeyOption = 0;
@@ -136,7 +138,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
   }
 
   Future checkValidDataApi({Map<String, dynamic>? data}) async {
-    setState(() => dataValidApi = 0);
+    setState(() => certKeyValidApi = 0);
 
     final result = await checkEncryptionSettings(server: widget.serversProvider.selectedServer!, data: data ?? {
       "enabled": enabled,
@@ -145,35 +147,36 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       "port_https": httpsPortController.text != '' ? int.parse(httpsPortController.text) : null,
       "port_dns_over_tls": tlsPortController.text != '' ? int.parse(tlsPortController.text) : null,
       "port_dns_over_quic": dnsOverQuicPortController.text != '' ? int.parse(dnsOverQuicPortController.text) : null,
-      "certificate_chain": encodeBase64(certificateContentController.text),
-      "private_key": encodeBase64(pastePrivateKeyController.text),
+      if (certificateOption == 1) "certificate_chain": encodeBase64(certificateContentController.text),
+      if (privateKeyOption == 1 && usePreviouslySavedKey == false) "private_key": encodeBase64(pastePrivateKeyController.text),
       "private_key_saved": usePreviouslySavedKey,
-      "certificate_path": certificatePathController.text,
-      "private_key_path": privateKeyPathController.text,
+      if (certificateOption == 0) "certificate_path": certificatePathController.text,
+      if (privateKeyOption == 0) "private_key_path": privateKeyPathController.text,
     });
 
     if (result['result'] == 'success') {
       setState(() {
         if (result['data']['warning_validation'] != null && result['data']['warning_validation'] != '') {
-          dataValidApi = 2;
+          certKeyValidApi = 2;
           validDataError = result['data']['warning_validation'];
-          dataValid = result['data'];
         }
         else {
-          dataValidApi = 1;
+          certKeyValidApi = 1;
           validDataError = null;
         }
+        print(result['data']['server_name']);
+        certKeyValid = result['data'];
       });
     }
     else {
       if (result['log'].resBody != null) {
         setState(() => validDataError = result['log'].resBody);
       }
-      setState(() => dataValidApi = 2);
+      setState(() => certKeyValidApi = 2);
     }
   }
 
-  void checkDataValid() {
+  bool checkcertKeyValid() {
     if (
       domainNameController.text != '' && 
       domainError == null && 
@@ -203,10 +206,19 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       ))
     ) {
       setState(() => localValidationValid = true);
-      checkValidDataApi();
+      return true;
     }
     else {
       setState(() => localValidationValid = false);
+      return false;
+    }
+  }
+
+  void onEditValidate() {
+    setState(() => formEdited = true);
+    final res = checkcertKeyValid();
+    if (res == true) {
+      checkValidDataApi();
     }
   }
 
@@ -292,7 +304,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 value: enabled, 
                 onChange: (value) {
                   setState(() => enabled = value);
-                  checkDataValid();
+                  onEditValidate();
                 }
               ),
               SectionLabel(label: AppLocalizations.of(context)!.serverConfiguration),
@@ -302,7 +314,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 icon: Icons.link_rounded, 
                 onChanged: (value) {
                   setState(() => domainError = validateDomain(context, value));
-                  checkDataValid();
+                  onEditValidate();
                 },
                 errorText: domainError,
                 label: AppLocalizations.of(context)!.domainName,
@@ -313,7 +325,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 value: redirectHttps, 
                 onChanged: (value) {
                   setState(() => redirectHttps = value);
-                  checkDataValid();
+                  onEditValidate();
                 }, 
                 title: AppLocalizations.of(context)!.redirectHttps,
                 disabled: !enabled,
@@ -325,7 +337,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 icon: Icons.numbers_rounded, 
                 onChanged: (value) {
                   setState(() => httpsPortError = validatePort(context, value));
-                  checkDataValid();
+                  onEditValidate();
                 },
                 errorText: httpsPortError,
                 label: AppLocalizations.of(context)!.httpsPort,
@@ -338,7 +350,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 icon: Icons.numbers_rounded, 
                 onChanged: (value) {
                   setState(() => tlsPortError = validatePort(context, value));
-                  checkDataValid();
+                  onEditValidate();
                 },
                 errorText: tlsPortError,
                 label: AppLocalizations.of(context)!.tlsPort,
@@ -351,7 +363,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 icon: Icons.numbers_rounded, 
                 onChanged: (value) {
                   setState(() => dnsOverQuicPortError = validatePort(context, value));
-                  checkDataValid();
+                  onEditValidate();
                 },
                 errorText: dnsOverQuicPortError,
                 label: AppLocalizations.of(context)!.dnsOverQuicPort,
@@ -380,7 +392,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 onChanged: enabled == true
                   ? (value) {
                       setState(() => certificateOption = int.parse(value.toString()));
-                      checkDataValid();
+                      onEditValidate();
                     }
                   : null,
                 title: Text(
@@ -396,7 +408,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 onChanged: enabled == true
                   ? (value) {
                       setState(() => certificateOption = int.parse(value.toString()));
-                      checkDataValid();
+                      onEditValidate();
                     }
                   : null,
                 title: Text(
@@ -413,7 +425,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 icon: Icons.description_rounded, 
                 onChanged: (value) {
                   setState(() => certificatePathError = validatePath(context, value));
-                  checkDataValid();
+                  onEditValidate();
                 },
                 label: AppLocalizations.of(context)!.certificatePath,
                 errorText: certificatePathError,
@@ -424,42 +436,49 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 icon: Icons.description_rounded, 
                 onChanged: (value) {
                   setState(() => certificateContentError = validateCertificate(context, value));
-                  checkDataValid();
+                  onEditValidate();
                 }, 
                 label: AppLocalizations.of(context)!.certificateContent,
                 errorText: certificateContentError,
                 multiline: true,
                 keyboardType: TextInputType.multiline,
               ),
-              if (dataValid != null) ...[
+              if (certKeyValid != null && certificateContentController.text != '' && certificateContentError == null) ...[
                 const SizedBox(height: 20),
-                if (dataValid!['valid_chain'] != null) ...[
+                if (certKeyValid!['valid_chain'] != null) ...[
                   Status(
-                    valid: dataValid!['valid_chain'], 
-                    label: dataValid!['valid_chain'] == true
+                    valid: certKeyValid!['valid_chain'], 
+                    label: certKeyValid!['valid_chain'] == true
                       ? AppLocalizations.of(context)!.validCertificateChain
                       : AppLocalizations.of(context)!.invalidCertificateChain,
                   ),
                   const SizedBox(height: 10),
                 ],
-                if (dataValid!['subject'] != null) ...[
+                if (certKeyValid!['subject'] != null) ...[
                   Status(
                     valid: true, 
-                    label: "${AppLocalizations.of(context)!.subject}: ${dataValid!['subject']}"
+                    label: "${AppLocalizations.of(context)!.subject}: ${certKeyValid!['subject']}"
                   ),
                   const SizedBox(height: 10),
                 ],
-                if (dataValid!['issuer'] != null) ...[
+                if (certKeyValid!['issuer'] != null) ...[
                   Status(
                   valid: true, 
-                  label: "${AppLocalizations.of(context)!.issuer}: ${dataValid!['issuer']}"
+                  label: "${AppLocalizations.of(context)!.issuer}: ${certKeyValid!['issuer']}"
                 ),
                   const SizedBox(height: 10),
                 ],
-                if (dataValid!['not_after'] != null) ...[
+                if (certKeyValid!['not_after'] != null) ...[
                   Status(
                     valid: true, 
-                    label: "${AppLocalizations.of(context)!.expirationDate}: ${dataValid!['not_after']}"
+                    label: "${AppLocalizations.of(context)!.expirationDate}: ${certKeyValid!['not_after']}"
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                if (certKeyValid!['dns_names'] != null) ...[
+                  Status(
+                    valid: true, 
+                    label: "${AppLocalizations.of(context)!.hostNames}: ${certKeyValid!['dns_names'].join(', ')}"
                   ),
                   const SizedBox(height: 10),
                 ]
@@ -471,7 +490,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 onChanged: enabled == true
                   ? (value) {
                       setState(() => privateKeyOption = int.parse(value.toString()));
-                      checkDataValid();
+                      onEditValidate();
                     }
                   : null,
                 title: Text(
@@ -487,7 +506,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 onChanged: enabled == true
                   ? (value) {
                       setState(() => privateKeyOption = int.parse(value.toString()));
-                      checkDataValid();
+                      onEditValidate();
                     }
                   : null,
                 title: Text(
@@ -512,7 +531,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 icon: Icons.description_rounded, 
                 onChanged: (value) {
                   setState(() => privateKeyPathError = validatePath(context, value));
-                  checkDataValid();
+                  onEditValidate();
                 },
                 label: AppLocalizations.of(context)!.privateKeyPath,
                 errorText: privateKeyPathError,
@@ -525,7 +544,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 icon: Icons.description_rounded, 
                 onChanged: (value) {
                   setState(() => pastePrivateKeyError = validatePrivateKey(context, value));
-                  checkDataValid();
+                  onEditValidate();
                 },
                 label: AppLocalizations.of(context)!.pastePrivateKey,
                 errorText: pastePrivateKeyError,
@@ -533,17 +552,17 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 multiline: true,
               ),
               const SizedBox(height: 20),
-              if (dataValid != null) ...[
-                if (dataValid!['valid_key'] != null) ...[
+              if (certKeyValid != null && pastePrivateKeyController.text != '' && pastePrivateKeyError == null) ...[
+                if (certKeyValid!['valid_key'] != null) ...[
                   Status(
-                    valid: dataValid!['valid_key'], 
-                    label: dataValid!['valid_key'] == true
+                    valid: certKeyValid!['valid_key'], 
+                    label: certKeyValid!['valid_key'] == true
                       ? AppLocalizations.of(context)!.validPrivateKey
                       : AppLocalizations.of(context)!.invalidPrivateKey,
                   ),
                   const SizedBox(height: 10)
                 ],
-                if (dataValid!['valid_pair'] != null && dataValid!['valid_pair'] == false) ...[
+                if (certKeyValid!['valid_pair'] != null && certKeyValid!['valid_pair'] == false) ...[
                   Status(
                     valid: false, 
                     label: AppLocalizations.of(context)!.keysNotMatch,
@@ -590,18 +609,18 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
         title: Text(AppLocalizations.of(context)!.encryptionSettings),
         actions: [
           IconButton(
-            onPressed: dataValidApi == 2 && validDataError != null
+            onPressed: certKeyValidApi == 2 && validDataError != null
               ? () => {
                 showDialog(
                   context: context, 
                   builder: (context) => EncryptionErrorModal(error: validDataError!)
                 )
               } : null, 
-            icon: generateStatus(context, appConfigProvider, localValidationValid, dataValidApi),
-            tooltip: generateStatusString(context, localValidationValid, dataValidApi)
+            icon: generateStatus(context, appConfigProvider, localValidationValid, certKeyValidApi, formEdited),
+            tooltip: generateStatusString(context, localValidationValid, certKeyValidApi)
           ),
           IconButton(
-            onPressed: localValidationValid == true && dataValidApi == 1
+            onPressed: localValidationValid == true && certKeyValidApi == 1
               ? () => saveData()
               : null, 
             icon: const Icon(Icons.save),

@@ -52,8 +52,8 @@ String? validatePath(BuildContext context, String cert) {
   }
 }
 
-Widget generateStatus(BuildContext context, AppConfigProvider appConfigProvider, bool localValidation, int dataValidApi) {
-  if (localValidation == true) {
+Widget generateStatus(BuildContext context, AppConfigProvider appConfigProvider, bool localValidation, int dataValidApi, bool formEdited) {
+  if (localValidation == true || formEdited == false) {
     if (dataValidApi == 0) {
       return const SizedBox(
         height: 25,
@@ -85,7 +85,7 @@ Widget generateStatus(BuildContext context, AppConfigProvider appConfigProvider,
   }
   else {
     return const Icon(
-      Icons.error_rounded,
+      Icons.error_outline,
       color: Colors.grey,
     );
   }
