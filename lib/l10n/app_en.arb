@@ -547,5 +547,13 @@
     "deepOrange": "Deep orange",
     "indigo": "Indigo",
     "useThemeColorStatus": "Use theme color for status",
-    "useThemeColorStatusDescription": "Replaces green and red status colors with theme color and grey"
+    "useThemeColorStatusDescription": "Replaces green and red status colors with theme color and grey",
+    "invalidCertificateChain": "Invalid certificate chain",
+    "validCertificateChain": "Valid certificate chain",
+    "subject": "Subject",
+    "issuer": "Issuer",
+    "expires": "Expires",
+    "validPrivateKey": "Valid private key",
+    "expirationDate": "Expiration date",
+    "keysNotMatch": "Invalid certificate or key: tls: private key does not match public key"
 }

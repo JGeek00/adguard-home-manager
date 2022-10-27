@@ -547,5 +547,13 @@
     "deepOrange": "Naranja oscuro",
     "indigo": "Índigo",
     "useThemeColorStatus": "Usar el color del tema para estados",
-    "useThemeColorStatusDescription": "Reemplaza el verde y rojo por el color del tema y gris"
+    "useThemeColorStatusDescription": "Reemplaza el verde y rojo por el color del tema y gris",
+    "invalidCertificateChain": "Cadena de certificado inválida",
+    "validCertificateChain": "Cadena de certificado válida",
+    "subject": "Asunto",
+    "issuer": "Emisor",
+    "expires": "Expira",
+    "validPrivateKey": "Clave privada válida",
+    "expirationDate": "Fecha de expiración",
+    "keysNotMatch": "Certificado o clave inválido: tls: la clave privada no corresponde con la clave pública"
 }

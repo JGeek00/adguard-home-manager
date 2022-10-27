@@ -5,13 +5,15 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/section_label.dart';
+import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/config_error_modal.dart';
+import 'package:adguard_home_manager/screens/settings/encryption/status.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/custom_text_field.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/master_switch.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/encryption_functions.dart';
-import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/functions/encode_base64.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -87,6 +89,8 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
   String? validDataError;
   int dataValidApi = 0;
 
+  Map<String, dynamic>? dataValid;
+
   void fetchData({bool? showRefreshIndicator}) async {
     setState(() => loadStatus = 0);
 
@@ -141,8 +145,8 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       "port_https": httpsPortController.text != '' ? int.parse(httpsPortController.text) : null,
       "port_dns_over_tls": tlsPortController.text != '' ? int.parse(tlsPortController.text) : null,
       "port_dns_over_quic": dnsOverQuicPortController.text != '' ? int.parse(dnsOverQuicPortController.text) : null,
-      "certificate_chain": certificateContentController.text.replaceAll('\n', ''),
-      "private_key": pastePrivateKeyController.text.replaceAll('\n', ''),
+      "certificate_chain": encodeBase64(certificateContentController.text),
+      "private_key": encodeBase64(pastePrivateKeyController.text),
       "private_key_saved": usePreviouslySavedKey,
       "certificate_path": certificatePathController.text,
       "private_key_path": privateKeyPathController.text,
@@ -153,6 +157,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
         if (result['data']['warning_validation'] != null && result['data']['warning_validation'] != '') {
           dataValidApi = 2;
           validDataError = result['data']['warning_validation'];
+          dataValid = result['data'];
         }
         else {
           dataValidApi = 1;
@@ -422,11 +427,43 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                   checkDataValid();
                 }, 
                 label: AppLocalizations.of(context)!.certificateContent,
-                helperText: AppLocalizations.of(context)!.enterOnlyCertificate,
                 errorText: certificateContentError,
                 multiline: true,
                 keyboardType: TextInputType.multiline,
               ),
+              if (dataValid != null) ...[
+                const SizedBox(height: 20),
+                if (dataValid!['valid_chain'] != null) ...[
+                  Status(
+                    valid: dataValid!['valid_chain'], 
+                    label: dataValid!['valid_chain'] == true
+                      ? AppLocalizations.of(context)!.validCertificateChain
+                      : AppLocalizations.of(context)!.invalidCertificateChain,
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                if (dataValid!['subject'] != null) ...[
+                  Status(
+                    valid: true, 
+                    label: "${AppLocalizations.of(context)!.subject}: ${dataValid!['subject']}"
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                if (dataValid!['issuer'] != null) ...[
+                  Status(
+                  valid: true, 
+                  label: "${AppLocalizations.of(context)!.issuer}: ${dataValid!['issuer']}"
+                ),
+                  const SizedBox(height: 10),
+                ],
+                if (dataValid!['not_after'] != null) ...[
+                  Status(
+                    valid: true, 
+                    label: "${AppLocalizations.of(context)!.expirationDate}: ${dataValid!['not_after']}"
+                  ),
+                  const SizedBox(height: 10),
+                ]
+              ],
               SectionLabel(label: AppLocalizations.of(context)!.privateKey),
               RadioListTile(
                 value: 0, 
@@ -491,12 +528,30 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                   checkDataValid();
                 },
                 label: AppLocalizations.of(context)!.pastePrivateKey,
-                helperText: AppLocalizations.of(context)!.enterOnlyPrivateKey,
                 errorText: pastePrivateKeyError,
                 keyboardType: TextInputType.multiline,
                 multiline: true,
               ),
               const SizedBox(height: 20),
+              if (dataValid != null) ...[
+                if (dataValid!['valid_key'] != null) ...[
+                  Status(
+                    valid: dataValid!['valid_key'], 
+                    label: dataValid!['valid_key'] == true
+                      ? AppLocalizations.of(context)!.validPrivateKey
+                      : AppLocalizations.of(context)!.invalidPrivateKey,
+                  ),
+                  const SizedBox(height: 10)
+                ],
+                if (dataValid!['valid_pair'] != null && dataValid!['valid_pair'] == false) ...[
+                  Status(
+                    valid: false, 
+                    label: AppLocalizations.of(context)!.keysNotMatch,
+                  ),
+                  const SizedBox(height: 10)
+                ],
+                const SizedBox(height: 10)
+              ]
             ],
           );
 

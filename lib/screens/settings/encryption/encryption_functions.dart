@@ -25,20 +25,20 @@ String? validatePort(BuildContext context, String value) {
 String? validateCertificate(BuildContext context, String cert) {
   final regExp = RegExp(r'(-{3,}(\bBEGIN CERTIFICATE\b))|(-{3,}-{3,}(\END CERTIFICATE\b)-{3,})', multiLine: true);
   if (regExp.hasMatch(cert.replaceAll('\n', ''))) {
-    return AppLocalizations.of(context)!.invalidCertificate;
+    return null;
   }
   else {
-    return null;
+    return AppLocalizations.of(context)!.invalidCertificate;
   }
 }
 
 String? validatePrivateKey(BuildContext context, String cert) {
   final regExp = RegExp(r'(-{3,}(\bBEGIN\b).*(PRIVATE KEY\b))|(-{3,}-{3,}(\bEND\b).*(PRIVATE KEY\b)-{3,})', multiLine: true);
   if (regExp.hasMatch(cert.replaceAll('\n', ''))) {
-    return AppLocalizations.of(context)!.invalidPrivateKey;
+    return null;
   }
   else {
-    return null;
+    return AppLocalizations.of(context)!.invalidPrivateKey;
   }
 }
 
