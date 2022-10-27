@@ -123,12 +123,24 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                     controller: tabController,
                     tabs: [
                       Tab(
-                        icon: const Icon(Icons.devices),
-                        text: AppLocalizations.of(context)!.activeClients,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.devices),
+                            const SizedBox(width: 20),
+                            Text(AppLocalizations.of(context)!.activeClients)
+                          ],
+                        ),
                       ),
                       Tab(
-                        icon: const Icon(Icons.add),
-                        text: AppLocalizations.of(context)!.added,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.add),
+                            const SizedBox(width: 20),
+                            Text(AppLocalizations.of(context)!.added)
+                          ],
+                        ),
                       ),
                     ]
                   )

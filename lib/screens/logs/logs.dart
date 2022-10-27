@@ -55,6 +55,8 @@ class _LogsWidgetState extends State<LogsWidget> {
   
   bool isLoadingMore = false;
 
+  bool showDivider = true;
+
   Future fetchLogs({
     int? inOffset,
     bool? loadingMore,
@@ -124,6 +126,12 @@ class _LogsWidgetState extends State<LogsWidget> {
   void scrollListener() {
     if (scrollController.position.extentAfter < 500 && isLoadingMore == false) {
       fetchLogs(loadingMore: true);
+    }
+    if (scrollController.position.pixels > 0) {
+      setState(() => showDivider = false);
+    }
+    else {
+      setState(() => showDivider = true);
     }
   }
 
@@ -363,6 +371,15 @@ class _LogsWidgetState extends State<LogsWidget> {
                 height: 50,
                 width: double.maxFinite,
                 padding: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: showDivider == true
+                        ? Theme.of(context).dividerColor
+                        : Colors.transparent,
+                    )
+                  )
+                ),
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [

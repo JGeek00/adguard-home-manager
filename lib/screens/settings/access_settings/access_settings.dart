@@ -90,18 +90,37 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
                     forceElevated: innerBoxIsScrolled,
                     bottom: TabBar(
                       controller: tabController,
+                      isScrollable: true,
                       tabs: [
                         Tab(
-                          icon: const Icon(Icons.check),
-                          text: AppLocalizations.of(context)!.allowedClients,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.check),
+                              const SizedBox(width: 20),
+                              Text(AppLocalizations.of(context)!.allowedClients)
+                            ],
+                          ),
                         ),
                         Tab(
-                          icon: const Icon(Icons.block),
-                          text: AppLocalizations.of(context)!.disallowedClients,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.block),
+                              const SizedBox(width: 20),
+                              Text(AppLocalizations.of(context)!.disallowedClients)
+                            ],
+                          ),
                         ),
                         Tab(
-                          icon: const Icon(Icons.link_rounded),
-                          text: AppLocalizations.of(context)!.disallowedDomains,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.link_rounded),
+                              const SizedBox(width: 20),
+                              Text(AppLocalizations.of(context)!.disallowedDomains)
+                            ],
+                          ),
                         ),
                       ]
                     )

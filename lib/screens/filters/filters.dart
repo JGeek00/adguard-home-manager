@@ -366,18 +366,37 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                   ] : [],
                   bottom: TabBar(
                     controller: tabController,
+                    isScrollable: true,
                     tabs: [
                       Tab(
-                        icon: const Icon(Icons.verified_user_rounded),
-                        text: AppLocalizations.of(context)!.whitelists,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.verified_user_rounded),
+                            const SizedBox(width: 20),
+                            Text(AppLocalizations.of(context)!.whitelists),
+                          ],
+                        ),
                       ),
                       Tab(
-                        icon: const Icon(Icons.gpp_bad_rounded),
-                        text: AppLocalizations.of(context)!.blacklists,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.gpp_bad_rounded),
+                            const SizedBox(width: 20),
+                            Text(AppLocalizations.of(context)!.blacklist),
+                          ],
+                        ),
                       ),
                       Tab(
-                        icon: const Icon(Icons.shield_rounded),
-                        text: AppLocalizations.of(context)!.customRules,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.shield_rounded),
+                            const SizedBox(width: 20),
+                            Text(AppLocalizations.of(context)!.customRules),
+                          ],
+                        ),
                       ),
                     ]
                   )
