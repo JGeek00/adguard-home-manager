@@ -481,7 +481,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                     label: "${AppLocalizations.of(context)!.hostNames}: ${certKeyValid!['dns_names'].join(', ')}"
                   ),
                   const SizedBox(height: 10),
-                ]
+                ],
               ],
               SectionLabel(label: AppLocalizations.of(context)!.privateKey),
               RadioListTile(
@@ -568,6 +568,13 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                     label: AppLocalizations.of(context)!.keysNotMatch,
                   ),
                   const SizedBox(height: 10)
+                ],
+                if (certKeyValid!['key_type'] != null) ...[
+                  Status(
+                    valid: true, 
+                    label: "${AppLocalizations.of(context)!.keyType}: ${certKeyValid!['key_type']}"
+                  ),
+                  const SizedBox(height: 10),
                 ],
                 const SizedBox(height: 10)
               ]

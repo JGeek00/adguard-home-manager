@@ -558,5 +558,6 @@
     "keysNotMatch": "Certificado o clave inválido: tls: la clave privada no corresponde con la clave pública",
     "nameTimeLogs": "Nombre y tiempo en logs",
     "nameTimeLogsDescription": "Mostrar el nombre del cliente y el tiempo de procesamiento en la lista de logs",
-    "hostNames": "Nombres de host"
+    "hostNames": "Nombres de host",
+    "keyType": "Tipo de clave"
 }
