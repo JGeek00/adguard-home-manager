@@ -46,6 +46,8 @@ class SearchClientsWidget extends StatefulWidget {
 }
 
 class _SearchClientsWidgetState extends State<SearchClientsWidget> {
+  late ScrollController scrollController;
+
   final TextEditingController searchController = TextEditingController();
 
   List<Client> clients = [];
@@ -54,6 +56,8 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
   List<Client> clientsScreen = [];
   List<AutoClient> autoClientsScreen = [];
 
+  bool showDivider = true;
+
   void search(String value) {
     setState(() {
       clientsScreen = clients.where((client) => client.name.contains(value) || client.ids.where((e) => e.contains(value)).isNotEmpty).toList();
@@ -61,8 +65,19 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
     });
   }
 
+  void scrollListener() {
+    if (scrollController.position.pixels > 0) {
+      setState(() => showDivider = false);
+    }
+    else {
+      setState(() => showDivider = true);
+    }
+  }
+
   @override
   void initState() {
+    scrollController = ScrollController()..addListener(scrollListener);
+
     setState(() {
       clients = widget.serversProvider.clients.data!.clients;
       autoClients = widget.serversProvider.clients.data!.autoClientsData;
@@ -243,13 +258,16 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
             width: double.maxFinite,
             height: 1,
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.5)
+              color: showDivider == true
+                ? Colors.grey.withOpacity(0.5)
+                : Colors.transparent
             ),
           ),
         ),
       ),
       body: clientsScreen.isNotEmpty || autoClientsScreen.isNotEmpty 
         ? ListView(
+          controller: scrollController,
             children: [
               if (clientsScreen.isNotEmpty) ...[
                 SectionLabel(
