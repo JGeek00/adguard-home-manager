@@ -77,6 +77,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
 
   int privateKeyOption = 0;
 
+  bool existsPreviousKey = false;
   bool usePreviouslySavedKey = false;
 
   final TextEditingController privateKeyPathController = TextEditingController();
@@ -109,21 +110,19 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
           httpsPortController.text = result['data'].portHttps != null ? result['data'].portHttps.toString() : '';
           tlsPortController.text = result['data'].portDnsOverTls != null ? result['data'].portDnsOverTls.toString() : '';
           dnsOverQuicPortController.text = result['data'].portDnsOverQuic != null ? result['data'].portDnsOverQuic.toString() : '';
-          if (result['data'].certificateChain != '' && result['data'].certificatePath == '') {
+          if (result['data'].certificateChain != '') {
             certificateOption = 1;
             certificateContentController.text = "-----BEGIN CERTIFICATE-----\n${result['data'].certificateChain}\n-----END CERTIFICATE-----";
           }
-          else if (result['data'].certificateChain == '' && result['data'].certificatePath != '') {
+          else {
             certificateOption = 0;
             certificatePathController.text = result['data'].certificatePath;
           }
-          if (result['data'].privateKey != '' && result['data'].privateKeyPath == '') {
+          if (result['data'].privateKey != '' || result['data'].privateKeySaved == true) {
             privateKeyOption = 1;
-            pastePrivateKeyController.text = "-----BEGIN PRIVATE KEY-----\n${result['data'].privateKey}\n-----END PRIVATE KEY-----";
           }
-          else if (result['data'].privateKey == '' && result['data'].privateKeyPath != '') {
+          else {
             privateKeyOption = 0;
-            privateKeyPathController.text = result['data'].privateKeyPath;
           }
           usePreviouslySavedKey = result['data'].privateKeySaved;
 
@@ -164,7 +163,6 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
           certKeyValidApi = 1;
           validDataError = null;
         }
-        print(result['data']['server_name']);
         certKeyValid = result['data'];
       });
     }
@@ -443,7 +441,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 multiline: true,
                 keyboardType: TextInputType.multiline,
               ),
-              if (certKeyValid != null && certificateContentController.text != '' && certificateContentError == null) ...[
+              if (certKeyValid != null && (certificateContentController.text != '' || certificatePathController.text != '')) ...[
                 const SizedBox(height: 20),
                 if (certKeyValid!['valid_chain'] != null) ...[
                   Status(
@@ -552,7 +550,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 multiline: true,
               ),
               const SizedBox(height: 20),
-              if (certKeyValid != null && pastePrivateKeyController.text != '' && pastePrivateKeyError == null) ...[
+              if (certKeyValid != null && (privateKeyPathController.text != '' || pastePrivateKeyController.text != '' || usePreviouslySavedKey == true)) ...[
                 if (certKeyValid!['valid_key'] != null) ...[
                   Status(
                     valid: certKeyValid!['valid_key'], 
