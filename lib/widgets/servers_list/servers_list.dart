@@ -13,7 +13,7 @@ import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 
-class ServersList extends StatelessWidget {
+class ServersList extends StatefulWidget {
   final BuildContext context;
   final List<ExpandableController> controllers;
   final Function(int) onChange;
@@ -26,14 +26,58 @@ class ServersList extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ServersList> createState() => _ServersListState();
+}
+
+class _ServersListState extends State<ServersList> with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
+  late Animation<double> animation;
+
+  @override
+  void initState() {
+    for (ExpandableController controller in widget.controllers) {
+      controller.addListener(() async {
+        await Future.delayed(const Duration(milliseconds: 200));
+        if (controller.value == false) {
+          animationController.animateTo(0);
+        }
+        else {
+          animationController.animateBack(1);
+        }
+      });
+    }
+
+    animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    )
+    ..addListener(() {
+      setState(() {});
+    });
+    animation = Tween(
+      begin: 0.0,
+      end: 0.5,
+    ).animate(CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeInOut
+    ));
+    
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     List<Server> servers = serversProvider.serversList;
-
-    final width = MediaQuery.of(context).size.width;
 
     void showDeleteModal(Server server) async {
       await Future.delayed(const Duration(seconds: 0), () => {
@@ -170,26 +214,26 @@ class ServersList extends StatelessWidget {
             margin: const EdgeInsets.only(right: 12),
             child: leadingIcon(servers[index]),
           ),
-          SizedBox(
-            width: width-168,
+          Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 17,
+                    fontSize: 18,
                   ),
                 ),
                 Column(
                   children: [
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
                     Text(
                       servers[index].name,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        fontStyle: FontStyle.italic
+                        color: Theme.of(context).listTileTheme.iconColor
                       ),
                     )
                   ],
@@ -197,10 +241,12 @@ class ServersList extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            onPressed: () => onChange(index),
-            icon: const Icon(Icons.arrow_drop_down),
-            splashRadius: 20,
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: RotationTransition(
+              turns: animation,
+              child: const Icon(Icons.keyboard_arrow_down_rounded),
+            ),
           ),
         ],
       );
@@ -318,14 +364,14 @@ class ServersList extends StatelessWidget {
             )
           ),
           child: ExpandableNotifier(
-            controller: controllers[index],
+            controller: widget.controllers[index],
             child: Column(
               children: [
                 Expandable(
                   collapsed: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () => onChange(index),
+                      onTap: () => widget.onChange(index),
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: topRow(servers[index], index),
@@ -335,7 +381,7 @@ class ServersList extends StatelessWidget {
                   expanded: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () => onChange(index),
+                      onTap: () => widget.onChange(index),
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Column(
