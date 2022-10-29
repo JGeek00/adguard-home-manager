@@ -6,6 +6,8 @@ import 'package:adguard_home_manager/screens/logs/log_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
+import 'package:adguard_home_manager/models/filtering_status.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 
@@ -23,7 +25,14 @@ class LogDetailsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    Filter getList(int id) {
+      return serversProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
+        return serversProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
+      });
+    }
 
     Widget getResult() {
       final filter = getFilteredStatus(context, appConfigProvider, log.reason, true);
@@ -183,6 +192,24 @@ class LogDetailsModal extends StatelessWidget {
                   title: AppLocalizations.of(context)!.deviceName,
                   subtitle: log.clientInfo!.name
                 ),
+                if (log.rules.isNotEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      AppLocalizations.of(context)!.rules,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).primaryColor
+                      ),
+                    ),
+                  ),
+                  ...log.rules.map((rule) => LogListTile(
+                    icon: Icons.rule_rounded, 
+                    title: rule.text,
+                    subtitle: getList(rule.filterListId).name,
+                  )).toList()
+                ],
                 if (log.answer.isNotEmpty) ...[
                   Padding(
                     padding: const EdgeInsets.all(20),
