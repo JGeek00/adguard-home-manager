@@ -52,6 +52,7 @@ dependencies:
   store_checker: ^1.1.0
   fl_downloader: ^1.0.3
   install_plugin_v2: ^1.0.0
+  permission_handler_android: ^10.2.0
   permission_handler: ^10.2.0
 
 dev_dependencies:

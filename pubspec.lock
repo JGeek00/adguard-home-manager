@@ -435,7 +435,7 @@ packages:
     source: hosted
     version: "10.2.0"
   permission_handler_android:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: permission_handler_android
       url: "https://pub.dartlang.org"
