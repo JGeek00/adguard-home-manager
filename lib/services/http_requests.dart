@@ -8,6 +8,7 @@ import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
+import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -17,6 +18,7 @@ import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/server.dart';
+import 'package:adguard_home_manager/constants/urls.dart';
 
 
 Future<Map<String, dynamic>> apiRequest({
@@ -1811,4 +1813,75 @@ Future saveEncryptionSettings({
   else {
     return result;
   }
+}
+
+Future checkAppUpdatesGitHub() async {
+  try {
+    HttpClient httpClient = HttpClient();
+    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.checkLatestReleaseUrl));
+    HttpClientResponse response = await request.close();
+    String reply = await response.transform(utf8.decoder).join();
+    httpClient.close();
+    if (response.statusCode == 200) {
+      return {
+        'result': 'success',
+        'hasResponse': true,
+        'error': false,
+        'statusCode': response.statusCode,
+        'body': GitHubRelease.fromJson(jsonDecode(reply))
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_encryption_settings', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: response.statusCode.toString(),
+          resBody: reply,
+        )
+      };
+    }    
+  } on SocketException {
+    return {
+      'result': 'no_connection', 
+      'message': 'SocketException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'SocketException'
+      )
+    };
+  } on TimeoutException {
+    return {
+      'result': 'no_connection', 
+      'message': 'TimeoutException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } on HandshakeException {
+    return {
+      'result': 'ssl_error', 
+      'message': 'HandshakeException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'HandshakeException'
+      )
+    };
+  } catch (e) {
+    return {
+      'result': 'error', 
+      'message': e.toString(),
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: e.toString()
+      )
+    };
+  } 
 }

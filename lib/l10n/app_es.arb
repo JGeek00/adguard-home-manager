@@ -559,5 +559,15 @@
     "nameTimeLogs": "Nombre y tiempo en logs",
     "nameTimeLogsDescription": "Mostrar el nombre del cliente y el tiempo de procesamiento en la lista de logs",
     "hostNames": "Nombres de host",
-    "keyType": "Tipo de clave"
+    "keyType": "Tipo de clave",
+    "updateAvailable": "Actualización disponible",
+    "installedVersion": "Versión instalada",
+    "newVersion": "Nueva versión",
+    "source": "Fuente",
+    "downloadUpdate": "Descargar actualización",
+    "download": "Descargar",
+    "doNotRememberAgainUpdate": "No recordar de nuevo para esta actualización",
+    "downloadingUpdate": "Descargando",
+    "completed": "completado",
+    "permissionNotGranted": "Permiso no concedido"
 }

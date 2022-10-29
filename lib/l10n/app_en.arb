@@ -559,5 +559,15 @@
     "nameTimeLogs": "Name and time on logs",
     "nameTimeLogsDescription": "Show client name and processing time on logs list",
     "hostNames": "Host names",
-    "keyType": "Key type"
+    "keyType": "Key type",
+    "updateAvailable": "Update available",
+    "installedVersion": "Installed version",
+    "newVersion": "New version",
+    "source": "Source",
+    "downloadUpdate": "Download update",
+    "download": "Download",
+    "doNotRememberAgainUpdate": "Do not remember again for this version",
+    "downloadingUpdate": "Downloading",
+    "completed": "completed",
+    "permissionNotGranted": "Permission not granted"
 }
