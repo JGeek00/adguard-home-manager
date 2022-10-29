@@ -24,43 +24,54 @@ class DownloadModal extends StatefulWidget {
 
 class _DownloadModalState extends State<DownloadModal> {
   int progress = 0;
+  String? status;
   late StreamSubscription progressStream;
 
-  void download() async {
+  void removeOldInstallers()  {
     final downloads = Directory('/storage/emulated/0/Download').listSync();
-    final installers = downloads.where((file) => file.path.contains('adguard-home-manager_v'));
-    
-    try {
-      for (FileSystemEntity installer in installers) {
-        if (await installer.exists()) {
-          await installer.delete();
-        }
+    final installers = downloads.where((file) => file.path.contains('adguard-home-manager'));
+    for (FileSystemEntity installer in installers) {
+      if (installer.existsSync()) {
+        installer.deleteSync();
       }
-
-      FlDownloader.initialize();
-      progressStream = FlDownloader.progressStream.listen((event) {
-        if (event.status == DownloadStatus.successful) {
-          setState(() => progress = event.progress);
-
-          Navigator.pop(context);
-          widget.onFinish(event.filePath!);
-        }
-        else if (event.status == DownloadStatus.running) {
-          setState(() => progress = event.progress);
-        }
-      });
-
-      FlDownloader.download(widget.url, fileName: 'adguard-home-manager_v${widget.version}.apk');
-    } catch (_) {
-
     }
   }
 
   @override
   void initState() {
-    super.initState();
+    removeOldInstallers();
 
-    download();
+    FlDownloader.initialize();
+    progressStream = FlDownloader.progressStream.listen((event) {
+      if (event.status == DownloadStatus.successful) {
+        setState(() => progress = event.progress); 
+        Navigator.pop(context);
+        widget.onFinish(event.filePath!);
+      }
+      else if (event.status == DownloadStatus.running) {
+        print(event.progress);
+        setState(() {
+          progress = event.progress;
+          status = null;
+        });
+      }
+      else if (event.status == DownloadStatus.paused) {
+        setState(() => status == "Paused");
+      }
+      else if (event.status == DownloadStatus.pending) {
+        setState(() => status == "Pending");
+      }
+      else if (event.status == DownloadStatus.failed) {
+        setState(() => status == "Failed");
+      }
+      else if (event.status == DownloadStatus.canceling) {
+        setState(() => status == "Canceling");
+      }
+    });
+
+    FlDownloader.download(widget.url, fileName: 'adguard-home-manager_v${widget.version}.apk');
+
+    super.initState();
   }
 
   @override
@@ -96,7 +107,10 @@ class _DownloadModalState extends State<DownloadModal> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: Text("$progress% ${AppLocalizations.of(context)!.completed}"),
+                child: Text(
+                  status != null
+                    ? status!
+                    : "$progress% ${AppLocalizations.of(context)!.completed}"),
               )
             ],
           )
