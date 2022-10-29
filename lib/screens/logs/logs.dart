@@ -30,6 +30,8 @@ class Logs extends StatelessWidget {
       serversProvider: serversProvider,
       appConfigProvider: appConfigProvider,
       logsProvider: logsProvider,
+      selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus,
+      searchText: logsProvider.appliedFilters.searchText,
     );
   }
 }
@@ -38,12 +40,16 @@ class LogsWidget extends StatefulWidget {
   final ServersProvider serversProvider;
   final AppConfigProvider appConfigProvider;
   final LogsProvider logsProvider;
+  final String selectedResultStatus;
+  final String? searchText;
 
   const LogsWidget({
     Key? key,
     required this.serversProvider,
     required this.appConfigProvider,
     required this.logsProvider,
+    required this.selectedResultStatus,
+    required this.searchText,
   }) : super(key: key);
 
   @override
@@ -65,8 +71,8 @@ class _LogsWidgetState extends State<LogsWidget> {
   }) async {
     int offst = inOffset ?? widget.logsProvider.offset;
 
-    String resStatus = responseStatus ?? widget.logsProvider.selectedResultStatus;
-    String? search = searchText ?? widget.logsProvider.searchText;
+    String resStatus = responseStatus ?? widget.selectedResultStatus;
+    String? search = searchText ?? widget.searchText;
 
     if (loadingMore != null && loadingMore == true) {
       setState(() => isLoadingMore = true);
@@ -408,7 +414,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                           logsProvider.setSearchText(null);
                           fetchLogs(
                             inOffset: 0,
-                            searchText: null
+                            searchText: ''
                           );
                         },
                       ),

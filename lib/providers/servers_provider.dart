@@ -7,7 +7,6 @@ import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
-import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/server.dart';
