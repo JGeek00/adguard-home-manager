@@ -17,12 +17,14 @@ class ServersList extends StatefulWidget {
   final BuildContext context;
   final List<ExpandableController> controllers;
   final Function(int) onChange;
+  final ScrollController scrollController;
 
   const ServersList({
     Key? key,
     required this.context,
     required this.controllers,
-    required this.onChange
+    required this.onChange,
+    required this.scrollController,
   }) : super(key: key);
 
   @override
@@ -351,6 +353,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
 
     return servers.isNotEmpty ? 
       ListView.builder(
+        controller: widget.scrollController,
         itemCount: servers.length,
         itemBuilder: (context, index) => Container(
           decoration: BoxDecoration(
