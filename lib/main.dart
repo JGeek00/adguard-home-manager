@@ -97,6 +97,12 @@ class _MainState extends State<Main> {
   }
 
   @override
+  void initState() {
+    displayMode();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
