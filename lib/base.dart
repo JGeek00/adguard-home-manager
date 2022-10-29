@@ -1,11 +1,11 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
 
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:install_plugin_v2/install_plugin_v2.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:provider/provider.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:flutter/services.dart';
@@ -39,6 +39,8 @@ class Base extends StatefulWidget {
 class _BaseState extends State<Base> with WidgetsBindingObserver {
   int selectedScreen = 0;
 
+  final PermissionHandlerPlatform permissionHandler = PermissionHandlerPlatform.instance;
+
   Future<GitHubRelease?> checkInstallationSource() async {
     Source installationSource = await StoreChecker.getSource;
     if (installationSource != Source.IS_INSTALLED_FROM_PLAY_STORE) {
@@ -54,12 +56,13 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
 
   Future<bool> managePermission() async {
     try {
-      if (await Permission.storage.isGranted) {
+      final status = await permissionHandler.checkPermissionStatus(Permission.storage);
+      if (status == PermissionStatus.granted) {
         return true;
       }
       else {
-        final PermissionStatus status = await Permission.storage.request();
-        if (status.isGranted == false) {
+        final Map<Permission, PermissionStatus> request = await permissionHandler.requestPermissions([Permission.storage]);
+        if (request[Permission.storage] == PermissionStatus.granted) {
           return false;
         }
         else {
