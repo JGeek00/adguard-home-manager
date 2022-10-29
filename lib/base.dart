@@ -41,12 +41,30 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
 
   final PermissionHandlerPlatform permissionHandler = PermissionHandlerPlatform.instance;
 
+  bool updateExists(String appVersion, String gitHubVersion) {
+    final List<int> appVersionSplit = List<int>.from(appVersion.split('.').map((e) => int.parse(e)));
+    final List<int> gitHubVersionSplit = List<int>.from(gitHubVersion.split('.').map((e) => int.parse(e)));
+
+    if (gitHubVersionSplit[0] > appVersionSplit[0]) {
+      return true;
+    }
+    else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
+      return true;
+    }
+    else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   Future<GitHubRelease?> checkInstallationSource() async {
     Source installationSource = await StoreChecker.getSource;
     if (installationSource != Source.IS_INSTALLED_FROM_PLAY_STORE) {
       final result = await checkAppUpdatesGitHub();
       if (result['result'] == 'success') {
-        if (result['body'].tagName != widget.appConfigProvider.getAppInfo!.version) {
+        if (updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName)) {
           return result['body'];
         }
       }
