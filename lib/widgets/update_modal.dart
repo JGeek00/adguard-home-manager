@@ -88,7 +88,12 @@ class _UpdateModalState extends State<UpdateModal> {
               child: Text(AppLocalizations.of(context)!.download)
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context), 
+              onPressed: () {
+                if (doNotRemember == true) {
+                  appConfigProvider.setDoNotRememberVersion(widget.gitHubRelease.tagName);
+                }
+                Navigator.pop(context);
+              }, 
               child: Text(AppLocalizations.of(context)!.close)
             ),
           ],

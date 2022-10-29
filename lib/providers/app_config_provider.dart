@@ -34,6 +34,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _showNameTimeLogs = 0;
 
+  String? _doNotRememberVersion;
+
   PackageInfo? get getAppInfo {
     return _appInfo;
   }
@@ -110,6 +112,10 @@ class AppConfigProvider with ChangeNotifier {
 
   bool get showNameTimeLogs {
     return _showNameTimeLogs == 1 ? true : false;
+  }
+
+  String? get doNotRememberVersion {
+    return _doNotRememberVersion;
   }
 
   void setDbInstance(Database db) {
@@ -237,6 +243,21 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setDoNotRememberVersion(String value) async {
+    try {
+      return await _dbInstance!.transaction((txn) async {
+        await txn.rawUpdate(
+          'UPDATE appConfig SET doNotRememberVersion = "$value"',
+        );
+        _doNotRememberVersion = value;
+        notifyListeners();
+        return true;
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> _updateThemeDb(int value) async {
     try {
       return await _dbInstance!.transaction((txn) async {
@@ -334,8 +355,9 @@ class AppConfigProvider with ChangeNotifier {
     _hideZeroValues = dbData['hideZeroValues'];
     _useDynamicColor = convertFromIntToBool(dbData['useDynamicColor'])!;
     _staticColor = dbData['staticColor'];
-    _useThemeColorForStatus = convertFromIntToBool(dbData['useThemeColorForStatus'])!;
+    _useThemeColorForStatus = dbData['useThemeColorForStatus'] != null ? convertFromIntToBool(dbData['useThemeColorForStatus'])! : false;
     _showNameTimeLogs = dbData['showNameTimeLogs'];
+    _doNotRememberVersion = dbData['doNotRememberVersion'];
 
     _dbInstance = dbInstance;
     notifyListeners();

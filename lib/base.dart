@@ -120,7 +120,7 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
 
       final result = await checkInstallationSource();
 
-      if (result != null) {
+      if (result != null && widget.appConfigProvider.doNotRememberVersion != result.tagName) {
         await showDialog(
           context: context, 
           builder: (context) => UpdateModal(
