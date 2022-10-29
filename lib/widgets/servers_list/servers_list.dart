@@ -51,9 +51,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
       duration: const Duration(milliseconds: 200),
       vsync: this,
     )
-    ..addListener(() {
-      setState(() {});
-    });
+    ..addListener(() => setState(() => {}));
     animation = Tween(
       begin: 0.0,
       end: 0.5,

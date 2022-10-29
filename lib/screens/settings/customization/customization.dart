@@ -45,7 +45,7 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
 
   @override
   void initState() {
-    selectedTheme = widget.appConfigProvider.selectedTheme == ThemeMode.light ? 1 : 2;
+    selectedTheme = widget.appConfigProvider.selectedThemeNumber;
     dynamicColor = widget.appConfigProvider.useDynamicColor;
     selectedColor = widget.appConfigProvider.staticColor;
     useThemeColorInsteadGreenRed = widget.appConfigProvider.useThemeColorForStatus;
@@ -62,29 +62,47 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
       ),
       body: ListView(
         children: [
-          SectionLabel(label: AppLocalizations.of(context)!.theme),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          SectionLabel(
+            label: AppLocalizations.of(context)!.theme,
+            padding: const EdgeInsets.only(top: 10, left: 25, right: 25, bottom: 5),
+          ),
+          Column(
             children: [
-              ThemeModeButton(
-                icon: Icons.light_mode, 
-                value: 1, 
-                selected: selectedTheme, 
-                label: AppLocalizations.of(context)!.light, 
+              CustomSwitchListTile(
+                value: selectedTheme == 0 ? true : false, 
                 onChanged: (value) {
-                  selectedTheme = value;
-                  appConfigProvider.setSelectedTheme(value);
-                }
+                  selectedTheme = value == true ? 0 : 1;
+                  appConfigProvider.setSelectedTheme(value == true ? 0 : 1);
+                },
+                title: AppLocalizations.of(context)!.systemDefined, 
               ),
-              ThemeModeButton(
-                icon: Icons.dark_mode, 
-                value: 2, 
-                selected: selectedTheme, 
-                label: AppLocalizations.of(context)!.dark, 
-                onChanged: (value) {
-                  selectedTheme = value;
-                  appConfigProvider.setSelectedTheme(value);
-                }
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ThemeModeButton(
+                    icon: Icons.light_mode, 
+                    value: 1, 
+                    selected: selectedTheme, 
+                    label: AppLocalizations.of(context)!.light, 
+                    onChanged: (value) {
+                      selectedTheme = value;
+                      appConfigProvider.setSelectedTheme(value);
+                    },
+                    disabled: selectedTheme == 0 ? true : false,
+                  ),
+                  ThemeModeButton(
+                    icon: Icons.dark_mode, 
+                    value: 2, 
+                    selected: selectedTheme, 
+                    label: AppLocalizations.of(context)!.dark, 
+                    onChanged: (value) {
+                      selectedTheme = value;
+                      appConfigProvider.setSelectedTheme(value);
+                    },
+                    disabled: selectedTheme == 0 ? true : false,
+                  ),
+                ],
               ),
             ],
           ),
@@ -100,6 +118,7 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
             }, 
             title: AppLocalizations.of(context)!.useDynamicTheme, 
           ),
+          if (!(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31)) const SizedBox(height: 20),
           if (dynamicColor == false) ...[
             SizedBox(
               width: MediaQuery.of(context).size.width,
