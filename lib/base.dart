@@ -57,7 +57,7 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
     if (installationSource != Source.IS_INSTALLED_FROM_PLAY_STORE) {
       final result = await checkAppUpdatesGitHub();
       if (result['result'] == 'success') {
-        if (true) {
+        if (updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName)) {
           return result['body'];
         }
       }
