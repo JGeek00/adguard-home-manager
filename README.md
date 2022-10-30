@@ -40,9 +40,6 @@ This is an unofficial application. The AdGuard Home team and the development of 
 - [bottom sheet](https://pub.dev/packages/bottom_sheet)
 - [percent indicator](https://pub.dev/packages/percent_indicator)
 - [store checker](https://pub.dev/packages/store_checker)
-- [fl downloader](https://pub.dev/packages/fl_downloader)
-- [install plugin v2](https://pub.dev/packages/install_plugin_v2)
-- [permission handler](https://pub.dev/packages/permission_handler)
 
 <br>
 

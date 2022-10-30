@@ -197,13 +197,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.55.2"
-  fl_downloader:
-    dependency: "direct main"
-    description:
-      name: fl_downloader
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -294,13 +287,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.0"
-  install_plugin_v2:
-    dependency: "direct main"
-    description:
-      name: install_plugin_v2
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   intl:
     dependency: "direct main"
     description:
@@ -427,41 +413,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.2"
-  permission_handler:
-    dependency: "direct main"
-    description:
-      name: permission_handler
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "10.2.0"
-  permission_handler_android:
-    dependency: "direct main"
-    description:
-      name: permission_handler_android
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "10.2.0"
-  permission_handler_apple:
-    dependency: transitive
-    description:
-      name: permission_handler_apple
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "9.0.7"
-  permission_handler_platform_interface:
-    dependency: transitive
-    description:
-      name: permission_handler_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.9.0"
-  permission_handler_windows:
-    dependency: transitive
-    description:
-      name: permission_handler_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
   petitparser:
     dependency: transitive
     description:
