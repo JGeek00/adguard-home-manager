@@ -10,6 +10,7 @@ import 'package:adguard_home_manager/widgets/custom_radio_toggle.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/encode_base64.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/config/system_overlay_style.dart';
@@ -274,7 +275,7 @@ class _AddServerModalState extends State<AddServerModal> {
       if (result['result'] == 'success') {
         serverObj.authToken = encodeBase64UserPass(serverObj.user, serverObj.password);
         final serverCreated = await serversProvider.createServer(serverObj);
-        if (serverCreated == true) {
+        if (serverCreated == null) {
           serversProvider.setServerStatusLoad(0);
           final serverStatus = await getServerStatus(serverObj);
           if (serverStatus['result'] == 'success') {
@@ -288,6 +289,13 @@ class _AddServerModalState extends State<AddServerModal> {
           Navigator.pop(context);
         }
         else {
+          appConfigProvider.addLog(
+            AppLog(
+              type: 'save_connection_db', 
+              dateTime: DateTime.now(),
+              message: serverCreated.toString()
+            )
+          );
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.connectionNotCreated),
@@ -375,13 +383,20 @@ class _AddServerModalState extends State<AddServerModal> {
       if (result['result'] == 'success') {
         serverObj.authToken = encodeBase64UserPass(serverObj.user, serverObj.password);
         final serverSaved = await serversProvider.editServer(serverObj);
-        if (serverSaved == true) {
+        if (serverSaved == null) {
           Navigator.pop(context);
         }
         else {
+          appConfigProvider.addLog(
+            AppLog(
+              type: 'edit_connection_db', 
+              dateTime: DateTime.now(),
+              message: serverSaved.toString()
+            )
+          );
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(AppLocalizations.of(context)!.connectionNotUpdated),
+              content: Text(AppLocalizations.of(context)!.connectionNotCreated),
               backgroundColor: Colors.red,
             )
           );

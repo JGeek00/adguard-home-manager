@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
 import 'package:adguard_home_manager/widgets/add_server_modal.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -127,31 +129,38 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
       else {
         process.close();
         appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.cannotConnect),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.cannotConnect, 
+          color: Colors.red
         );
       }
     }
 
     void setDefaultServer(Server server) async {
       final result = await serversProvider.setDefaultServer(server);
-      if (result == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.connectionDefaultSuccessfully),
-            backgroundColor: Colors.green,
-          )
+      if (result == null) {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.connectionDefaultSuccessfully, 
+          color: Colors.green
         );
       }
       else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.connectionDefaultFailed),
-            backgroundColor: Colors.red,
+        appConfigProvider.addLog(
+          AppLog(
+            type: 'set_default_server', 
+            dateTime: DateTime.now(),
+            message: result.toString()
           )
+        );
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.connectionDefaultFailed, 
+          color: Colors.red
         );
       }
     }

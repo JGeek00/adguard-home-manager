@@ -201,34 +201,34 @@ class ServersProvider with ChangeNotifier {
     }
   }
  
-  Future<bool> createServer(Server server) async {
+  Future<dynamic> createServer(Server server) async {
     final saved = await saveServerIntoDb(server);
-    if (saved == true) {
+    if (saved == null) {
       if (server.defaultServer == true) {
         final defaultServer = await setDefaultServer(server);
-        if (defaultServer == true) {
+        if (defaultServer == null) {
           _serversList.add(server);
           notifyListeners();
-          return true;
+          return null;
         }
         else {
-          return false;
+          return defaultServer;
         }
       }
       else {
         _serversList.add(server);
         notifyListeners();
-        return true;
+        return null;
       }
     }
     else {
-      return false;
+      return saved;
     }
   }
 
-  Future<bool> setDefaultServer(Server server) async {
+  Future<dynamic> setDefaultServer(Server server) async {
     final updated = await setDefaultServerDb(server.id);
-    if (updated == true) {
+    if (updated == null) {
       List<Server> newServers = _serversList.map((s) {
         if (s.id == server.id) {
           s.defaultServer = true;
@@ -241,16 +241,16 @@ class ServersProvider with ChangeNotifier {
       }).toList();
       _serversList = newServers;
       notifyListeners();
-      return true;
+      return null;
     }
     else {
-      return false;
+      return updated;
     }
   }
 
-  Future<bool> editServer(Server server) async {
+  Future<dynamic> editServer(Server server) async {
     final result = await editServerDb(server);
-    if (result == true) {
+    if (result == null) {
       List<Server> newServers = _serversList.map((s) {
         if (s.id == server.id) {
           return server;
@@ -261,10 +261,10 @@ class ServersProvider with ChangeNotifier {
       }).toList();
       _serversList = newServers;
       notifyListeners();
-      return true;
+      return null;
     }
     else {
-      return false;
+      return result;
     }
   }
 
@@ -380,29 +380,29 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> saveServerIntoDb(Server server) async {
+  Future<dynamic> saveServerIntoDb(Server server) async {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawInsert(
           'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer, authToken, runningOnHa) VALUES ("${server.id}", "${server.name}", "${server.connectionMethod}", "${server.domain}", ${server.path != null ? "${server.path}" : null}, ${server.port}, "${server.user}", "${server.password}", 0, "${server.authToken}", ${convertFromBoolToInt(server.runningOnHa)})',
         );
-        return true;
+        return null;
       });
     } catch (e) {
-      return false;
+      return e;
     }
   }
 
-  Future<bool> editServerDb(Server server) async {
+  Future<dynamic> editServerDb(Server server) async {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawUpdate(
           'UPDATE servers SET name = "${server.name}", connectionMethod = "${server.connectionMethod}", domain = "${server.domain}", path = ${server.path != null ? "${server.path}" : null}, port = ${server.port}, user = "${server.user}", password = "${server.password}", authToken = "${server.authToken}", runningOnHa = ${convertFromBoolToInt(server.runningOnHa)} WHERE id = "${server.id}"',
         );
-        return true;
+        return null;
       });
     } catch (e) {
-      return false;
+      return e;
     }
   }
 
@@ -419,7 +419,7 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> setDefaultServerDb(String id) async {
+  Future<dynamic> setDefaultServerDb(String id) async {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawUpdate(
@@ -428,10 +428,10 @@ class ServersProvider with ChangeNotifier {
         await txn.rawUpdate(
           'UPDATE servers SET defaultServer = 1 WHERE id = "$id"',
         );
-        return true;
+        return null;
       });
     } catch (e) {
-      return false;
+      return e;
     }
   }
 
