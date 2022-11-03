@@ -48,7 +48,7 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
         child: InkWell(
           onTap: () => onChanged(id),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -58,7 +58,7 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
                       icon,
                       size: 24,
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 16),
                     Text(
                       label,
                       style: const TextStyle(
@@ -80,8 +80,8 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
     }
 
     return Container(
-      height: height >= 680 == true
-        ? 680
+      height: height >= 720 == true
+        ? 720
         : height-25,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
@@ -95,23 +95,24 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
           const Padding(
             padding: EdgeInsets.only(
               top: 24,
-              bottom: 20,
+              bottom: 16,
             ),
             child: Icon(
               Icons.shield_rounded,
-              size: 26,
+              size: 24,
             ),
           ),
           Text(
             AppLocalizations.of(context)!.responseStatus,
             style: const TextStyle(
-              fontSize: 24
+              fontSize: 24,
+              fontWeight: FontWeight.w400
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Expanded(
             child: ListView(
-              physics: height >= 680 == true
+              physics: height >= 720 == true
                 ? const NeverScrollableScrollPhysics()
                 : null,
               children: [
@@ -168,7 +169,7 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

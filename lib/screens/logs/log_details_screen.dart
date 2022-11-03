@@ -120,7 +120,7 @@ class LogDetailsScreen extends StatelessWidget {
       body: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Text(
               AppLocalizations.of(context)!.status,
               style: TextStyle(
@@ -163,7 +163,7 @@ class LogDetailsScreen extends StatelessWidget {
             subtitle: formatTimestampUTCFromAPI(log.time, 'HH:mm:ss')
           ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Text(
               AppLocalizations.of(context)!.request,
               style: TextStyle(
@@ -215,7 +215,7 @@ class LogDetailsScreen extends StatelessWidget {
             subtitle: log.status
           ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Text(
               AppLocalizations.of(context)!.client,
               style: TextStyle(
@@ -237,7 +237,7 @@ class LogDetailsScreen extends StatelessWidget {
           ),
           if (log.rules.isNotEmpty) ...[
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
               child: Text(
                 AppLocalizations.of(context)!.rules,
                 style: TextStyle(
@@ -255,7 +255,7 @@ class LogDetailsScreen extends StatelessWidget {
           ],
           if (log.answer.isNotEmpty) ...[
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Text(
                 AppLocalizations.of(context)!.answer,
                 style: TextStyle(
@@ -291,28 +291,3 @@ class LogDetailsScreen extends StatelessWidget {
     );
   }
 }
-
-
-//         Padding(
-//           padding: const EdgeInsets.all(20),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               TextButton(
-//                 onPressed: () {
-//                   blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block');
-//                   Navigator.pop(context);
-//                 },
-//                 child: Text(
-//                   getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-//                     ? AppLocalizations.of(context)!.unblockDomain
-//                     : AppLocalizations.of(context)!.blockDomain
-//                   )
-//               ),
-//               TextButton(
-//                 onPressed: () => Navigator.pop(context),
-//                 child: Text(AppLocalizations.of(context)!.close)
-//               ),
-//             ],  
-//           ),
-//         )

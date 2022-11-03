@@ -19,7 +19,7 @@ class LogListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -30,7 +30,7 @@ class LogListTile extends StatelessWidget {
                   icon,
                   size: 24,
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 16),
                 Flexible(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,10 +38,11 @@ class LogListTile extends StatelessWidget {
                       Text(
                         title,
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400
                         ),
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 3),
                       subtitleWidget ?? Text(
                         subtitle!,
                         style: TextStyle(
@@ -56,7 +57,7 @@ class LogListTile extends StatelessWidget {
             ),
           ),
           if (trailing != null) ...[
-            const SizedBox(width: 10),
+            const SizedBox(width: 16),
             trailing!
           ]
         ],

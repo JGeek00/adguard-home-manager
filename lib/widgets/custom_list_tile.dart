@@ -27,7 +27,7 @@ class CustomListTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -38,8 +38,9 @@ class CustomListTile extends StatelessWidget {
                     if (icon != null) ...[
                       Icon(
                         icon,
+                        size: 24,
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 16),
                     ],
                     Flexible(
                       child: Column(
@@ -48,8 +49,8 @@ class CustomListTile extends StatelessWidget {
                           Text(
                             title,
                             style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400
                             ),
                           ),
                           if (subtitle != null || subtitleWidget != null) ...[
@@ -59,7 +60,8 @@ class CustomListTile extends StatelessWidget {
                               subtitle!,
                               style: TextStyle(
                                 color: Theme.of(context).listTileTheme.iconColor,
-                                fontSize: 14
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400
                               ),
                             ),
                           ]
