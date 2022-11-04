@@ -88,9 +88,10 @@ class _ServersState extends State<Servers> {
             right: 20,
             child: FloatingActionButton(
               onPressed: openAddServerModal,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               child: Icon(
                 Icons.add,
-                color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                color: Theme.of(context).colorScheme.onPrimaryContainer
               ),
             ),
           ),

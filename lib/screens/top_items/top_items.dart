@@ -154,7 +154,12 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
 
                 return CustomListTile(
                   title: screenData[index].keys.toList()[0],
-                  trailing: Text(screenData[index].values.toList()[0].toString()),
+                  trailing: Text(
+                    screenData[index].values.toList()[0].toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                    ),
+                  ),
                   subtitleWidget: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -163,9 +168,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                           name,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Theme.of(context).brightness == Brightness.light
-                              ? Colors.black
-                              : Colors.white
+                            color: Theme.of(context).colorScheme.onSurface
                           ),
                         ),
                         const SizedBox(height: 5),
@@ -177,7 +180,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                             child: Text(
                               "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
                               style: TextStyle(
-                                color: Theme.of(context).listTileTheme.iconColor
+                                color: Theme.of(context).colorScheme.onSurfaceVariant
                               ),
                             ),
                           ),
@@ -191,7 +194,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                               percent: screenData[index].values.toList()[0]/total,
                               barRadius: const Radius.circular(5),
                               progressColor: Theme.of(context).primaryColor,
-                               backgroundColor: Theme.of(context).primaryColor.withOpacity(0.15),
+                              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.15),
                             ),
                           ),
                           const SizedBox(width: 10),

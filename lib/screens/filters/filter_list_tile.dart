@@ -19,31 +19,35 @@ class FilterListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Icon(
             icon,
+            size: 24,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 16),
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Theme.of(context).colorScheme.onSurface
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 3),
                 Text(
                   subtitle,
                   style: TextStyle(
                     fontSize: 14,
-                    color: color ?? Theme.of(context).listTileTheme.iconColor,
-                    fontWeight: bold == true ? FontWeight.bold : null
+                    color: color ?? Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight: bold == true ? FontWeight.bold : FontWeight.w400
                   ),
                 ),
               ],

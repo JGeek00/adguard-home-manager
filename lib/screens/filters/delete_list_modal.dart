@@ -14,15 +14,27 @@ class DeleteListModal extends StatelessWidget {
     return AlertDialog(
       title: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.delete_rounded,
-            size: 26,
+            size: 24,
+            color: Theme.of(context).colorScheme.secondary,
           ),
-          const SizedBox(height: 20),
-          Text(AppLocalizations.of(context)!.deleteList)
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.deleteList,
+            style: TextStyle(
+              fontSize: 24,
+              color: Theme.of(context).colorScheme.onSurface
+            ),
+          )
         ],
       ),
-      content: Text(AppLocalizations.of(context)!.deleteListMessage),
+      content: Text(
+        AppLocalizations.of(context)!.deleteListMessage,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface
+        ),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context), 

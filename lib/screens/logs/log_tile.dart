@@ -83,10 +83,11 @@ class LogTile extends StatelessWidget {
                   children: [
                     Text(
                       log.question.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         height: 1.5,
                         fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.onSurface
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -96,7 +97,7 @@ class LogTile extends StatelessWidget {
                           Icon(
                             Icons.smartphone_rounded,
                             size: 16,
-                            color: Theme.of(context).listTileTheme.iconColor,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(width: 5),
                           SizedBox(
@@ -104,7 +105,7 @@ class LogTile extends StatelessWidget {
                               log.client,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: Theme.of(context).listTileTheme.iconColor,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 14,
                                 height: 1.4,
                                 fontWeight: FontWeight.w400,
@@ -117,7 +118,7 @@ class LogTile extends StatelessWidget {
                           Icon(
                             Icons.schedule_rounded,
                             size: 16,
-                            color: Theme.of(context).listTileTheme.iconColor,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(width: 5),
                           SizedBox(
@@ -125,7 +126,7 @@ class LogTile extends StatelessWidget {
                               formatTimestampUTCFromAPI(log.time, 'HH:mm:ss'),
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: Theme.of(context).listTileTheme.iconColor,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 13
                               ),
                             ),
@@ -140,7 +141,7 @@ class LogTile extends StatelessWidget {
                             Icon(
                               Icons.smartphone_rounded,
                               size: 16,
-                              color: Theme.of(context).listTileTheme.iconColor,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                             const SizedBox(width: 15),
                             SizedBox(
@@ -148,7 +149,7 @@ class LogTile extends StatelessWidget {
                                 log.client,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: Theme.of(context).listTileTheme.iconColor,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 13
                                 ),
                               ),
@@ -162,7 +163,7 @@ class LogTile extends StatelessWidget {
                               Icon(
                                 Icons.badge_rounded,
                                 size: 16,
-                                color: Theme.of(context).listTileTheme.iconColor,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 15),
                               SizedBox(
@@ -170,7 +171,7 @@ class LogTile extends StatelessWidget {
                                   log.clientInfo!.name,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    color: Theme.of(context).listTileTheme.iconColor,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     fontSize: 13
                                   ),
                                 ),
@@ -184,7 +185,7 @@ class LogTile extends StatelessWidget {
                             Icon(
                               Icons.schedule_rounded,
                               size: 16,
-                              color: Theme.of(context).listTileTheme.iconColor,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                             const SizedBox(width: 15),
                             SizedBox(
@@ -192,7 +193,7 @@ class LogTile extends StatelessWidget {
                                 formatTimestampUTCFromAPI(log.time, 'HH:mm:ss'),
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: Theme.of(context).listTileTheme.iconColor,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 13
                                 ),
                               ),
@@ -206,7 +207,7 @@ class LogTile extends StatelessWidget {
                               Icon(
                                 Icons.timer,
                                 size: 16,
-                                color: Theme.of(context).listTileTheme.iconColor,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 15),
                               SizedBox(
@@ -214,7 +215,7 @@ class LogTile extends StatelessWidget {
                                   "${double.parse(log.elapsedMs).toStringAsFixed(2)} ms",
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    color: Theme.of(context).listTileTheme.iconColor,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     fontSize: 13
                                   ),
                                 ),

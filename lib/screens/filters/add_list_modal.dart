@@ -69,7 +69,7 @@ class _AddListModalState extends State<AddListModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 410,
+        height: 370,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(28),
@@ -86,15 +86,16 @@ class _AddListModalState extends State<AddListModal> {
                   : null,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 28),
+                    padding: const EdgeInsets.only(top: 24),
                     child: Icon(
                       widget.type == 'whitelist'
                         ? Icons.verified_user_rounded
                         : Icons.gpp_bad_rounded,
-                      size: 26,
+                      size: 24,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Text(
                     widget.list != null
                       ? widget.type == 'whitelist'
@@ -104,13 +105,14 @@ class _AddListModalState extends State<AddListModal> {
                         ? AppLocalizations.of(context)!.addWhitelist
                         : AppLocalizations.of(context)!.addBlacklist,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 16),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: nameController,
                       onChanged: (_) => checkValidValues(),
@@ -127,7 +129,7 @@ class _AddListModalState extends State<AddListModal> {
                   ),
                   const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: urlController,
                       onChanged: validateUrl,
@@ -148,7 +150,7 @@ class _AddListModalState extends State<AddListModal> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

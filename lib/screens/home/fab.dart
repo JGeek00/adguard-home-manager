@@ -24,9 +24,10 @@ class HomeFab extends StatelessWidget {
     return serversProvider.serverStatus.loadStatus == 1
       ? FloatingActionButton(
           onPressed: openManagementBottomSheet,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           child: Icon(
             Icons.shield_rounded,
-            color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),
         )
       : const SizedBox();

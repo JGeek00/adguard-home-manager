@@ -19,7 +19,7 @@ class LogListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -29,6 +29,7 @@ class LogListTile extends StatelessWidget {
                 Icon(
                   icon,
                   size: 24,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: 16),
                 Flexible(
@@ -47,7 +48,7 @@ class LogListTile extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Theme.of(context).listTileTheme.iconColor,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       )
                     ],

@@ -116,8 +116,8 @@ class _ClientScreenState extends State<ClientScreen> {
     Widget sectionLabel(String label) {
       return Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: 30,
-          horizontal: 20
+          vertical: 24,
+          horizontal: 24
         ),
         child: Text(
           label,
@@ -213,7 +213,7 @@ class _ClientScreenState extends State<ClientScreen> {
             : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 30,
+              horizontal: 42,
               vertical: 5
             ),
             child: Row(
@@ -221,8 +221,9 @@ class _ClientScreenState extends State<ClientScreen> {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    fontSize: 15
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 useGlobalSettingsFiltering == false
@@ -236,7 +237,7 @@ class _ClientScreenState extends State<ClientScreen> {
                       child: Text(
                         "Global",
                         style: TextStyle(
-                          color: Theme.of(context).listTileTheme.iconColor,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     )
@@ -290,9 +291,9 @@ class _ClientScreenState extends State<ClientScreen> {
       ),
       body: ListView(
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: TextFormField(
               enabled: widget.client != null ? false : true,
               controller: nameController,
@@ -315,30 +316,32 @@ class _ClientScreenState extends State<ClientScreen> {
               onTap: editMode == true ? () => openTagsModal() : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 10, horizontal: 20
+                  vertical: 0, horizontal: 24
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.label_rounded,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           AppLocalizations.of(context)!.selectTags,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
+                            color: Theme.of(context).colorScheme.onSurface
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 3),
                         Text(
                           selectedTags.isNotEmpty
                             ? "${selectedTags.length} ${AppLocalizations.of(context)!.tagsSelected}"
                             : AppLocalizations.of(context)!.noTagsSelected,
                           style: TextStyle(
-                            color: Theme.of(context).listTileTheme.iconColor,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant
                           ),
                         )
                       ],
@@ -365,43 +368,40 @@ class _ClientScreenState extends State<ClientScreen> {
             ],
           ),
           if (identifiersControllers.isNotEmpty) ...identifiersControllers.map((controller) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      enabled: editMode,
-                      controller: controller['controller'],
-                      onChanged: (_) => checkValidValues(),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.tag),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10)
-                          )
-                        ),
-                        helperText: AppLocalizations.of(context)!.identifierHelper,
-                        labelText: AppLocalizations.of(context)!.identifier,
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    enabled: editMode,
+                    controller: controller['controller'],
+                    onChanged: (_) => checkValidValues(),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.tag),
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10)
+                        )
                       ),
+                      helperText: AppLocalizations.of(context)!.identifierHelper,
+                      labelText: AppLocalizations.of(context)!.identifier,
                     ),
                   ),
-                  if (editMode == true) ...[
-                    const SizedBox(width: 20),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 25),
-                      child: IconButton(
-                        onPressed: () => setState(
-                          () => identifiersControllers = identifiersControllers.where((e) => e['id'] != controller['id']).toList()
-                        ), 
-                        icon: const Icon(Icons.remove_circle_outline_outlined)
-                      ),
-                    )
-                  ]
-                ],
-              ),
+                ),
+                if (editMode == true) ...[
+                  const SizedBox(width: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 25),
+                    child: IconButton(
+                      onPressed: () => setState(
+                        () => identifiersControllers = identifiersControllers.where((e) => e['id'] != controller['id']).toList()
+                      ), 
+                      icon: const Icon(Icons.remove_circle_outline_outlined)
+                    ),
+                  )
+                ]
+              ],
             ),
           )).toList(),
           if (identifiersControllers.isEmpty) Container(
@@ -417,7 +417,7 @@ class _ClientScreenState extends State<ClientScreen> {
           ),
           sectionLabel(AppLocalizations.of(context)!.settings),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Material(
               color: Theme.of(context).primaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(28),
@@ -436,8 +436,9 @@ class _ClientScreenState extends State<ClientScreen> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.useGlobalSettings,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                       Switch(
@@ -484,7 +485,7 @@ class _ClientScreenState extends State<ClientScreen> {
           ),
           sectionLabel(AppLocalizations.of(context)!.blockedServices),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Material(
               color: Theme.of(context).primaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(28),
@@ -503,8 +504,9 @@ class _ClientScreenState extends State<ClientScreen> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.useGlobalSettings,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                       Switch(
@@ -531,17 +533,17 @@ class _ClientScreenState extends State<ClientScreen> {
                 : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 10, horizontal: 20
+                  vertical: 8, horizontal: 24
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.public,
                       color: useGlobalSettingsServices == false
-                        ? null
-                        : Colors.grey,
+                        ? Theme.of(context).colorScheme.onSurface
+                        : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -550,8 +552,8 @@ class _ClientScreenState extends State<ClientScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             color: useGlobalSettingsServices == false
-                              ? null
-                              : Theme.of(context).listTileTheme.iconColor,
+                              ? Theme.of(context).colorScheme.onSurface
+                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
                           ),
                         ),
                         if (useGlobalSettingsServices == false) ...[
@@ -561,7 +563,7 @@ class _ClientScreenState extends State<ClientScreen> {
                               ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
                               :  AppLocalizations.of(context)!.noBlockedServicesSelected,
                             style: TextStyle(
-                              color: Theme.of(context).listTileTheme.iconColor,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant
                             ),
                           )
                         ]

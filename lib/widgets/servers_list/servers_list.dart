@@ -187,7 +187,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                   Container(
                     padding: const EdgeInsets.all(1),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(20)
                     ),
                     child: const Icon(
@@ -232,9 +232,10 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                       Text(
                         "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w400
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                       Column(
@@ -246,7 +247,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
-                              color: Theme.of(context).listTileTheme.iconColor
+                              color: Theme.of(context).colorScheme.onSurfaceVariant
                             ),
                           )
                         ],
