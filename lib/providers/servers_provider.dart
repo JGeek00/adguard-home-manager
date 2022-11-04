@@ -384,7 +384,8 @@ class ServersProvider with ChangeNotifier {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawInsert(
-          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer, authToken, runningOnHa) VALUES ("${server.id}", "${server.name}", "${server.connectionMethod}", "${server.domain}", ${server.path != null ? "${server.path}" : null}, ${server.port}, "${server.user}", "${server.password}", 0, "${server.authToken}", ${convertFromBoolToInt(server.runningOnHa)})',
+          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer, authToken, runningOnHa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [server.id, server.name, server.connectionMethod, server.domain, server.path, server.port, server.user, server.password, server.defaultServer, server.authToken, convertFromBoolToInt(server.runningOnHa)]
         );
         return null;
       });
@@ -397,7 +398,8 @@ class ServersProvider with ChangeNotifier {
     try {
       return await _dbInstance!.transaction((txn) async {
         await txn.rawUpdate(
-          'UPDATE servers SET name = "${server.name}", connectionMethod = "${server.connectionMethod}", domain = "${server.domain}", path = ${server.path != null ? "${server.path}" : null}, port = ${server.port}, user = "${server.user}", password = "${server.password}", authToken = "${server.authToken}", runningOnHa = ${convertFromBoolToInt(server.runningOnHa)} WHERE id = "${server.id}"',
+          'UPDATE servers SET name = ?, connectionMethod = ?, domain = ?, path = ?, port = ?, user = ?, password = ?, authToken = ?, runningOnHa = ? WHERE id = "${server.id}"',
+          [server.name, server.connectionMethod, server.domain, server.path, server.port, server.user, server.password, server.authToken, server.runningOnHa]
         );
         return null;
       });
