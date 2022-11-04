@@ -58,10 +58,18 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
   bool showDivider = true;
 
   void search(String value) {
-    setState(() {
-      clientsScreen = clients.where((client) => client.name.contains(value) || client.ids.where((e) => e.contains(value)).isNotEmpty).toList();
-      autoClientsScreen = autoClients.where((client) => (client.name != null ? client.name!.contains(value) : true) || client.ip.contains(value)).toList();
-    });
+    if (value == '') {
+      setState(() {
+        clientsScreen = [];
+        autoClientsScreen = [];
+      });
+    }
+    else {
+      setState(() {
+        clientsScreen = clients.where((client) => client.name.contains(value) || client.ids.where((e) => e.contains(value)).isNotEmpty).toList();
+        autoClientsScreen = autoClients.where((client) => (client.name != null ? client.name!.contains(value) : true) || client.ip.contains(value)).toList();
+      });
+    }
   }
 
   void scrollListener() {
@@ -80,9 +88,6 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
     setState(() {
       clients = widget.serversProvider.clients.data!.clients;
       autoClients = widget.serversProvider.clients.data!.autoClientsData;
-
-      clientsScreen = widget.serversProvider.clients.data!.clients;
-      autoClientsScreen = widget.serversProvider.clients.data!.autoClientsData;
     });
 
     super.initState();
@@ -377,7 +382,9 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                AppLocalizations.of(context)!.noClientsSearch,
+                searchController.text == ''
+                  ? AppLocalizations.of(context)!.inputSearchTerm
+                  : AppLocalizations.of(context)!.noClientsSearch,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.grey,
