@@ -2,15 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
-import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/clients/client_screen.dart';
 import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
-import 'package:adguard_home_manager/screens/clients/client_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -141,23 +140,14 @@ class _AddedListState extends State<AddedList> {
     }
 
     void openClientModal(Client client) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      showFlexibleBottomSheet(
-        minHeight: 0.6,
-        initHeight: 0.6,
-        maxHeight: 0.95,
-        isCollapsible: true,
-        duration: const Duration(milliseconds: 250),
-        anchors: [0.95],
-        context: context, 
-        builder: (ctx, controller, offset) => ClientModal(
-          scrollController: controller,
-          client: client,
+      Navigator.push(context, MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (BuildContext context) => ClientScreen(
           onConfirm: confirmEditClient,
           onDelete: deleteClient,
-        ),
-        bottomSheetColor: Colors.transparent
-      );
+          client: client,
+        )
+      ));
     }
 
     void openDeleteModal(Client client) {
