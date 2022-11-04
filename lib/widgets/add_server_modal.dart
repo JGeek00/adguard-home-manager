@@ -61,8 +61,8 @@ class _AddServerModalState extends State<AddServerModal> {
   Widget sectionLabel(String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 20, 
-        vertical: 30
+        horizontal: 24, 
+        vertical: 24
       ),
       child: Text(
         label,
@@ -87,7 +87,7 @@ class _AddServerModalState extends State<AddServerModal> {
     String? helperText
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: TextFormField(
         controller: controller,
         onChanged: onChanged,
@@ -465,7 +465,6 @@ class _AddServerModalState extends State<AddServerModal> {
            appBar: AppBar(
             systemOverlayStyle: systemUiOverlayStyleConfig(context),
             title: Text(AppLocalizations.of(context)!.createConnection),
-            elevation: 5,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
@@ -493,9 +492,9 @@ class _AddServerModalState extends State<AddServerModal> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 margin: const EdgeInsets.only(
-                  top: 30,
-                  left: 20,
-                  right: 20
+                  top: 24,
+                  left: 24,
+                  right: 24
                 ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor.withOpacity(0.05),
@@ -601,7 +600,7 @@ class _AddServerModalState extends State<AddServerModal> {
                     ? () => setState(() => defaultServer = !defaultServer)
                     : null,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -629,7 +628,7 @@ class _AddServerModalState extends State<AddServerModal> {
                 child: InkWell(
                   onTap: () => setState(() => homeAssistant = !homeAssistant),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

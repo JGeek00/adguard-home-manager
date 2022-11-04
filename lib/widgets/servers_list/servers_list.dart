@@ -218,44 +218,48 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            width: 48,
-            margin: const EdgeInsets.only(right: 12),
-            child: leadingIcon(servers[index]),
-          ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Text(
-                  "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18,
+                Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: leadingIcon(servers[index]),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          const SizedBox(height: 3),
+                          Text(
+                            servers[index].name,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Theme.of(context).listTileTheme.iconColor
+                            ),
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
-                Column(
-                  children: [
-                    const SizedBox(height: 5),
-                    Text(
-                      servers[index].name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).listTileTheme.iconColor
-                      ),
-                    )
-                  ],
-                )
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: RotationTransition(
-              turns: animation,
-              child: const Icon(Icons.keyboard_arrow_down_rounded),
-            ),
+          RotationTransition(
+            turns: animation,
+            child: const Icon(Icons.keyboard_arrow_down_rounded),
           ),
         ],
       );
@@ -383,7 +387,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                     child: InkWell(
                       onTap: () => widget.onChange(index),
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: topRow(servers[index], index),
                       ),
                     ),
@@ -393,7 +397,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                     child: InkWell(
                       onTap: () => widget.onChange(index),
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: Column(
                           children: [
                             topRow(servers[index], index),
