@@ -121,26 +121,15 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                   ],
                   bottom: TabBar(
                     controller: tabController,
+                    unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
                     tabs: [
                       Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.devices),
-                            const SizedBox(width: 20),
-                            Text(AppLocalizations.of(context)!.activeClients)
-                          ],
-                        ),
+                        icon: const Icon(Icons.devices),
+                        text: AppLocalizations.of(context)!.activeClients,
                       ),
                       Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add),
-                            const SizedBox(width: 20),
-                            Text(AppLocalizations.of(context)!.added)
-                          ],
-                        ),
+                        icon: const Icon(Icons.add_rounded),
+                        text: AppLocalizations.of(context)!.added,
                       ),
                     ]
                   )
@@ -154,9 +143,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
             color: Theme.of(context).scaffoldBackgroundColor,
             border: Border(
               top: BorderSide(
-                color: Theme.of(context).brightness == Brightness.light
-                  ? const Color.fromRGBO(220, 220, 220, 1)
-                  : const Color.fromRGBO(50, 50, 50, 1)
+                color: Theme.of(context).colorScheme.surfaceVariant
               )
             )
           ),

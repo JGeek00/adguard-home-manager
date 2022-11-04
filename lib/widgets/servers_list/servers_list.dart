@@ -190,9 +190,9 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                       color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(20)
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.star,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       size: 10,
                     ),
                   ),
@@ -388,7 +388,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                     child: InkWell(
                       onTap: () => widget.onChange(index),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         child: topRow(servers[index], index),
                       ),
                     ),
@@ -398,7 +398,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                     child: InkWell(
                       onTap: () => widget.onChange(index),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         child: Column(
                           children: [
                             topRow(servers[index], index),

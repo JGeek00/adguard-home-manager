@@ -57,12 +57,14 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
                     Icon(
                       icon,
                       size: 24,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 16),
                     Text(
                       label,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
+                        color: Theme.of(context).colorScheme.onSurface
                       ),
                     )
                   ],
@@ -92,21 +94,23 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
       ),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(
+          Padding(
+            padding: const EdgeInsets.only(
               top: 24,
               bottom: 16,
             ),
             child: Icon(
               Icons.shield_rounded,
               size: 24,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
           Text(
             AppLocalizations.of(context)!.responseStatus,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
-              fontWeight: FontWeight.w400
+              fontWeight: FontWeight.w400,
+              color: Theme.of(context).colorScheme.onSurface
             ),
           ),
           const SizedBox(height: 16),

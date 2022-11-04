@@ -144,7 +144,7 @@ class ManagementModal extends StatelessWidget {
                   child: Icon(
                     Icons.shield_rounded,
                     size: 24,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
                 Padding(

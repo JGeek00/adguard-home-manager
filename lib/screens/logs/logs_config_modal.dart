@@ -126,19 +126,21 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                     ? const NeverScrollableScrollPhysics() 
                     : null,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 24),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24),
                       child: Icon(
                         Icons.settings,
                         size: 24,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       AppLocalizations.of(context)!.logsSettings,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 24
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.onSurface
                       ), 
                     ),
                     const SizedBox(height: 16),

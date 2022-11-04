@@ -56,7 +56,12 @@ class ClientsList extends StatelessWidget {
               subtitle: data[index].name != '' 
                 ? data[index].ip 
                 : null,
-              trailing: Text(data[index].source),
+              trailing: Text(
+                data[index].source,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface
+                ),
+              ),
             )
           );
         }

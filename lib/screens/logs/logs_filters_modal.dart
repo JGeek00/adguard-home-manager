@@ -171,7 +171,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 350,
+        height: 360,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -187,23 +187,25 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(
+                  Padding(
+                    padding: const EdgeInsets.only(
                       top: 24,
                       bottom: 16,
                     ),
                     child: Icon(
                       Icons.filter_list_rounded,
                       size: 24,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
                   Text(
                     AppLocalizations.of(context)!.filters,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style:  TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w400,
-                      height: 1.3
+                      height: 1.3,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -285,7 +287,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                     subtitle: "${translatedString[logsProvider.selectedResultStatus]}",
                     onTap: openSelectFilterStatus,
                     icon: Icons.shield_rounded,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                 ],
               ),

@@ -199,7 +199,7 @@ class _AddedListState extends State<AddedList> {
               padding: const EdgeInsets.only(top: 0),
               itemCount: widget.data.length,
               itemBuilder: (context, index) => ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 isThreeLine: true,
                 onLongPress: () => openOptionsModal(widget.data[index]),
                 onTap: () => openClientModal(widget.data[index]),
@@ -207,16 +207,22 @@ class _AddedListState extends State<AddedList> {
                   padding: const EdgeInsets.only(bottom: 5),
                   child: Text(
                     widget.data[index].name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.normal
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), '')),
+                    Text(
+                      widget.data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                      ),
+                    ),
                     const SizedBox(height: 7),
                     Row(
                       children: [

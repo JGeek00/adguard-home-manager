@@ -136,16 +136,19 @@ class LogDetailsScreen extends StatelessWidget {
             subtitleWidget: getResult(),
             trailing: log.cached == true 
               ? Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).listTileTheme.iconColor,
-                    borderRadius: BorderRadius.circular(10)
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5
                   ),
-                  child: const Text(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(30)
+                  ),
+                  child: Text(
                     "CACHE",
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.w500
                     ),
                   ),
@@ -270,16 +273,19 @@ class LogDetailsScreen extends StatelessWidget {
               title: a.value,
               subtitle: "TTL: ${a.ttl.toString()}",
               trailing: Container(
-                padding: const EdgeInsets.all(5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5
+                ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).listTileTheme.iconColor,
-                  borderRadius: BorderRadius.circular(10)
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(30)
                 ),
                 child: Text(
                   a.type,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w500
                   ),
                 ),

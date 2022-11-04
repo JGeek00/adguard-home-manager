@@ -48,8 +48,9 @@ class TopItems extends StatelessWidget {
                   Text(
                     item.keys.toList()[0],
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 16
+                    style:  TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
                   if (name != null) ...[
@@ -59,14 +60,19 @@ class TopItems extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Theme.of(context).listTileTheme.iconColor
+                        color: Theme.of(context).colorScheme.onSurfaceVariant
                       ),
                     ),
                   ]
                 ],
               ),
             ),
-            Text(item.values.toList()[0].toString())
+            Text(
+              item.values.toList()[0].toString(),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface
+              ),
+            )
           ],
         ),
       );
@@ -93,9 +99,10 @@ class TopItems extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w500
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.onSurface
             ),
           ),
           const SizedBox(height: 20),

@@ -367,36 +367,19 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                   bottom: TabBar(
                     controller: tabController,
                     isScrollable: true,
+                    unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
                     tabs: [
                       Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.verified_user_rounded),
-                            const SizedBox(width: 20),
-                            Text(AppLocalizations.of(context)!.whitelists),
-                          ],
-                        ),
+                        icon: const Icon(Icons.verified_user_rounded),
+                        text: AppLocalizations.of(context)!.whitelists,
                       ),
                       Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.gpp_bad_rounded),
-                            const SizedBox(width: 20),
-                            Text(AppLocalizations.of(context)!.blacklist),
-                          ],
-                        ),
+                        icon: const Icon(Icons.gpp_bad_rounded),
+                        text: AppLocalizations.of(context)!.blacklist,
                       ),
                       Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.shield_rounded),
-                            const SizedBox(width: 20),
-                            Text(AppLocalizations.of(context)!.customRules),
-                          ],
-                        ),
+                        icon: const Icon(Icons.shield_rounded),
+                        text: AppLocalizations.of(context)!.customRules,
                       ),
                     ]
                   )
@@ -410,9 +393,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
             color: Theme.of(context).scaffoldBackgroundColor,
             border: Border(
               top: BorderSide(
-                color: Theme.of(context).brightness == Brightness.light
-                  ? const Color.fromRGBO(220, 220, 220, 1)
-                  : const Color.fromRGBO(50, 50, 50, 1)
+                color: Theme.of(context).colorScheme.surfaceVariant
               )
             )
           ),

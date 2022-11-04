@@ -34,16 +34,18 @@ class _UpdateModalState extends State<UpdateModal> {
       scrollable: true,
       title: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.system_update_rounded,
-            size: 26,
+            size: 24,
+            color: Theme.of(context).colorScheme.secondary,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.updateAvailable, 
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 26
+            style: TextStyle(
+              fontSize: 24,
+              color: Theme.of(context).colorScheme.onSurface
             ),
           )
         ],
@@ -51,11 +53,26 @@ class _UpdateModalState extends State<UpdateModal> {
       content: Column(
         children: [
           const SizedBox(height: 10),
-          Text("${AppLocalizations.of(context)!.installedVersion}: ${appConfigProvider.getAppInfo!.version}"),
+          Text(
+            "${AppLocalizations.of(context)!.installedVersion}: ${appConfigProvider.getAppInfo!.version}",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant
+            ),
+          ),
           const SizedBox(height: 10),
-          Text("${AppLocalizations.of(context)!.newVersion}: ${widget.gitHubRelease.tagName}"),
+          Text(
+            "${AppLocalizations.of(context)!.newVersion}: ${widget.gitHubRelease.tagName}",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant
+            ),
+          ),
           const SizedBox(height: 10),
-          Text("${AppLocalizations.of(context)!.source}: GitHub"),
+          Text(
+            "${AppLocalizations.of(context)!.source}: GitHub",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant
+            ),
+          ),
           const SizedBox(height: 20),
           GestureDetector(
             onTap: () => setState(() => doNotRemember = !doNotRemember),
@@ -70,7 +87,14 @@ class _UpdateModalState extends State<UpdateModal> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Flexible(child: Text(AppLocalizations.of(context)!.doNotRememberAgainUpdate))
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.doNotRememberAgainUpdate,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                    ),
+                  )
+                )
               ],
             ),
           )

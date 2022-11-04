@@ -3,9 +3,8 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:adguard_home_manager/widgets/custom_radio_toggle.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/encode_base64.dart';
@@ -249,6 +248,25 @@ class _AddServerModalState extends State<AddServerModal> {
 
     final mediaQuery = MediaQuery.of(context);
 
+    Map<int, Widget> connectionTypes = {
+      0: Text(
+        'HTTP',
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface,
+          fontSize: 14,
+          fontWeight: FontWeight.w500
+        ),
+      ),
+      1: Text(
+        'HTTPS',
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface,
+          fontSize: 14,
+          fontWeight: FontWeight.w500
+        ),
+      )
+    };
+
     void connect() async {
       Server serverObj = Server(
         id: uuid.v4(),
@@ -457,7 +475,7 @@ class _AddServerModalState extends State<AddServerModal> {
         );
       }
     }
-
+print(connectionType);
     return Stack(
       children: [
         Scaffold(
@@ -529,22 +547,23 @@ class _AddServerModalState extends State<AddServerModal> {
                 }
               ),
               sectionLabel(AppLocalizations.of(context)!.connection),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CustomRadioToggle(
-                    groupSelected: connectionType, 
-                    value: 'http', 
-                    label: 'HTTP', 
-                    onTap: (value) => setState(() => connectionType = value)
-                  ),
-                  CustomRadioToggle(
-                    groupSelected: connectionType, 
-                    value: 'https', 
-                    label: 'HTTPS', 
-                    onTap: (value) => setState(() => connectionType = value)
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: MaterialSegmentedControl(
+                  children: connectionTypes,
+                  selectionIndex: connectionType == 'http' ? 0 : 1,
+                  onSegmentChosen: (value) => setState(() {
+                    if (value == 0) {
+                      connectionType = 'http';
+                    }
+                    else if (value == 1) {
+                      connectionType = 'https';
+                    }
+                  }),
+                  selectedColor: Theme.of(context).colorScheme.secondaryContainer,
+                  unselectedColor: Colors.transparent,
+                  borderColor: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 20),
               textField(

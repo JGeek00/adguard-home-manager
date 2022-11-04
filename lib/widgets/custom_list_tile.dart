@@ -27,7 +27,7 @@ class CustomListTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
