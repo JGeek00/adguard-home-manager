@@ -31,22 +31,24 @@ class SelectInterfaceModal extends StatelessWidget {
             child: ListView(
               controller: scrollController,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 28),
+                Padding(
+                  padding: const EdgeInsets.only(top: 24),
                   child: Icon(
                     Icons.settings_ethernet_rounded,
-                    size: 26,
+                    size: 24,
+                    color: Theme.of(context).listTileTheme.iconColor
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 Text(
                   AppLocalizations.of(context)!.selectInterface,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 24
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Theme.of(context).colorScheme.onSurface
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 ListView.builder(
                   primary: false,
                   shrinkWrap: true,
@@ -59,38 +61,54 @@ class SelectInterfaceModal extends StatelessWidget {
                         onSelect(interfaces[index]);
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               interfaces[index].name,
-                              style: const TextStyle(
-                                fontSize: 18
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(context).colorScheme.onSurface
                               ),
                             ),
                             Row(
                               children: [
                                 Text(
                                   "${AppLocalizations.of(context)!.hardwareAddress}: ",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant
                                   ),
                                 ),
-                                Text(interfaces[index].hardwareAddress),
+                                Text(
+                                  interfaces[index].hardwareAddress,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 5),
                             if (interfaces[index].flags.isNotEmpty) ...[
                               Row(
                                 children: [
-                                  const Text(
+                                  Text(
                                     "Flags: ",
                                     style: TextStyle(
-                                      fontWeight: FontWeight.w500
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant
                                     ),
                                   ),
-                                  Text(interfaces[index].flags.join(', ')),
+                                  Text(
+                                    interfaces[index].flags.join(', '),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 5),
@@ -100,11 +118,18 @@ class SelectInterfaceModal extends StatelessWidget {
                                 children: [
                                   Text(
                                     "${AppLocalizations.of(context)!.gatewayIp}: ",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant
                                     ),
                                   ),
-                                  Text(interfaces[index].gatewayIp),
+                                  Text(
+                                    interfaces[index].gatewayIp,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 5),
@@ -114,11 +139,18 @@ class SelectInterfaceModal extends StatelessWidget {
                                 children: [
                                   Text(
                                     "${AppLocalizations.of(context)!.ipv4addresses}: ",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant
                                     ),
                                   ),
-                                  Text(interfaces[index].ipv4Addresses.join(', ')),
+                                  Text(
+                                    interfaces[index].ipv4Addresses.join(', '),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 5),
@@ -128,11 +160,18 @@ class SelectInterfaceModal extends StatelessWidget {
                                 children: [
                                   Text(
                                     "${AppLocalizations.of(context)!.ipv4addresses}: ",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant
                                     ),
                                   ),
-                                  Text(interfaces[index].ipv6Addresses.join(', ')),
+                                  Text(
+                                    interfaces[index].ipv6Addresses.join(', '),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                                    ),
+                                  ),
                                 ],
                               ),
                             ]

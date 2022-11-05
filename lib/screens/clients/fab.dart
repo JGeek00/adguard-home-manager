@@ -2,15 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/client_screen.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -61,28 +59,20 @@ class ClientsFab extends StatelessWidget {
     }
 
     void openAddClient() {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      showFlexibleBottomSheet(
-        minHeight: 0.6,
-        initHeight: 0.6,
-        maxHeight: 0.95,
-        isCollapsible: true,
-        duration: const Duration(milliseconds: 250),
-        anchors: [0.95],
-        context: context, 
-        builder: (ctx, controller, offset) => ClientModal(
-          scrollController: controller,
-          onConfirm: confirmAddClient
-        ),
-        bottomSheetColor: Colors.transparent
-      );
+      Navigator.push(context, MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (BuildContext context) => ClientScreen(
+          onConfirm: confirmAddClient,
+        )
+      ));
     }
 
     return FloatingActionButton(
       onPressed: () => openAddClient(),
+      backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
       child: Icon(
         Icons.add,
-        color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+        color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
       ),
     );
   }

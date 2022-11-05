@@ -12,8 +12,18 @@ class EncryptionErrorModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.configError),
-      content: Text(error),
+      title: Text(
+        AppLocalizations.of(context)!.configError,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface
+        ),
+      ),
+      content: Text(
+        error,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurfaceVariant
+        ),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context), 

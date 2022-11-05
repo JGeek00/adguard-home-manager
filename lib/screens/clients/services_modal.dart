@@ -45,13 +45,21 @@ class _ServicesModalState extends State<ServicesModal> {
       scrollable: true,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 0,
-        vertical: 20
+        vertical: 16
       ),
       title: Column(
         children: [
-          const Icon(Icons.public),
-          const SizedBox(height: 20),
-          Text(AppLocalizations.of(context)!.services)
+          Icon(
+            Icons.public,
+            color: Theme.of(context).listTileTheme.iconColor
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.services,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          )
         ],
       ),
       content: SizedBox(
@@ -65,8 +73,9 @@ class _ServicesModalState extends State<ServicesModal> {
               padding: const EdgeInsets.only(left: 10),
               child: Text(
                 services[index]['label']!,
-                style: const TextStyle(
-                  fontWeight: FontWeight.normal
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  color: Theme.of(context).colorScheme.onSurface
                 ),
               ),
             ),
@@ -95,7 +104,7 @@ class _ServicesModalState extends State<ServicesModal> {
             style: TextStyle(
               color: blockedServices.isNotEmpty 
                 ? Theme.of(context).primaryColor
-                : Colors.grey
+                : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
             ),
           )
         ),

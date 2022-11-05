@@ -45,13 +45,21 @@ class _TagsModalState extends State<TagsModal> {
       scrollable: true,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 0,
-        vertical: 20
+        vertical: 16
       ),
       title: Column(
         children: [
-          const Icon(Icons.label_rounded),
-          const SizedBox(height: 20),
-          Text(AppLocalizations.of(context)!.tags)
+          Icon(
+            Icons.label_rounded,
+            color: Theme.of(context).listTileTheme.iconColor
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.tags,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface
+            ),
+          )
         ],
       ),
       content: SizedBox(
@@ -63,8 +71,9 @@ class _TagsModalState extends State<TagsModal> {
           itemBuilder: (context, index) => CheckboxListTile(
             title: Text(
               widget.tags[index],
-              style: const TextStyle(
-                fontWeight: FontWeight.normal
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                color: Theme.of(context).colorScheme.onSurface
               ),
             ),
             value: selectedTags.contains(widget.tags[index]), 
@@ -92,7 +101,7 @@ class _TagsModalState extends State<TagsModal> {
             style: TextStyle(
               color: selectedTags.isNotEmpty
                 ? Theme.of(context).primaryColor
-                : Colors.grey
+                : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
             ),
           )
         ),

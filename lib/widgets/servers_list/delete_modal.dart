@@ -46,16 +46,19 @@ class DeleteModal extends StatelessWidget {
     return AlertDialog(
       title: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.delete,
-            size: 26,
+            size: 24,
+            color: Theme.of(context).listTileTheme.iconColor
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 16),
             child: Text(
               AppLocalizations.of(context)!.remove,
-              style: const TextStyle(
-                fontSize: 24
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+                color: Theme.of(context).colorScheme.onSurface
               ),
             ),
           ),
@@ -70,13 +73,17 @@ class DeleteModal extends StatelessWidget {
               Text(
                 AppLocalizations.of(context)!.removeWarning,
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                ),
               ),
               const SizedBox(height: 10),
               Center(
                 child: Text(
                   "${serverToDelete.connectionMethod}://${serverToDelete.domain}${serverToDelete.path ?? ""}${serverToDelete.port != null ? ':${serverToDelete.port}' : ""}",
-                  style: const TextStyle(
-                    fontStyle: FontStyle.italic
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant
                   ),
                 ),
               ),

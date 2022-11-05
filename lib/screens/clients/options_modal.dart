@@ -14,51 +14,64 @@ class OptionsModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      contentPadding: const EdgeInsets.all(0),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 0,
+        vertical: 16
+      ),
       title: Column(
         children: [
-          const Icon(Icons.more_horiz),
-          const SizedBox(height: 20),
-          Text(AppLocalizations.of(context)!.options)
+          Icon(
+            Icons.more_horiz,
+            color: Theme.of(context).listTileTheme.iconColor
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.options,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface
+            ),
+          )
         ],
       ),
-      content: SizedBox(
-        height: 150,
-        width: double.minPositive,
-        child: ListView(
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            const SizedBox(height: 25),
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                onEdit();
-              },
-              title: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(AppLocalizations.of(context)!.edit),
-              ),
-              leading: const Padding(
-                padding: EdgeInsets.only(left: 10),
-                child: Icon(Icons.edit),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 24),
+          ListTile(
+            onTap: () {
+              Navigator.pop(context);
+              onEdit();
+            },
+            title: Text(
+              AppLocalizations.of(context)!.edit,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.normal
               ),
             ),
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                onDelete();
-              },
-              title: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(AppLocalizations.of(context)!.delete),
-              ),
-              leading: const Padding(
-                padding: EdgeInsets.only(left: 10),
-                child: Icon(Icons.delete),
+            leading: Icon(
+              Icons.edit,
+              color: Theme.of(context).listTileTheme.iconColor,
+            ),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.pop(context);
+              onDelete();
+            },
+            title: Text(
+              AppLocalizations.of(context)!.delete,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.normal
               ),
             ),
-          ],
-        ),
+            leading: Icon(
+              Icons.delete,
+              color: Theme.of(context).listTileTheme.iconColor,
+            ),
+          ),
+        ],
       ),
       actions: [
         TextButton(

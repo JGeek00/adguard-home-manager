@@ -120,7 +120,7 @@ class _CheckHostModalState extends State<CheckHostModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 350,
+        height: 330,
         width: double.maxFinite,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
@@ -138,24 +138,26 @@ class _CheckHostModalState extends State<CheckHostModal> {
                     ? const NeverScrollableScrollPhysics() 
                     : null,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 24),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24),
                       child: Icon(
                         Icons.shield_rounded,
-                        size: 26,
+                        size: 24,
+                        color: Theme.of(context).listTileTheme.iconColor
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Text(
                       AppLocalizations.of(context)!.checkHostFiltered,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 24
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.onSurface
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 16),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: TextFormField(
                         controller: domainController,
                         onChanged: validateDomain,
@@ -202,8 +204,8 @@ class _CheckHostModalState extends State<CheckHostModal> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(
-                      bottom: 20,
-                      right: 20
+                      bottom: 24,
+                      right: 24
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,

@@ -68,7 +68,7 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 550,
+        height: 510,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -84,22 +84,24 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 28),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
                     child: Icon(
                       Icons.add,
-                      size: 26,
+                      size: 24,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Text(
                     AppLocalizations.of(context)!.addStaticLease,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 28),
                     child: TextFormField(

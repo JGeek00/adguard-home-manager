@@ -122,28 +122,30 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
             children: [
               Expanded(
                 child: ListView(
-                  physics: 450 < MediaQuery.of(context).size.height
+                  physics: 420 < MediaQuery.of(context).size.height
                     ? const NeverScrollableScrollPhysics() 
                     : null,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 28),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24),
                       child: Icon(
                         Icons.settings,
-                        size: 26,
+                        size: 24,
+                        color: Theme.of(context).listTileTheme.iconColor
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Text(
                       AppLocalizations.of(context)!.logsSettings,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 24
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.onSurface
                       ), 
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 16),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Material(
                         color: Theme.of(context).primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(28),
@@ -175,7 +177,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Material(
                       color: Colors.transparent,
                       child: InkWell(
@@ -201,9 +203,9 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 28),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: DropdownButtonFormField(
                         items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
                           return DropdownMenuItem<String>(
@@ -228,7 +230,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -308,7 +310,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
     }
 
     return Container(
-      height: 450,
+      height: 420,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(28),

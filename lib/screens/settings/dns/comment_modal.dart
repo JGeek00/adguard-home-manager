@@ -33,7 +33,7 @@ class _CommentModalState extends State<CommentModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 330,
+        height: 310,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(28),
@@ -49,24 +49,26 @@ class _CommentModalState extends State<CommentModal> {
                   ? const NeverScrollableScrollPhysics()
                   : null,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 28),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
                     child: Icon(
                       Icons.comment_rounded,
-                      size: 26,
+                      size: 24,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Text(
                     AppLocalizations.of(context)!.comment,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 16),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: commentController,
                       onChanged: (value) {
@@ -94,7 +96,7 @@ class _CommentModalState extends State<CommentModal> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

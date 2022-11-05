@@ -171,7 +171,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 400,
+        height: 360,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -187,30 +187,33 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(
+                  Padding(
+                    padding: const EdgeInsets.only(
                       top: 24,
-                      bottom: 20,
+                      bottom: 16,
                     ),
                     child: Icon(
                       Icons.filter_list_rounded,
-                      size: 26,
+                      size: 24,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                   ),
                   Text(
                     AppLocalizations.of(context)!.filters,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24
+                    style:  TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400,
+                      height: 1.3,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width - 108,
+                        Expanded(
                           child: TextFormField(
                             controller: searchController,
                             onChanged: (value) => logsProvider.setSearchText(value),
@@ -222,22 +225,22 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                                 )
                               ),
                               labelText: AppLocalizations.of(context)!.search,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    searchController.text = '';
+                                  });
+                                  logsProvider.setSearchText(null);
+                                },
+                                icon: const Icon(Icons.clear)
+                              )
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 20),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              searchController.text = '';
-                            });
-                            logsProvider.setSearchText(null);
-                          },
-                          icon: const Icon(Icons.clear)
                         )
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16),
                   // Material(
                   //   color: Colors.transparent,
                   //   child: InkWell(
@@ -284,12 +287,13 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                     subtitle: "${translatedString[logsProvider.selectedResultStatus]}",
                     onTap: openSelectFilterStatus,
                     icon: Icons.shield_rounded,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

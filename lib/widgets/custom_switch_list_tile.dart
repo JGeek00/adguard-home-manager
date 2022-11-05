@@ -26,7 +26,7 @@ class CustomSwitchListTile extends StatelessWidget {
           : () => onChanged(!value),
         child: Padding(
           padding: const EdgeInsets.only(
-            top: 15, left: 24, right: 15, bottom: 15
+            top: 12, left: 24, right: 12, bottom: 12
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,8 +41,8 @@ class CustomSwitchListTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         color: disabled != null && disabled == true
-                            ? Colors.grey
-                            : null,
+                            ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                            : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -55,8 +55,8 @@ class CustomSwitchListTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           color: disabled != null && disabled == true
-                            ? Colors.grey
-                            : Theme.of(context).listTileTheme.iconColor,
+                            ? Theme.of(context).listTileTheme.textColor!.withOpacity(0.38)
+                            : Theme.of(context).listTileTheme.textColor
                         ),
                       ),
                     ),

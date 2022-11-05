@@ -66,9 +66,9 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
                         ? Theme.of(context).primaryColor
                         : Colors.green
                       : appConfigProvider.useThemeColorForStatus == true
-                        ? Colors.grey
+                        ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
                         : Colors.red
-                    : Colors.grey,
+                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
                 ),
                 const SizedBox(width: 20),
                 Column(
@@ -84,9 +84,9 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
                       const SizedBox(height: 5),
                       Text(
                         "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: Color.fromRGBO(140, 140, 140, 1)
+                          color: Theme.of(context).listTileTheme.textColor
                         ),
                       )
                     ],

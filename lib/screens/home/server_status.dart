@@ -21,9 +21,10 @@ class ServerStatus extends StatelessWidget {
         children: [
           Text(
             AppLocalizations.of(context)!.serverStatus,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w500
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.onSurface
             ),
           ),
           const SizedBox(height: 20),

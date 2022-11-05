@@ -27,7 +27,7 @@ class CustomListTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -38,8 +38,10 @@ class CustomListTile extends StatelessWidget {
                     if (icon != null) ...[
                       Icon(
                         icon,
+                        size: 24,
+                        color: Theme.of(context).listTileTheme.iconColor,
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 16),
                     ],
                     Flexible(
                       child: Column(
@@ -47,9 +49,10 @@ class CustomListTile extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           if (subtitle != null || subtitleWidget != null) ...[
@@ -58,8 +61,9 @@ class CustomListTile extends StatelessWidget {
                             if (subtitle != null && subtitleWidget == null) Text(
                               subtitle!,
                               style: TextStyle(
-                                color: Theme.of(context).listTileTheme.iconColor,
-                                fontSize: 14
+                                color: Theme.of(context).listTileTheme.textColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400
                               ),
                             ),
                           ]

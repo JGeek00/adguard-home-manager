@@ -369,15 +369,23 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
               ),
               SectionLabel(label: AppLocalizations.of(context)!.certificates),
               Card(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
+                margin: const EdgeInsets.symmetric(horizontal: 24),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Row(
                     children: [
-                      const Icon(Icons.info_rounded),
+                      Icon(
+                        Icons.info_rounded,
+                        color: Theme.of(context).listTileTheme.iconColor,
+                      ),
                       const SizedBox(width: 20),
                       Flexible(
-                        child: Text(AppLocalizations.of(context)!.certificatesDescription)
+                        child: Text(
+                          AppLocalizations.of(context)!.certificatesDescription,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        )
                       )
                     ],
                   ),

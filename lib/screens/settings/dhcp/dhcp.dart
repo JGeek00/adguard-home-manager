@@ -375,8 +375,8 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 Padding(
                   padding: const EdgeInsets.only(
                     top: 10,
-                    left: 12, 
-                    right: 12
+                    left: 24, 
+                    right: 24
                   ),
                   child: Material(
                     color: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -399,8 +399,9 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                               children: [
                                 Text(
                                   AppLocalizations.of(context)!.enableDhcpServer,
-                                  style: const TextStyle(
-                                    fontSize: 18,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).colorScheme.onSurface
                                   ),
                                 ),
                                 if (selectedInterface != null) ...[
@@ -408,7 +409,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                                     selectedInterface!.name,
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(context).listTileTheme.iconColor,
+                                      color: Theme.of(context).listTileTheme.textColor
                                     ),
                                   )
                                 ]
@@ -432,7 +433,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     label: AppLocalizations.of(context)!.ipv4settings,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: ipv4StartRangeController,
                       onChanged: (value) => validateIpV4(value, 'ipv4StartRangeError', AppLocalizations.of(context)!.ipNotValid),
@@ -451,7 +452,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                   ),
                   const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: ipv4EndRangeController,
                       onChanged: (value) => validateIpV4(value, 'ipv4EndRangeError', AppLocalizations.of(context)!.ipNotValid),
@@ -470,7 +471,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                   ),
                   const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: ipv4SubnetMaskController,
                       onChanged: (value) => validateIpV4(value, 'ipv4SubnetMaskError', AppLocalizations.of(context)!.subnetMaskNotValid),
@@ -489,7 +490,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                   ),
                   const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: ipv4GatewayController,
                       onChanged: (value) => validateIpV4(value, 'ipv4GatewayError', AppLocalizations.of(context)!.gatewayNotValid),
@@ -508,7 +509,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                   ),
                   const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: ipv4LeaseTimeController,
                       onChanged: (value) {
@@ -538,7 +539,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     label: AppLocalizations.of(context)!.ipv6settings,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: ipv6StartRangeController,
                       onChanged: (value) => validateIpV4(value, 'ipv6StartRangeError', AppLocalizations.of(context)!.ipNotValid),
@@ -557,7 +558,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                   ),
                   const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: ipv6EndRangeController,
                       onChanged: (value) => validateIpV4(value, 'ipv6EndRangeError', AppLocalizations.of(context)!.ipNotValid),
@@ -576,7 +577,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                   ),
                   const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: ipv6LeaseTimeController,
                       onChanged: (value) {
@@ -617,18 +618,22 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                       ));
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             AppLocalizations.of(context)!.dhcpLeases,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 16
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
-                          const Icon(Icons.arrow_forward_rounded)
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          )
                         ],
                       ),
                     ),
@@ -646,18 +651,22 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                       ));
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             AppLocalizations.of(context)!.dhcpStatic,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 16
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
-                          const Icon(Icons.arrow_forward_rounded)
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          )
                         ],
                       ),
                     ),
@@ -678,9 +687,9 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                   child: Text(
                     AppLocalizations.of(context)!.neededSelectInterface,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
-                      color: Colors.grey
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)
                     ),
                   ),
                 ),

@@ -27,16 +27,18 @@ class CustomRadioListTile extends StatelessWidget {
       child: InkWell(
         onTap: () => onChanged(value),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24, 
+            vertical: 12
+          ),
           child: Row(
             children: [
-              const SizedBox(width: 10),
               CustomRadio(
                 value: value, 
                 groupValue: groupValue, 
                 backgroundColor: radioBackgroundColor,
               ),
-              const SizedBox(width: 30),
+              const SizedBox(width: 24),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -44,8 +46,9 @@ class CustomRadioListTile extends StatelessWidget {
                     width: MediaQuery.of(context).size.width-110,
                     child: Text(
                       title,
-                      style: const TextStyle(
-                        fontSize: 16
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onSurface
                       ),
                     ),
                   ),
@@ -56,7 +59,7 @@ class CustomRadioListTile extends StatelessWidget {
                       child: Text(
                         subtitle!,
                         style: TextStyle(
-                          color: Theme.of(context).listTileTheme.iconColor,
+                          color: Theme.of(context).listTileTheme.textColor,
                           fontSize: 14
                         ),
                       ),

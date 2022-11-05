@@ -569,5 +569,6 @@
     "doNotRememberAgainUpdate": "Do not remember again for this version",
     "downloadingUpdate": "Downloading",
     "completed": "completed",
-    "permissionNotGranted": "Permission not granted"
+    "permissionNotGranted": "Permission not granted",
+    "inputSearchTerm": "Input a search term."
 }

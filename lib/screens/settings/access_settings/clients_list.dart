@@ -244,11 +244,18 @@ class _ClientsListState extends State<ClientsList> {
                         padding: const EdgeInsets.all(20),
                         child: Row(
                           children: [
-                            const Icon(Icons.info_rounded),
+                            Icon(
+                              Icons.info_rounded,
+                              color: Theme.of(context).listTileTheme.iconColor,
+                            ),
                             const SizedBox(width: 20),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width-112,
-                              child: Text(description()),
+                            Flexible(
+                              child: Text(
+                                description(),
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
                             )
                           ],
                         ),
@@ -260,7 +267,13 @@ class _ClientsListState extends State<ClientsList> {
                       padding: const EdgeInsets.only(top: 0),
                       itemCount: widget.data.length,
                       itemBuilder: (context, index) => ListTile(
-                        title: Text(widget.data[index]),
+                        title: Text(
+                          widget.data[index],
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Theme.of(context).colorScheme.onSurface
+                          ),
+                        ),
                         trailing: IconButton(
                           onPressed: () => {
                             showDialog(
@@ -308,6 +321,7 @@ class _ClientsListState extends State<ClientsList> {
                 : -70,
               right: 20,
               child: FloatingActionButton(
+                backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                 onPressed: () {
                   showModalBottomSheet(
                     context: context, 
@@ -321,7 +335,7 @@ class _ClientsListState extends State<ClientsList> {
                 },
                 child: Icon(
                   Icons.add,
-                  color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                  color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
                 ),
               ),
             )

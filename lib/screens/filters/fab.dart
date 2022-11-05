@@ -64,20 +64,12 @@ class FiltersFab extends StatelessWidget {
     }
 
     void openAddCustomRule() {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      showFlexibleBottomSheet(
-        minHeight: 0.7,
-        initHeight: 0.7,
-        maxHeight: 0.95,
-        isCollapsible: true,
-        duration: const Duration(milliseconds: 250),
-        anchors: [0.7, 0.95],
-        context: context, 
-        builder: (ctx, controller, offset) => AddCustomRule(
-          scrollController: controller,
-          onConfirm: confirmAddRule
-        ),
-        bottomSheetColor: Colors.transparent
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AddCustomRule(
+            onConfirm: confirmAddRule
+          ),
+        )
       );
     }
 
@@ -176,9 +168,10 @@ class FiltersFab extends StatelessWidget {
       onPressed: type == 'blacklist' || type == 'whitelist'
         ? () => openAddWhitelistBlacklist()
         : () => openAddCustomRule(),
+      backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
       child: Icon(
         Icons.add,
-        color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+        color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
       ),
     );
   }

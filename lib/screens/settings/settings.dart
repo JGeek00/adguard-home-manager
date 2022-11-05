@@ -196,7 +196,7 @@ class Settings extends StatelessWidget {
                   onPressed: () => openWeb(Urls.playStore), 
                   icon: SvgPicture.asset(
                     'assets/resources/google-play.svg',
-                    color: Theme.of(context).textTheme.bodyText2!.color,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     width: 30,
                     height: 30,
                   ),
@@ -206,7 +206,7 @@ class Settings extends StatelessWidget {
                   onPressed: () => openWeb(Urls.gitHub), 
                   icon: SvgPicture.asset(
                     'assets/resources/github.svg',
-                    color: Theme.of(context).textTheme.bodyText2!.color,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     width: 30,
                     height: 30,
                   ),

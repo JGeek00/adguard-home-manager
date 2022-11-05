@@ -51,7 +51,7 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 410,
+        height: 400,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(28),
@@ -67,24 +67,26 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 28),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
                     child: Icon(
                       Icons.add,
-                      size: 26,
+                      size: 24,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Text(
                     AppLocalizations.of(context)!.addDnsRewrite,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 16),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: domainController,
                       onChanged: validateDomain,
@@ -102,7 +104,7 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                   ),
                   const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
                       controller: answerController,
                       onChanged: (_) => checkValidValues(),
@@ -121,11 +123,7 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-                bottom: 20,
-                right: 28
-              ),
+              padding: const EdgeInsets.all(24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -151,7 +149,7 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                       style: TextStyle(
                         color: validData == true
                           ? Theme.of(context).primaryColor
-                          : Colors.grey
+                          : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
                       ),
                     ),
                   ),

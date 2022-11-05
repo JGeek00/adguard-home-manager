@@ -170,11 +170,12 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
                 padding: const EdgeInsets.only(top: 0),
                 itemCount: serversProvider.rewriteRules.data!.length,
                 itemBuilder: (context, index) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        color: Colors.grey.shade200
+                        width: 1,
+                        color: Theme.of(context).colorScheme.outline.withOpacity(0.5)
                       )
                     )
                   ),
@@ -188,12 +189,16 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
                             children: [
                               Text(
                                 "${AppLocalizations.of(context)!.domain}: ",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.onSurface
                                 ),
                               ),
                               Text(
                                 serversProvider.rewriteRules.data![index].domain,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface
+                                ),
                               ),
                             ],
                           ),
@@ -202,12 +207,16 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
                             children: [
                               Text(
                                 "${AppLocalizations.of(context)!.answer}: ",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.onSurface
                                 ),
                               ),
                               Text(
                                 serversProvider.rewriteRules.data![index].answer,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface
+                                ),
                               ),
                             ],
                           ),
@@ -277,6 +286,7 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
       ),
       body: generateBody(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
         onPressed: () => {
           showModalBottomSheet(
             context: context, 
@@ -289,7 +299,7 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
         },
         child: Icon(
           Icons.add,
-          color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+          color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
         ),
       ),
     );

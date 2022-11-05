@@ -224,11 +224,11 @@ class _LogsWidgetState extends State<LogsWidget> {
     final Map<String, String> translatedString = {
       "all": AppLocalizations.of(context)!.all, 
       "filtered": AppLocalizations.of(context)!.filtered, 
-      "processed": AppLocalizations.of(context)!.processed, 
-      "whitelisted": AppLocalizations.of(context)!.processedWhitelist, 
+      "processed": AppLocalizations.of(context)!.processedRow, 
+      "whitelisted": AppLocalizations.of(context)!.processedWhitelistRow, 
       "blocked": AppLocalizations.of(context)!.blocked, 
-      "blocked_safebrowsing": AppLocalizations.of(context)!.blockedSafeBrowsing, 
-      "blocked_parental": AppLocalizations.of(context)!.blockedParental, 
+      "blocked_safebrowsing": AppLocalizations.of(context)!.blockedSafeBrowsingRow, 
+      "blocked_parental": AppLocalizations.of(context)!.blockedParentalRow, 
       "safe_search": AppLocalizations.of(context)!.safeSearch, 
     };
 
@@ -392,17 +392,26 @@ class _LogsWidgetState extends State<LogsWidget> {
                     if (logsProvider.appliedFilters.searchText != null) ...[
                       const SizedBox(width: 15),
                       Chip(
+                        avatar: Icon(
+                          Icons.search,
+                          size: 24,
+                          color: Theme.of(context).primaryColor,
+                        ),
                         label: Row(
                           children: [
-                            const Icon(Icons.search),
-                            const SizedBox(width: 10),
-                            Text(logsProvider.appliedFilters.searchText!),
-                            const SizedBox(width: 10),
+                            Text(
+                              logsProvider.appliedFilters.searchText!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500
+                              ),
+                            ),
                           ],
                         ),
-                        deleteIcon: const Icon(
+                        deleteIcon: Icon(
                           Icons.cancel_rounded,
-                          size: 20,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant
                         ),
                         onDeleted: () {
                           logsProvider.setAppliedFilters(
@@ -417,22 +426,38 @@ class _LogsWidgetState extends State<LogsWidget> {
                             searchText: ''
                           );
                         },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant
+                          )
+                        ),
+                        backgroundColor: Theme.of(context).dialogBackgroundColor,
                       ),
                     ],
                     if (logsProvider.appliedFilters.selectedResultStatus != 'all') ...[
                       const SizedBox(width: 15),
                       Chip(
+                        avatar: Icon(
+                          Icons.shield_rounded,
+                          size: 24,
+                          color: Theme.of(context).primaryColor,
+                        ),
                         label: Row(
                           children: [
-                            const Icon(Icons.shield_rounded),
-                            const SizedBox(width: 10),
-                            Text(translatedString[logsProvider.appliedFilters.selectedResultStatus]!),
-                            const SizedBox(width: 10),
+                            Text(
+                              translatedString[logsProvider.appliedFilters.selectedResultStatus]!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500
+                              ),
+                            ),
                           ],
                         ),
-                        deleteIcon: const Icon(
+                        deleteIcon: Icon(
                           Icons.cancel_rounded,
-                          size: 20,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant
                         ),
                         onDeleted: () {
                           logsProvider.setAppliedFilters(
@@ -447,6 +472,13 @@ class _LogsWidgetState extends State<LogsWidget> {
                             responseStatus: 'all'
                           );
                         },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant
+                          )
+                        ),
+                        backgroundColor: Theme.of(context).dialogBackgroundColor,
                       ),
                     ],
                     const SizedBox(width: 15),

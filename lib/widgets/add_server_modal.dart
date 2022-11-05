@@ -3,9 +3,8 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:adguard_home_manager/widgets/custom_radio_toggle.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/encode_base64.dart';
@@ -61,8 +60,8 @@ class _AddServerModalState extends State<AddServerModal> {
   Widget sectionLabel(String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 20, 
-        vertical: 30
+        horizontal: 24, 
+        vertical: 24
       ),
       child: Text(
         label,
@@ -87,7 +86,7 @@ class _AddServerModalState extends State<AddServerModal> {
     String? helperText
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: TextFormField(
         controller: controller,
         onChanged: onChanged,
@@ -248,6 +247,33 @@ class _AddServerModalState extends State<AddServerModal> {
     final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
 
     final mediaQuery = MediaQuery.of(context);
+
+    Map<int, Widget> connectionTypes = {
+      0: Text(
+        'HTTP',
+        style: TextStyle(
+          color: appConfigProvider.useDynamicColor == true
+            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
+            : connectionType == 'http'
+              ? Colors.white
+              : Theme.of(context).primaryColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w500
+        ),
+      ),
+      1: Text(
+        'HTTPS',
+        style: TextStyle(
+          color: appConfigProvider.useDynamicColor == true
+            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
+            : connectionType == 'https'
+              ? Colors.white
+              : Theme.of(context).primaryColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w500
+        ),
+      )
+    };
 
     void connect() async {
       Server serverObj = Server(
@@ -461,11 +487,8 @@ class _AddServerModalState extends State<AddServerModal> {
     return Stack(
       children: [
         Scaffold(
-          backgroundColor: Theme.of(context).dialogBackgroundColor,
-           appBar: AppBar(
-            systemOverlayStyle: systemUiOverlayStyleConfig(context),
+          appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.createConnection),
-            elevation: 5,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
@@ -493,9 +516,9 @@ class _AddServerModalState extends State<AddServerModal> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 margin: const EdgeInsets.only(
-                  top: 30,
-                  left: 20,
-                  right: 20
+                  top: 24,
+                  left: 24,
+                  right: 24
                 ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor.withOpacity(0.05),
@@ -530,22 +553,23 @@ class _AddServerModalState extends State<AddServerModal> {
                 }
               ),
               sectionLabel(AppLocalizations.of(context)!.connection),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CustomRadioToggle(
-                    groupSelected: connectionType, 
-                    value: 'http', 
-                    label: 'HTTP', 
-                    onTap: (value) => setState(() => connectionType = value)
-                  ),
-                  CustomRadioToggle(
-                    groupSelected: connectionType, 
-                    value: 'https', 
-                    label: 'HTTPS', 
-                    onTap: (value) => setState(() => connectionType = value)
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: MaterialSegmentedControl(
+                  children: connectionTypes,
+                  selectionIndex: connectionType == 'http' ? 0 : 1,
+                  onSegmentChosen: (value) => setState(() {
+                    if (value == 0) {
+                      connectionType = 'http';
+                    }
+                    else if (value == 1) {
+                      connectionType = 'https';
+                    }
+                  }),
+                  selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
+                  unselectedColor: Colors.transparent,
+                  borderColor: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 20),
               textField(
@@ -601,7 +625,7 @@ class _AddServerModalState extends State<AddServerModal> {
                     ? () => setState(() => defaultServer = !defaultServer)
                     : null,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -629,7 +653,7 @@ class _AddServerModalState extends State<AddServerModal> {
                 child: InkWell(
                   onTap: () => setState(() => homeAssistant = !homeAssistant),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

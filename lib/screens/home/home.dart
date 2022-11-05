@@ -83,10 +83,11 @@ class _HomeState extends State<Home> {
             controller: scrollController,
             children: [
               ServerStatus(serverStatus: serversProvider.serverStatus.data!),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Divider(
                   thickness: 1,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
                 ),
               ),
               const SizedBox(height: 20),
@@ -128,10 +129,11 @@ class _HomeState extends State<Home> {
                 data: serversProvider.serverStatus.data!.stats.topQueriedDomains,
                 type: 'topQueriedDomains',
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Divider(
                   thickness: 1,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
                 ),
               ),
               const SizedBox(height: 20),
@@ -141,10 +143,11 @@ class _HomeState extends State<Home> {
                 data: serversProvider.serverStatus.data!.stats.topBlockedDomains,
                 type: 'topBlockedDomains',
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Divider(
                   thickness: 1,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
                 ),
               ),
               const SizedBox(height: 20),

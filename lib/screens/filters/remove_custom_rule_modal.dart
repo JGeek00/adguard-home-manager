@@ -14,18 +14,27 @@ class RemoveCustomRule extends StatelessWidget {
     return AlertDialog(
       title: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.shield_rounded,
-            size: 26,
+            size: 24,
+            color: Theme.of(context).listTileTheme.iconColor
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.removeCustomRule,
             textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface
+            ),
           )
         ],
       ),
-      content: Text(AppLocalizations.of(context)!.removeCustomRuleMessage),
+      content: Text(
+        AppLocalizations.of(context)!.removeCustomRuleMessage,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface
+        ),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context), 

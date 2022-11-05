@@ -50,9 +50,10 @@ class HomeChart extends StatelessWidget {
                     children: [
                       Text(
                         label, 
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
-                          fontWeight: FontWeight.w500
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                       !isEmpty
@@ -110,10 +111,11 @@ class HomeChart extends StatelessWidget {
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Divider(
               thickness: 1,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
             ),
           ),
           const SizedBox(height: 20),

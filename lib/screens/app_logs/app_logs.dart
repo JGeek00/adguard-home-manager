@@ -50,8 +50,22 @@ class AppLogs extends StatelessWidget {
           padding: const EdgeInsets.only(top: 0),
           itemCount: appConfigProvider.logs.length,
           itemBuilder: (context, index) => ListTile(
-            title: Text(appConfigProvider.logs[index].message),
-            subtitle: Text(appConfigProvider.logs[index].dateTime.toString()),
+            title: Text(
+              appConfigProvider.logs[index].message,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+                color: Theme.of(context).colorScheme.onSurface
+              ),
+            ),
+            subtitle: Text(
+              appConfigProvider.logs[index].dateTime.toString(),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+                color: Theme.of(context).listTileTheme.textColor
+              ),
+            ),
             trailing: Text(appConfigProvider.logs[index].type),
             onTap: () => {
               showDialog(

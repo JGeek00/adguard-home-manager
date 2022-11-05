@@ -36,7 +36,7 @@ class ManagementModal extends StatelessWidget {
 
     Widget mainSwitch() {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Material(
           color: Theme.of(context).primaryColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(28),
@@ -84,7 +84,7 @@ class ManagementModal extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 35,
-              vertical: 5
+              vertical: 8
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,12 +94,15 @@ class ManagementModal extends StatelessWidget {
                     Icon(
                       icon,
                       size: 24,
+                      color: Theme.of(context).listTileTheme.iconColor,
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 16),
                     Text(
                       label,
-                      style: const TextStyle(
-                        fontSize: 15,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ],
@@ -136,53 +139,55 @@ class ManagementModal extends StatelessWidget {
                 ? const NeverScrollableScrollPhysics() 
                 : null,
               children: [
-                const Padding(
-                padding: EdgeInsets.only(top: 24),
-                child: Icon(
-                  Icons.shield_rounded,
-                  size: 26,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Text(
-                  AppLocalizations.of(context)!.manageServer,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 22
+                Padding(
+                  padding: const EdgeInsets.only(top: 24),
+                  child: Icon(
+                    Icons.shield_rounded,
+                    size: 24,
+                    color: Theme.of(context).listTileTheme.iconColor
                   ),
                 ),
-              ),
-              mainSwitch(),
-              const SizedBox(height: 10),
-              smallSwitch(
-                AppLocalizations.of(context)!.ruleFiltering,
-                Icons.filter_list_rounded,
-                serversProvider.serverStatus.data!.filteringEnabled, 
-                (value) => updateBlocking(value, 'filtering'),
-                serversProvider.protectionsManagementProcess.contains('filtering')
-              ),
-              smallSwitch(
-                AppLocalizations.of(context)!.safeBrowsing,
-                Icons.vpn_lock_rounded,
-                serversProvider.serverStatus.data!.safeBrowsingEnabled, 
-                (value) => updateBlocking(value, 'safeBrowsing'),
-                serversProvider.protectionsManagementProcess.contains('safeBrowsing')
-              ),
-              smallSwitch(
-                AppLocalizations.of(context)!.parentalFiltering,
-                Icons.block,
-                serversProvider.serverStatus.data!.parentalControlEnabled, 
-                (value) => updateBlocking(value, 'parentalControl'),
-                serversProvider.protectionsManagementProcess.contains('parentalControl')
-              ),
-              smallSwitch(
-                AppLocalizations.of(context)!.safeSearch,
-                Icons.search_rounded,
-                serversProvider.serverStatus.data!.safeSearchEnabled, 
-                (value) => updateBlocking(value, 'safeSearch'),
-                serversProvider.protectionsManagementProcess.contains('safeSearch')
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    AppLocalizations.of(context)!.manageServer,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                mainSwitch(),
+                const SizedBox(height: 10),
+                smallSwitch(
+                  AppLocalizations.of(context)!.ruleFiltering,
+                  Icons.filter_list_rounded,
+                  serversProvider.serverStatus.data!.filteringEnabled, 
+                  (value) => updateBlocking(value, 'filtering'),
+                  serversProvider.protectionsManagementProcess.contains('filtering')
+                ),
+                smallSwitch(
+                  AppLocalizations.of(context)!.safeBrowsing,
+                  Icons.vpn_lock_rounded,
+                  serversProvider.serverStatus.data!.safeBrowsingEnabled, 
+                  (value) => updateBlocking(value, 'safeBrowsing'),
+                  serversProvider.protectionsManagementProcess.contains('safeBrowsing')
+                ),
+                smallSwitch(
+                  AppLocalizations.of(context)!.parentalFiltering,
+                  Icons.block,
+                  serversProvider.serverStatus.data!.parentalControlEnabled, 
+                  (value) => updateBlocking(value, 'parentalControl'),
+                  serversProvider.protectionsManagementProcess.contains('parentalControl')
+                ),
+                smallSwitch(
+                  AppLocalizations.of(context)!.safeSearch,
+                  Icons.search_rounded,
+                  serversProvider.serverStatus.data!.safeSearchEnabled, 
+                  (value) => updateBlocking(value, 'safeSearch'),
+                  serversProvider.protectionsManagementProcess.contains('safeSearch')
+                ),
               ],
             ),
           ),

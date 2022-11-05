@@ -148,10 +148,8 @@ class _CustomRulesListState extends State<CustomRulesList> {
                   widget.data[index],
                   style: TextStyle(
                     color: checkIfComment(widget.data[index]) == true
-                      ? Theme.of(context).brightness == Brightness.light
-                        ? const Color.fromRGBO(100, 100, 100, 1)
-                        : const Color.fromRGBO(200, 200, 200, 1)
-                      : null,
+                      ? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)
+                      : Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
