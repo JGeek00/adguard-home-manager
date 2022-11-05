@@ -175,7 +175,7 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
                     border: Border(
                       bottom: BorderSide(
                         width: 1,
-                        color: Theme.of(context).colorScheme.outline.withOpacity(0.5)
+                        color: Theme.of(context).colorScheme.outline.withOpacity(0.2)
                       )
                     )
                   ),

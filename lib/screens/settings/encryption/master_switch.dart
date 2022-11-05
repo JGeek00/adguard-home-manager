@@ -16,8 +16,8 @@ class EncryptionMasterSwitch extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(
         top: 10,
-        left: 24, 
-        right: 24
+        left: 16, 
+        right: 16
       ),
       child: Material(
         color: Theme.of(context).primaryColor.withOpacity(0.1),

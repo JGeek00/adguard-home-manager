@@ -305,7 +305,10 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                   onEditValidate();
                 }
               ),
-              SectionLabel(label: AppLocalizations.of(context)!.serverConfiguration),
+              SectionLabel(
+                label: AppLocalizations.of(context)!.serverConfiguration,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              ),
               EncryptionTextField(
                 enabled: enabled, 
                 controller: domainNameController, 
@@ -367,9 +370,12 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 label: AppLocalizations.of(context)!.dnsOverQuicPort,
                 keyboardType: TextInputType.number,
               ),
-              SectionLabel(label: AppLocalizations.of(context)!.certificates),
+              SectionLabel(
+                label: AppLocalizations.of(context)!.certificates,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              ),
               Card(
-                margin: const EdgeInsets.symmetric(horizontal: 24),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Row(
@@ -489,7 +495,10 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                   const SizedBox(height: 10),
                 ],
               ],
-              SectionLabel(label: AppLocalizations.of(context)!.privateKey),
+              SectionLabel(
+                label: AppLocalizations.of(context)!.privateKey,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              ),
               RadioListTile(
                 value: 0, 
                 groupValue: privateKeyOption,

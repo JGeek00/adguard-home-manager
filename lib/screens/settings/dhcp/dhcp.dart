@@ -431,6 +431,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 if (selectedInterface!.ipv4Addresses.isNotEmpty) ...[
                   SectionLabel(
                     label: AppLocalizations.of(context)!.ipv4settings,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),

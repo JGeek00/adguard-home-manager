@@ -32,8 +32,15 @@ class CustomRadioListTile extends StatelessWidget {
             vertical: 12
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              const SizedBox(width: 8),
+              CustomRadio(
+                value: value, 
+                groupValue: groupValue, 
+                backgroundColor: radioBackgroundColor,
+              ),
+              const SizedBox(width: 24),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -62,13 +69,6 @@ class CustomRadioListTile extends StatelessWidget {
                   ] 
                 ],
               ),
-              const SizedBox(width: 16),
-              CustomRadio(
-                value: value, 
-                groupValue: groupValue, 
-                backgroundColor: radioBackgroundColor,
-              ),
-              const SizedBox(width: 8),
             ],
           ),
         ),
