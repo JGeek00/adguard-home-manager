@@ -23,7 +23,7 @@ class _CheckHostModalState extends State<CheckHostModal> {
   Widget? resultWidget;
 
   void validateDomain(String value) {
-    final domainRegex = RegExp(r'^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$');
+    final domainRegex = RegExp(r'^([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$');
     if (domainRegex.hasMatch(value)) {
       setState(() => domainError = null);
     }
