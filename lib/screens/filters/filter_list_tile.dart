@@ -26,7 +26,7 @@ class FilterListTile extends StatelessWidget {
           Icon(
             icon,
             size: 24,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            color: Theme.of(context).listTileTheme.iconColor,
           ),
           const SizedBox(width: 16),
           Flexible(
@@ -46,7 +46,7 @@ class FilterListTile extends StatelessWidget {
                   subtitle,
                   style: TextStyle(
                     fontSize: 14,
-                    color: color ?? Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: color ?? Theme.of(context).listTileTheme.textColor,
                     fontWeight: bold == true ? FontWeight.bold : FontWeight.w400
                   ),
                 ),

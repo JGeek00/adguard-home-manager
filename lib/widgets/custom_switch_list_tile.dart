@@ -55,8 +55,8 @@ class CustomSwitchListTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           color: disabled != null && disabled == true
-                            ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.38)
-                            : Theme.of(context).colorScheme.onSurfaceVariant
+                            ? Theme.of(context).listTileTheme.textColor!.withOpacity(0.38)
+                            : Theme.of(context).listTileTheme.textColor
                         ),
                       ),
                     ),

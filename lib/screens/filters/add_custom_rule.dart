@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 
 import 'package:adguard_home_manager/constants/urls.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class AddCustomRule extends StatefulWidget {
   final void Function(String) onConfirm;
@@ -88,11 +90,17 @@ class _AddCustomRuleState extends State<AddCustomRule> {
     
   @override
   Widget build(BuildContext context) {
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
     Map<int, Widget> presets = {
       0: Text(
         AppLocalizations.of(context)!.block,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
+          color: appConfigProvider.useDynamicColor == true
+            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
+            : preset == 0
+              ? Colors.white
+              : Theme.of(context).primaryColor,
           fontSize: 14,
           fontWeight: FontWeight.w500
         ),
@@ -100,7 +108,11 @@ class _AddCustomRuleState extends State<AddCustomRule> {
       1: Text(
         AppLocalizations.of(context)!.unblock,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
+          color: appConfigProvider.useDynamicColor == true
+            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
+            : preset == 1
+              ? Colors.white
+              : Theme.of(context).primaryColor,
           fontSize: 14,
           fontWeight: FontWeight.w500
         ),
@@ -108,7 +120,11 @@ class _AddCustomRuleState extends State<AddCustomRule> {
       2: Text(
         AppLocalizations.of(context)!.custom,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
+          color: appConfigProvider.useDynamicColor == true
+            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
+            : preset == 2
+              ? Colors.white
+              : Theme.of(context).primaryColor,
           fontSize: 14,
           fontWeight: FontWeight.w500
         ),
@@ -172,7 +188,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
             children: presets,
             selectionIndex: preset,
             onSegmentChosen: (value) => setState(() => preset = value),
-            selectedColor: Theme.of(context).colorScheme.secondaryContainer,
+            selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
             unselectedColor: Colors.transparent,
             borderColor: Theme.of(context).colorScheme.onSurface,
           ),

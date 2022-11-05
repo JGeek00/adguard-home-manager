@@ -33,8 +33,8 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     )
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    foregroundColor: Colors.white,
-    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
+    foregroundColor: dynamicColorScheme != null ? dynamicColorScheme.onPrimaryContainer : Colors.white,
+    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primaryContainer : adguardGreenColor
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
@@ -47,9 +47,10 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     ),
   ),
   dividerColor: Colors.black12,
-  listTileTheme: const ListTileThemeData(
+  listTileTheme: ListTileThemeData(
     tileColor: Colors.transparent,
-    iconColor: Color.fromRGBO(138, 138, 138, 1),
+    textColor: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(117, 117, 117, 1),
+    iconColor: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(117, 117, 117, 1),
   ),
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
@@ -102,8 +103,8 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     elevation: 4,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    foregroundColor: Colors.white,
-    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
+    foregroundColor: dynamicColorScheme != null ? dynamicColorScheme.onPrimaryContainer : Colors.white,
+    backgroundColor: dynamicColorScheme != null ? dynamicColorScheme.primaryContainer : adguardGreenColor
   ),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
@@ -125,14 +126,17 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     ),
   ),
   dividerColor: Colors.white12,
-  listTileTheme: const ListTileThemeData(
+  listTileTheme: ListTileThemeData(
     tileColor: Colors.transparent,
-    iconColor: Color.fromRGBO(187, 187, 187, 1),
+    textColor: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(187, 187, 187, 1),
+    iconColor: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(187, 187, 187, 1),
   ),
   checkboxTheme: CheckboxThemeData(
-    checkColor: MaterialStateProperty.all(Colors.white),
+    checkColor: MaterialStateProperty.all(
+      dynamicColorScheme != null ? dynamicColorScheme.onPrimary : Colors.white
+    ),
     fillColor: MaterialStateProperty.all(
-      dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
+      dynamicColorScheme != null ? dynamicColorScheme.onSurface : adguardGreenColor
     ),
   ),
   tabBarTheme: TabBarTheme(
@@ -197,6 +201,9 @@ ThemeData lightThemeOldVersions(MaterialColor primaryColor) => ThemeData(
       overlayColor: MaterialStateProperty.all(primaryColor.shade50),
     )
   ),
+  cardTheme: CardTheme(
+    surfaceTintColor: primaryColor
+  ),
   navigationBarTheme: NavigationBarThemeData(
     surfaceTintColor: primaryColor,
     indicatorColor: primaryColor
@@ -220,11 +227,12 @@ ThemeData lightThemeOldVersions(MaterialColor primaryColor) => ThemeData(
   dividerColor: Colors.black12,
   listTileTheme: const ListTileThemeData(
     tileColor: Colors.transparent,
-    iconColor: Color.fromRGBO(138, 138, 138, 1),
+    textColor: Color.fromRGBO(117, 117, 117, 1),
+    iconColor: Color.fromRGBO(117, 117, 117, 1),
   ),
   checkboxTheme: CheckboxThemeData(
     checkColor: MaterialStateProperty.all(Colors.white),
-    fillColor: MaterialStateProperty.all(primaryColor),
+    fillColor:  MaterialStateProperty.all(primaryColor),
   ),
   tabBarTheme: TabBarTheme(
     unselectedLabelColor: Colors.black,
@@ -260,7 +268,7 @@ ThemeData darkThemeOldVersions(MaterialColor primaryColor) => ThemeData(
     )
   ),
   appBarTheme: AppBarTheme(
-    color: Color.fromRGBO(18, 18, 18, 1),
+    color: const Color.fromRGBO(18, 18, 18, 1),
     foregroundColor: Colors.white,
     elevation: 0,
     surfaceTintColor: primaryColor
@@ -293,6 +301,9 @@ ThemeData darkThemeOldVersions(MaterialColor primaryColor) => ThemeData(
       overlayColor: MaterialStateProperty.all(primaryColor.shade50),
     )
   ),
+  cardTheme: CardTheme(
+    surfaceTintColor: primaryColor
+  ),
   inputDecorationTheme: InputDecorationTheme(
     floatingLabelStyle: TextStyle(
       color: primaryColor
@@ -304,6 +315,15 @@ ThemeData darkThemeOldVersions(MaterialColor primaryColor) => ThemeData(
         color: primaryColor,
       )
     )
+  ),
+  checkboxTheme: CheckboxThemeData(
+    checkColor: MaterialStateProperty.all(Colors.white),
+    fillColor: MaterialStateProperty.all(primaryColor),
+  ),
+  listTileTheme: const ListTileThemeData(
+    tileColor: Colors.transparent,
+    textColor: Color.fromRGBO(187, 187, 187, 1),
+    iconColor: Color.fromRGBO(187, 187, 187, 1),
   ),
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: primaryColor
@@ -318,14 +338,6 @@ ThemeData darkThemeOldVersions(MaterialColor primaryColor) => ThemeData(
     ),
   ),
   dividerColor: Colors.white12,
-  listTileTheme: const ListTileThemeData(
-    tileColor: Colors.transparent,
-    iconColor: Color.fromRGBO(187, 187, 187, 1),
-  ),
-  checkboxTheme: CheckboxThemeData(
-    checkColor: MaterialStateProperty.all(Colors.white),
-    fillColor: MaterialStateProperty.all(Colors.blue),
-  ),
   tabBarTheme: TabBarTheme(
     unselectedLabelColor: Colors.white,
     labelColor: primaryColor,

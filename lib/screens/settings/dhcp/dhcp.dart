@@ -409,7 +409,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                                     selectedInterface!.name,
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                      color: Theme.of(context).listTileTheme.textColor
                                     ),
                                   )
                                 ]

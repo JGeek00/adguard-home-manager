@@ -49,7 +49,7 @@ class EncryptionMasterSwitch extends StatelessWidget {
                         AppLocalizations.of(context)!.enableEncryptionTypes,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant
+                          color: Theme.of(context).listTileTheme.textColor
                         ),
                       )
                     ],

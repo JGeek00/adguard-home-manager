@@ -39,7 +39,7 @@ class CustomListTile extends StatelessWidget {
                       Icon(
                         icon,
                         size: 24,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).listTileTheme.iconColor,
                       ),
                       const SizedBox(width: 16),
                     ],
@@ -61,7 +61,7 @@ class CustomListTile extends StatelessWidget {
                             if (subtitle != null && subtitleWidget == null) Text(
                               subtitle!,
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context).listTileTheme.textColor,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400
                               ),

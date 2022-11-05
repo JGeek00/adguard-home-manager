@@ -246,7 +246,7 @@ class _ClientsListState extends State<ClientsList> {
                           children: [
                             Icon(
                               Icons.info_rounded,
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).listTileTheme.iconColor,
                             ),
                             const SizedBox(width: 20),
                             Flexible(
@@ -267,7 +267,13 @@ class _ClientsListState extends State<ClientsList> {
                       padding: const EdgeInsets.only(top: 0),
                       itemCount: widget.data.length,
                       itemBuilder: (context, index) => ListTile(
-                        title: Text(widget.data[index]),
+                        title: Text(
+                          widget.data[index],
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Theme.of(context).colorScheme.onSurface
+                          ),
+                        ),
                         trailing: IconButton(
                           onPressed: () => {
                             showDialog(
@@ -315,7 +321,7 @@ class _ClientsListState extends State<ClientsList> {
                 : -70,
               right: 20,
               child: FloatingActionButton(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                 onPressed: () {
                   showModalBottomSheet(
                     context: context, 
@@ -329,7 +335,7 @@ class _ClientsListState extends State<ClientsList> {
                 },
                 child: Icon(
                   Icons.add,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer
+                  color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
                 ),
               ),
             )

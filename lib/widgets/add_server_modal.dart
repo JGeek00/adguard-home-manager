@@ -252,7 +252,11 @@ class _AddServerModalState extends State<AddServerModal> {
       0: Text(
         'HTTP',
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
+          color: appConfigProvider.useDynamicColor == true
+            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
+            : connectionType == 'http'
+              ? Colors.white
+              : Theme.of(context).primaryColor,
           fontSize: 14,
           fontWeight: FontWeight.w500
         ),
@@ -260,7 +264,11 @@ class _AddServerModalState extends State<AddServerModal> {
       1: Text(
         'HTTPS',
         style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
+          color: appConfigProvider.useDynamicColor == true
+            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
+            : connectionType == 'https'
+              ? Colors.white
+              : Theme.of(context).primaryColor,
           fontSize: 14,
           fontWeight: FontWeight.w500
         ),
@@ -475,13 +483,11 @@ class _AddServerModalState extends State<AddServerModal> {
         );
       }
     }
-print(connectionType);
+
     return Stack(
       children: [
         Scaffold(
-          backgroundColor: Theme.of(context).dialogBackgroundColor,
-           appBar: AppBar(
-            systemOverlayStyle: systemUiOverlayStyleConfig(context),
+          appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.createConnection),
             actions: [
               Padding(
@@ -560,7 +566,7 @@ print(connectionType);
                       connectionType = 'https';
                     }
                   }),
-                  selectedColor: Theme.of(context).colorScheme.secondaryContainer,
+                  selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
                   unselectedColor: Colors.transparent,
                   borderColor: Theme.of(context).colorScheme.onSurface,
                 ),

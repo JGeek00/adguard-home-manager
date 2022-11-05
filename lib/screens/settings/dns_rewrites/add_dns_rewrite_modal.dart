@@ -72,7 +72,7 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                     child: Icon(
                       Icons.add,
                       size: 24,
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                   ),
                   const SizedBox(height: 16),

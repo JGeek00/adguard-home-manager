@@ -64,7 +64,7 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                     child: Icon(
                       Icons.update_rounded,
                       size: 24,
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                   ),
                   Container(

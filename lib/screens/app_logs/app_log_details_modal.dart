@@ -43,16 +43,18 @@ class _AppLogDetailsModalState extends State<AppLogDetailsModal> {
     return AlertDialog(
       title: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.description_rounded,
-            size: 26,
+            size: 24,
+            color: Theme.of(context).listTileTheme.iconColor,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.logDetails,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 24
+            style: TextStyle(
+              fontSize: 24,
+              color: Theme.of(context).colorScheme.onSurface
             ),
           )
         ],

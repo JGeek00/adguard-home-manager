@@ -180,7 +180,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                             child: Text(
                               "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant
+                                color: Theme.of(context).listTileTheme.textColor
                               ),
                             ),
                           ),

@@ -16,7 +16,7 @@ class DnsAddressesModal extends StatelessWidget {
         children: [
           Icon(
             Icons.route_rounded,
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).listTileTheme.iconColor
           ),
           const SizedBox(height: 16),
           Text(
@@ -37,7 +37,7 @@ class DnsAddressesModal extends StatelessWidget {
               address,
               style: TextStyle(
                 fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.onSurfaceVariant
+                color: Theme.of(context).listTileTheme.textColor
               ),
             ),
           )).toList(),

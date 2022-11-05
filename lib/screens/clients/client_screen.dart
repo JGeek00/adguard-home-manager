@@ -322,7 +322,7 @@ class _ClientScreenState extends State<ClientScreen> {
                   children: [
                     Icon(
                       Icons.label_rounded,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                     const SizedBox(width: 16),
                     Column(
@@ -341,7 +341,7 @@ class _ClientScreenState extends State<ClientScreen> {
                             ? "${selectedTags.length} ${AppLocalizations.of(context)!.tagsSelected}"
                             : AppLocalizations.of(context)!.noTagsSelected,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant
+                            color: Theme.of(context).listTileTheme.iconColor
                           ),
                         )
                       ],
@@ -540,7 +540,7 @@ class _ClientScreenState extends State<ClientScreen> {
                     Icon(
                       Icons.public,
                       color: useGlobalSettingsServices == false
-                        ? Theme.of(context).colorScheme.onSurface
+                        ? Theme.of(context).listTileTheme.iconColor
                         : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
                     ),
                     const SizedBox(width: 16),
@@ -563,7 +563,7 @@ class _ClientScreenState extends State<ClientScreen> {
                               ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
                               :  AppLocalizations.of(context)!.noBlockedServicesSelected,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant
+                              color: Theme.of(context).listTileTheme.iconColor  
                             ),
                           )
                         ]

@@ -131,7 +131,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                       child: Icon(
                         Icons.settings,
                         size: 24,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).listTileTheme.iconColor
                       ),
                     ),
                     const SizedBox(height: 16),

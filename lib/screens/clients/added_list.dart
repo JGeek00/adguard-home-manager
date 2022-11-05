@@ -220,7 +220,7 @@ class _AddedListState extends State<AddedList> {
                     Text(
                       widget.data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                        color: Theme.of(context).listTileTheme.textColor
                       ),
                     ),
                     const SizedBox(height: 7),

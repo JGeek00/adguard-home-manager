@@ -86,7 +86,7 @@ class _AddClientModalState extends State<AddClientModal> {
                   Icon(
                     icon(),
                     size: 24,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).listTileTheme.iconColor
                   ),
                   const SizedBox(height: 16),
                   Text(

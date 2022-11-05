@@ -57,7 +57,7 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
                     Icon(
                       icon,
                       size: 24,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                     const SizedBox(width: 16),
                     Text(
@@ -102,7 +102,7 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
             child: Icon(
               Icons.shield_rounded,
               size: 24,
-              color: Theme.of(context).colorScheme.secondary,
+              color: Theme.of(context).listTileTheme.iconColor
             ),
           ),
           Text(

@@ -187,12 +187,12 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
                   Container(
                     padding: const EdgeInsets.all(1),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
+                      color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                       borderRadius: BorderRadius.circular(20)
                     ),
                     child: Icon(
                       Icons.star,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
                       size: 10,
                     ),
                   ),

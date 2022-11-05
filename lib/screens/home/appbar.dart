@@ -86,7 +86,7 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
                         "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant
+                          color: Theme.of(context).listTileTheme.textColor
                         ),
                       )
                     ],

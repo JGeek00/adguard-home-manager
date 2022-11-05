@@ -184,9 +184,10 @@ class DhcpLeases extends StatelessWidget {
       floatingActionButton: staticLeases == true
         ? FloatingActionButton(
             onPressed: openAddStaticLease,
+            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
             child: Icon(
               Icons.add,
-              color: Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+              color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
             ),
           )
         : null,

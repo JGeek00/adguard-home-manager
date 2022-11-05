@@ -20,9 +20,17 @@ class OptionsModal extends StatelessWidget {
       ),
       title: Column(
         children: [
-          const Icon(Icons.more_horiz),
+          Icon(
+            Icons.more_horiz,
+            color: Theme.of(context).listTileTheme.iconColor
+          ),
           const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.options)
+          Text(
+            AppLocalizations.of(context)!.options,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface
+            ),
+          )
         ],
       ),
       content: Column(
@@ -37,12 +45,13 @@ class OptionsModal extends StatelessWidget {
             title: Text(
               AppLocalizations.of(context)!.edit,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.normal
               ),
             ),
             leading: Icon(
               Icons.edit,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: Theme.of(context).listTileTheme.iconColor,
             ),
           ),
           ListTile(
@@ -53,12 +62,13 @@ class OptionsModal extends StatelessWidget {
             title: Text(
               AppLocalizations.of(context)!.delete,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.normal
               ),
             ),
             leading: Icon(
               Icons.delete,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: Theme.of(context).listTileTheme.iconColor,
             ),
           ),
         ],

@@ -393,7 +393,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
             color: Theme.of(context).scaffoldBackgroundColor,
             border: Border(
               top: BorderSide(
-                color: Theme.of(context).colorScheme.surfaceVariant
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
               )
             )
           ),

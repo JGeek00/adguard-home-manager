@@ -195,7 +195,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                     child: Icon(
                       Icons.filter_list_rounded,
                       size: 24,
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                   ),
                   Text(

@@ -17,7 +17,7 @@ class RemoveCustomRule extends StatelessWidget {
           Icon(
             Icons.shield_rounded,
             size: 24,
-            color: Theme.of(context).colorScheme.secondary
+            color: Theme.of(context).listTileTheme.iconColor
           ),
           const SizedBox(height: 16),
           Text(

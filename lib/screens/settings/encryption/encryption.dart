@@ -376,7 +376,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                     children: [
                       Icon(
                         Icons.info_rounded,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).listTileTheme.iconColor,
                       ),
                       const SizedBox(width: 20),
                       Flexible(

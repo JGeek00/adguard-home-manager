@@ -143,7 +143,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
             color: Theme.of(context).scaffoldBackgroundColor,
             border: Border(
               top: BorderSide(
-                color: Theme.of(context).colorScheme.surfaceVariant
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
               )
             )
           ),

@@ -59,7 +59,7 @@ class CustomRadioListTile extends StatelessWidget {
                       child: Text(
                         subtitle!,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: Theme.of(context).listTileTheme.textColor,
                           fontSize: 14
                         ),
                       ),

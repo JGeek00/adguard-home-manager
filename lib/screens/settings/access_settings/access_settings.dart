@@ -117,9 +117,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
               color: Theme.of(context).scaffoldBackgroundColor,
               border: Border(
                 top: BorderSide(
-                  color: Theme.of(context).brightness == Brightness.light
-                    ? const Color.fromRGBO(220, 220, 220, 1)
-                    : const Color.fromRGBO(50, 50, 50, 1)
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
                 )
               )
             ),

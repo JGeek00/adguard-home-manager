@@ -76,7 +76,7 @@ class _BlockedServicesModalState extends State<BlockedServicesModal> {
                   child: Icon(
                     Icons.block,
                     size: 24,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).listTileTheme.iconColor
                   ),
                 ),
                 const SizedBox(height: 16),

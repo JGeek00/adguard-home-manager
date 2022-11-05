@@ -49,7 +49,7 @@ class DeleteModal extends StatelessWidget {
           Icon(
             Icons.delete,
             size: 24,
-            color: Theme.of(context).colorScheme.secondary
+            color: Theme.of(context).listTileTheme.iconColor
           ),
           Padding(
             padding: const EdgeInsets.only(top: 16),

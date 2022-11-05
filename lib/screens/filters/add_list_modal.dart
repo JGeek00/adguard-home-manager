@@ -92,7 +92,7 @@ class _AddListModalState extends State<AddListModal> {
                         ? Icons.verified_user_rounded
                         : Icons.gpp_bad_rounded,
                       size: 24,
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                   ),
                   const SizedBox(height: 16),

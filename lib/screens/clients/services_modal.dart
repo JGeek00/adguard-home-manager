@@ -51,7 +51,7 @@ class _ServicesModalState extends State<ServicesModal> {
         children: [
           Icon(
             Icons.public,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: Theme.of(context).listTileTheme.iconColor
           ),
           const SizedBox(height: 16),
           Text(

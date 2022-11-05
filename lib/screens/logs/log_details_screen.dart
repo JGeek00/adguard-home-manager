@@ -141,14 +141,14 @@ class LogDetailsScreen extends StatelessWidget {
                     vertical: 5
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
+                    color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                     borderRadius: BorderRadius.circular(30)
                   ),
                   child: Text(
                     "CACHE",
                     style: TextStyle(
                       fontSize: 12,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
                       fontWeight: FontWeight.w500
                     ),
                   ),
@@ -278,14 +278,14 @@ class LogDetailsScreen extends StatelessWidget {
                   vertical: 5
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                   borderRadius: BorderRadius.circular(30)
                 ),
                 child: Text(
                   a.type,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
                     fontWeight: FontWeight.w500
                   ),
                 ),

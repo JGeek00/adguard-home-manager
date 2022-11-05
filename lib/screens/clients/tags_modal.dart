@@ -51,7 +51,7 @@ class _TagsModalState extends State<TagsModal> {
         children: [
           Icon(
             Icons.label_rounded,
-            color: Theme.of(context).colorScheme.onSurface
+            color: Theme.of(context).listTileTheme.iconColor
           ),
           const SizedBox(height: 16),
           Text(
