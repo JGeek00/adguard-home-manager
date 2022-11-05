@@ -140,11 +140,18 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
               padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
-                  const Icon(Icons.info_rounded),
+                  Icon(
+                    Icons.info_rounded,
+                    color: Theme.of(context).colorScheme.secondary
+                  ),
                   const SizedBox(width: 20),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width-132,
-                    child: Text(AppLocalizations.of(context)!.bootstrapDnsServersInfo)
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(context)!.bootstrapDnsServersInfo,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface
+                      ),
+                    )
                   )
                 ],
               ),

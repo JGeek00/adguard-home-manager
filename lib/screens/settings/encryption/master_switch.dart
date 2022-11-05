@@ -16,8 +16,8 @@ class EncryptionMasterSwitch extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(
         top: 10,
-        left: 12, 
-        right: 12
+        left: 24, 
+        right: 24
       ),
       child: Material(
         color: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -39,8 +39,9 @@ class EncryptionMasterSwitch extends StatelessWidget {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.enableEncryption,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                       const SizedBox(height: 3),
@@ -48,7 +49,7 @@ class EncryptionMasterSwitch extends StatelessWidget {
                         AppLocalizations.of(context)!.enableEncryptionTypes,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Theme.of(context).listTileTheme.iconColor,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant
                         ),
                       )
                     ],

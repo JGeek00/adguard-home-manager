@@ -14,9 +14,17 @@ class DnsAddressesModal extends StatelessWidget {
     return AlertDialog(
       title: Column(
         children: [
-          const Icon(Icons.route_rounded),
-          const SizedBox(height: 20),
-          Text(AppLocalizations.of(context)!.dnsAddresses)
+          Icon(
+            Icons.route_rounded,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.dnsAddresses,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface
+            ),
+          )
         ],
       ),
       content: SizedBox(
@@ -27,8 +35,9 @@ class DnsAddressesModal extends StatelessWidget {
           children: dnsAddresses.map((address) => ListTile(
             title: Text(
               address,
-              style: const TextStyle(
-                fontWeight: FontWeight.normal
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                color: Theme.of(context).colorScheme.onSurfaceVariant
               ),
             ),
           )).toList(),

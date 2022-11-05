@@ -91,36 +91,19 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
                     bottom: TabBar(
                       controller: tabController,
                       isScrollable: true,
+                      unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
                       tabs: [
                         Tab(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.check),
-                              const SizedBox(width: 20),
-                              Text(AppLocalizations.of(context)!.allowedClients)
-                            ],
-                          ),
+                          icon: const Icon(Icons.check),
+                          text: AppLocalizations.of(context)!.allowedClients,
                         ),
                         Tab(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.block),
-                              const SizedBox(width: 20),
-                              Text(AppLocalizations.of(context)!.disallowedClients)
-                            ],
-                          ),
+                          icon: const Icon(Icons.block),
+                          text: AppLocalizations.of(context)!.disallowedClients,
                         ),
                         Tab(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.link_rounded),
-                              const SizedBox(width: 20),
-                              Text(AppLocalizations.of(context)!.disallowedDomains)
-                            ],
-                          ),
+                          icon: const Icon(Icons.link_rounded),
+                          text: AppLocalizations.of(context)!.disallowedDomains,
                         ),
                       ]
                     )

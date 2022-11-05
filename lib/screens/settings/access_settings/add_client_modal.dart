@@ -66,8 +66,8 @@ class _AddClientModalState extends State<AddClientModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 322,
-        padding: const EdgeInsets.all(28),
+        height: 305,
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -85,17 +85,19 @@ class _AddClientModalState extends State<AddClientModal> {
                 children: [
                   Icon(
                     icon(),
-                    size: 26,
+                    size: 24,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Text(
                     title(),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: fieldController,
                     onChanged: (_) => checkValidValues(),
@@ -117,7 +119,7 @@ class _AddClientModalState extends State<AddClientModal> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

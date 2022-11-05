@@ -173,11 +173,18 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
               padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
-                  const Icon(Icons.info_rounded),
+                  Icon(
+                    Icons.info_rounded,
+                    color: Theme.of(context).colorScheme.secondary
+                  ),
                   const SizedBox(width: 20),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width-132,
-                    child: Text(AppLocalizations.of(context)!.privateReverseDnsServersDescription)
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(context)!.privateReverseDnsServersDescription,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface
+                      ),
+                    )
                   )
                 ],
               ),
