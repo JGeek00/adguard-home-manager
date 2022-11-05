@@ -19,7 +19,7 @@ String formatTimestampUTCFromAPI(DateTime timestamp, String format) {
     timestamp.year,
     timestamp.month,
     timestamp.day,
-    timestamp.hour+1,
+    timestamp.hour,
     timestamp.minute,
     timestamp.second
   );
