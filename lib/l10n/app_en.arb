@@ -570,5 +570,6 @@
     "downloadingUpdate": "Downloading",
     "completed": "completed",
     "permissionNotGranted": "Permission not granted",
-    "inputSearchTerm": "Input a search term."
+    "inputSearchTerm": "Input a search term.",
+    "answers": "Answers"
 }

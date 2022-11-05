@@ -185,13 +185,13 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
           ),
           ...dnsServers.map((item) => Padding(
             padding: const EdgeInsets.only(
-              left: 24, right: 10, bottom: 20
+              left: 16, right: 6, bottom: 20
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (item['controller'] != null) SizedBox(
-                  width: MediaQuery.of(context).size.width-90,
+                  width: MediaQuery.of(context).size.width-74,
                   child: TextFormField(
                     controller: item['controller'],
                     onChanged: (_) => checkValidValues(),
@@ -257,6 +257,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 16),
           SectionLabel(label: AppLocalizations.of(context)!.dnsMode),
           CustomRadioListTile(
             groupValue: upstreamMode, 

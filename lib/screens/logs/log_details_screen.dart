@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -119,17 +121,7 @@ class LogDetailsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Text(
-              AppLocalizations.of(context)!.status,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).primaryColor
-              ),
-            ),
-          ),
+          SectionLabel(label: AppLocalizations.of(context)!.status),
           LogListTile(
             icon: Icons.shield_rounded, 
             title: AppLocalizations.of(context)!.result, 
@@ -165,17 +157,7 @@ class LogDetailsScreen extends StatelessWidget {
             title: AppLocalizations.of(context)!.time,
             subtitle: formatTimestampUTCFromAPI(log.time, 'HH:mm:ss')
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Text(
-              AppLocalizations.of(context)!.request,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).primaryColor
-              ),
-            ),
-          ),
+          SectionLabel(label: AppLocalizations.of(context)!.request),
           LogListTile(
             icon: Icons.domain_rounded, 
             title: AppLocalizations.of(context)!.domain,
@@ -191,17 +173,7 @@ class LogDetailsScreen extends StatelessWidget {
             title: AppLocalizations.of(context)!.clas,
             subtitle: log.question.questionClass
           ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              AppLocalizations.of(context)!.response,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).primaryColor
-              ),
-            ),
-          ),
+          SectionLabel(label: AppLocalizations.of(context)!.response),
           if (log.upstream != '') LogListTile(
             icon: Icons.dns_rounded, 
             title: AppLocalizations.of(context)!.dnsServer,
@@ -217,17 +189,7 @@ class LogDetailsScreen extends StatelessWidget {
             title: AppLocalizations.of(context)!.responseCode,
             subtitle: log.status
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Text(
-              AppLocalizations.of(context)!.client,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).primaryColor
-              ),
-            ),
-          ),
+          SectionLabel(label: AppLocalizations.of(context)!.client),
           LogListTile(
             icon: Icons.smartphone_rounded, 
             title: AppLocalizations.of(context)!.deviceIp,
@@ -239,17 +201,7 @@ class LogDetailsScreen extends StatelessWidget {
             subtitle: log.clientInfo!.name
           ),
           if (log.rules.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-              child: Text(
-                AppLocalizations.of(context)!.rules,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).primaryColor
-                ),
-              ),
-            ),
+            SectionLabel(label: AppLocalizations.of(context)!.rules),
             ...log.rules.map((rule) => LogListTile(
               icon: Icons.rule_rounded, 
               title: rule.text,
@@ -257,17 +209,7 @@ class LogDetailsScreen extends StatelessWidget {
             )).toList()
           ],
           if (log.answer.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Text(
-                AppLocalizations.of(context)!.answer,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).primaryColor
-                ),
-              ),
-            ),
+            SectionLabel(label: AppLocalizations.of(context)!.answers),
             ...log.answer.map((a) => LogListTile(
               icon: Icons.download_rounded, 
               title: a.value,

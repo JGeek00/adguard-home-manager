@@ -64,7 +64,7 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
         children: [
           SectionLabel(
             label: AppLocalizations.of(context)!.theme,
-            padding: const EdgeInsets.only(top: 10, left: 25, right: 25, bottom: 5),
+            padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 5),
           ),
           Column(
             children: [
@@ -108,7 +108,7 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
           ),
           SectionLabel(
             label: AppLocalizations.of(context)!.color,
-            padding: const EdgeInsets.only(top: 45, left: 25, right: 25, bottom: 5),
+            padding: const EdgeInsets.only(top: 45, left: 16, right: 16, bottom: 5),
           ),
           if (appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31) CustomSwitchListTile(
             value: dynamicColor, 

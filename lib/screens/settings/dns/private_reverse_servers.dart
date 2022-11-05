@@ -167,17 +167,17 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
         children: [
           Card(
             margin: const EdgeInsets.only(
-              left: 24, right: 24, bottom: 10
+              left: 16, right: 16, bottom: 10
             ),
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   Icon(
                     Icons.info_rounded,
                     color: Theme.of(context).listTileTheme.iconColor,
                   ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 16),
                   Flexible(
                     child: Text(
                       AppLocalizations.of(context)!.privateReverseDnsServersDescription,
@@ -224,13 +224,13 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
             const SizedBox(height: 20),
             ...reverseResolversControllers.map((c) => Padding(
             padding: const EdgeInsets.only(
-                left: 24, right: 10, bottom: 20
+                left: 16, right: 6, bottom: 20
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.width-90,
+                    width: MediaQuery.of(context).size.width-74,
                     child: TextFormField(
                       controller: c['controller'],
                       onChanged: (value) => validateAddress(c, value),

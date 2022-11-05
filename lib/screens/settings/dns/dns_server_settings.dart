@@ -188,7 +188,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
         padding: const EdgeInsets.only(top: 10),
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextFormField(
               controller: limitRequestsController,
               onChanged: (value) {

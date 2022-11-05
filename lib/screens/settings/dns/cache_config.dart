@@ -128,7 +128,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
       required void Function(String) onChanged,
     }) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: TextFormField(
           controller: controller,
           onChanged: onChanged,

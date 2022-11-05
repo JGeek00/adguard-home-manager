@@ -83,7 +83,7 @@ class ManagementModal extends StatelessWidget {
             : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 35,
+              horizontal: 44,
               vertical: 8
             ),
             child: Row(

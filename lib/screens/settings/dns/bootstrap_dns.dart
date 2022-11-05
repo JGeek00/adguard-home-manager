@@ -134,7 +134,7 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
         children: [
           Card(
             margin: const EdgeInsets.only(
-              left: 24, right: 24, bottom: 20
+              left: 16, right: 16, bottom: 20
             ),
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -177,13 +177,13 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
           ),
           ...bootstrapControllers.map((c) => Padding(
             padding: const EdgeInsets.only(
-              left: 24, right: 10, bottom: 20
+              left: 16, right: 6, bottom: 20
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width-90,
+                  width: MediaQuery.of(context).size.width-74,
                   child: TextFormField(
                     controller: c['controller'],
                     onChanged: (value) => validateIp(c, value),

@@ -26,17 +26,16 @@ class CustomSwitchListTile extends StatelessWidget {
           : () => onChanged(!value),
         child: Padding(
           padding: const EdgeInsets.only(
-            top: 12, left: 24, right: 12, bottom: 12
+            top: 12, left: 16, right: 18, bottom: 16
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width-110,
-                    child: Text(
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       title,
                       style: TextStyle(
                         fontSize: 16,
@@ -45,24 +44,25 @@ class CustomSwitchListTile extends StatelessWidget {
                             : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
-                  ),
-                  if (subtitle != null) ... [
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width-110,
-                      child: Text(
-                        subtitle!,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: disabled != null && disabled == true
-                            ? Theme.of(context).listTileTheme.textColor!.withOpacity(0.38)
-                            : Theme.of(context).listTileTheme.textColor
+                    if (subtitle != null) ... [
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width-110,
+                        child: Text(
+                          subtitle!,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: disabled != null && disabled == true
+                              ? Theme.of(context).listTileTheme.textColor!.withOpacity(0.38)
+                              : Theme.of(context).listTileTheme.textColor
+                          ),
                         ),
                       ),
-                    ),
-                  ]
-                ],
+                    ]
+                  ],
+                ),
               ),
+              const SizedBox(width: 16),
               Switch(
                 value: value, 
                 onChanged: disabled != null && disabled == true

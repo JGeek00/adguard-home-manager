@@ -16,7 +16,7 @@ class SectionLabel extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
-          padding: padding ?? const EdgeInsets.all(24),
+          padding: padding ?? const EdgeInsets.all(16),
           child: Text(
             label,
             style: TextStyle(
