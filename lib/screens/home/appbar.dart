@@ -13,7 +13,7 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
   const HomeAppBar({Key? key}) : super(key: key);
 
   @override
-  PreferredSizeWidget build(BuildContext context) {
+  SliverAppBar build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -43,8 +43,7 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
       );
     } 
 
-    return AppBar(
-      toolbarHeight: 70,
+    return SliverAppBar.large(
       title: Padding(
         padding: const EdgeInsets.only(bottom: 5),
         child: Row(

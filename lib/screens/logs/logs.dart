@@ -237,6 +237,7 @@ class _LogsWidgetState extends State<LogsWidget> {
         case 0:
           return SizedBox(
             width: double.maxFinite,
+            height: MediaQuery.of(context).size.height-255,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -261,7 +262,8 @@ class _LogsWidgetState extends State<LogsWidget> {
             },
             child: logsProvider.logsData!.data.isNotEmpty
               ? ListView.builder(
-                  controller: scrollController,
+                  primary: false,
+                  shrinkWrap: true,
                   padding: const EdgeInsets.only(top: 0),
                   itemCount: isLoadingMore == true 
                     ? logsProvider.logsData!.data.length+1
@@ -284,33 +286,37 @@ class _LogsWidgetState extends State<LogsWidget> {
                     }
                   }
                 )
-              : Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.noLogsDisplay,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          color: Colors.grey
-                        ),
-                      ),
-                      if (logsProvider.logsOlderThan != null) Padding(
-                        padding: const EdgeInsets.only(
-                          top: 30,
-                          left: 20,
-                          right: 20
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!.noLogsThatOld,
-                          textAlign: TextAlign.center,
+              : SizedBox(           
+                  width: double.maxFinite,
+                  height: MediaQuery.of(context).size.height-255,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.noLogsDisplay,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 24,
                             color: Colors.grey
                           ),
                         ),
-                      ),
-                    ]
+                        if (logsProvider.logsOlderThan != null) Padding(
+                          padding: const EdgeInsets.only(
+                            top: 30,
+                            left: 20,
+                            right: 20
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)!.noLogsThatOld,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey
+                            ),
+                          ),
+                        ),
+                      ]
+                    ),
                   ),
                 )
           );
@@ -318,6 +324,7 @@ class _LogsWidgetState extends State<LogsWidget> {
         case 2:
           return SizedBox(
             width: double.maxFinite,
+            height: MediaQuery.of(context).size.height-255,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -344,151 +351,161 @@ class _LogsWidgetState extends State<LogsWidget> {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.logs),
-        actions: [
-          logsProvider.loadStatus == 1 
-            ? IconButton(
-                onPressed: openFilersModal, 
-                icon: const Icon(Icons.filter_list_rounded)
-              )
-            : const SizedBox(),
-          IconButton(
-            onPressed: () => {
-              showModalBottomSheet(
-                context: context, 
-                builder: (context) => LogsConfigModal(
-                  onConfirm: updateConfig,
-                  onClear: clearQueries,
-                ),
-                backgroundColor: Colors.transparent,
-                isScrollControlled: true
-              )
-            }, 
-            icon: const Icon(Icons.settings)
-          ),
-          const SizedBox(width: 5),
-        ],
-        bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all'
-          ? PreferredSize(
-              preferredSize: const Size(double.maxFinite, 50),
-              child: Container(
-                height: 50,
-                width: double.maxFinite,
-                padding: const EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: showDivider == true
-                        ? Theme.of(context).dividerColor
-                        : Colors.transparent,
-                    )
+    return Material(
+      color: Theme.of(context).dialogBackgroundColor,
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          SliverAppBar.large(
+            title: Text(AppLocalizations.of(context)!.logs),
+            actions: [
+              logsProvider.loadStatus == 1 
+                ? IconButton(
+                    onPressed: openFilersModal, 
+                    icon: const Icon(Icons.filter_list_rounded)
                   )
-                ),
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    if (logsProvider.appliedFilters.searchText != null) ...[
-                      const SizedBox(width: 15),
-                      Chip(
-                        avatar: Icon(
-                          Icons.search,
-                          size: 24,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        label: Row(
-                          children: [
-                            Text(
-                              logsProvider.appliedFilters.searchText!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500
-                              ),
+                : const SizedBox(),
+              IconButton(
+                onPressed: () => {
+                  showModalBottomSheet(
+                    context: context, 
+                    builder: (context) => LogsConfigModal(
+                      onConfirm: updateConfig,
+                      onClear: clearQueries,
+                    ),
+                    backgroundColor: Colors.transparent,
+                    isScrollControlled: true
+                  )
+                }, 
+                icon: const Icon(Icons.settings)
+              ),
+              const SizedBox(width: 5),
+            ],
+            bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all'
+              ? PreferredSize(
+                  preferredSize: const Size(double.maxFinite, 100),
+                  child: Container(
+                    height: 50,
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: showDivider == true
+                            ? Theme.of(context).dividerColor
+                            : Colors.transparent,
+                        )
+                      )
+                    ),
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        if (logsProvider.appliedFilters.searchText != null) ...[
+                          const SizedBox(width: 15),
+                          Chip(
+                            avatar: Icon(
+                              Icons.search,
+                              size: 24,
+                              color: Theme.of(context).primaryColor,
                             ),
-                          ],
-                        ),
-                        deleteIcon: Icon(
-                          Icons.cancel_rounded,
-                          size: 18,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant
-                        ),
-                        onDeleted: () {
-                          logsProvider.setAppliedFilters(
-                            AppliedFiters(
-                              selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
-                              searchText: null
-                            )
-                          );
-                          logsProvider.setSearchText(null);
-                          fetchLogs(
-                            inOffset: 0,
-                            searchText: ''
-                          );
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant
-                          )
-                        ),
-                        backgroundColor: Theme.of(context).dialogBackgroundColor,
-                      ),
-                    ],
-                    if (logsProvider.appliedFilters.selectedResultStatus != 'all') ...[
-                      const SizedBox(width: 15),
-                      Chip(
-                        avatar: Icon(
-                          Icons.shield_rounded,
-                          size: 24,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        label: Row(
-                          children: [
-                            Text(
-                              translatedString[logsProvider.appliedFilters.selectedResultStatus]!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500
-                              ),
+                            label: Row(
+                              children: [
+                                Text(
+                                  logsProvider.appliedFilters.searchText!,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        deleteIcon: Icon(
-                          Icons.cancel_rounded,
-                          size: 18,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant
-                        ),
-                        onDeleted: () {
-                          logsProvider.setAppliedFilters(
-                            AppliedFiters(
-                              selectedResultStatus: 'all', 
-                              searchText: logsProvider.appliedFilters.searchText
-                            )
-                          );
-                          logsProvider.setSelectedResultStatus('all');
-                          fetchLogs(
-                            inOffset: 0,
-                            responseStatus: 'all'
-                          );
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant
-                          )
-                        ),
-                        backgroundColor: Theme.of(context).dialogBackgroundColor,
-                      ),
-                    ],
-                    const SizedBox(width: 15),
-                  ],
-                ),
-              )
-            )
-        : null,
+                            deleteIcon: Icon(
+                              Icons.cancel_rounded,
+                              size: 18,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant
+                            ),
+                            onDeleted: () {
+                              logsProvider.setAppliedFilters(
+                                AppliedFiters(
+                                  selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
+                                  searchText: null
+                                )
+                              );
+                              logsProvider.setSearchText(null);
+                              fetchLogs(
+                                inOffset: 0,
+                                searchText: ''
+                              );
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant
+                              )
+                            ),
+                            backgroundColor: Theme.of(context).dialogBackgroundColor,
+                          ),
+                        ],
+                        if (logsProvider.appliedFilters.selectedResultStatus != 'all') ...[
+                          const SizedBox(width: 15),
+                          Chip(
+                            avatar: Icon(
+                              Icons.shield_rounded,
+                              size: 24,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            label: Row(
+                              children: [
+                                Text(
+                                  translatedString[logsProvider.appliedFilters.selectedResultStatus]!,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                ),
+                              ],
+                            ),
+                            deleteIcon: Icon(
+                              Icons.cancel_rounded,
+                              size: 18,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant
+                            ),
+                            onDeleted: () {
+                              logsProvider.setAppliedFilters(
+                                AppliedFiters(
+                                  selectedResultStatus: 'all', 
+                                  searchText: logsProvider.appliedFilters.searchText
+                                )
+                              );
+                              logsProvider.setSelectedResultStatus('all');
+                              fetchLogs(
+                                inOffset: 0,
+                                responseStatus: 'all'
+                              );
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant
+                              )
+                            ),
+                            backgroundColor: Theme.of(context).dialogBackgroundColor,
+                          ),
+                        ],
+                        const SizedBox(width: 15),
+                      ],
+                    ),
+                  )
+                )
+            : null,
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              child: generateBody()
+            ),
+          )
+        ],
       ),
-      body: generateBody()
     );
   }
 }

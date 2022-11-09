@@ -16,7 +16,11 @@ class ServerStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.only(
+        left: 20,
+        right: 20,
+        bottom: 20
+      ),
       child: Column(
         children: [
           Text(
@@ -27,9 +31,8 @@ class ServerStatus extends StatelessWidget {
               color: Theme.of(context).colorScheme.onSurface
             ),
           ),
-          const SizedBox(height: 20),
           SizedBox(
-            height: 140,
+            height: 165,
             child: GridView(
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
