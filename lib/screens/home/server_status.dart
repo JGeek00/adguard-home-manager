@@ -22,13 +22,14 @@ class ServerStatus extends StatelessWidget {
         bottom: 20
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             AppLocalizations.of(context)!.serverStatus,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface
+              color: Theme.of(context).primaryColor
             ),
           ),
           SizedBox(

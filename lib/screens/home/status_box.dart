@@ -50,7 +50,6 @@ class StatusBox extends StatelessWidget {
               color: appConfigProvider.useThemeColorForStatus == true
                 ? Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white
                 : Colors.grey.computeLuminance() > 0.5 ? Colors.black : Colors.white,
-              fontWeight: FontWeight.w500
             ),
           )
         ],

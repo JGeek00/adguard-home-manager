@@ -51,9 +51,9 @@ class HomeChart extends StatelessWidget {
                       Text(
                         label, 
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Theme.of(context).colorScheme.onSurface
+                          color: Theme.of(context).primaryColor
                         ),
                       ),
                       !isEmpty

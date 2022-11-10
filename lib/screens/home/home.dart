@@ -230,52 +230,42 @@ class _HomeState extends State<Home> {
             controller: scrollController,
             slivers: <Widget>[
               SliverAppBar.large(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                leading: Icon(
+                  serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
+                    ? serversProvider.serverStatus.data!.generalEnabled == true 
+                      ? Icons.gpp_good_rounded
+                      : Icons.gpp_bad_rounded
+                    : Icons.shield,
+                  size: 30,
+                  color: serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
+                    ? serversProvider.serverStatus.data!.generalEnabled == true 
+                      ? appConfigProvider.useThemeColorForStatus
+                        ? Theme.of(context).primaryColor
+                        : Colors.green
+                      : appConfigProvider.useThemeColorForStatus == true
+                        ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                        : Colors.red
+                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                ),
+                title: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Icon(
-                        serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
-                          ? serversProvider.serverStatus.data!.generalEnabled == true 
-                            ? Icons.gpp_good_rounded
-                            : Icons.gpp_bad_rounded
-                          : Icons.shield,
-                        size: 30,
-                        color: serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
-                          ? serversProvider.serverStatus.data!.generalEnabled == true 
-                            ? appConfigProvider.useThemeColorForStatus
-                              ? Theme.of(context).primaryColor
-                              : Colors.green
-                            : appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
-                              : Colors.red
-                          : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                    if (serversProvider.selectedServer != null) ...[
+                      Text(
+                        server!.name,
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (serversProvider.selectedServer != null) ...[
-                          Text(
-                            server!.name,
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).listTileTheme.textColor
-                            ),
-                          )
-                        ],
-                        if (serversProvider.selectedServer == null) Text(
-                          AppLocalizations.of(context)!.noServerSelected,
+                      const SizedBox(height: 5),
+                      Text(
+                        "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).listTileTheme.textColor
                         ),
-                      ],
+                      )
+                    ],
+                    if (serversProvider.selectedServer == null) Text(
+                      AppLocalizations.of(context)!.noServerSelected,
                     ),
                   ],
                 ),
