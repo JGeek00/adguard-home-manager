@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -101,152 +100,151 @@ class LogDetailsScreen extends StatelessWidget {
       }
     }
 
-    return Material(
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar.large(
-            title:  Text(AppLocalizations.of(context)!.logDetails),
-            actions: [
-              IconButton(
-                onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
-                icon: Icon(
-                  getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                    ? Icons.check_circle_rounded
-                    : Icons.block
-                ),
-                tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                  ? AppLocalizations.of(context)!.unblockDomain
-                  : AppLocalizations.of(context)!.blockDomain,
-              ),
-              const SizedBox(width: 10)
-            ],
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              color: Theme.of(context).dialogBackgroundColor,
-              child: ListView(
-                primary: false,
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 0),
-                children: [
-                  SectionLabel(label: AppLocalizations.of(context)!.status),
-                  LogListTile(
-                    icon: Icons.shield_rounded, 
-                    title: AppLocalizations.of(context)!.result, 
-                    subtitleWidget: getResult(),
-                    trailing: log.cached == true 
-                      ? Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5
-                          ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-                            borderRadius: BorderRadius.circular(30)
-                          ),
-                          child: Text(
-                            "CACHE",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
-                              fontWeight: FontWeight.w500
-                            ),
-                          ),
-                        )
-                      : null,
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => <Widget>[
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title:  Text(AppLocalizations.of(context)!.logDetails),
+                actions: [
+                  IconButton(
+                    onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
+                    icon: Icon(
+                      getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                        ? Icons.check_circle_rounded
+                        : Icons.block
+                    ),
+                    tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                      ? AppLocalizations.of(context)!.unblockDomain
+                      : AppLocalizations.of(context)!.blockDomain,
                   ),
-                  if (log.rule != null) LogListTile(
-                    icon: Icons.block, 
-                    title: AppLocalizations.of(context)!.blockingRule, 
-                    subtitle: log.rule
-                  ),
-                  LogListTile(
-                    icon: Icons.schedule, 
-                    title: AppLocalizations.of(context)!.time,
-                    subtitle: formatTimestampUTCFromAPI(log.time, 'HH:mm:ss')
-                  ),
-                  SectionLabel(label: AppLocalizations.of(context)!.request),
-                  LogListTile(
-                    icon: Icons.domain_rounded, 
-                    title: AppLocalizations.of(context)!.domain,
-                    subtitle: log.question.name
-                  ),
-                  LogListTile(
-                    icon: Icons.category_rounded, 
-                    title: AppLocalizations.of(context)!.type,
-                    subtitle: log.question.type
-                  ),
-                  LogListTile(
-                    icon: Icons.class_rounded, 
-                    title: AppLocalizations.of(context)!.clas,
-                    subtitle: log.question.questionClass
-                  ),
-                  SectionLabel(label: AppLocalizations.of(context)!.response),
-                  if (log.upstream != '') LogListTile(
-                    icon: Icons.dns_rounded, 
-                    title: AppLocalizations.of(context)!.dnsServer,
-                    subtitle: log.upstream
-                  ),
-                  LogListTile(
-                    icon: Icons.timer_rounded, 
-                    title: AppLocalizations.of(context)!.elapsedTime,
-                    subtitle: "${double.parse(log.elapsedMs).toStringAsFixed(2)} ms"
-                  ),
-                  LogListTile(
-                    icon: Icons.system_update_alt_rounded, 
-                    title: AppLocalizations.of(context)!.responseCode,
-                    subtitle: log.status
-                  ),
-                  SectionLabel(label: AppLocalizations.of(context)!.client),
-                  LogListTile(
-                    icon: Icons.smartphone_rounded, 
-                    title: AppLocalizations.of(context)!.deviceIp,
-                    subtitle: log.client
-                  ),
-                  if (log.clientInfo != null && log.clientInfo!.name != '') LogListTile(
-                    icon: Icons.abc_rounded, 
-                    title: AppLocalizations.of(context)!.deviceName,
-                    subtitle: log.clientInfo!.name
-                  ),
-                  if (log.rules.isNotEmpty) ...[
-                    SectionLabel(label: AppLocalizations.of(context)!.rules),
-                    ...log.rules.map((rule) => LogListTile(
-                      icon: Icons.rule_rounded, 
-                      title: rule.text,
-                      subtitle: getList(rule.filterListId).name,
-                    )).toList()
-                  ],
-                  if (log.answer.isNotEmpty) ...[
-                    SectionLabel(label: AppLocalizations.of(context)!.answers),
-                    ...log.answer.map((a) => LogListTile(
-                      icon: Icons.download_rounded, 
-                      title: a.value,
-                      subtitle: "TTL: ${a.ttl.toString()}",
-                      trailing: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-                          borderRadius: BorderRadius.circular(30)
-                        ),
-                        child: Text(
-                          a.type,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
-                            fontWeight: FontWeight.w500
-                          ),
-                        ),
-                      )
-                    )).toList()
-                  ]
+                  const SizedBox(width: 10)
                 ],
               ),
             ),
           ),
         ],
+        body: ListView(
+          padding: const EdgeInsets.only(top: 0),
+          children: [
+            SectionLabel(label: AppLocalizations.of(context)!.status),
+            LogListTile(
+              icon: Icons.shield_rounded, 
+              title: AppLocalizations.of(context)!.result, 
+              subtitleWidget: getResult(),
+              trailing: log.cached == true 
+                ? Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                      borderRadius: BorderRadius.circular(30)
+                    ),
+                    child: Text(
+                      "CACHE",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
+                        fontWeight: FontWeight.w500
+                      ),
+                    ),
+                  )
+                : null,
+            ),
+            if (log.rule != null) LogListTile(
+              icon: Icons.block, 
+              title: AppLocalizations.of(context)!.blockingRule, 
+              subtitle: log.rule
+            ),
+            LogListTile(
+              icon: Icons.schedule, 
+              title: AppLocalizations.of(context)!.time,
+              subtitle: formatTimestampUTCFromAPI(log.time, 'HH:mm:ss')
+            ),
+            SectionLabel(label: AppLocalizations.of(context)!.request),
+            LogListTile(
+              icon: Icons.domain_rounded, 
+              title: AppLocalizations.of(context)!.domain,
+              subtitle: log.question.name
+            ),
+            LogListTile(
+              icon: Icons.category_rounded, 
+              title: AppLocalizations.of(context)!.type,
+              subtitle: log.question.type
+            ),
+            LogListTile(
+              icon: Icons.class_rounded, 
+              title: AppLocalizations.of(context)!.clas,
+              subtitle: log.question.questionClass
+            ),
+            SectionLabel(label: AppLocalizations.of(context)!.response),
+            if (log.upstream != '') LogListTile(
+              icon: Icons.dns_rounded, 
+              title: AppLocalizations.of(context)!.dnsServer,
+              subtitle: log.upstream
+            ),
+            LogListTile(
+              icon: Icons.timer_rounded, 
+              title: AppLocalizations.of(context)!.elapsedTime,
+              subtitle: "${double.parse(log.elapsedMs).toStringAsFixed(2)} ms"
+            ),
+            LogListTile(
+              icon: Icons.system_update_alt_rounded, 
+              title: AppLocalizations.of(context)!.responseCode,
+              subtitle: log.status
+            ),
+            SectionLabel(label: AppLocalizations.of(context)!.client),
+            LogListTile(
+              icon: Icons.smartphone_rounded, 
+              title: AppLocalizations.of(context)!.deviceIp,
+              subtitle: log.client
+            ),
+            if (log.clientInfo != null && log.clientInfo!.name != '') LogListTile(
+              icon: Icons.abc_rounded, 
+              title: AppLocalizations.of(context)!.deviceName,
+              subtitle: log.clientInfo!.name
+            ),
+            if (log.rules.isNotEmpty) ...[
+              SectionLabel(label: AppLocalizations.of(context)!.rules),
+              ...log.rules.map((rule) => LogListTile(
+                icon: Icons.rule_rounded, 
+                title: rule.text,
+                subtitle: getList(rule.filterListId).name,
+              )).toList()
+            ],
+            if (log.answer.isNotEmpty) ...[
+              SectionLabel(label: AppLocalizations.of(context)!.answers),
+              ...log.answer.map((a) => LogListTile(
+                icon: Icons.download_rounded, 
+                title: a.value,
+                subtitle: "TTL: ${a.ttl.toString()}",
+                trailing: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                    borderRadius: BorderRadius.circular(30)
+                  ),
+                  child: Text(
+                    a.type,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
+                      fontWeight: FontWeight.w500
+                    ),
+                  ),
+                )
+              )).toList()
+            ]
+          ],
+        ),
       ),
     );
   }

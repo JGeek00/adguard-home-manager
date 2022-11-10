@@ -352,7 +352,7 @@ class _LogsWidgetState extends State<LogsWidget> {
     return Scaffold(
       body: NestedScrollView(
         controller: scrollController,
-        headerSliverBuilder: (_, __) => [
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar.large(
             title: Text(AppLocalizations.of(context)!.logs),
             actions: [
@@ -380,7 +380,7 @@ class _LogsWidgetState extends State<LogsWidget> {
             ],
             bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all'
               ? PreferredSize(
-                  preferredSize: const Size(double.maxFinite, 100),
+                  preferredSize: const Size(double.maxFinite, 50),
                   child: Container(
                     height: 50,
                     width: double.maxFinite,

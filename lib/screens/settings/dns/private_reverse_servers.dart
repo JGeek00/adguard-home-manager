@@ -149,120 +149,62 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.privateReverseDnsServers),
-        actions: [
-          IconButton(
-            onPressed: validValues == true
-              ? () => saveData()
-              : null, 
-            icon: const Icon(Icons.save_rounded),
-            tooltip: AppLocalizations.of(context)!.save,
-          ),
-          const SizedBox(width: 10)
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 10),
-        children: [
-          Card(
-            margin: const EdgeInsets.only(
-              left: 16, right: 16, bottom: 10
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_rounded,
-                    color: Theme.of(context).listTileTheme.iconColor,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                expandedHeight: 160,
+                title: Text(AppLocalizations.of(context)!.privateReverseDnsServers),
+                actions: [
+                  IconButton(
+                    onPressed: validValues == true
+                      ? () => saveData()
+                      : null, 
+                    icon: const Icon(Icons.save_rounded),
+                    tooltip: AppLocalizations.of(context)!.save,
                   ),
-                  const SizedBox(width: 16),
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.privateReverseDnsServersDescription,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface
-                      ),
-                    )
-                  )
+                  const SizedBox(width: 10)
                 ],
               ),
             ),
-          ),
-          if (editReverseResolvers == false) ...[
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                "${AppLocalizations.of(context)!.reverseDnsDefault}:\n\n${defaultReverseResolvers.map((item) => item).join(', ').toString().replaceAll(RegExp(r'\(|\)'), '')}",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16
+          )
+        ],
+        body: ListView(
+          padding: const EdgeInsets.only(top: 20),
+          children: [
+            Card(
+              margin: const EdgeInsets.only(
+                left: 16, right: 16, bottom: 10
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_rounded,
+                      color: Theme.of(context).listTileTheme.iconColor,
+                    ),
+                    const SizedBox(width: 16),
+                    Flexible(
+                      child: Text(
+                        AppLocalizations.of(context)!.privateReverseDnsServersDescription,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface
+                        ),
+                      )
+                    )
+                  ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 20),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      setState(() => editReverseResolvers = true);
-                      checkDataValid();
-                    }, 
-                    icon: const Icon(Icons.edit), 
-                    label: Text(AppLocalizations.of(context)!.edit)
-                  ),
-                ],
-              ),
-            )
-          ],
-          if (editReverseResolvers == true) ...[
-            const SizedBox(height: 20),
-            ...reverseResolversControllers.map((c) => Padding(
-            padding: const EdgeInsets.only(
-                left: 16, right: 6, bottom: 20
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width-74,
-                    child: TextFormField(
-                      controller: c['controller'],
-                      onChanged: (value) => validateAddress(c, value),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.dns_rounded),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10)
-                          )
-                        ),
-                        errorText: c['error'],
-                        labelText: AppLocalizations.of(context)!.serverAddress,
-                      )
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() => reverseResolversControllers = reverseResolversControllers.where((con) => con != c).toList());
-                      checkDataValid();
-                    }, 
-                    icon: const Icon(Icons.remove_circle_outline)
-                  )
-                ],
-              ),
-            )),
-            if (reverseResolversControllers.isEmpty) Padding(
-              padding: const EdgeInsets.only(
-                left: 20, right: 20, bottom: 20
-              ),
-              child: Center(
+            if (editReverseResolvers == false) ...[
+              Padding(
+                padding: const EdgeInsets.all(20),
                 child: Text(
-                  AppLocalizations.of(context)!.noServerAddressesAdded,
+                  "${AppLocalizations.of(context)!.reverseDnsDefault}:\n\n${defaultReverseResolvers.map((item) => item).join(', ').toString().replaceAll(RegExp(r'\(|\)'), '')}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.grey,
@@ -270,41 +212,110 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      setState(() => reverseResolversControllers.add({
-                        'controller': TextEditingController(),
-                        'error': null
-                      }));
-                      checkDataValid();
-                    }, 
-                    icon: const Icon(Icons.add), 
-                    label: Text(AppLocalizations.of(context)!.addItem)
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 20),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() => editReverseResolvers = true);
+                        checkDataValid();
+                      }, 
+                      icon: const Icon(Icons.edit), 
+                      label: Text(AppLocalizations.of(context)!.edit)
+                    ),
+                  ],
+                ),
+              )
+            ],
+            if (editReverseResolvers == true) ...[
+              const SizedBox(height: 20),
+              ...reverseResolversControllers.map((c) => Padding(
+              padding: const EdgeInsets.only(
+                  left: 16, right: 6, bottom: 20
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width-74,
+                      child: TextFormField(
+                        controller: c['controller'],
+                        onChanged: (value) => validateAddress(c, value),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.dns_rounded),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10)
+                            )
+                          ),
+                          errorText: c['error'],
+                          labelText: AppLocalizations.of(context)!.serverAddress,
+                        )
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() => reverseResolversControllers = reverseResolversControllers.where((con) => con != c).toList());
+                        checkDataValid();
+                      }, 
+                      icon: const Icon(Icons.remove_circle_outline)
+                    )
+                  ],
+                ),
+              )),
+              if (reverseResolversControllers.isEmpty) Padding(
+                padding: const EdgeInsets.only(
+                  left: 20, right: 20, bottom: 20
+                ),
+                child: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.noServerAddressesAdded,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16
+                    ),
                   ),
-                ],
+                ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() => reverseResolversControllers.add({
+                          'controller': TextEditingController(),
+                          'error': null
+                        }));
+                        checkDataValid();
+                      }, 
+                      icon: const Icon(Icons.add), 
+                      label: Text(AppLocalizations.of(context)!.addItem)
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            CustomSwitchListTile(
+              value: usePrivateReverseDnsResolvers,
+              onChanged: (value) => setState(() => usePrivateReverseDnsResolvers = value), 
+              title: AppLocalizations.of(context)!.usePrivateReverseDnsResolvers,
+              subtitle: AppLocalizations.of(context)!.usePrivateReverseDnsResolversDescription
+            ),
+            CustomSwitchListTile(
+              value: enableReverseResolve,
+              onChanged: (value) => setState(() => enableReverseResolve = value), 
+              title: AppLocalizations.of(context)!.enableReverseResolving,
+              subtitle: AppLocalizations.of(context)!.enableReverseResolvingDescription
             ),
           ],
-          CustomSwitchListTile(
-            value: usePrivateReverseDnsResolvers,
-            onChanged: (value) => setState(() => usePrivateReverseDnsResolvers = value), 
-            title: AppLocalizations.of(context)!.usePrivateReverseDnsResolvers,
-            subtitle: AppLocalizations.of(context)!.usePrivateReverseDnsResolversDescription
-          ),
-          CustomSwitchListTile(
-            value: enableReverseResolve,
-            onChanged: (value) => setState(() => enableReverseResolve = value), 
-            title: AppLocalizations.of(context)!.enableReverseResolving,
-            subtitle: AppLocalizations.of(context)!.enableReverseResolvingDescription
-          ),
-        ],
+        ),
       ),
     );
   }

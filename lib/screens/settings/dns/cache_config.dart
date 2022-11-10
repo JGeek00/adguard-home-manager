@@ -150,77 +150,88 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.dnsCacheConfig),
-        actions: [
-          IconButton(
-            onPressed: validData == true
-              ? () => saveData()
-              : null, 
-            icon: const Icon(Icons.save_rounded),
-            tooltip: AppLocalizations.of(context)!.save,
-          ),
-          const SizedBox(width: 10)
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 10),
-        children: [
-          numericField(
-            controller: cacheSizeController, 
-            label: AppLocalizations.of(context)!.cacheSize, 
-            helper: AppLocalizations.of(context)!.inBytes, 
-            error: cacheSizeError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => cacheSizeError = null);
-              }
-              else {
-                setState(() => cacheSizeError = AppLocalizations.of(context)!.valueNotNumber);
-              }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 30),
-          numericField(
-            controller: overrideMinTtlController, 
-            label: AppLocalizations.of(context)!.overrideMinimumTtl, 
-            helper: AppLocalizations.of(context)!.overrideMinimumTtlDescription, 
-            error: overrideMinTtlError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => overrideMinTtlError = null);
-              }
-              else {
-                setState(() => overrideMinTtlError = AppLocalizations.of(context)!.valueNotNumber);
-              }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 30),
-          numericField(
-            controller: overrideMaxTtlController, 
-            label: AppLocalizations.of(context)!.overrideMaximumTtl, 
-            helper: AppLocalizations.of(context)!.overrideMaximumTtlDescription, 
-            error: overrideMaxTtlError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => overrideMaxTtlError = null);
-              }
-              else {
-                setState(() => overrideMaxTtlError = AppLocalizations.of(context)!.valueNotNumber);
-              }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 10),
-          CustomSwitchListTile(
-            value: optimisticCache, 
-            onChanged: (value) => setState(() => optimisticCache = value), 
-            title: AppLocalizations.of(context)!.optimisticCaching,
-            subtitle: AppLocalizations.of(context)!.optimisticCachingDescription,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                expandedHeight: 160,
+                title: Text(AppLocalizations.of(context)!.dnsCacheConfig),
+                actions: [
+                  IconButton(
+                    onPressed: validData == true
+                      ? () => saveData()
+                      : null, 
+                    icon: const Icon(Icons.save_rounded),
+                    tooltip: AppLocalizations.of(context)!.save,
+                  ),
+                  const SizedBox(width: 10)
+                ],
+              ),
+            ),
           )
         ],
+        body: ListView(
+          padding: const EdgeInsets.only(top: 10),
+          children: [
+            numericField(
+              controller: cacheSizeController, 
+              label: AppLocalizations.of(context)!.cacheSize, 
+              helper: AppLocalizations.of(context)!.inBytes, 
+              error: cacheSizeError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => cacheSizeError = null);
+                }
+                else {
+                  setState(() => cacheSizeError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
+              }
+            ),
+            const SizedBox(height: 30),
+            numericField(
+              controller: overrideMinTtlController, 
+              label: AppLocalizations.of(context)!.overrideMinimumTtl, 
+              helper: AppLocalizations.of(context)!.overrideMinimumTtlDescription, 
+              error: overrideMinTtlError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => overrideMinTtlError = null);
+                }
+                else {
+                  setState(() => overrideMinTtlError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
+              }
+            ),
+            const SizedBox(height: 30),
+            numericField(
+              controller: overrideMaxTtlController, 
+              label: AppLocalizations.of(context)!.overrideMaximumTtl, 
+              helper: AppLocalizations.of(context)!.overrideMaximumTtlDescription, 
+              error: overrideMaxTtlError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => overrideMaxTtlError = null);
+                }
+                else {
+                  setState(() => overrideMaxTtlError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
+              }
+            ),
+            const SizedBox(height: 10),
+            CustomSwitchListTile(
+              value: optimisticCache, 
+              onChanged: (value) => setState(() => optimisticCache = value), 
+              title: AppLocalizations.of(context)!.optimisticCaching,
+              subtitle: AppLocalizations.of(context)!.optimisticCachingDescription,
+            )
+          ],
+        ),
       ),
     );
   }
