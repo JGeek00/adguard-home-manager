@@ -57,8 +57,8 @@ class _ConnectState extends State<Connect> {
       expandableControllerList.add(ExpandableController());
     }
 
-    return Material(
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
           NestedScrollView(
             controller: scrollController,

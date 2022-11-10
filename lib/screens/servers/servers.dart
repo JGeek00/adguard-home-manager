@@ -66,8 +66,8 @@ class _ServersState extends State<Servers> {
       }));
     }
 
-    return Material(
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
           NestedScrollView(
             controller: scrollController,
@@ -82,13 +82,10 @@ class _ServersState extends State<Servers> {
                 ),
               ),
             ],
-            body: Container(
-              color: Theme.of(context).dialogBackgroundColor,
-              child: ServersList(
-                context: context, 
-                expandableControllers: expandableControllerList, 
-                onChange: expandOrContract,
-              ),
+            body: ServersList(
+              context: context, 
+              expandableControllers: expandableControllerList, 
+              onChange: expandOrContract,
             ),
           ),
           AnimatedPositioned(

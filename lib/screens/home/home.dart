@@ -238,8 +238,8 @@ class _HomeState extends State<Home> {
       }
     }
 
-    return Material(
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
           NestedScrollView(
             controller: scrollController,
@@ -312,10 +312,7 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ],
-            body: Container(
-              color: Theme.of(context).dialogBackgroundColor,
-              child: status(),
-            ),
+            body: status(),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 100),

@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,7 +16,7 @@ import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class DhcpLeases extends StatelessWidget {
+class DhcpLeases extends StatefulWidget {
   final List<Lease> items;
   final bool staticLeases;
 
@@ -24,6 +25,35 @@ class DhcpLeases extends StatelessWidget {
     required this.items,
     required this.staticLeases,
   }) : super(key: key);
+
+  @override
+  State<DhcpLeases> createState() => _DhcpLeasesState();
+}
+
+class _DhcpLeasesState extends State<DhcpLeases> {
+  late bool isVisible;
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    isVisible = true;
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (mounted && isVisible == true) {
+          setState(() => isVisible = false);
+        }
+      } 
+      else {
+        if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+          if (mounted && isVisible == false) {
+            setState(() => isVisible = true);
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,67 +160,89 @@ class DhcpLeases extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          staticLeases == true
-            ? AppLocalizations.of(context)!.dhcpStatic
-            : AppLocalizations.of(context)!.dhcpLeases,
-        ),
-      ),
-      body: items.isNotEmpty
-        ? ListView.builder(
-            padding: const EdgeInsets.only(top: 0),
-            itemCount: items.length,
-            itemBuilder: (context, index) => ListTile(
-              isThreeLine: true,
-              title: Text(items[index].ip),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(items[index].mac),
-                  Text(items[index].hostname),
-                ],
-              ),
-              trailing: staticLeases == true
-                ? IconButton(
-                    onPressed: () {
-                      showModal(
-                        context: context,
-                        builder: (context) => DeleteStaticLeaseModal(
-                          onConfirm: () => deleteLease(items[index])
-                        )
-                      );
-                    }, 
-                    icon: const Icon(Icons.delete)
-                  )
-                : null,
-            ),
-          )
-        : Center(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                staticLeases == true
-                  ? AppLocalizations.of(context)!.noDhcpStaticLeases
-                  : AppLocalizations.of(context)!.noLeases,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 22
+      body: Stack(
+        children: [
+          NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverSafeArea(
+                  top: false,
+                  sliver: SliverAppBar.large(
+                    title: Text(
+                      widget.staticLeases == true
+                        ? AppLocalizations.of(context)!.dhcpStatic
+                        : AppLocalizations.of(context)!.dhcpLeases,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              )
+            ], 
+            body: widget.items.isNotEmpty
+              ? ListView.builder(
+                  padding: const EdgeInsets.only(top: 0),
+                  itemCount: widget.items.length,
+                  itemBuilder: (context, index) => ListTile(
+                    isThreeLine: true,
+                    title: Text(widget.items[index].ip),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.items[index].mac),
+                        Text(widget.items[index].hostname),
+                      ],
+                    ),
+                    trailing: widget.staticLeases == true
+                      ? IconButton(
+                          onPressed: () {
+                            showModal(
+                              context: context,
+                              builder: (context) => DeleteStaticLeaseModal(
+                                onConfirm: () => deleteLease(widget.items[index])
+                              )
+                            );
+                          }, 
+                          icon: const Icon(Icons.delete)
+                        )
+                      : null,
+                  ),
+                )
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      widget.staticLeases == true
+                        ? AppLocalizations.of(context)!.noDhcpStaticLeases
+                        : AppLocalizations.of(context)!.noLeases,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 22
+                      ),
+                    ),
+                  ),
+                ),
           ),
-      floatingActionButton: staticLeases == true
-        ? FloatingActionButton(
-            onPressed: openAddStaticLease,
-            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            child: Icon(
-              Icons.add,
-              color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
-            ),
-          )
-        : null,
+          if (widget.staticLeases == true) AnimatedPositioned(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut,
+            bottom: isVisible ?
+              appConfigProvider.showingSnackbar
+                ? 70 : 20
+              : -70,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: openAddStaticLease,
+              backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+              child: Icon(
+                Icons.add,
+                color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
+              ),
+            )
+          ),
+        ],
+      ),
     );
   }
 }

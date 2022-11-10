@@ -57,165 +57,172 @@ class Settings extends StatelessWidget {
     }    
 
     return Scaffold(
-      appBar: const SettingsAppBar(),
-      body: ListView(
-        children: [
-          if (serversProvider.selectedServer != null) ...[
-            SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
-            CustomListTile(
-              icon: Icons.lock_rounded,
-              title: AppLocalizations.of(context)!.accessSettings,
-              subtitle: AppLocalizations.of(context)!.accessSettingsDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AccessSettings()
-                  )
-                )
-              },
-            ),
-            CustomListTile(
-              icon: Icons.install_desktop_rounded,
-              title: AppLocalizations.of(context)!.dhcpSettings,
-              subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Dhcp()
-                  )
-                )
-              },
-            ),
-            CustomListTile(
-              icon: Icons.dns_rounded,
-              title: AppLocalizations.of(context)!.dnsSettings,
-              subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const DnsSettings()
-                  )
-                )
-              },
-            ),
-            CustomListTile(
-              icon: Icons.security_rounded,
-              title: AppLocalizations.of(context)!.encryptionSettings,
-              subtitle: AppLocalizations.of(context)!.encryptionSettingsDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const EncryptionSettings()
-                  )
-                )
-              },
-            ),
-            CustomListTile(
-              icon: Icons.route_rounded,
-              title: AppLocalizations.of(context)!.dnsRewrites,
-              subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const DnsRewrites()
-                  )
-                )
-              },
-            ),
-            CustomListTile(
-              icon: Icons.info_rounded,
-              title: AppLocalizations.of(context)!.serverInformation,
-              subtitle: AppLocalizations.of(context)!.serverInformationDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ServerInformation()
-                  )
-                )
-              },
-            ),
-          ],
-          SectionLabel(label: AppLocalizations.of(context)!.appSettings),
-          CustomListTile(
-            icon: Icons.palette_rounded,
-            title: AppLocalizations.of(context)!.customization, 
-            subtitle: AppLocalizations.of(context)!.customizationDescription,
-            onTap: () => Navigator.push(context, MaterialPageRoute(
-              builder: (context) => const Customization()
-            ))
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar.large(
+            title: Text(AppLocalizations.of(context)!.settings),
           ),
-          CustomListTile(
-            icon: Icons.storage_rounded,
-            title: AppLocalizations.of(context)!.servers,
-            subtitle: serversProvider.selectedServer != null
-              ? serversProvider.serverStatus.data != null
-                ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
-                : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
-              : AppLocalizations.of(context)!.noServerSelected,
-            onTap: navigateServers,
-          ),
-          CustomListTile(
-            icon: Icons.settings,
-            title: AppLocalizations.of(context)!.generalSettings,
-            subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
-            onTap: () => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const GeneralSettings()
-                )
-              )
-            },
-          ),
-          CustomListTile(
-            icon: Icons.build_outlined,
-            title: AppLocalizations.of(context)!.advancedSettings,
-            subtitle: AppLocalizations.of(context)!.advancedSetupDescription,
-            onTap: () => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const AdvancedSettings()
-                )
-              )
-            },
-          ),
-          SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
-          CustomListTile(
-            title: AppLocalizations.of(context)!.appVersion, 
-            subtitle: appConfigProvider.getAppInfo!.version,
-          ),
-          CustomListTile(
-            title: AppLocalizations.of(context)!.createdBy, 
-            subtitle: Strings.createdBy,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  onPressed: () => openWeb(Urls.playStore), 
-                  icon: SvgPicture.asset(
-                    'assets/resources/google-play.svg',
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    width: 30,
-                    height: 30,
-                  ),
-                  tooltip: AppLocalizations.of(context)!.visitGooglePlay,
-                ),
-                IconButton(
-                  onPressed: () => openWeb(Urls.gitHub), 
-                  icon: SvgPicture.asset(
-                    'assets/resources/github.svg',
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    width: 30,
-                    height: 30,
-                  ),
-                  tooltip: AppLocalizations.of(context)!.gitHub,
-                ),
-              ],
-            ),
-          )
         ],
+        body: ListView(
+          padding: const EdgeInsets.only(top: 0),
+          children: [
+            if (serversProvider.selectedServer != null) ...[
+              SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
+              CustomListTile(
+                icon: Icons.lock_rounded,
+                title: AppLocalizations.of(context)!.accessSettings,
+                subtitle: AppLocalizations.of(context)!.accessSettingsDescription,
+                onTap: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const AccessSettings()
+                    )
+                  )
+                },
+              ),
+              CustomListTile(
+                icon: Icons.install_desktop_rounded,
+                title: AppLocalizations.of(context)!.dhcpSettings,
+                subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
+                onTap: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Dhcp()
+                    )
+                  )
+                },
+              ),
+              CustomListTile(
+                icon: Icons.dns_rounded,
+                title: AppLocalizations.of(context)!.dnsSettings,
+                subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
+                onTap: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const DnsSettings()
+                    )
+                  )
+                },
+              ),
+              CustomListTile(
+                icon: Icons.security_rounded,
+                title: AppLocalizations.of(context)!.encryptionSettings,
+                subtitle: AppLocalizations.of(context)!.encryptionSettingsDescription,
+                onTap: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const EncryptionSettings()
+                    )
+                  )
+                },
+              ),
+              CustomListTile(
+                icon: Icons.route_rounded,
+                title: AppLocalizations.of(context)!.dnsRewrites,
+                subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
+                onTap: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const DnsRewrites()
+                    )
+                  )
+                },
+              ),
+              CustomListTile(
+                icon: Icons.info_rounded,
+                title: AppLocalizations.of(context)!.serverInformation,
+                subtitle: AppLocalizations.of(context)!.serverInformationDescription,
+                onTap: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ServerInformation()
+                    )
+                  )
+                },
+              ),
+            ],
+            SectionLabel(label: AppLocalizations.of(context)!.appSettings),
+            CustomListTile(
+              icon: Icons.palette_rounded,
+              title: AppLocalizations.of(context)!.customization, 
+              subtitle: AppLocalizations.of(context)!.customizationDescription,
+              onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (context) => const Customization()
+              ))
+            ),
+            CustomListTile(
+              icon: Icons.storage_rounded,
+              title: AppLocalizations.of(context)!.servers,
+              subtitle: serversProvider.selectedServer != null
+                ? serversProvider.serverStatus.data != null
+                  ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
+                  : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
+                : AppLocalizations.of(context)!.noServerSelected,
+              onTap: navigateServers,
+            ),
+            CustomListTile(
+              icon: Icons.settings,
+              title: AppLocalizations.of(context)!.generalSettings,
+              subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const GeneralSettings()
+                  )
+                )
+              },
+            ),
+            CustomListTile(
+              icon: Icons.build_outlined,
+              title: AppLocalizations.of(context)!.advancedSettings,
+              subtitle: AppLocalizations.of(context)!.advancedSetupDescription,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AdvancedSettings()
+                  )
+                )
+              },
+            ),
+            SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
+            CustomListTile(
+              title: AppLocalizations.of(context)!.appVersion, 
+              subtitle: appConfigProvider.getAppInfo!.version,
+            ),
+            CustomListTile(
+              title: AppLocalizations.of(context)!.createdBy, 
+              subtitle: Strings.createdBy,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    onPressed: () => openWeb(Urls.playStore), 
+                    icon: SvgPicture.asset(
+                      'assets/resources/google-play.svg',
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      width: 30,
+                      height: 30,
+                    ),
+                    tooltip: AppLocalizations.of(context)!.visitGooglePlay,
+                  ),
+                  IconButton(
+                    onPressed: () => openWeb(Urls.gitHub), 
+                    icon: SvgPicture.asset(
+                      'assets/resources/github.svg',
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      width: 30,
+                      height: 30,
+                    ),
+                    tooltip: AppLocalizations.of(context)!.gitHub,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

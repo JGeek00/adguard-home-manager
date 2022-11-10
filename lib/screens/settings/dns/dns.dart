@@ -95,6 +95,7 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
 
         case 1:
           return ListView(
+            padding: const EdgeInsets.only(top: 0),
             children: [
               CustomListTile(
                 title: AppLocalizations.of(context)!.upstreamDns,
@@ -180,18 +181,28 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title:  Text(AppLocalizations.of(context)!.dnsSettings),
-        actions: [
-          IconButton(
-            onPressed: () => fetchData(showRefreshIndicator: true), 
-            icon: const Icon(Icons.refresh_rounded),
-            tooltip: AppLocalizations.of(context)!.refresh,
-          ),
-          const SizedBox(width: 10)
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title:  Text(AppLocalizations.of(context)!.dnsSettings),
+                actions: [
+                  IconButton(
+                    onPressed: () => fetchData(showRefreshIndicator: true), 
+                    icon: const Icon(Icons.refresh_rounded),
+                    tooltip: AppLocalizations.of(context)!.refresh,
+                  ),
+                  const SizedBox(width: 10)
+                ],
+              ),
+            ),
+          )
         ],
+        body: generateBody(),
       ),
-      body: generateBody(),
     );
   }
 }

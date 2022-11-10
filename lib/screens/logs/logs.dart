@@ -349,9 +349,8 @@ class _LogsWidgetState extends State<LogsWidget> {
       }
     }
 
-    return Material(
-      color: Theme.of(context).dialogBackgroundColor,
-      child: NestedScrollView(
+    return Scaffold(
+      body: NestedScrollView(
         controller: scrollController,
         headerSliverBuilder: (_, __) => [
           SliverAppBar.large(

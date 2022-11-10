@@ -371,6 +371,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
         case 1:
           if (selectedInterface != null) {
             return ListView(
+              padding: const EdgeInsets.only(top: 0),
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
@@ -732,56 +733,65 @@ class _DhcpWidgetState extends State<DhcpWidget> {
       }
     }
 
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.dhcpSettings),
-        actions: selectedInterface != null ? [
-          IconButton(
-            onPressed: checkDataValid() == true
-              ? () => saveSettings()
-              : null, 
-            icon: const Icon(Icons.save_rounded),
-            tooltip: AppLocalizations.of(context)!.save,
-          ),
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: selectInterface,
-                child: Row(
-                  children: [
-                    const Icon(Icons.swap_horiz_rounded),
-                    const SizedBox(width: 10),
-                    Text(AppLocalizations.of(context)!.changeInterface)
-                  ],
-                )
-              ), 
-              PopupMenuItem(
-                onTap: restoreLeases,
-                child: Row(
-                  children: [
-                    const Icon(Icons.settings_backup_restore_rounded),
-                    const SizedBox(width: 10),
-                    Text(AppLocalizations.of(context)!.restoreLeases)
-                  ],
-                )
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title: Text(AppLocalizations.of(context)!.dhcpSettings),
+                actions: selectedInterface != null ? [
+                  IconButton(
+                    onPressed: checkDataValid() == true
+                      ? () => saveSettings()
+                      : null, 
+                    icon: const Icon(Icons.save_rounded),
+                    tooltip: AppLocalizations.of(context)!.save,
+                  ),
+                  PopupMenuButton(
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        onTap: selectInterface,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.swap_horiz_rounded),
+                            const SizedBox(width: 10),
+                            Text(AppLocalizations.of(context)!.changeInterface)
+                          ],
+                        )
+                      ), 
+                      PopupMenuItem(
+                        onTap: restoreLeases,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.settings_backup_restore_rounded),
+                            const SizedBox(width: 10),
+                            Text(AppLocalizations.of(context)!.restoreLeases)
+                          ],
+                        )
+                      ),
+                      PopupMenuItem(
+                        onTap: restoreConfig,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.restore),
+                            const SizedBox(width: 10),
+                            Text(AppLocalizations.of(context)!.restoreConfiguration)
+                          ],
+                        )
+                      ),
+                    ] 
+                  ),
+                  const SizedBox(width: 10)
+                ] : null,
               ),
-              PopupMenuItem(
-                onTap: restoreConfig,
-                child: Row(
-                  children: [
-                    const Icon(Icons.restore),
-                    const SizedBox(width: 10),
-                    Text(AppLocalizations.of(context)!.restoreConfiguration)
-                  ],
-                )
-              ),
-            ] 
-          ),
-          const SizedBox(width: 10)
-        ] : null,
+            ),
+          )
+        ],
+        body: generateBody(),
       ),
-      body: generateBody(),
     );
   }
 }
