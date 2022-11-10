@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:expandable/expandable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/connect/fab.dart';
-import 'package:adguard_home_manager/screens/connect/appbar.dart';
 import 'package:adguard_home_manager/widgets/servers_list/servers_list.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -57,15 +57,30 @@ class _ConnectState extends State<Connect> {
       expandableControllerList.add(ExpandableController());
     }
 
-    return Scaffold(
-      appBar: const ConnectAppBar(),
-      body: Stack(
+    return Material(
+      child: Stack(
         children: [
-          ServersList(
-            context: context, 
-            controllers: expandableControllerList, 
-            onChange: expandOrContract,
-            scrollController: scrollController,
+          NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => <Widget>[
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverSafeArea(
+                  top: false,
+                  sliver: SliverAppBar.large(
+                    title: Text(AppLocalizations.of(context)!.connect),
+                  ),
+                ),
+              ),
+            ],
+            body: Container(
+              color: Theme.of(context).dialogBackgroundColor,
+              child: ServersList(
+                context: context, 
+                expandableControllers: expandableControllerList, 
+                onChange: expandOrContract,
+              ),
+            ),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 100),

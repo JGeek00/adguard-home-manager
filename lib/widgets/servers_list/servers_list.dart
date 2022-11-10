@@ -17,16 +17,13 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 
 class ServersList extends StatefulWidget {
   final BuildContext context;
-  final List<ExpandableController> controllers;
+  final List<ExpandableController> expandableControllers;
   final Function(int) onChange;
-  final ScrollController scrollController;
-
   const ServersList({
     Key? key,
     required this.context,
-    required this.controllers,
+    required this.expandableControllers,
     required this.onChange,
-    required this.scrollController,
   }) : super(key: key);
 
   @override
@@ -39,7 +36,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
 
   @override
   void initState() {
-    for (ExpandableController controller in widget.controllers) {
+    for (ExpandableController controller in widget.expandableControllers) {
       controller.addListener(() async {
         await Future.delayed(const Duration(milliseconds: 200));
         if (controller.value == false) {
@@ -367,7 +364,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
 
     return servers.isNotEmpty ? 
       ListView.builder(
-        controller: widget.scrollController,
+        padding: const EdgeInsets.only(top: 0),
         itemCount: servers.length,
         itemBuilder: (context, index) => Container(
           decoration: BoxDecoration(
@@ -379,7 +376,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
             )
           ),
           child: ExpandableNotifier(
-            controller: widget.controllers[index],
+            controller: widget.expandableControllers[index],
             child: Column(
               children: [
                 Expandable(

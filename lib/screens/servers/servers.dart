@@ -66,17 +66,30 @@ class _ServersState extends State<Servers> {
       }));
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.servers),
-      ),
-      body: Stack(
+    return Material(
+      child: Stack(
         children: [
-          ServersList(
-            context: context, 
-            controllers: expandableControllerList, 
-            onChange: expandOrContract,
-            scrollController: scrollController
+          NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => <Widget>[
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverSafeArea(
+                  top: false,
+                  sliver: SliverAppBar.large(
+                    title: Text(AppLocalizations.of(context)!.servers),
+                  ),
+                ),
+              ),
+            ],
+            body: Container(
+              color: Theme.of(context).dialogBackgroundColor,
+              child: ServersList(
+                context: context, 
+                expandableControllers: expandableControllerList, 
+                onChange: expandOrContract,
+              ),
+            ),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 100),
