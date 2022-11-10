@@ -108,88 +108,103 @@ class _HomeState extends State<Home> {
           );
 
         case 1:
-          return ListView(
-            shrinkWrap: true,
-            primary: false,
-            padding: const EdgeInsets.only(top: 0),
-            children: [
-              ServerStatus(serverStatus: serversProvider.serverStatus.data!),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 1,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+          return RefreshIndicator(
+            onRefresh: () async {
+              final result = await getServerStatus(serversProvider.selectedServer!);
+              if (result['result'] == 'success') {
+                serversProvider.setServerStatusData(result['data']);
+              }
+              else {
+                appConfigProvider.addLog(result['log']);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
+                    backgroundColor: Colors.red,
+                  )
+                );
+              }
+            },
+            child: ListView(
+              padding: const EdgeInsets.only(top: 0),
+              children: [
+                ServerStatus(serverStatus: serversProvider.serverStatus.data!),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 1,
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-
-              HomeChart(
-                data: serversProvider.serverStatus.data!.stats.dnsQueries, 
-                label: AppLocalizations.of(context)!.dnsQueries, 
-                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numDnsQueries, Platform.localeName), 
-                secondaryValue: "${doubleFormat(serversProvider.serverStatus.data!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
-                color: Colors.blue,
-              ),
-              
-              HomeChart(
-                data: serversProvider.serverStatus.data!.stats.blockedFiltering, 
-                label: AppLocalizations.of(context)!.blockedFilters, 
-                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numBlockedFiltering, Platform.localeName), 
-                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                color: Colors.red,
-              ),
-
-              HomeChart(
-                data: serversProvider.serverStatus.data!.stats.replacedSafebrowsing, 
-                label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
-                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing, Platform.localeName), 
-                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                color: Colors.green,
-              ),
-
-              HomeChart(
-                data: serversProvider.serverStatus.data!.stats.replacedParental, 
-                label: AppLocalizations.of(context)!.blockedAdultWebsites, 
-                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedParental, Platform.localeName), 
-                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                color: Colors.orange,
-              ),
-
-              TopItems(
-                label: AppLocalizations.of(context)!.topQueriedDomains, 
-                data: serversProvider.serverStatus.data!.stats.topQueriedDomains,
-                type: 'topQueriedDomains',
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 1,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                const SizedBox(height: 20),
+          
+                HomeChart(
+                  data: serversProvider.serverStatus.data!.stats.dnsQueries, 
+                  label: AppLocalizations.of(context)!.dnsQueries, 
+                  primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numDnsQueries, Platform.localeName), 
+                  secondaryValue: "${doubleFormat(serversProvider.serverStatus.data!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
+                  color: Colors.blue,
                 ),
-              ),
-              const SizedBox(height: 20),
-
-              TopItems(
-                label: AppLocalizations.of(context)!.topBlockedDomains, 
-                data: serversProvider.serverStatus.data!.stats.topBlockedDomains,
-                type: 'topBlockedDomains',
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 1,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                
+                HomeChart(
+                  data: serversProvider.serverStatus.data!.stats.blockedFiltering, 
+                  label: AppLocalizations.of(context)!.blockedFilters, 
+                  primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numBlockedFiltering, Platform.localeName), 
+                  secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                  color: Colors.red,
                 ),
-              ),
-              const SizedBox(height: 20),
-
-              TopItems(
-                label: AppLocalizations.of(context)!.topClients, 
-                data: serversProvider.serverStatus.data!.stats.topClients,
-                type: 'topClients',
-                clients: true,
-              ),
-            ],
+          
+                HomeChart(
+                  data: serversProvider.serverStatus.data!.stats.replacedSafebrowsing, 
+                  label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
+                  primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing, Platform.localeName), 
+                  secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                  color: Colors.green,
+                ),
+          
+                HomeChart(
+                  data: serversProvider.serverStatus.data!.stats.replacedParental, 
+                  label: AppLocalizations.of(context)!.blockedAdultWebsites, 
+                  primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedParental, Platform.localeName), 
+                  secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                  color: Colors.orange,
+                ),
+          
+                TopItems(
+                  label: AppLocalizations.of(context)!.topQueriedDomains, 
+                  data: serversProvider.serverStatus.data!.stats.topQueriedDomains,
+                  type: 'topQueriedDomains',
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 1,
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                  ),
+                ),
+                const SizedBox(height: 20),
+          
+                TopItems(
+                  label: AppLocalizations.of(context)!.topBlockedDomains, 
+                  data: serversProvider.serverStatus.data!.stats.topBlockedDomains,
+                  type: 'topBlockedDomains',
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 1,
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                  ),
+                ),
+                const SizedBox(height: 20),
+          
+                TopItems(
+                  label: AppLocalizations.of(context)!.topClients, 
+                  data: serversProvider.serverStatus.data!.stats.topClients,
+                  type: 'topClients',
+                  clients: true,
+                ),
+              ],
+            ),
           );
         
         case 2:
@@ -226,9 +241,9 @@ class _HomeState extends State<Home> {
     return Material(
       child: Stack(
         children: [
-          CustomScrollView(
+          NestedScrollView(
             controller: scrollController,
-            slivers: <Widget>[
+            headerSliverBuilder: (context, innerBoxIsScrolled) => <Widget>[
               SliverAppBar.large(
                 leading: Icon(
                   serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
@@ -296,31 +311,11 @@ class _HomeState extends State<Home> {
                   )
                 ],
               ),
-              SliverToBoxAdapter(
-                child: Container(
-                  color: Theme.of(context).dialogBackgroundColor,
-                  child: RefreshIndicator(
-                    color: Theme.of(context).primaryColor,
-                    onRefresh: () async {
-                      final result = await getServerStatus(serversProvider.selectedServer!);
-                      if (result['result'] == 'success') {
-                        serversProvider.setServerStatusData(result['data']);
-                      }
-                      else {
-                        appConfigProvider.addLog(result['log']);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
-                            backgroundColor: Colors.red,
-                          )
-                        );
-                      }
-                    },
-                    child: status()
-                  ),
-                ),
-              ),
             ],
+            body: Container(
+              color: Theme.of(context).dialogBackgroundColor,
+              child: status(),
+            ),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 100),

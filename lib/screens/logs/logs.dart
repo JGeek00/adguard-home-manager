@@ -256,14 +256,12 @@ class _LogsWidgetState extends State<LogsWidget> {
           );
         
         case 1:
-          return RefreshIndicator(
-            onRefresh: () async {
-              await fetchLogs(inOffset: 0);
-            },
-            child: logsProvider.logsData!.data.isNotEmpty
-              ? ListView.builder(
-                  primary: false,
-                  shrinkWrap: true,
+          return logsProvider.logsData!.data.isNotEmpty
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  await fetchLogs(inOffset: 0);
+                },
+                child: ListView.builder(
                   padding: const EdgeInsets.only(top: 0),
                   itemCount: isLoadingMore == true 
                     ? logsProvider.logsData!.data.length+1
@@ -285,41 +283,41 @@ class _LogsWidgetState extends State<LogsWidget> {
                       );
                     }
                   }
-                )
-              : SizedBox(           
-                  width: double.maxFinite,
-                  height: MediaQuery.of(context).size.height-255,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.noLogsDisplay,
+                ),
+              )
+            : SizedBox(           
+                width: double.maxFinite,
+                height: MediaQuery.of(context).size.height-255,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.noLogsDisplay,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          color: Colors.grey
+                        ),
+                      ),
+                      if (logsProvider.logsOlderThan != null) Padding(
+                        padding: const EdgeInsets.only(
+                          top: 30,
+                          left: 20,
+                          right: 20
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.noLogsThatOld,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 24,
+                            fontSize: 16,
                             color: Colors.grey
                           ),
                         ),
-                        if (logsProvider.logsOlderThan != null) Padding(
-                          padding: const EdgeInsets.only(
-                            top: 30,
-                            left: 20,
-                            right: 20
-                          ),
-                          child: Text(
-                            AppLocalizations.of(context)!.noLogsThatOld,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey
-                            ),
-                          ),
-                        ),
-                      ]
-                    ),
+                      ),
+                    ]
                   ),
-                )
-          );
+                ),
+              );
           
         case 2:
           return SizedBox(
@@ -353,9 +351,9 @@ class _LogsWidgetState extends State<LogsWidget> {
 
     return Material(
       color: Theme.of(context).dialogBackgroundColor,
-      child: CustomScrollView(
+      child: NestedScrollView(
         controller: scrollController,
-        slivers: [
+        headerSliverBuilder: (_, __) => [
           SliverAppBar.large(
             title: Text(AppLocalizations.of(context)!.logs),
             actions: [
@@ -499,12 +497,8 @@ class _LogsWidgetState extends State<LogsWidget> {
                 )
             : null,
           ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              child: generateBody()
-            ),
-          )
         ],
+        body: generateBody(),
       ),
     );
   }
