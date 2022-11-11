@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -44,6 +45,9 @@ class DnsRewritesWidget extends StatefulWidget {
 }
 
 class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
+  final ScrollController scrollController = ScrollController();
+  late bool isVisible;
+
   Future fetchData() async {
     widget.serversProvider.setRewriteRulesLoadStatus(0, false);
 
@@ -62,7 +66,24 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
   @override
   void initState() {
     fetchData();
+
     super.initState();
+
+    isVisible = true;
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (mounted && isVisible == true) {
+          setState(() => isVisible = false);
+        }
+      } 
+      else {
+        if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+          if (mounted && isVisible == false) {
+            setState(() => isVisible = true);
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -281,26 +302,50 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.dnsRewrites),
-      ),
-      body: generateBody(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-        onPressed: () => {
-          showModalBottomSheet(
-            context: context, 
-            builder: (context) => AddDnsRewriteModal(
-              onConfirm: addDnsRewrite,
+      body: Stack(
+        children: [
+          NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverSafeArea(
+                  top: false,
+                  sliver: SliverAppBar.large(
+                    title: Text(AppLocalizations.of(context)!.dnsRewrites),
+                  ),
+                ),
+              )
+            ],
+            body: generateBody(),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut,
+            bottom: isVisible ?
+              appConfigProvider.showingSnackbar
+                ? 70 : 20
+              : -70,
+            right: 20,
+            child: FloatingActionButton(
+              backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+              onPressed: () => {
+                showModalBottomSheet(
+                  context: context, 
+                  builder: (context) => AddDnsRewriteModal(
+                    onConfirm: addDnsRewrite,
+                  ),
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true
+                )
+              },
+              child: Icon(
+                Icons.add,
+                color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
+              ),
             ),
-            backgroundColor: Colors.transparent,
-            isScrollControlled: true
           )
-        },
-        child: Icon(
-          Icons.add,
-          color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
-        ),
+        ],
       ),
     );
   }

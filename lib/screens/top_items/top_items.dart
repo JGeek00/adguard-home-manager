@@ -62,162 +62,173 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: searchActive == true
-          ? Padding(
-            padding: const EdgeInsets.only(bottom: 3),
-            child: TextFormField(
-                controller: searchController,
-                onChanged: search,
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.search,
-                  hintStyle: const TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 18
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title: searchActive == true
+                  ? Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    child: TextFormField(
+                        controller: searchController,
+                        onChanged: search,
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)!.search,
+                          hintStyle: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 18
+                          ),
+                          border: InputBorder.none,
+                        ),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 18
+                        ),
+                      ),
+                  )
+                  : Text(widget.title),
+                leading: searchActive == true ?
+                  IconButton(
+                    onPressed: () => setState(() {
+                      searchActive = false;
+                      searchController.text = '';
+                      screenData = data;
+                    }), 
+                    icon: const Icon(Icons.arrow_back),
+                    tooltip: AppLocalizations.of(context)!.exitSearch,
+                  ) : null,
+                actions: [
+                  if (searchActive == false) IconButton(
+                    onPressed: () => setState(() => searchActive = true), 
+                    icon: const Icon(Icons.search),
+                    tooltip: AppLocalizations.of(context)!.search,
                   ),
-                  border: InputBorder.none,
-                ),
-                style: const TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 18
-                ),
-              ),
-          )
-          : Text(widget.title),
-        leading: searchActive == true ?
-          IconButton(
-            onPressed: () => setState(() {
-              searchActive = false;
-              searchController.text = '';
-              screenData = data;
-            }), 
-            icon: const Icon(Icons.arrow_back),
-            tooltip: AppLocalizations.of(context)!.exitSearch,
-          ) : null,
-        actions: [
-          if (searchActive == false) IconButton(
-            onPressed: () => setState(() => searchActive = true), 
-            icon: const Icon(Icons.search),
-            tooltip: AppLocalizations.of(context)!.search,
-          ),
-          if (searchActive == true) IconButton(
-            onPressed: () => setState(() {
-              searchController.text = '';
-              screenData = data;
-            }), 
-            icon: const Icon(Icons.clear_rounded),
-            tooltip: AppLocalizations.of(context)!.clearSearch,
-          ),
-          const SizedBox(width: 10)
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size(double.maxFinite, 1),
-          child: Container(
-            width: double.maxFinite,
-            height: 1,
-            decoration: BoxDecoration(
-              color: searchActive == true
-                ? Colors.grey.withOpacity(0.5)
-                : Colors.transparent
-            ),
-          ),
-        ),
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          final result = await getServerStatus(serversProvider.selectedServer!);
-          if (result['result'] == 'success') {
-            serversProvider.setServerStatusData(result['data']);
-          }
-          else {
-            appConfigProvider.addLog(result['log']);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
-                backgroundColor: Colors.red,
-              )
-            );
-          }
-        },
-        child: screenData.isNotEmpty
-          ? ListView.builder(
-              itemCount: screenData.length,
-              itemBuilder: (context, index) {
-                String? name;
-                if (widget.isClient != null && widget.isClient == true) {
-                  try {
-                    name = serversProvider.serverStatus.data!.clients.firstWhere((c) => c.ids.contains(screenData[index].keys.toList()[0])).name;
-                  } catch (e) {
-                    // ---- //
-                  }
-                }
-
-                return CustomListTile(
-                  title: screenData[index].keys.toList()[0],
-                  trailing: Text(
-                    screenData[index].values.toList()[0].toString(),
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                  if (searchActive == true) IconButton(
+                    onPressed: () => setState(() {
+                      searchController.text = '';
+                      screenData = data;
+                    }), 
+                    icon: const Icon(Icons.clear_rounded),
+                    tooltip: AppLocalizations.of(context)!.clearSearch,
+                  ),
+                  const SizedBox(width: 10)
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size(double.maxFinite, 1),
+                  child: Container(
+                    width: double.maxFinite,
+                    height: 1,
+                    decoration: BoxDecoration(
+                      color: searchActive == true
+                        ? Colors.grey.withOpacity(0.5)
+                        : Colors.transparent
                     ),
                   ),
-                  subtitleWidget: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (name != null) ...[
-                        Text(
-                          name,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                      ],
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 50,
-                            child: Text(
-                              "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
-                              style: TextStyle(
-                                color: Theme.of(context).listTileTheme.textColor
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Flexible(
-                            child: LinearPercentIndicator(
-                              animation: true,
-                              lineHeight: 4,
-                              animationDuration: 500,
-                              curve: Curves.easeOut,
-                              percent: screenData[index].values.toList()[0]/total,
-                              barRadius: const Radius.circular(5),
-                              progressColor: Theme.of(context).primaryColor,
-                              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.15),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                        ],
-                      ),
-                    ],
-                  )
-                );
-              }
-            )
-          : Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  AppLocalizations.of(context)!.noItemsSearch,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    color: Colors.grey
-                  ),
                 ),
               ),
-            )
+            ),
+          )
+        ],
+        body: RefreshIndicator(
+          onRefresh: () async {
+            final result = await getServerStatus(serversProvider.selectedServer!);
+            if (result['result'] == 'success') {
+              serversProvider.setServerStatusData(result['data']);
+            }
+            else {
+              appConfigProvider.addLog(result['log']);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
+                  backgroundColor: Colors.red,
+                )
+              );
+            }
+          },
+          child: screenData.isNotEmpty
+            ? ListView.builder(
+              padding: const EdgeInsets.only(top: 0),
+                itemCount: screenData.length,
+                itemBuilder: (context, index) {
+                  String? name;
+                  if (widget.isClient != null && widget.isClient == true) {
+                    try {
+                      name = serversProvider.serverStatus.data!.clients.firstWhere((c) => c.ids.contains(screenData[index].keys.toList()[0])).name;
+                    } catch (e) {
+                      // ---- //
+                    }
+                  }
+
+                  return CustomListTile(
+                    title: screenData[index].keys.toList()[0],
+                    trailing: Text(
+                      screenData[index].values.toList()[0].toString(),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                      ),
+                    ),
+                    subtitleWidget: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (name != null) ...[
+                          Text(
+                            name,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.onSurface
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                        ],
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 50,
+                              child: Text(
+                                "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
+                                style: TextStyle(
+                                  color: Theme.of(context).listTileTheme.textColor
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Flexible(
+                              child: LinearPercentIndicator(
+                                animation: true,
+                                lineHeight: 4,
+                                animationDuration: 500,
+                                curve: Curves.easeOut,
+                                percent: screenData[index].values.toList()[0]/total,
+                                barRadius: const Radius.circular(5),
+                                progressColor: Theme.of(context).primaryColor,
+                                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.15),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
+                      ],
+                    )
+                  );
+                }
+              )
+            : Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    AppLocalizations.of(context)!.noItemsSearch,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.grey
+                    ),
+                  ),
+                ),
+              )
+        ),
       ),
     );
   }

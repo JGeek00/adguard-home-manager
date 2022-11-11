@@ -95,6 +95,7 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
 
         case 1:
           return ListView(
+            padding: const EdgeInsets.only(top: 0),
             children: [
               CustomListTile(
                 title: AppLocalizations.of(context)!.dnsAddresses,
@@ -175,12 +176,21 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
       }
     }
 
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.serverInformation),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title: Text(AppLocalizations.of(context)!.serverInformation),
+              ),
+            ),
+          )
+        ],
+        body: generateBody(),
       ),
-      body: generateBody()
     );
   }
 }

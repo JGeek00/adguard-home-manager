@@ -297,6 +297,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
 
         case 1:
           return ListView(
+            padding: const EdgeInsets.only(top: 0),
             children: [
               EncryptionMasterSwitch(
                 value: enabled, 
@@ -627,31 +628,41 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.encryptionSettings),
-        actions: [
-          IconButton(
-            onPressed: certKeyValidApi == 2 && validDataError != null
-              ? () => {
-                showDialog(
-                  context: context, 
-                  builder: (context) => EncryptionErrorModal(error: validDataError!)
-                )
-              } : null, 
-            icon: generateStatus(context, appConfigProvider, localValidationValid, certKeyValidApi, formEdited),
-            tooltip: generateStatusString(context, localValidationValid, certKeyValidApi)
-          ),
-          IconButton(
-            onPressed: localValidationValid == true && certKeyValidApi == 1
-              ? () => saveData()
-              : null, 
-            icon: const Icon(Icons.save),
-            tooltip: AppLocalizations.of(context)!.save,
-          ),
-          const SizedBox(width: 10),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title: Text(AppLocalizations.of(context)!.encryptionSettings),
+                actions: [
+                  IconButton(
+                    onPressed: certKeyValidApi == 2 && validDataError != null
+                      ? () => {
+                        showDialog(
+                          context: context, 
+                          builder: (context) => EncryptionErrorModal(error: validDataError!)
+                        )
+                      } : null, 
+                    icon: generateStatus(context, appConfigProvider, localValidationValid, certKeyValidApi, formEdited),
+                    tooltip: generateStatusString(context, localValidationValid, certKeyValidApi)
+                  ),
+                  IconButton(
+                    onPressed: localValidationValid == true && certKeyValidApi == 1
+                      ? () => saveData()
+                      : null, 
+                    icon: const Icon(Icons.save),
+                    tooltip: AppLocalizations.of(context)!.save,
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
+            ),
+          )
         ],
+        body: generateBody(),
       ),
-      body: generateBody(),
     );
   }
 }

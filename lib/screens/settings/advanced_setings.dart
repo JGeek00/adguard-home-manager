@@ -37,47 +37,58 @@ class AdvancedSettings extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.advancedSettings),
-      ),
-      body: ListView(
-        children: [
-          CustomListTile(
-            icon: Icons.lock,
-            title: AppLocalizations.of(context)!.dontCheckCertificate,
-            subtitle: AppLocalizations.of(context)!.dontCheckCertificateDescription,
-            trailing: Switch(
-              value: appConfigProvider.overrideSslCheck, 
-              onChanged: updateSslCheck,
-              activeColor: Theme.of(context).primaryColor,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title:  Text(AppLocalizations.of(context)!.advancedSettings),
+              ),
             ),
-            onTap: () => updateSslCheck(!appConfigProvider.overrideSslCheck),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 20,
-              right: 10
-            )
-          ),
-          CustomListTile(
-            icon: Icons.list_rounded,
-            title: AppLocalizations.of(context)!.logs,
-            subtitle: AppLocalizations.of(context)!.checkAppLogs,
-            onTap: () => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const AppLogs()
-                )
-              )
-            },
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 20,
-              right: 10
-            )
-          ),
+          )
         ],
+        body: ListView(
+          padding: const EdgeInsets.only(top: 0),
+          children: [
+            CustomListTile(
+              icon: Icons.lock,
+              title: AppLocalizations.of(context)!.dontCheckCertificate,
+              subtitle: AppLocalizations.of(context)!.dontCheckCertificateDescription,
+              trailing: Switch(
+                value: appConfigProvider.overrideSslCheck, 
+                onChanged: updateSslCheck,
+                activeColor: Theme.of(context).primaryColor,
+              ),
+              onTap: () => updateSslCheck(!appConfigProvider.overrideSslCheck),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 20,
+                right: 10
+              )
+            ),
+            CustomListTile(
+              icon: Icons.list_rounded,
+              title: AppLocalizations.of(context)!.logs,
+              subtitle: AppLocalizations.of(context)!.checkAppLogs,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AppLogs()
+                  )
+                )
+              },
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 20,
+                right: 10
+              )
+            ),
+          ],
+        ),
       ),
     );
   }

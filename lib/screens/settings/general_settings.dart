@@ -56,47 +56,58 @@ class GeneralSettings extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.generalSettings) ,
-      ),
-      body: ListView(
-        children: [
-          CustomListTile(
-            icon: Icons.exposure_zero_rounded,
-            title: AppLocalizations.of(context)!.hideZeroValues,
-            subtitle: AppLocalizations.of(context)!.hideZeroValuesDescription,
-            trailing: Switch(
-              value: appConfigProvider.hideZeroValues, 
-              onChanged: updateHideZeroValues,
-              activeColor: Theme.of(context).primaryColor,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title: Text(AppLocalizations.of(context)!.generalSettings),
+              ),
             ),
-            onTap: () => updateHideZeroValues(!appConfigProvider.hideZeroValues),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 20,
-              right: 10
-            )
-          ),
-          CustomListTile(
-            icon: Icons.more,
-            title: AppLocalizations.of(context)!.nameTimeLogs,
-            subtitle: AppLocalizations.of(context)!.nameTimeLogsDescription,
-            trailing: Switch(
-              value: appConfigProvider.showNameTimeLogs, 
-              onChanged: updateShowNameTimeLogs,
-              activeColor: Theme.of(context).primaryColor,
-            ),
-            onTap: () => updateShowNameTimeLogs(!appConfigProvider.showNameTimeLogs),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 20,
-              right: 10
-            )
-          ),
+          )
         ],
+        body: ListView(
+          padding: const EdgeInsets.only(top: 0),
+          children: [
+            CustomListTile(
+              icon: Icons.exposure_zero_rounded,
+              title: AppLocalizations.of(context)!.hideZeroValues,
+              subtitle: AppLocalizations.of(context)!.hideZeroValuesDescription,
+              trailing: Switch(
+                value: appConfigProvider.hideZeroValues, 
+                onChanged: updateHideZeroValues,
+                activeColor: Theme.of(context).primaryColor,
+              ),
+              onTap: () => updateHideZeroValues(!appConfigProvider.hideZeroValues),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 20,
+                right: 10
+              )
+            ),
+            CustomListTile(
+              icon: Icons.more,
+              title: AppLocalizations.of(context)!.nameTimeLogs,
+              subtitle: AppLocalizations.of(context)!.nameTimeLogsDescription,
+              trailing: Switch(
+                value: appConfigProvider.showNameTimeLogs, 
+                onChanged: updateShowNameTimeLogs,
+                activeColor: Theme.of(context).primaryColor,
+              ),
+              onTap: () => updateShowNameTimeLogs(!appConfigProvider.showNameTimeLogs),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 20,
+                right: 10
+              )
+            ),
+          ],
+        ),
       ),
-    );  
+    );
   }
 }
