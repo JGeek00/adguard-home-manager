@@ -151,6 +151,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
             controller: tabController,
             children: [
               RefreshIndicator(
+                color: Theme.of(context).primaryColor,
                 onRefresh: fetchClients,
                 child: ClientsList(
                   scrollController: scrollController,
@@ -161,6 +162,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                 ),
               ),
               RefreshIndicator(
+                color: Theme.of(context).primaryColor,
                 onRefresh: fetchClients,
                 child: AddedList(
                   scrollController: scrollController,

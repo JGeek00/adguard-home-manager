@@ -58,8 +58,14 @@ class Settings extends StatelessWidget {
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverAppBar.large(
-            title: Text(AppLocalizations.of(context)!.settings),
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar.large(
+                title: Text(AppLocalizations.of(context)!.settings),
+              ),
+            ),
           ),
         ],
         body: ListView(

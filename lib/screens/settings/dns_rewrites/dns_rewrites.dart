@@ -184,6 +184,7 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
         case 1:
           if (serversProvider.rewriteRules.data!.isNotEmpty) {
             return RefreshIndicator(
+              color: Theme.of(context).primaryColor,
               onRefresh: () async {
                 await fetchData();
               },

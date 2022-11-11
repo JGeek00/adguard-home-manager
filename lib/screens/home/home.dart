@@ -109,6 +109,7 @@ class _HomeState extends State<Home> {
 
         case 1:
           return RefreshIndicator(
+            color: Theme.of(context).primaryColor,
             onRefresh: () async {
               final result = await getServerStatus(serversProvider.selectedServer!);
               if (result['result'] == 'success') {
@@ -245,6 +246,9 @@ class _HomeState extends State<Home> {
             controller: scrollController,
             headerSliverBuilder: (context, innerBoxIsScrolled) => <Widget>[
               SliverAppBar.large(
+                toolbarHeight: 70,
+                collapsedHeight: 70,
+                expandedHeight: 160,
                 leading: Icon(
                   serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
                     ? serversProvider.serverStatus.data!.generalEnabled == true 

@@ -258,6 +258,7 @@ class _LogsWidgetState extends State<LogsWidget> {
         case 1:
           return logsProvider.logsData!.data.isNotEmpty
             ? RefreshIndicator(
+                color: Theme.of(context).primaryColor,
                 onRefresh: () async {
                   await fetchLogs(inOffset: 0);
                 },

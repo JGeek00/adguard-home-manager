@@ -233,6 +233,7 @@ class _ClientsListState extends State<ClientsList> {
         return Stack(
           children: [
             RefreshIndicator(
+              color: Theme.of(context).primaryColor,
               onRefresh: widget.fetchClients,
               child: Column(
                 mainAxisSize: MainAxisSize.max,

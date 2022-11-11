@@ -33,8 +33,9 @@ class ServerStatus extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 165,
+            height: 175,
             child: GridView(
+              padding: const EdgeInsets.only(top: 30),
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,

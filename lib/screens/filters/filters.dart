@@ -401,6 +401,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
             controller: tabController,
             children: [
               RefreshIndicator(
+                color: Theme.of(context).primaryColor,
                 onRefresh: fetchFilters,
                 child: FiltersList(
                   loadStatus: serversProvider.filtering.loadStatus,
@@ -412,6 +413,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                 )
               ),
               RefreshIndicator(
+                color: Theme.of(context).primaryColor,
                 onRefresh: fetchFilters,
                 child: FiltersList(
                   loadStatus: serversProvider.filtering.loadStatus,
@@ -423,6 +425,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                 )
               ),
               RefreshIndicator(
+                color: Theme.of(context).primaryColor,
                 onRefresh: fetchFilters,
                 child: CustomRulesList(
                   loadStatus: serversProvider.filtering.loadStatus,

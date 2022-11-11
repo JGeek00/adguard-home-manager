@@ -133,6 +133,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
           )
         ],
         body: RefreshIndicator(
+          color: Theme.of(context).primaryColor,
           onRefresh: () async {
             final result = await getServerStatus(serversProvider.selectedServer!);
             if (result['result'] == 'success') {
