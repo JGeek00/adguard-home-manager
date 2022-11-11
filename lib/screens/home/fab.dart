@@ -12,13 +12,23 @@ class HomeFab extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void openManagementBottomSheet() {
-      showModalBottomSheet(
-        context: context, 
-        isScrollControlled: true,
-        builder: (context) => const ManagementModal(),
-        backgroundColor: Colors.transparent,
-      );
+      if (width < 700) {
+         showModalBottomSheet(
+          context: context, 
+          isScrollControlled: true,
+          builder: (context) => const ManagementModal(),
+          backgroundColor: Colors.transparent,
+        );
+      }
+      else {
+        showDialog(
+          context: context, 
+          builder: (context) => const ManagementModal(),
+        );
+      }
     }
 
     return serversProvider.serverStatus.loadStatus == 1

@@ -23,9 +23,6 @@ import 'package:adguard_home_manager/config/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
-  );  
   
   AppConfigProvider appConfigProvider = AppConfigProvider();
   ServersProvider serversProvider = ServersProvider();

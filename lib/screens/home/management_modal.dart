@@ -15,6 +15,8 @@ class ManagementModal extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void updateBlocking(bool value, String filter) async {
       final result = await serversProvider.updateBlocking(
         serversProvider.selectedServer!,
@@ -121,90 +123,116 @@ class ManagementModal extends StatelessWidget {
       );
     }
 
-    return Container(
-      width: double.maxFinite,
-      height: 540,
-      decoration: BoxDecoration(
-        color: Theme.of(context).dialogBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28)
-        )
+    List<Widget> content = [
+      Padding(
+        padding: const EdgeInsets.only(top: 24),
+        child: Icon(
+          Icons.shield_rounded,
+          size: 24,
+          color: Theme.of(context).listTileTheme.iconColor
+        ),
       ),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              physics: 540 < MediaQuery.of(context).size.height
-                ? const NeverScrollableScrollPhysics() 
-                : null,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 24),
-                  child: Icon(
-                    Icons.shield_rounded,
-                    size: 24,
-                    color: Theme.of(context).listTileTheme.iconColor
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    AppLocalizations.of(context)!.manageServer,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                ),
-                mainSwitch(),
-                const SizedBox(height: 10),
-                smallSwitch(
-                  AppLocalizations.of(context)!.ruleFiltering,
-                  Icons.filter_list_rounded,
-                  serversProvider.serverStatus.data!.filteringEnabled, 
-                  (value) => updateBlocking(value, 'filtering'),
-                  serversProvider.protectionsManagementProcess.contains('filtering')
-                ),
-                smallSwitch(
-                  AppLocalizations.of(context)!.safeBrowsing,
-                  Icons.vpn_lock_rounded,
-                  serversProvider.serverStatus.data!.safeBrowsingEnabled, 
-                  (value) => updateBlocking(value, 'safeBrowsing'),
-                  serversProvider.protectionsManagementProcess.contains('safeBrowsing')
-                ),
-                smallSwitch(
-                  AppLocalizations.of(context)!.parentalFiltering,
-                  Icons.block,
-                  serversProvider.serverStatus.data!.parentalControlEnabled, 
-                  (value) => updateBlocking(value, 'parentalControl'),
-                  serversProvider.protectionsManagementProcess.contains('parentalControl')
-                ),
-                smallSwitch(
-                  AppLocalizations.of(context)!.safeSearch,
-                  Icons.search_rounded,
-                  serversProvider.serverStatus.data!.safeSearchEnabled, 
-                  (value) => updateBlocking(value, 'safeSearch'),
-                  serversProvider.protectionsManagementProcess.contains('safeSearch')
-                ),
-              ],
-            ),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Text(
+          AppLocalizations.of(context)!.manageServer,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 24,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context), 
-                  child: Text(AppLocalizations.of(context)!.close),
-                ),
-              ],
-            ),
-          )
+        ),
+      ),
+      mainSwitch(),
+      const SizedBox(height: 10),
+      smallSwitch(
+        AppLocalizations.of(context)!.ruleFiltering,
+        Icons.filter_list_rounded,
+        serversProvider.serverStatus.data!.filteringEnabled, 
+        (value) => updateBlocking(value, 'filtering'),
+        serversProvider.protectionsManagementProcess.contains('filtering')
+      ),
+      smallSwitch(
+        AppLocalizations.of(context)!.safeBrowsing,
+        Icons.vpn_lock_rounded,
+        serversProvider.serverStatus.data!.safeBrowsingEnabled, 
+        (value) => updateBlocking(value, 'safeBrowsing'),
+        serversProvider.protectionsManagementProcess.contains('safeBrowsing')
+      ),
+      smallSwitch(
+        AppLocalizations.of(context)!.parentalFiltering,
+        Icons.block,
+        serversProvider.serverStatus.data!.parentalControlEnabled, 
+        (value) => updateBlocking(value, 'parentalControl'),
+        serversProvider.protectionsManagementProcess.contains('parentalControl')
+      ),
+      smallSwitch(
+        AppLocalizations.of(context)!.safeSearch,
+        Icons.search_rounded,
+        serversProvider.serverStatus.data!.safeSearchEnabled, 
+        (value) => updateBlocking(value, 'safeSearch'),
+        serversProvider.protectionsManagementProcess.contains('safeSearch')
+      ),
+    ];
+
+    Widget actionButtons = Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), 
+            child: Text(AppLocalizations.of(context)!.close),
+          ),
         ],
       ),
     );
+
+    if (width < 700) {
+      return Container(
+        width: double.maxFinite,
+        height: 540,
+        decoration: BoxDecoration(
+          color: Theme.of(context).dialogBackgroundColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
+          )
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                physics: 540 < MediaQuery.of(context).size.height
+                  ? const NeverScrollableScrollPhysics() 
+                  : null,
+                children: content
+              ),
+            ),
+            actionButtons
+          ],
+        ),
+      );
+    }
+    else {
+      return SizedBox(
+        child: Center(
+          child: Container(
+            width: 500,
+            decoration: BoxDecoration(
+              color: Theme.of(context).dialogBackgroundColor,
+              borderRadius: BorderRadius.circular(28)
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ...content,
+                actionButtons
+              ],
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
