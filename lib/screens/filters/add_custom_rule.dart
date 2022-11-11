@@ -134,6 +134,18 @@ class _AddCustomRuleState extends State<AddCustomRule> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.addCustomRule),
+        actions: [
+          IconButton(
+            onPressed: checkValidValues() == true
+              ? () {
+                  Navigator.pop(context);
+                  widget.onConfirm(buildRule());
+                }
+              : null, 
+            icon: const Icon(Icons.check)
+          ),
+          const SizedBox(width: 10)
+        ],
       ),
       body: ListView(
         children: [

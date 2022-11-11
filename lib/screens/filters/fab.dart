@@ -66,6 +66,7 @@ class FiltersFab extends StatelessWidget {
     void openAddCustomRule() {
       Navigator.of(context).push(
         MaterialPageRoute(
+          fullscreenDialog: true,
           builder: (context) => AddCustomRule(
             onConfirm: confirmAddRule
           ),
