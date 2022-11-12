@@ -94,7 +94,11 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
       await Future.delayed(const Duration(seconds: 0), (() => {
         Navigator.push(context, MaterialPageRoute(
           fullscreenDialog: true,
-          builder: (BuildContext context) => AddServerModal(server: server)
+          builder: (BuildContext context) => AddServerModal(
+            server: server,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+          )
         ))
       }));
     }

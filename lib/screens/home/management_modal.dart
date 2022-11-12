@@ -217,18 +217,28 @@ class ManagementModal extends StatelessWidget {
     else {
       return SizedBox(
         child: Center(
-          child: Container(
-            width: 500,
-            decoration: BoxDecoration(
-              color: Theme.of(context).dialogBackgroundColor,
-              borderRadius: BorderRadius.circular(28)
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 548,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...content,
-                actionButtons
-              ],
+            child: Container(
+              width: 500,
+              height: MediaQuery.of(context).size.height-50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dialogBackgroundColor,
+                borderRadius: BorderRadius.circular(28)
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: ListView(
+                      children: content,
+                    ),
+                  ),
+                  actionButtons
+                ],
+              ),
             ),
           ),
         ),

@@ -11,7 +11,10 @@ class FabConnect extends StatelessWidget {
         await Future.delayed(const Duration(seconds: 0), (() => {
           Navigator.push(context, MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (BuildContext context) => const AddServerModal()
+            builder: (BuildContext context) => AddServerModal(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+            )
           ))
         }));
       }
@@ -19,7 +22,10 @@ class FabConnect extends StatelessWidget {
         await Future.delayed(const Duration(seconds: 0), (() => {
           showDialog(
             context: context, 
-            builder: (BuildContext context) => const AddServerModal()
+            builder: (BuildContext context) => AddServerModal(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+            )
           )
         }));
       }

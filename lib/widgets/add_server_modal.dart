@@ -6,20 +6,25 @@ import 'package:uuid/uuid.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
+
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/encode_base64.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
-import 'package:adguard_home_manager/config/system_overlay_style.dart';
 
 class AddServerModal extends StatefulWidget {
   final Server? server;
+  final double width;
+  final double height;
 
   const AddServerModal({
     Key? key,
     this.server,
+    required this.width,
+    required this.height,
   }) : super(key: key);
 
   @override
@@ -27,6 +32,9 @@ class AddServerModal extends StatefulWidget {
 }
 
 class _AddServerModalState extends State<AddServerModal> {
+  double width = 0;
+  double height = 0;
+
   final uuid = const Uuid();
 
   final TextEditingController nameController = TextEditingController();
@@ -238,7 +246,11 @@ class _AddServerModalState extends State<AddServerModal> {
       homeAssistant = widget.server!.runningOnHa;
     }
     checkDataValid();
+
     super.initState();
+
+    width = widget.width;
+    height = widget.height;
   }
 
   @override
@@ -590,65 +602,25 @@ class _AddServerModalState extends State<AddServerModal> {
         obscureText: true
       ),
       sectionLabel(AppLocalizations.of(context)!.other),
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: widget.server == null
-            ? () => setState(() => defaultServer = !defaultServer)
-            : null,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.defaultServer,
-                  style: const TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-                Switch(
-                  value: defaultServer, 
-                  onChanged: widget.server == null 
-                    ? (value) => setState(() => defaultServer = value)
-                    : null,
-                  activeColor: Theme.of(context).primaryColor,
-                )
-              ],
-            ),
-          ),
-        ),
+      CustomSwitchListTile(
+        value: defaultServer, 
+        onChanged: (value) => widget.server == null
+          ? () => setState(() => defaultServer = !defaultServer)
+          : null,
+        title: AppLocalizations.of(context)!.defaultServer,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
       ),
       const SizedBox(height: 20),
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => setState(() => homeAssistant = !homeAssistant),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.runningHomeAssistant,
-                  style: const TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-                Switch(
-                  value: homeAssistant, 
-                  onChanged: (value) => setState(() => homeAssistant = value),
-                  activeColor: Theme.of(context).primaryColor,
-                )
-              ],
-            ),
-          ),
-        ),
+      CustomSwitchListTile(
+        value: homeAssistant, 
+        onChanged: (value) => setState(() => homeAssistant = value),
+        title: AppLocalizations.of(context)!.runningHomeAssistant,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
       ),
       const SizedBox(height: 20),
     ];
 
-    if (mediaQuery.size.width < 700) {
+    if (width < 700) {
       return Stack(
         children: [
           Scaffold(
@@ -728,8 +700,12 @@ class _AddServerModalState extends State<AddServerModal> {
                 Center(
                   child: Container(
                     padding: const EdgeInsets.all(24),
-                    width: 500,
-                    height: mediaQuery.size.height*0.7,
+                    width: mediaQuery.size.width > 500
+                      ? 500
+                      : mediaQuery.size.width-50,
+                    height: mediaQuery.size.height > 500
+                      ? mediaQuery.size.height*0.7
+                      : mediaQuery.size.height-50,
                     decoration: BoxDecoration(
                       color: Theme.of(context).dialogBackgroundColor,
                       borderRadius: BorderRadius.circular(28)
