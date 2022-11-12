@@ -7,12 +7,22 @@ class FabConnect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void openAddServerModal() async {
-      await Future.delayed(const Duration(seconds: 0), (() => {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => const AddServerModal()
-        ))
-      }));
+      if (MediaQuery.of(context).size.width < 700) {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          Navigator.push(context, MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (BuildContext context) => const AddServerModal()
+          ))
+        }));
+      }
+      else {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          showDialog(
+            context: context, 
+            builder: (BuildContext context) => const AddServerModal()
+          )
+        }));
+      }
     }
 
     return FloatingActionButton(

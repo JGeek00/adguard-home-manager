@@ -53,17 +53,29 @@ class _ServersState extends State<Servers> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     for (var i = 0; i < serversProvider.serversList.length; i++) {
       expandableControllerList.add(ExpandableController());
     }
 
     void openAddServerModal() async {
-      await Future.delayed(const Duration(seconds: 0), (() => {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => const AddServerModal()
-        ))
-      }));
+      if (width < 700) {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          Navigator.push(context, MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (BuildContext context) => const AddServerModal()
+          ))
+        }));
+      }
+      else {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          showDialog(
+            context: context, 
+            builder: (BuildContext context) => const AddServerModal()
+          )
+        }));
+      }
     }
 
     return Scaffold(

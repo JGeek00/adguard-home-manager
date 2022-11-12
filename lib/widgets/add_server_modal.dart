@@ -484,233 +484,353 @@ class _AddServerModalState extends State<AddServerModal> {
       }
     }
 
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.createConnection),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: IconButton(
-                  tooltip: widget.server == null 
-                    ? AppLocalizations.of(context)!.connect
-                    : AppLocalizations.of(context)!.save,
-                  onPressed: allDataValid == true 
-                    ? widget.server == null 
-                      ? () => connect()
-                      : () => edit()
-                    : null,
-                  icon: Icon(
-                    widget.server == null
-                      ? Icons.login_rounded
-                      : Icons.save_rounded
-                  )
-                ),
-              ),
-            ],
-            toolbarHeight: 70,
-          ),
-          body: ListView(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                margin: const EdgeInsets.only(
-                  top: 24,
-                  left: 24,
-                  right: 24
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: Theme.of(context).primaryColor
-                  )
-                ),
-                child: Text(
-                  "$connectionType://${ipDomainController.text}${pathController.text}${portController.text != '' ? ':${portController.text}' : ""}",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w500
-                  ),
-                ),
-              ),
-              sectionLabel(AppLocalizations.of(context)!.general),
-              textField(
-                label: AppLocalizations.of(context)!.name, 
-                controller: nameController, 
-                icon: Icons.badge_rounded,
-                error: nameError,
-                onChanged: (value) {
-                  if (value != '') {
-                    setState(() => nameError = null);
-                  }
-                  else {
-                    setState(() => nameError = AppLocalizations.of(context)!.nameNotEmpty);
-                  } 
-                  checkDataValid();
-                }
-              ),
-              sectionLabel(AppLocalizations.of(context)!.connection),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: MaterialSegmentedControl(
-                  children: connectionTypes,
-                  selectionIndex: connectionType == 'http' ? 0 : 1,
-                  onSegmentChosen: (value) => setState(() {
-                    if (value == 0) {
-                      connectionType = 'http';
-                    }
-                    else if (value == 1) {
-                      connectionType = 'https';
-                    }
-                  }),
-                  selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
-                  unselectedColor: Colors.transparent,
-                  borderColor: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 20),
-              textField(
-                label: AppLocalizations.of(context)!.ipDomain, 
-                controller: ipDomainController, 
-                icon: Icons.link_rounded,
-                error: ipDomainError,
-                keyboardType: TextInputType.url,
-                onChanged: validateAddress
-              ),
-              const SizedBox(height: 20),
-              textField(
-                label: AppLocalizations.of(context)!.path, 
-                controller: pathController, 
-                icon: Icons.route_rounded,
-                error: pathError,
-                onChanged: validateSubroute,
-                hintText: AppLocalizations.of(context)!.examplePath,
-                helperText: AppLocalizations.of(context)!.helperPath,
-              ),
-              const SizedBox(height: 20),
-              textField(
-                label: AppLocalizations.of(context)!.port, 
-                controller: portController, 
-                icon: Icons.numbers_rounded,
-                error: portError,
-                keyboardType: TextInputType.number,
-                onChanged: validatePort
-              ),
-              sectionLabel(AppLocalizations.of(context)!.authentication),
-              textField(
-                label: AppLocalizations.of(context)!.username, 
-                controller: userController, 
-                icon: Icons.person_rounded,
-                onChanged: validateUser,
-                error: userError
-              ),
-              const SizedBox(height: 20),
-              textField(
-                label: AppLocalizations.of(context)!.password, 
-                controller: passwordController, 
-                icon: Icons.lock_rounded,
-                keyboardType: TextInputType.visiblePassword,
-                onChanged: validatePassword,
-                error: passwordError,
-                obscureText: true
-              ),
-              sectionLabel(AppLocalizations.of(context)!.other),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: widget.server == null
-                    ? () => setState(() => defaultServer = !defaultServer)
-                    : null,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.defaultServer,
-                          style: const TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                        Switch(
-                          value: defaultServer, 
-                          onChanged: widget.server == null 
-                            ? (value) => setState(() => defaultServer = value)
-                            : null,
-                          activeColor: Theme.of(context).primaryColor,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => setState(() => homeAssistant = !homeAssistant),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.runningHomeAssistant,
-                          style: const TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                        Switch(
-                          value: homeAssistant, 
-                          onChanged: (value) => setState(() => homeAssistant = value),
-                          activeColor: Theme.of(context).primaryColor,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+    List<Widget> body = [
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        margin: const EdgeInsets.only(
+          top: 24,
+          left: 24,
+          right: 24
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+            color: Theme.of(context).primaryColor
+          )
+        ),
+        child: Text(
+          "$connectionType://${ipDomainController.text}${pathController.text}${portController.text != '' ? ':${portController.text}' : ""}",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.w500
           ),
         ),
-        AnimatedOpacity(
-          opacity: isConnecting == true ? 1 : 0,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOut,
-          child: IgnorePointer(
-            ignoring: isConnecting == true ? false : true,
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Container(
-                width: mediaQuery.size.width,
-                height: mediaQuery.size.height,
-                color: const Color.fromRGBO(0, 0, 0, 0.7),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.connecting,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 26
-                      ),
+      ),
+      sectionLabel(AppLocalizations.of(context)!.general),
+      textField(
+        label: AppLocalizations.of(context)!.name, 
+        controller: nameController, 
+        icon: Icons.badge_rounded,
+        error: nameError,
+        onChanged: (value) {
+          if (value != '') {
+            setState(() => nameError = null);
+          }
+          else {
+            setState(() => nameError = AppLocalizations.of(context)!.nameNotEmpty);
+          } 
+          checkDataValid();
+        }
+      ),
+      sectionLabel(AppLocalizations.of(context)!.connection),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: MaterialSegmentedControl(
+          children: connectionTypes,
+          selectionIndex: connectionType == 'http' ? 0 : 1,
+          onSegmentChosen: (value) => setState(() {
+            if (value == 0) {
+              connectionType = 'http';
+            }
+            else if (value == 1) {
+              connectionType = 'https';
+            }
+          }),
+          selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
+          unselectedColor: Colors.transparent,
+          borderColor: Theme.of(context).colorScheme.onSurface,
+        ),
+      ),
+      const SizedBox(height: 20),
+      textField(
+        label: AppLocalizations.of(context)!.ipDomain, 
+        controller: ipDomainController, 
+        icon: Icons.link_rounded,
+        error: ipDomainError,
+        keyboardType: TextInputType.url,
+        onChanged: validateAddress
+      ),
+      const SizedBox(height: 20),
+      textField(
+        label: AppLocalizations.of(context)!.path, 
+        controller: pathController, 
+        icon: Icons.route_rounded,
+        error: pathError,
+        onChanged: validateSubroute,
+        hintText: AppLocalizations.of(context)!.examplePath,
+        helperText: AppLocalizations.of(context)!.helperPath,
+      ),
+      const SizedBox(height: 20),
+      textField(
+        label: AppLocalizations.of(context)!.port, 
+        controller: portController, 
+        icon: Icons.numbers_rounded,
+        error: portError,
+        keyboardType: TextInputType.number,
+        onChanged: validatePort
+      ),
+      sectionLabel(AppLocalizations.of(context)!.authentication),
+      textField(
+        label: AppLocalizations.of(context)!.username, 
+        controller: userController, 
+        icon: Icons.person_rounded,
+        onChanged: validateUser,
+        error: userError
+      ),
+      const SizedBox(height: 20),
+      textField(
+        label: AppLocalizations.of(context)!.password, 
+        controller: passwordController, 
+        icon: Icons.lock_rounded,
+        keyboardType: TextInputType.visiblePassword,
+        onChanged: validatePassword,
+        error: passwordError,
+        obscureText: true
+      ),
+      sectionLabel(AppLocalizations.of(context)!.other),
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: widget.server == null
+            ? () => setState(() => defaultServer = !defaultServer)
+            : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.defaultServer,
+                  style: const TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+                Switch(
+                  value: defaultServer, 
+                  onChanged: widget.server == null 
+                    ? (value) => setState(() => defaultServer = value)
+                    : null,
+                  activeColor: Theme.of(context).primaryColor,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 20),
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => setState(() => homeAssistant = !homeAssistant),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.runningHomeAssistant,
+                  style: const TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+                Switch(
+                  value: homeAssistant, 
+                  onChanged: (value) => setState(() => homeAssistant = value),
+                  activeColor: Theme.of(context).primaryColor,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 20),
+    ];
+
+    if (mediaQuery.size.width < 700) {
+      return Stack(
+        children: [
+          Scaffold(
+            appBar: AppBar(
+              title: Text(AppLocalizations.of(context)!.createConnection),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: IconButton(
+                    tooltip: widget.server == null 
+                      ? AppLocalizations.of(context)!.connect
+                      : AppLocalizations.of(context)!.save,
+                    onPressed: allDataValid == true 
+                      ? widget.server == null 
+                        ? () => connect()
+                        : () => edit()
+                      : null,
+                    icon: Icon(
+                      widget.server == null
+                        ? Icons.login_rounded
+                        : Icons.save_rounded
                     )
-                  ],
+                  ),
+                ),
+              ],
+              toolbarHeight: 70,
+            ),
+            body: ListView(
+              children: body,
+            )
+          ),
+          AnimatedOpacity(
+            opacity: isConnecting == true ? 1 : 0,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            child: IgnorePointer(
+              ignoring: isConnecting == true ? false : true,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Container(
+                  width: mediaQuery.size.width,
+                  height: mediaQuery.size.height,
+                  color: const Color.fromRGBO(0, 0, 0, 0.7),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.connecting,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 26
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
+          )
+        ],
+      );
+    }
+    else {
+      return WillPopScope(
+        onWillPop: () async => isConnecting == true ? false : true,
+        child: Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Material(
+            color: Colors.transparent,
+            child: Stack(
+              children: [
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    width: 500,
+                    height: mediaQuery.size.height*0.7,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).dialogBackgroundColor,
+                      borderRadius: BorderRadius.circular(28)
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView(
+                            children: [
+                              Icon(
+                                Icons.add_rounded,
+                                size: 24,
+                                color: Theme.of(context).listTileTheme.iconColor
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                AppLocalizations.of(context)!.createConnection,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              ...body
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context), 
+                                child: Text(AppLocalizations.of(context)!.cancel)
+                              ),
+                              const SizedBox(width: 20),
+                              TextButton(
+                                onPressed: allDataValid == true 
+                                  ? widget.server == null 
+                                    ? () => connect()
+                                    : () => edit()
+                                  : null,
+                                child: Text(
+                                  widget.server == null 
+                                    ? AppLocalizations.of(context)!.connect
+                                    : AppLocalizations.of(context)!.save,
+                                  style: TextStyle(
+                                    color: allDataValid == true 
+                                      ? null
+                                      : Theme.of(context).primaryColor.withOpacity(0.38)
+                                  ),
+                                )
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Center(
+                  child: AnimatedOpacity(
+                    opacity: isConnecting == true ? 1 : 0,
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeInOut,
+                    child: IgnorePointer(
+                      ignoring: isConnecting == true ? false : true,
+                      child: Container(
+                        width: 500,
+                        height: mediaQuery.size.height*0.7,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(0, 0, 0, 0.7),
+                          borderRadius: BorderRadius.circular(28)
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                            const SizedBox(height: 30),
+                            Text(
+                              AppLocalizations.of(context)!.connecting,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 26
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
-        )
-      ],
-    );
+        ),
+      );
+    }
   }
 }

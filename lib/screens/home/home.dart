@@ -56,8 +56,6 @@ class _HomeState extends State<Home> {
 
     final Server? server =  serversProvider.selectedServer;
 
-    final width = MediaQuery.of(context).size.width;
-print(width);
     void navigateServers() {
       Future.delayed(const Duration(milliseconds: 0), (() {
         Navigator.of(context).push(
