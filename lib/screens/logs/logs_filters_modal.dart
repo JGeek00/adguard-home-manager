@@ -54,6 +54,9 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     final Map<String, String> translatedString = {
       "all": AppLocalizations.of(context)!.all, 
       "filtered": AppLocalizations.of(context)!.filtered, 
@@ -126,14 +129,24 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     }
 
     void openSelectFilterStatus() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (context) => FilterStatusModal(
-          value: logsProvider.selectedResultStatus,
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
-      );
+      if (MediaQuery.of(context).size.width < 700) {
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) => FilterStatusModal(
+            value: logsProvider.selectedResultStatus,
+          ),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent
+        );
+      }
+      else {
+        showDialog(
+          context: context, 
+          builder: (context) => FilterStatusModal(
+            value: logsProvider.selectedResultStatus,
+          ),
+        );
+      }
     }
 
     void filterLogs() async {
@@ -168,149 +181,193 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       }
     }
 
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: 360,
-        decoration: BoxDecoration(
-          color: Theme.of(context).dialogBackgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
-          )
+    List<Widget> items = [
+      Padding(
+        padding: const EdgeInsets.only(
+          top: 24,
+          bottom: 16,
         ),
-        child: Column(
+        child: Icon(
+          Icons.filter_list_rounded,
+          size: 24,
+          color: Theme.of(context).listTileTheme.iconColor
+        ),
+      ),
+      Text(
+        AppLocalizations.of(context)!.filters,
+        textAlign: TextAlign.center,
+        style:  TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          height: 1.3,
+          color: Theme.of(context).colorScheme.onSurface
+        ),
+      ),
+      const SizedBox(height: 16),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
           children: [
             Expanded(
-              child: ListView(
-                physics: 400 < MediaQuery.of(context).size.height
-                  ? const NeverScrollableScrollPhysics() 
-                  : null,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 24,
-                      bottom: 16,
-                    ),
-                    child: Icon(
-                      Icons.filter_list_rounded,
-                      size: 24,
-                      color: Theme.of(context).listTileTheme.iconColor
-                    ),
+              child: TextFormField(
+                controller: searchController,
+                onChanged: (value) => logsProvider.setSearchText(value),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10)
+                    )
                   ),
-                  Text(
-                    AppLocalizations.of(context)!.filters,
-                    textAlign: TextAlign.center,
-                    style:  TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      height: 1.3,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: searchController,
-                            onChanged: (value) => logsProvider.setSearchText(value),
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.search_rounded),
-                              border: const OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10)
-                                )
-                              ),
-                              labelText: AppLocalizations.of(context)!.search,
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    searchController.text = '';
-                                  });
-                                  logsProvider.setSearchText(null);
-                                },
-                                icon: const Icon(Icons.clear)
-                              )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Material(
-                  //   color: Colors.transparent,
-                  //   child: InkWell(
-                  //     onTap: selectTime,
-                  //     child: Padding(
-                  //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  //       child: Row(
-                  //         children: [
-                  //           const Icon(
-                  //             Icons.schedule,
-                  //             size: 24,
-                  //             color: Colors.grey,
-                  //           ),
-                  //           const SizedBox(width: 20),
-                  //           Column(
-                  //             crossAxisAlignment: CrossAxisAlignment.start,
-                  //             children: [
-                  //               Text(
-                  //                 AppLocalizations.of(context)!.logsOlderThan,
-                  //                 style: const TextStyle(
-                  //                   fontSize: 16,
-                  //                   fontWeight: FontWeight.w500
-                  //                 ),
-                  //               ),
-                  //               const SizedBox(height: 5),
-                  //               Text(
-                  //                 logsProvider.logsOlderThan != null
-                  //                   ? formatTimestampUTC(logsProvider.logsOlderThan!, 'HH:mm - dd/MM/yyyy')
-                  //                   : AppLocalizations.of(context)!.notSelected,
-                  //                 style: const TextStyle(
-                  //                   fontSize: 14,
-                  //                   color: Colors.grey
-                  //                 ),
-                  //               )
-                  //             ],
-                  //           )
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  CustomListTile(
-                    title: AppLocalizations.of(context)!.responseStatus,
-                    subtitle: "${translatedString[logsProvider.selectedResultStatus]}",
-                    onTap: openSelectFilterStatus,
-                    icon: Icons.shield_rounded,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: resetFilters, 
-                    child: Text(AppLocalizations.of(context)!.resetFilters)
-                  ),
-                  TextButton(
-                    onPressed: filterLogs, 
-                    child: Text(AppLocalizations.of(context)!.apply)
-                  ),
-                ],
+                  labelText: AppLocalizations.of(context)!.search,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        searchController.text = '';
+                      });
+                      logsProvider.setSearchText(null);
+                    },
+                    icon: const Icon(Icons.clear)
+                  )
+                ),
               ),
             )
           ],
         ),
       ),
+      const SizedBox(height: 16),
+      // Material(
+      //   color: Colors.transparent,
+      //   child: InkWell(
+      //     onTap: selectTime,
+      //     child: Padding(
+      //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      //       child: Row(
+      //         children: [
+      //           const Icon(
+      //             Icons.schedule,
+      //             size: 24,
+      //             color: Colors.grey,
+      //           ),
+      //           const SizedBox(width: 20),
+      //           Column(
+      //             crossAxisAlignment: CrossAxisAlignment.start,
+      //             children: [
+      //               Text(
+      //                 AppLocalizations.of(context)!.logsOlderThan,
+      //                 style: const TextStyle(
+      //                   fontSize: 16,
+      //                   fontWeight: FontWeight.w500
+      //                 ),
+      //               ),
+      //               const SizedBox(height: 5),
+      //               Text(
+      //                 logsProvider.logsOlderThan != null
+      //                   ? formatTimestampUTC(logsProvider.logsOlderThan!, 'HH:mm - dd/MM/yyyy')
+      //                   : AppLocalizations.of(context)!.notSelected,
+      //                 style: const TextStyle(
+      //                   fontSize: 14,
+      //                   color: Colors.grey
+      //                 ),
+      //               )
+      //             ],
+      //           )
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      // ),
+      CustomListTile(
+        title: AppLocalizations.of(context)!.responseStatus,
+        subtitle: "${translatedString[logsProvider.selectedResultStatus]}",
+        onTap: openSelectFilterStatus,
+        icon: Icons.shield_rounded,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      ),
+    ];
+
+    Widget actionButtons = Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton(
+            onPressed: resetFilters, 
+            child: Text(AppLocalizations.of(context)!.resetFilters)
+          ),
+          TextButton(
+            onPressed: filterLogs, 
+            child: Text(AppLocalizations.of(context)!.apply)
+          ),
+        ],
+      ),
     );
+
+    if (width < 700) {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          width: double.maxFinite,
+          height: 360,
+          decoration: BoxDecoration(
+            color: Theme.of(context).dialogBackgroundColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28)
+            )
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  physics: 400 < height
+                    ? const NeverScrollableScrollPhysics() 
+                    : null,
+                  children: items
+                ),
+              ),
+              actionButtons
+            ],
+          ),
+        ),
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 360,
+            ),
+            child: Container(
+              width: 500,
+              height: MediaQuery.of(context).size.height-50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dialogBackgroundColor,
+                borderRadius: BorderRadius.circular(28)
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        physics: 720 < height
+                          ? const NeverScrollableScrollPhysics() 
+                          : null,
+                        children: items,
+                      ),
+                    ),
+                    actionButtons
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 }

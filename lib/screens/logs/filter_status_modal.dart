@@ -30,6 +30,7 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
     final logsProvider = Provider.of<LogsProvider>(context);
 
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
 
     void apply() async {
       logsProvider.setSelectedResultStatus(selectedResultStatus);
@@ -81,111 +82,149 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
       );
     }
 
-    return Container(
-      height: height >= 720 == true
-        ? 720
-        : height-25,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28) 
+    List<Widget> items = [
+      Padding(
+        padding: const EdgeInsets.only(
+          top: 24,
+          bottom: 16,
         ),
-        color: Theme.of(context).dialogBackgroundColor
+        child: Icon(
+          Icons.shield_rounded,
+          size: 24,
+          color: Theme.of(context).listTileTheme.iconColor
+        ),
       ),
-      child: Column(
+      Text(
+        AppLocalizations.of(context)!.responseStatus,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          color: Theme.of(context).colorScheme.onSurface
+        ),
+      ),
+      const SizedBox(height: 16),
+      filterStatusListItem(
+        id: "all",
+        icon: Icons.shield_rounded, 
+        label: AppLocalizations.of(context)!.all, 
+        onChanged: (value) => setState(() => selectedResultStatus = value!)
+      ),
+      filterStatusListItem(
+        id: "filtered",
+        icon: Icons.shield_rounded, 
+        label: AppLocalizations.of(context)!.filtered, 
+        onChanged: (value) => setState(() => selectedResultStatus = value!)
+      ),
+      filterStatusListItem(
+        id: "processed",
+        icon: Icons.verified_user_rounded, 
+        label: AppLocalizations.of(context)!.processedRow, 
+        onChanged: (value) => setState(() => selectedResultStatus = value!)
+      ),
+      filterStatusListItem(
+        id: "whitelisted",
+        icon: Icons.verified_user_rounded, 
+        label: AppLocalizations.of(context)!.processedWhitelistRow, 
+        onChanged: (value) => setState(() => selectedResultStatus = value!)
+      ),
+      filterStatusListItem(
+        id: "blocked",
+        icon: Icons.gpp_bad_rounded, 
+        label: AppLocalizations.of(context)!.blocked, 
+        onChanged: (value) => setState(() => selectedResultStatus = value!)
+      ),
+      filterStatusListItem(
+        id: "blocked_safebrowsing",
+        icon: Icons.gpp_bad_rounded, 
+        label: AppLocalizations.of(context)!.blockedSafeBrowsingRow, 
+        onChanged: (value) => setState(() => selectedResultStatus = value!)
+      ),
+      filterStatusListItem(
+        id: "blocked_parental",
+        icon: Icons.gpp_bad_rounded, 
+        label: AppLocalizations.of(context)!.blockedParentalRow, 
+        onChanged: (value) => setState(() => selectedResultStatus = value!)
+      ),
+      filterStatusListItem(
+        id: "safe_search",
+        icon: Icons.gpp_bad_rounded, 
+        label: AppLocalizations.of(context)!.blockedSafeSearchRow, 
+        onChanged: (value) => setState(() => selectedResultStatus = value!)
+      ),
+    ];
+
+    Widget actionButtons = Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 24,
-              bottom: 16,
-            ),
-            child: Icon(
-              Icons.shield_rounded,
-              size: 24,
-              color: Theme.of(context).listTileTheme.iconColor
-            ),
-          ),
-          Text(
-            AppLocalizations.of(context)!.responseStatus,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w400,
-              color: Theme.of(context).colorScheme.onSurface
-            ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: ListView(
-              physics: height >= 720 == true
-                ? const NeverScrollableScrollPhysics()
-                : null,
-              children: [
-                filterStatusListItem(
-                  id: "all",
-                  icon: Icons.shield_rounded, 
-                  label: AppLocalizations.of(context)!.all, 
-                  onChanged: (value) => setState(() => selectedResultStatus = value!)
-                ),
-                filterStatusListItem(
-                  id: "filtered",
-                  icon: Icons.shield_rounded, 
-                  label: AppLocalizations.of(context)!.filtered, 
-                  onChanged: (value) => setState(() => selectedResultStatus = value!)
-                ),
-                filterStatusListItem(
-                  id: "processed",
-                  icon: Icons.verified_user_rounded, 
-                  label: AppLocalizations.of(context)!.processedRow, 
-                  onChanged: (value) => setState(() => selectedResultStatus = value!)
-                ),
-                filterStatusListItem(
-                  id: "whitelisted",
-                  icon: Icons.verified_user_rounded, 
-                  label: AppLocalizations.of(context)!.processedWhitelistRow, 
-                  onChanged: (value) => setState(() => selectedResultStatus = value!)
-                ),
-                filterStatusListItem(
-                  id: "blocked",
-                  icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blocked, 
-                  onChanged: (value) => setState(() => selectedResultStatus = value!)
-                ),
-                filterStatusListItem(
-                  id: "blocked_safebrowsing",
-                  icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedSafeBrowsingRow, 
-                  onChanged: (value) => setState(() => selectedResultStatus = value!)
-                ),
-                filterStatusListItem(
-                  id: "blocked_parental",
-                  icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedParentalRow, 
-                  onChanged: (value) => setState(() => selectedResultStatus = value!)
-                ),
-                filterStatusListItem(
-                  id: "safe_search",
-                  icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedSafeSearchRow, 
-                  onChanged: (value) => setState(() => selectedResultStatus = value!)
-                ),
-               
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: apply, 
-                  child: Text(AppLocalizations.of(context)!.apply)
-                )
-              ],
-            ),
+          TextButton(
+            onPressed: apply, 
+            child: Text(AppLocalizations.of(context)!.apply)
           )
         ],
       ),
     );
+    
+    if (width < 700) {
+      return Container(
+        width: double.maxFinite,
+        height: 720,
+        decoration: BoxDecoration(
+          color: Theme.of(context).dialogBackgroundColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
+          )
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                physics: 720 < height
+                  ? const NeverScrollableScrollPhysics() 
+                  : null,
+                children: items
+              ),
+            ),
+            actionButtons
+          ],
+        ),
+      );
+    }
+    else {
+      return SizedBox(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 720,
+            ),
+            child: Container(
+              width: 500,
+              height: MediaQuery.of(context).size.height-50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dialogBackgroundColor,
+                borderRadius: BorderRadius.circular(28)
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: ListView(
+                      physics: 720 < height
+                        ? const NeverScrollableScrollPhysics() 
+                        : null,
+                      children: items,
+                    ),
+                  ),
+                  actionButtons
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 }

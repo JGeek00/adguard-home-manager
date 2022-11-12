@@ -109,6 +109,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
 
     Widget generateBody() {
       switch (loadStatus) {
@@ -118,57 +119,86 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
           );
 
         case 1:
-          return Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  physics: 420 < MediaQuery.of(context).size.height
-                    ? const NeverScrollableScrollPhysics() 
-                    : null,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 24),
-                      child: Icon(
-                        Icons.settings,
-                        size: 24,
-                        color: Theme.of(context).listTileTheme.iconColor
+          return Material(
+            color: Colors.transparent,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    physics: 420 < MediaQuery.of(context).size.height
+                      ? const NeverScrollableScrollPhysics() 
+                      : null,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 24),
+                        child: Icon(
+                          Icons.settings,
+                          size: 24,
+                          color: Theme.of(context).listTileTheme.iconColor
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      AppLocalizations.of(context)!.logsSettings,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Theme.of(context).colorScheme.onSurface
-                      ), 
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Material(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(28),
-                        child: InkWell(
-                          onTap: () => setState(() => generalSwitch = !generalSwitch),
+                      const SizedBox(height: 16),
+                      Text(
+                        AppLocalizations.of(context)!.logsSettings,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Theme.of(context).colorScheme.onSurface
+                        ), 
+                      ),
+                      const SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Material(
+                          color: Theme.of(context).primaryColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(28),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 8
+                          child: InkWell(
+                            onTap: () => setState(() => generalSwitch = !generalSwitch),
+                            borderRadius: BorderRadius.circular(28),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 8
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.enableLog,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Switch(
+                                    value: generalSwitch, 
+                                    onChanged: (value) => setState(() => generalSwitch = value),
+                                    activeColor: Theme.of(context).primaryColor,
+                                  )
+                                ],
+                              ),
                             ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => setState(() => anonymizeClientIp = !anonymizeClientIp),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.enableLog,
+                                  AppLocalizations.of(context)!.anonymizeClientIp,
                                   style: const TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16
                                   ),
                                 ),
                                 Switch(
-                                  value: generalSwitch, 
-                                  onChanged: (value) => setState(() => generalSwitch = value),
+                                  value: anonymizeClientIp, 
+                                  onChanged: (value) => setState(() => anonymizeClientIp = value),
                                   activeColor: Theme.of(context).primaryColor,
                                 )
                               ],
@@ -176,104 +206,78 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () => setState(() => anonymizeClientIp = !anonymizeClientIp),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.anonymizeClientIp,
-                                style: const TextStyle(
-                                  fontSize: 16
-                                ),
-                              ),
-                              Switch(
-                                value: anonymizeClientIp, 
-                                onChanged: (value) => setState(() => anonymizeClientIp = value),
-                                activeColor: Theme.of(context).primaryColor,
+                      const SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: DropdownButtonFormField(
+                          items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
+                            return DropdownMenuItem<String>(
+                              value: item['value'].toString(),
+                              child: Text(item['label']),
+                            );
+                          }).toList(),
+                          value: retentionTime,
+                          onChanged: (value) => setState(() => retentionTime = value),
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10)
                               )
-                            ],
+                            ),
+                            label: Text(AppLocalizations.of(context)!.retentionTime)
                           ),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: DropdownButtonFormField(
-                        items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
-                          return DropdownMenuItem<String>(
-                            value: item['value'].toString(),
-                            child: Text(item['label']),
-                          );
-                        }).toList(),
-                        value: retentionTime,
-                        onChanged: (value) => setState(() => retentionTime = value),
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10)
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          widget.onClear();
+                        }, 
+                        child: Text(AppLocalizations.of(context)!.clearLogs)
+                      ),
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context), 
+                            child: Text(AppLocalizations.of(context)!.cancel)
+                          ),
+                          const SizedBox(width: 20),
+                          TextButton(
+                            onPressed: retentionTime != ''
+                              ? () {
+                                Navigator.pop(context);
+                                widget.onConfirm({
+                                  "enabled": generalSwitch,
+                                  "interval": double.parse(retentionTime!),
+                                  "anonymize_client_ip": anonymizeClientIp
+                                });
+                              }
+                              : null, 
+                            child: Text(
+                              AppLocalizations.of(context)!.confirm,
+                              style: TextStyle(
+                                color: retentionTime != ''
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.grey
+                              ),
                             )
                           ),
-                          label: Text(AppLocalizations.of(context)!.retentionTime)
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        widget.onClear();
-                      }, 
-                      child: Text(AppLocalizations.of(context)!.clearLogs)
-                    ),
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context), 
-                          child: Text(AppLocalizations.of(context)!.cancel)
-                        ),
-                        const SizedBox(width: 20),
-                        TextButton(
-                          onPressed: retentionTime != ''
-                            ? () {
-                              Navigator.pop(context);
-                              widget.onConfirm({
-                                "enabled": generalSwitch,
-                                "interval": double.parse(retentionTime!),
-                                "anonymize_client_ip": anonymizeClientIp
-                              });
-                            }
-                            : null, 
-                          child: Text(
-                            AppLocalizations.of(context)!.confirm,
-                            style: TextStyle(
-                              color: retentionTime != ''
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey
-                            ),
-                          )
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              )
-            ],
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           );
 
         case 2:
@@ -309,16 +313,39 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
       }
     }
 
-    return Container(
-      height: 420,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28)
+    if (width < 700) {
+      return Container(
+        width: double.maxFinite,
+        height: 420,
+        decoration: BoxDecoration(
+          color: Theme.of(context).dialogBackgroundColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
+          )
         ),
-        color: Theme.of(context).dialogBackgroundColor
-      ),
-      child: generateBody()
-    );
+        child: generateBody()
+      );
+    }
+    else {
+      return SizedBox(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 420,
+            ),
+            child: Container(
+              width: 500,
+              height: MediaQuery.of(context).size.height-50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dialogBackgroundColor,
+                borderRadius: BorderRadius.circular(28)
+              ),
+              child: generateBody()
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
