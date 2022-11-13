@@ -19,6 +19,8 @@ class LogsProvider with ChangeNotifier {
     searchText: null
   );
 
+  Log? _selectedLog;
+
   int get loadStatus {
     return _loadStatus;
   }
@@ -49,6 +51,10 @@ class LogsProvider with ChangeNotifier {
 
   AppliedFiters get appliedFilters {
     return _appliedFilters;
+  }
+
+  Log? get selectedLog {
+    return _selectedLog;
   }
 
 
@@ -96,6 +102,11 @@ class LogsProvider with ChangeNotifier {
 
   void setAppliedFilters(AppliedFiters value) {
     _appliedFilters = value;
+    notifyListeners();
+  }
+
+  void setSelectedLog(Log? log) {
+    _selectedLog = log;
     notifyListeners();
   }
 }

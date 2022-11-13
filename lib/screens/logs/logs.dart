@@ -59,8 +59,6 @@ class LogsWidget extends StatefulWidget {
 }
 
 class _LogsWidgetState extends State<LogsWidget> {
-  Log? selectedLog;
-
   late ScrollController scrollController;
   
   bool isLoadingMore = false;
@@ -273,7 +271,7 @@ class _LogsWidgetState extends State<LogsWidget> {
       return RefreshIndicator(
         color: Theme.of(context).primaryColor,
         onRefresh: () async {
-          setState(() => selectedLog = null);
+          logsProvider.setSelectedLog(null);
           await fetchLogs(inOffset: 0);
         },
         child: ListView.builder(
@@ -295,7 +293,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                 log: logsProvider.logsData!.data[index],
                 index: index,
                 length: logsProvider.logsData!.data.length,
-                selectedLog: width >= 700 ? selectedLog : null,
+                selectedLog: width >= 700 ? logsProvider.selectedLog : null,
                 onLogSelected: (log) {
                   if (width < 700) {
                     Navigator.push(context, MaterialPageRoute(
@@ -303,7 +301,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                     ));
                   }
                   else {
-                    setState(() => selectedLog = log);
+                    logsProvider.setSelectedLog(log);
                   }
                 },
               );
@@ -600,13 +598,13 @@ class _LogsWidgetState extends State<LogsWidget> {
                   )
                 )
               ),
-              child: selectedLog != null
+              child: logsProvider.selectedLog != null
                 ? Scaffold(
                     appBar: AppBar(
-                      title: Text(selectedLog!.question.name),
+                      title: Text(logsProvider.selectedLog!.question.name),
                       toolbarHeight: 64,
                     ),
-                    body: LogDetailsList(log: selectedLog!),
+                    body: LogDetailsList(log: logsProvider.selectedLog!),
                   )
                 : null
             )

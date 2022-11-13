@@ -156,6 +156,8 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
 
       logsProvider.setOffset(0);
 
+      logsProvider.setSelectedLog(null);
+
       final result = await getLogs(
         server: serversProvider.selectedServer!, 
         count: logsProvider.logsQuantity,
