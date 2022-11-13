@@ -26,6 +26,8 @@ class ClientsFab extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void confirmAddClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);
@@ -58,13 +60,31 @@ class ClientsFab extends StatelessWidget {
       }
     }
 
-    void openAddClient() {
-      Navigator.push(context, MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (BuildContext context) => ClientScreen(
-          onConfirm: confirmAddClient,
-        )
-      ));
+    void openAddClient() async {
+      if (width < 700) {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          Navigator.push(context, MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (BuildContext context) => ClientScreen(
+              onConfirm: confirmAddClient,
+              width: width,
+              height: MediaQuery.of(context).size.height,
+            )
+          ))
+        }));
+      }
+      else {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          showDialog(
+            context: context, 
+            builder: (BuildContext context) => ClientScreen(
+              onConfirm: confirmAddClient,
+              width: width,
+              height: MediaQuery.of(context).size.height,
+            )
+          )
+        }));
+      }
     }
 
     return FloatingActionButton(

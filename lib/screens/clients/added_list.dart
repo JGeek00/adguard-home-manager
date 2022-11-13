@@ -65,6 +65,8 @@ class _AddedListState extends State<AddedList> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void confirmEditClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);
@@ -139,15 +141,35 @@ class _AddedListState extends State<AddedList> {
       }
     }
 
-    void openClientModal(Client client) {
-      Navigator.push(context, MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (BuildContext context) => ClientScreen(
-          onConfirm: confirmEditClient,
-          onDelete: deleteClient,
-          client: client,
-        )
-      ));
+    void openClientModal(Client client) async {
+      if (width < 700) {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          Navigator.push(context, MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (BuildContext context) => ClientScreen(
+              onConfirm: confirmEditClient,
+              onDelete: deleteClient,
+              client: client,
+              width: width,
+              height: MediaQuery.of(context).size.height,
+            )
+          ))
+        }));
+      }
+      else {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          showDialog(
+            context: context, 
+            builder: (BuildContext context) => ClientScreen(
+              onConfirm: confirmEditClient,
+              onDelete: deleteClient,
+              client: client,
+              width: width,
+              height: MediaQuery.of(context).size.height,
+            )
+          )
+        }));
+      }
     }
 
     void openDeleteModal(Client client) {

@@ -14,12 +14,16 @@ class ClientScreen extends StatefulWidget {
   final Client? client;
   final void Function(Client) onConfirm;
   final void Function(Client)? onDelete;
+  final double width;
+  final double height;
 
   const ClientScreen({
     Key? key,
     this.client,
     required this.onConfirm,
     this.onDelete,
+    required this.width,
+    required this.height,
   }) : super(key: key);
 
   @override
@@ -27,6 +31,9 @@ class ClientScreen extends StatefulWidget {
 }
 
 class _ClientScreenState extends State<ClientScreen> {
+  double width = 0;
+  double height = 0;
+
   final Uuid uuid = const Uuid();
   bool editMode = true;
 
@@ -90,11 +97,16 @@ class _ClientScreenState extends State<ClientScreen> {
       }).toList();
     }
     super.initState();
+
+    width = widget.width;
+    height = widget.height;
   }
     
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+
+    final mediaQuery = MediaQuery.of(context);
 
     void createClient() {
       final Client client = Client(
@@ -219,11 +231,13 @@ class _ClientScreenState extends State<ClientScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).colorScheme.onSurface,
+                Flexible(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
                 ),
                 useGlobalSettingsFiltering == false
@@ -233,7 +247,9 @@ class _ClientScreenState extends State<ClientScreen> {
                       activeColor: Theme.of(context).primaryColor,
                     )
                   : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.only(
+                        left: 8, top: 14, bottom: 14
+                      ),
                       child: Text(
                         "Global",
                         style: TextStyle(
@@ -247,10 +263,382 @@ class _ClientScreenState extends State<ClientScreen> {
         ),
       );
     }
-    
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
+
+    List<Widget> body = [
+      const SizedBox(height: 24),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: TextFormField(
+          enabled: widget.client != null ? false : true,
+          controller: nameController,
+          onChanged: (_) => checkValidValues(),
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.badge_rounded),
+            border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10)
+              )
+            ),
+            labelText: AppLocalizations.of(context)!.name,
+          ),
+        ),
+      ),
+      sectionLabel(AppLocalizations.of(context)!.tags),
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: editMode == true ? () => openTagsModal() : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 6, horizontal: 24
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.label_rounded,
+                  color: Theme.of(context).listTileTheme.iconColor
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.selectTags,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onSurface
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      selectedTags.isNotEmpty
+                        ? "${selectedTags.length} ${AppLocalizations.of(context)!.tagsSelected}"
+                        : AppLocalizations.of(context)!.noTagsSelected,
+                      style: TextStyle(
+                        color: Theme.of(context).listTileTheme.iconColor
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          sectionLabel(AppLocalizations.of(context)!.identifiers),
+          if (editMode == true) Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: IconButton(
+              onPressed: () => setState(() => identifiersControllers.add({
+                'id': uuid.v4(),
+                'controller': TextEditingController()
+              })),
+              icon: const Icon(Icons.add)
+            ),
+          )
+        ],
+      ),
+      if (identifiersControllers.isNotEmpty) ...identifiersControllers.map((controller) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: TextFormField(
+                enabled: editMode,
+                controller: controller['controller'],
+                onChanged: (_) => checkValidValues(),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.tag),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10)
+                    )
+                  ),
+                  helperText: AppLocalizations.of(context)!.identifierHelper,
+                  labelText: AppLocalizations.of(context)!.identifier,
+                ),
+              ),
+            ),
+            if (editMode == true) ...[
+              const SizedBox(width: 20),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 25),
+                child: IconButton(
+                  onPressed: () => setState(
+                    () => identifiersControllers = identifiersControllers.where((e) => e['id'] != controller['id']).toList()
+                  ), 
+                  icon: const Icon(Icons.remove_circle_outline_outlined)
+                ),
+              )
+            ]
+          ],
+        ),
+      )).toList(),
+      if (identifiersControllers.isEmpty) Container(
+        padding: const EdgeInsets.only(top: 10),
+        child: Text(
+          AppLocalizations.of(context)!.noIdentifiers,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 18,
+            color: Colors.grey
+          ),
+        ),
+      ),
+      sectionLabel(AppLocalizations.of(context)!.settings),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Material(
+          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(28),
+          child: InkWell(
+            onTap: editMode 
+              ? () => enableDisableGlobalSettingsFiltering()
+              : null,
+            borderRadius: BorderRadius.circular(28),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 5
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(context)!.useGlobalSettings,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onSurface
+                      ),
+                    ),
+                  ),
+                  Switch(
+                    value: useGlobalSettingsFiltering, 
+                    onChanged: editMode == true
+                      ? (value) => enableDisableGlobalSettingsFiltering()
+                      : null,
+                    activeColor: Theme.of(context).primaryColor,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 10),
+      settignsTile(
+        label: AppLocalizations.of(context)!.enableFiltering,
+        value: enableFiltering, 
+        onChange: editMode == true
+          ? (value) => setState(() => enableFiltering = value)
+          : null
+      ),
+      settignsTile(
+        label: AppLocalizations.of(context)!.enableSafeBrowsing,
+        value: enableSafeBrowsing, 
+        onChange: editMode == true
+          ? (value) => setState(() => enableSafeBrowsing = value)
+          : null
+      ),
+      settignsTile(
+        label: AppLocalizations.of(context)!.enableParentalControl,
+        value: enableParentalControl, 
+        onChange: editMode == true
+          ? (value) => setState(() => enableParentalControl = value)
+          : null
+      ),
+      settignsTile(
+        label: AppLocalizations.of(context)!.enableSafeSearch,
+        value: enableSafeSearch, 
+        onChange: editMode == true
+          ? (value) => setState(() => enableSafeSearch = value)
+          : null
+      ),
+      sectionLabel(AppLocalizations.of(context)!.blockedServices),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Material(
+          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(28),
+          child: InkWell(
+            onTap: editMode == true
+              ? () => updateServicesGlobalSettings(!useGlobalSettingsServices)
+              : null,
+            borderRadius: BorderRadius.circular(28),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 5
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(context)!.useGlobalSettings,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onSurface
+                      ),
+                    ),
+                  ),
+                  Switch(
+                    value: useGlobalSettingsServices, 
+                    onChanged: editMode == true
+                      ? (value) => updateServicesGlobalSettings(value)
+                      : null,
+                    activeColor: Theme.of(context).primaryColor,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 10),
+
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: editMode == true
+            ? useGlobalSettingsServices == false
+              ? openServicesModal
+              : null
+            : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 6, horizontal: 24
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.public,
+                  color: useGlobalSettingsServices == false
+                    ? Theme.of(context).listTileTheme.iconColor
+                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.selectBlockedServices,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: useGlobalSettingsServices == false
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
+                        ),
+                      ),
+                      if (useGlobalSettingsServices == false) ...[
+                        const SizedBox(height: 3),
+                        Text(
+                          blockedServices.isNotEmpty
+                            ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
+                            :  AppLocalizations.of(context)!.noBlockedServicesSelected,
+                          style: TextStyle(
+                            color: Theme.of(context).listTileTheme.iconColor  
+                          ),
+                        ),
+                      ]
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          sectionLabel(AppLocalizations.of(context)!.upstreamServers),
+          if (editMode == true) Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: IconButton(
+              onPressed: () => setState(() => upstreamServers.add({
+                'id': uuid.v4(),
+                'controller': TextEditingController()
+              })),
+              icon: const Icon(Icons.add)
+            ),
+          )
+        ],
+      ),
+      if (upstreamServers.isNotEmpty) ...upstreamServers.map((controller) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: TextFormField(
+                  enabled: editMode,
+                  controller: controller['controller'],
+                  onChanged: (_) => checkValidValues(),
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.dns_rounded),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10)
+                      )
+                    ),
+                    labelText: AppLocalizations.of(context)!.serverAddress,
+                  ),
+                ),
+              ),
+              if (editMode == true) ...[
+                const SizedBox(width: 20),
+                IconButton(
+                  onPressed: () => setState(
+                    () => upstreamServers = upstreamServers.where((e) => e['id'] != controller['id']).toList()
+                  ), 
+                  icon: const Icon(Icons.remove_circle_outline_outlined)
+                )
+              ]
+            ],
+          ),
+        ),
+      )).toList(),
+      if (upstreamServers.isEmpty) Container(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          children: [
+            Text(
+              AppLocalizations.of(context)!.noUpstreamServers,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.grey
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              AppLocalizations.of(context)!.willBeUsedGeneralServers,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.grey
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 20)
+    ];
+
+    if (width < 700) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.close)
         ),
@@ -288,374 +676,105 @@ class _ClientScreenState extends State<ClientScreen> {
           ),
           const SizedBox(width: 10),
         ],
-      ),
-      body: ListView(
-        children: [
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: TextFormField(
-              enabled: widget.client != null ? false : true,
-              controller: nameController,
-              onChanged: (_) => checkValidValues(),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.badge_rounded),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10)
-                  )
-                ),
-                labelText: AppLocalizations.of(context)!.name,
+        ),
+        body: ListView(
+          children: body,
+        )
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Material(
+          color: Colors.transparent,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              width: mediaQuery.size.width > 500
+                ? 500
+                : mediaQuery.size.width-50,
+              height: mediaQuery.size.height > 500
+                ? mediaQuery.size.height*0.7
+                : mediaQuery.size.height-50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dialogBackgroundColor,
+                borderRadius: BorderRadius.circular(28)
               ),
-            ),
-          ),
-          sectionLabel(AppLocalizations.of(context)!.tags),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: editMode == true ? () => openTagsModal() : null,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 0, horizontal: 24
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.label_rounded,
-                      color: Theme.of(context).listTileTheme.iconColor
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.selectTags,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.onSurface
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          selectedTags.isNotEmpty
-                            ? "${selectedTags.length} ${AppLocalizations.of(context)!.tagsSelected}"
-                            : AppLocalizations.of(context)!.noTagsSelected,
-                          style: TextStyle(
-                            color: Theme.of(context).listTileTheme.iconColor
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              sectionLabel(AppLocalizations.of(context)!.identifiers),
-              if (editMode == true) Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: IconButton(
-                  onPressed: () => setState(() => identifiersControllers.add({
-                    'id': uuid.v4(),
-                    'controller': TextEditingController()
-                  })),
-                  icon: const Icon(Icons.add)
-                ),
-              )
-            ],
-          ),
-          if (identifiersControllers.isNotEmpty) ...identifiersControllers.map((controller) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    enabled: editMode,
-                    controller: controller['controller'],
-                    onChanged: (_) => checkValidValues(),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.tag),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
-                      ),
-                      helperText: AppLocalizations.of(context)!.identifierHelper,
-                      labelText: AppLocalizations.of(context)!.identifier,
-                    ),
-                  ),
-                ),
-                if (editMode == true) ...[
-                  const SizedBox(width: 20),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 25),
-                    child: IconButton(
-                      onPressed: () => setState(
-                        () => identifiersControllers = identifiersControllers.where((e) => e['id'] != controller['id']).toList()
-                      ), 
-                      icon: const Icon(Icons.remove_circle_outline_outlined)
-                    ),
-                  )
-                ]
-              ],
-            ),
-          )).toList(),
-          if (identifiersControllers.isEmpty) Container(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(
-              AppLocalizations.of(context)!.noIdentifiers,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.grey
-              ),
-            ),
-          ),
-          sectionLabel(AppLocalizations.of(context)!.settings),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Material(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(28),
-              child: InkWell(
-                onTap: editMode 
-                  ? () => enableDisableGlobalSettingsFiltering()
-                  : null,
-                borderRadius: BorderRadius.circular(28),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 5
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.useGlobalSettings,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.onSurface
-                        ),
-                      ),
-                      Switch(
-                        value: useGlobalSettingsFiltering, 
-                        onChanged: editMode == true
-                          ? (value) => enableDisableGlobalSettingsFiltering()
-                          : null,
-                        activeColor: Theme.of(context).primaryColor,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          settignsTile(
-            label: AppLocalizations.of(context)!.enableFiltering,
-            value: enableFiltering, 
-            onChange: editMode == true
-              ? (value) => setState(() => enableFiltering = value)
-              : null
-          ),
-          settignsTile(
-            label: AppLocalizations.of(context)!.enableSafeBrowsing,
-            value: enableSafeBrowsing, 
-            onChange: editMode == true
-              ? (value) => setState(() => enableSafeBrowsing = value)
-              : null
-          ),
-          settignsTile(
-            label: AppLocalizations.of(context)!.enableParentalControl,
-            value: enableParentalControl, 
-            onChange: editMode == true
-              ? (value) => setState(() => enableParentalControl = value)
-              : null
-          ),
-          settignsTile(
-            label: AppLocalizations.of(context)!.enableSafeSearch,
-            value: enableSafeSearch, 
-            onChange: editMode == true
-              ? (value) => setState(() => enableSafeSearch = value)
-              : null
-          ),
-          sectionLabel(AppLocalizations.of(context)!.blockedServices),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Material(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(28),
-              child: InkWell(
-                onTap: editMode == true
-                  ? () => updateServicesGlobalSettings(!useGlobalSettingsServices)
-                  : null,
-                borderRadius: BorderRadius.circular(28),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 5
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.useGlobalSettings,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.onSurface
-                        ),
-                      ),
-                      Switch(
-                        value: useGlobalSettingsServices, 
-                        onChanged: editMode == true
-                          ? (value) => updateServicesGlobalSettings(value)
-                          : null,
-                        activeColor: Theme.of(context).primaryColor,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: editMode == true
-                ? useGlobalSettingsServices == false
-                  ? openServicesModal
-                  : null
-                : null,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8, horizontal: 24
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.public,
-                      color: useGlobalSettingsServices == false
-                        ? Theme.of(context).listTileTheme.iconColor
-                        : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.selectBlockedServices,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: useGlobalSettingsServices == false
-                              ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
-                          ),
-                        ),
-                        if (useGlobalSettingsServices == false) ...[
-                          const SizedBox(height: 5),
-                          Text(
-                            blockedServices.isNotEmpty
-                              ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
-                              :  AppLocalizations.of(context)!.noBlockedServicesSelected,
-                            style: TextStyle(
-                              color: Theme.of(context).listTileTheme.iconColor  
-                            ),
-                          )
-                        ]
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              sectionLabel(AppLocalizations.of(context)!.upstreamServers),
-              if (editMode == true) Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: IconButton(
-                  onPressed: () => setState(() => upstreamServers.add({
-                    'id': uuid.v4(),
-                    'controller': TextEditingController()
-                  })),
-                  icon: const Icon(Icons.add)
-                ),
-              )
-            ],
-          ),
-          if (upstreamServers.isNotEmpty) ...upstreamServers.map((controller) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
                 children: [
-                  SizedBox(
-                    width: editMode == true
-                      ? MediaQuery.of(context).size.width - 108
-                      : MediaQuery.of(context).size.width - 40,
-                    child: TextFormField(
-                      enabled: editMode,
-                      controller: controller['controller'],
-                      onChanged: (_) => checkValidValues(),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.dns_rounded),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10)
-                          )
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Icon(
+                          widget.client != null 
+                            ? Icons.smartphone_rounded
+                            : Icons.add_rounded,
+                          size: 24,
+                          color: Theme.of(context).listTileTheme.iconColor
                         ),
-                        labelText: AppLocalizations.of(context)!.serverAddress,
-                      ),
+                        const SizedBox(height: 16),
+                        Text(
+                          widget.client != null 
+                            ? AppLocalizations.of(context)!.client
+                            : AppLocalizations.of(context)!.addClient,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                        ...body
+                      ],
                     ),
                   ),
-                  if (editMode == true) ...[
-                    const SizedBox(width: 20),
-                    IconButton(
-                      onPressed: () => setState(
-                        () => upstreamServers = upstreamServers.where((e) => e['id'] != controller['id']).toList()
-                      ), 
-                      icon: const Icon(Icons.remove_circle_outline_outlined)
-                    )
-                  ]
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                                if (widget.client == null || (widget.client != null && editMode == true)) TextButton(
+                              onPressed: checkValidValues() == true
+                                ? () {
+                                    createClient();
+                                    Navigator.pop(context);
+                                  }
+                                : null, 
+                              child: Text(
+                                widget.client != null && editMode == true
+                                  ? AppLocalizations.of(context)!.save
+                                  : AppLocalizations.of(context)!.confirm,
+                                style: TextStyle(
+                                  color: checkValidValues() == true
+                                    ? null
+                                    : Theme.of(context).primaryColor.withOpacity(0.38)
+                                ),
+                              ),
+                            ),
+                            if (widget.client != null && editMode == false) TextButton(
+                              onPressed: () => setState(() => editMode = true), 
+                              child: Text(AppLocalizations.of(context)!.edit),
+                            ),
+                            if (widget.client != null) TextButton(
+                              onPressed: openDeleteClientScreen, 
+                              child:Text(AppLocalizations.of(context)!.delete),
+                            ),
+                          ],
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(AppLocalizations.of(context)!.close)
+                        )
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
-          )).toList(),
-          if (upstreamServers.isEmpty) Container(
-            padding: const EdgeInsets.only(top: 10),
-            child: Column(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.noUpstreamServers,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  AppLocalizations.of(context)!.willBeUsedGeneralServers,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey
-                  ),
-                ),
-              ],
-            ),
           ),
-          const SizedBox(height: 20)
-        ],
-      ),
-    );
+        ),
+      );
+    }
   }
 }
