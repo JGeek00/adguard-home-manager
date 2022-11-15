@@ -89,6 +89,8 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void fetchUpdateLists() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updatingLists);
@@ -138,15 +140,28 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     }
 
     void showCheckHostModal() {
-      Future.delayed(const Duration(seconds: 0), () {
-        showModalBottomSheet(
-          context: context, 
-          builder: (context) => const CheckHostModal(),
-          backgroundColor: Colors.transparent,
-          isScrollControlled: true,
-        );
+      Future.delayed(Duration(seconds: 0), () {
+        if (width < 700) {
+          showModalBottomSheet(
+            context: context, 
+            isScrollControlled: true,
+            builder: (context) => CheckHostModal(
+              width: width,
+            ),
+            backgroundColor: Colors.transparent,
+          );
+        }
+        else {
+          showDialog(
+            context: context, 
+            builder: (context) => CheckHostModal(
+              width: width,
+            ),
+          );
+        }
       });
     }
+
 
     void enableDisableFiltering() async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -240,24 +255,60 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     }
 
     void openBlockedServicesModal() {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      Future.delayed(const Duration(seconds: 0), () {
-        showFlexibleBottomSheet(
-          minHeight: 0.6,
-          initHeight: 0.6,
-          maxHeight: 0.95,
-          isCollapsible: true,
-          duration: const Duration(milliseconds: 250),
-          anchors: [0.95],
+      if (width < 700) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        Future.delayed(const Duration(seconds: 0), () {
+          showFlexibleBottomSheet(
+            minHeight: 0.6,
+            initHeight: 0.6,
+            maxHeight: 0.95,
+            isCollapsible: true,
+            duration: const Duration(milliseconds: 250),
+            anchors: [0.95],
+            context: context, 
+            builder: (ctx, controller, offset) => BlockedServicesModal(
+              scrollController: controller,
+              blockedServices: serversProvider.filtering.data!.blockedServices,
+              onApply: updateBlockedServices,
+            ),
+            bottomSheetColor: Colors.transparent
+          );
+        });
+      }
+      else {
+        Future.delayed(const Duration(seconds: 0), () => {
+          showDialog(
+            context: context, 
+            builder: (context) => BlockedServicesModal(
+              scrollController: ScrollController(),
+              blockedServices: serversProvider.filtering.data!.blockedServices,
+              onApply: updateBlockedServices,
+            ),
+          )
+        });
+      }
+    }
+
+    void openManagementBottomSheet() {
+      if (width < 700) {
+        showModalBottomSheet(
           context: context, 
-          builder: (ctx, controller, offset) => BlockedServicesModal(
-            scrollController: controller,
-            blockedServices: serversProvider.filtering.data!.blockedServices,
-            onApply: updateBlockedServices,
+          isScrollControlled: true,
+          builder: (context) => UpdateIntervalListsModal(
+            interval: serversProvider.filtering.data!.interval,
+            onChange: setUpdateFrequency
           ),
-          bottomSheetColor: Colors.transparent
         );
-      });
+      }
+      else {
+        showDialog(
+          context: context, 
+          builder: (context) => UpdateIntervalListsModal(
+            interval: serversProvider.filtering.data!.interval,
+            onChange: setUpdateFrequency
+          ),
+        );
+      }
     }
 
     return DefaultTabController(
@@ -315,17 +366,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                       )
                     ),
                     IconButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context, 
-                          builder: (context) => UpdateIntervalListsModal(
-                            interval: serversProvider.filtering.data!.interval,
-                            onChange: setUpdateFrequency
-                          ),
-                          backgroundColor: Colors.transparent,
-                          isScrollControlled: true
-                        );
-                      }, 
+                      onPressed: openManagementBottomSheet,
                       icon: const Icon(Icons.update_rounded)
                     ),
                     PopupMenuButton(

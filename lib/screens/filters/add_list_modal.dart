@@ -8,6 +8,7 @@ class AddListModal extends StatefulWidget {
   final Filter? list;
   final void Function({required String name, required String url, required String type})? onConfirm;
   final void Function({required Filter list, required String type})? onEdit;
+  final double width;
 
   const AddListModal({
     Key? key,
@@ -15,6 +16,7 @@ class AddListModal extends StatefulWidget {
     this.list,
     this.onConfirm,
     this.onEdit,
+    required this.width,
   }) : super(key: key);
 
   @override
@@ -22,6 +24,8 @@ class AddListModal extends StatefulWidget {
 }
 
 class _AddListModalState extends State<AddListModal> {
+  double width = 0;
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController urlController = TextEditingController();
   String? urlError;
@@ -61,141 +65,192 @@ class _AddListModalState extends State<AddListModal> {
 
       validData = true;
     }
+
+    width = widget.width;
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: 370,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
+    final mediaQuery = MediaQuery.of(context);
+
+    Widget items = Material(
+      color: Colors.transparent,
+      child: ListView(
+        physics: 410 < MediaQuery.of(context).size.height
+          ? const NeverScrollableScrollPhysics() 
+          : null,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 24),
+            child: Icon(
+              widget.type == 'whitelist'
+                ? Icons.verified_user_rounded
+                : Icons.gpp_bad_rounded,
+              size: 24,
+              color: Theme.of(context).listTileTheme.iconColor
+            ),
           ),
-          color: Theme.of(context).dialogBackgroundColor
+          const SizedBox(height: 16),
+          Text(
+            widget.list != null
+              ? widget.type == 'whitelist'
+                ? AppLocalizations.of(context)!.editWhitelist
+                : AppLocalizations.of(context)!.editBlacklist
+              : widget.type == 'whitelist'
+                ? AppLocalizations.of(context)!.addWhitelist
+                : AppLocalizations.of(context)!.addBlacklist,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 24,
+              color: Theme.of(context).colorScheme.onSurface
+            ),
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: TextFormField(
+              controller: nameController,
+              onChanged: (_) => checkValidValues(),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.badge_rounded),
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10)
+                  )
+                ),
+                labelText: AppLocalizations.of(context)!.name,
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: TextFormField(
+              controller: urlController,
+              onChanged: validateUrl,
+              enabled: widget.list != null ? false : true,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.link_rounded),
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10)
+                  )
+                ),
+                errorText: urlError,
+                labelText: AppLocalizations.of(context)!.urlAbsolutePath,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    Widget actionButtons = Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), 
+            child: Text(AppLocalizations.of(context)!.cancel)
+          ),
+          const SizedBox(width: 20),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              if (widget.list != null) {
+                final Filter newList = Filter(
+                  url: urlController.text,
+                  name: nameController.text, 
+                  lastUpdated: widget.list!.lastUpdated, 
+                  id: widget.list!.id, 
+                  rulesCount: widget.list!.rulesCount, 
+                  enabled: widget.list!.enabled
+                );
+                widget.onEdit!(
+                  list: newList,
+                  type: widget.type
+                );
+              }
+              else {
+                widget.onConfirm!(
+                  name: nameController.text,
+                  url: urlController.text,
+                  type: widget.type
+                );
+              }
+            }, 
+            child: Text(
+              widget.list != null
+                ? AppLocalizations.of(context)!.save
+                : AppLocalizations.of(context)!.confirm
+            )
+          ),
+        ],
+      ),
+    );
+
+    if (width < 700) {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxHeight: 370,
+          ),
+          child: Container(
+            width: double.maxFinite,
+            height: 370,
+            decoration: BoxDecoration(
+              color: Theme.of(context).dialogBackgroundColor,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(28),
+                topRight: Radius.circular(28)
+              )
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: items
+                ),
+                actionButtons
+              ],
+            ),
+          ),
         ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                physics: 410 < MediaQuery.of(context).size.height
-                  ? const NeverScrollableScrollPhysics() 
-                  : null,
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 370,
+            ),
+            child: Container(
+              width: mediaQuery.size.width > 500
+                ? 500
+                : mediaQuery.size.width-50,
+              height: MediaQuery.of(context).size.height-50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dialogBackgroundColor,
+                borderRadius: BorderRadius.circular(28)
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 24),
-                    child: Icon(
-                      widget.type == 'whitelist'
-                        ? Icons.verified_user_rounded
-                        : Icons.gpp_bad_rounded,
-                      size: 24,
-                      color: Theme.of(context).listTileTheme.iconColor
-                    ),
+                  Expanded(
+                    child: items
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    widget.list != null
-                      ? widget.type == 'whitelist'
-                        ? AppLocalizations.of(context)!.editWhitelist
-                        : AppLocalizations.of(context)!.editBlacklist
-                      : widget.type == 'whitelist'
-                        ? AppLocalizations.of(context)!.addWhitelist
-                        : AppLocalizations.of(context)!.addBlacklist,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: TextFormField(
-                      controller: nameController,
-                      onChanged: (_) => checkValidValues(),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.badge_rounded),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10)
-                          )
-                        ),
-                        labelText: AppLocalizations.of(context)!.name,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: TextFormField(
-                      controller: urlController,
-                      onChanged: validateUrl,
-                      enabled: widget.list != null ? false : true,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.link_rounded),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10)
-                          )
-                        ),
-                        errorText: urlError,
-                        labelText: AppLocalizations.of(context)!.urlAbsolutePath,
-                      ),
-                    ),
-                  ),
+                  actionButtons
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context), 
-                    child: Text(AppLocalizations.of(context)!.cancel)
-                  ),
-                  const SizedBox(width: 20),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      if (widget.list != null) {
-                        final Filter newList = Filter(
-                          url: urlController.text,
-                          name: nameController.text, 
-                          lastUpdated: widget.list!.lastUpdated, 
-                          id: widget.list!.id, 
-                          rulesCount: widget.list!.rulesCount, 
-                          enabled: widget.list!.enabled
-                        );
-                        widget.onEdit!(
-                          list: newList,
-                          type: widget.type
-                        );
-                      }
-                      else {
-                        widget.onConfirm!(
-                          name: nameController.text,
-                          url: urlController.text,
-                          type: widget.type
-                        );
-                      }
-                    }, 
-                    child: Text(
-                      widget.list != null
-                        ? AppLocalizations.of(context)!.save
-                        : AppLocalizations.of(context)!.confirm
-                    )
-                  ),
-                ],
-              ),
-            )
-          ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

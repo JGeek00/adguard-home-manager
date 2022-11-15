@@ -9,10 +9,12 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class AddCustomRule extends StatefulWidget {
   final void Function(String) onConfirm;
+  final double width;
 
   const AddCustomRule({
     Key? key,
-    required this.onConfirm
+    required this.onConfirm,
+    required this.width,
   }) : super(key: key);
 
   @override
@@ -20,6 +22,8 @@ class AddCustomRule extends StatefulWidget {
 }
 
 class _AddCustomRuleState extends State<AddCustomRule> {
+  double width = 0;
+
   final TextEditingController domainController = TextEditingController();
   String? domainError;
 
@@ -87,10 +91,18 @@ class _AddCustomRuleState extends State<AddCustomRule> {
       )
     );
   } 
+
+  @override
+  void initState() {
+    width = widget.width;
+    super.initState();
+  }
     
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final mediaQuery = MediaQuery.of(context);
 
     Map<int, Widget> presets = {
       0: Text(
@@ -131,251 +143,338 @@ class _AddCustomRuleState extends State<AddCustomRule> {
       ),
     };
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.addCustomRule),
-      ),
-      body: ListView(
+    List<Widget> body = [
+      const SizedBox(height: 16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: Theme.of(context).primaryColor
-                  )
-                ),
-                child: Text(
-                  buildRule(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w500
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 5
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: Theme.of(context).primaryColor
+              )
+            ),
+            child: Text(
+              buildRule(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.w500
+              ),
+            )
+          ),
+        ],
+      ),
+      const SizedBox(height: 30),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: TextFormField(
+          controller: domainController,
+          onChanged: (value) => setState(() => {}),
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.link_rounded),
+            border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10)
+              )
+            ),
+            errorText: domainError,
+            labelText: AppLocalizations.of(context)!.domain,
+          ),
+        ),
+      ),
+      const SizedBox(height: 30),
+      MaterialSegmentedControl(
+        children: presets,
+        selectionIndex: preset,
+        onSegmentChosen: (value) => setState(() => preset = value),
+        selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
+        unselectedColor: Colors.transparent,
+        borderColor: Theme.of(context).colorScheme.onSurface,
+      ),
+      const SizedBox(height: 20),
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => setState(() => addImportant = !addImportant),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    AppLocalizations.of(context)!.addImportant,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onSurface
+                    ),
                   ),
+                ),
+                Switch(
+                  value: addImportant, 
+                  onChanged: (value) => setState(() => addImportant = value),
+                  activeColor: Theme.of(context).primaryColor,
                 )
-              ),
-            ],
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: TextFormField(
-              controller: domainController,
-              onChanged: (value) => setState(() => {}),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.link_rounded),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10)
-                  )
-                ),
-                errorText: domainError,
-                labelText: AppLocalizations.of(context)!.domain,
-              ),
+              ],
             ),
           ),
-          const SizedBox(height: 30),
-          MaterialSegmentedControl(
-            children: presets,
-            selectionIndex: preset,
-            onSegmentChosen: (value) => setState(() => preset = value),
-            selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
-            unselectedColor: Colors.transparent,
-            borderColor: Theme.of(context).colorScheme.onSurface,
-          ),
-          const SizedBox(height: 20),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => setState(() => addImportant = !addImportant),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+      ),
+      const SizedBox(height: 20),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        AppLocalizations.of(context)!.addImportant,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.onSurface
-                        ),
-                      ),
+                    Icon(
+                      Icons.info,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
-                    Switch(
-                      value: addImportant, 
-                      onChanged: (value) => setState(() => addImportant = value),
-                      activeColor: Theme.of(context).primaryColor,
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.info,
-                          color: Theme.of(context).colorScheme.onSurface
-                        ),
-                        const SizedBox(width: 20),
-                        Text(
-                          AppLocalizations.of(context)!.examples,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).colorScheme.onSurface
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.maxFinite,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "||example.org^",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            AppLocalizations.of(context)!.example1,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            "@@||example.org^",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            AppLocalizations.of(context)!.example2,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            "! Here goes a comment",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                          Text(
-                            "# Also a comment",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            AppLocalizations.of(context)!.example3,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            "/REGEX/",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            AppLocalizations.of(context)!.example4,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).primaryColor
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: openDocsPage,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        AppLocalizations.of(context)!.moreInformation,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.onSurface
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 15),
-                      child: Icon(
-                        Icons.open_in_new,
+                    const SizedBox(width: 20),
+                    Text(
+                      AppLocalizations.of(context)!.examples,
+                      style: TextStyle(
+                        fontSize: 18,
                         color: Theme.of(context).colorScheme.onSurface
                       ),
                     )
                   ],
                 ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "||example.org^",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        AppLocalizations.of(context)!.example1,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        "@@||example.org^",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        AppLocalizations.of(context)!.example2,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        "! Here goes a comment",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      Text(
+                        "# Also a comment",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        AppLocalizations.of(context)!.example3,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        "/REGEX/",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        AppLocalizations.of(context)!.example4,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 20),
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: openDocsPage,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    AppLocalizations.of(context)!.moreInformation,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onSurface
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Icon(
+                    Icons.open_in_new,
+                    color: Theme.of(context).colorScheme.onSurface
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 20)
+    ];
+    
+    if (width < 700) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.addCustomRule),
+          actions: [
+            IconButton(
+              onPressed: checkValidValues() == true
+                ? () => widget.onConfirm(domainController.text)
+                : null, 
+              icon: const Icon(Icons.check)
+            ),
+            const SizedBox(width: 10)
+          ],
+        ),
+        body: ListView(
+          children: body,
+        )
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Material(
+          color: Colors.transparent,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              width: mediaQuery.size.width > 500
+                ? 500
+                : mediaQuery.size.width-50,
+              height: mediaQuery.size.height > 500
+                ? mediaQuery.size.height*0.7
+                : mediaQuery.size.height-50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dialogBackgroundColor,
+                borderRadius: BorderRadius.circular(28)
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Icon(
+                          Icons.add_rounded,
+                          size: 24,
+                          color: Theme.of(context).listTileTheme.iconColor
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context)!.addCustomRule,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                        ...body
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context), 
+                          child: Text(AppLocalizations.of(context)!.cancel)
+                        ),
+                        const SizedBox(width: 20),
+                        TextButton(
+                          onPressed: checkValidValues() == true
+                            ? () => widget.onConfirm(domainController.text)
+                            : null, 
+                          child: Text(
+                            AppLocalizations.of(context)!.confirm,
+                            style: TextStyle(
+                              color: checkValidValues() == true
+                                ? null
+                                : Theme.of(context).primaryColor.withOpacity(0.38), 
+                            ),
+                          ),
+                        ),
+                      ]
+                    ),
+                  )
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 20)
-        ],
-      ),
-    );
+        ),
+      );
+    }
   }
 }
         // Padding(

@@ -28,6 +28,8 @@ class FiltersFab extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void confirmAddRule(String rule) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingRule);
@@ -63,14 +65,29 @@ class FiltersFab extends StatelessWidget {
       }
     }
 
-    void openAddCustomRule() {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => AddCustomRule(
-            onConfirm: confirmAddRule
-          ),
-        )
-      );
+    void openAddCustomRule() async {
+      if (width < 700) {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          Navigator.push(context, MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (BuildContext context) => AddCustomRule(
+              onConfirm: confirmAddRule,
+              width: width,
+            ),
+          ))
+        }));
+      }
+      else {
+        await Future.delayed(const Duration(seconds: 0), (() => {
+          showDialog(
+            context: context, 
+            builder: (BuildContext context) => AddCustomRule(
+              onConfirm: confirmAddRule,
+              width: width,
+            ),
+          )
+        }));
+      }
     }
 
     void confirmAddList({required String name, required String url, required String type}) async {
@@ -152,16 +169,30 @@ class FiltersFab extends StatelessWidget {
       }
     }
 
+
     void openAddWhitelistBlacklist() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (ctx) => AddListModal(
-          type: type,
-          onConfirm: confirmAddList,
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
-      );
+      if (width < 700) {
+        showModalBottomSheet(
+          context: context, 
+          isScrollControlled: true,
+          builder: (context) =>  AddListModal(
+            type: type,
+            onConfirm: confirmAddList,
+            width: width,
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      }
+      else {
+        showDialog(
+          context: context, 
+          builder: (context) => AddListModal(
+            type: type,
+            onConfirm: confirmAddList,
+            width: width,
+          ),
+        );
+      }
     }
 
     return FloatingActionButton(

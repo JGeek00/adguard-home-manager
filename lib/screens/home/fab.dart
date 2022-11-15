@@ -16,7 +16,7 @@ class HomeFab extends StatelessWidget {
 
     void openManagementBottomSheet() {
       if (width < 700) {
-         showModalBottomSheet(
+        showModalBottomSheet(
           context: context, 
           isScrollControlled: true,
           builder: (context) => const ManagementModal(),

@@ -734,7 +734,7 @@ class _ClientScreenState extends State<ClientScreen> {
                       children: [
                         Row(
                           children: [
-                                if (widget.client == null || (widget.client != null && editMode == true)) TextButton(
+                            if (widget.client == null || (widget.client != null && editMode == true)) TextButton(
                               onPressed: checkValidValues() == true
                                 ? () {
                                     createClient();

@@ -57,118 +57,154 @@ class _BlockedServicesModalState extends State<BlockedServicesModal> {
   Widget build(BuildContext context) {
     final allSelected = convertFinalValues().length == services.length ? true : false;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).dialogBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28)
-        )
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              controller: widget.scrollController,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 24),
-                  child: Icon(
-                    Icons.block,
-                    size: 24,
-                    color: Theme.of(context).listTileTheme.iconColor
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  AppLocalizations.of(context)!.blockedServices,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Theme.of(context).colorScheme.onSurface
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ListView.builder(
-                  primary: false,
-                  shrinkWrap: true,
-                  itemCount: services.length,
-                  itemBuilder: (context, index) => Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () => updateValues(!(values[index]['checked'] as bool), services[index]),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              services[index]['label']!,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Theme.of(context).colorScheme.onSurface
-                              ),
-                            ),
-                            Checkbox(
-                              value: values[index]['checked'], 
-                              onChanged: (value) => updateValues(value!, services[index]),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)
-                              ),
-                            )
-                          ],
-                        ),
+    final width = MediaQuery.of(context).size.width;
+
+    Widget body = ListView(
+      controller: widget.scrollController,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 24),
+          child: Icon(
+            Icons.block,
+            size: 24,
+            color: Theme.of(context).listTileTheme.iconColor
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          AppLocalizations.of(context)!.blockedServices,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 24,
+            color: Theme.of(context).colorScheme.onSurface
+          ),
+        ),
+        const SizedBox(height: 20),
+        ListView.builder(
+          primary: false,
+          shrinkWrap: true,
+          itemCount: services.length,
+          itemBuilder: (context, index) => Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => updateValues(!(values[index]['checked'] as bool), services[index]),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      services[index]['label']!,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onSurface
                       ),
                     ),
-                  )
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () => {
-                    allSelected == true
-                      ? setState(() => values = values.map((v) => {
-                          'id': v['id'],
-                          'checked': false
-                        }).toList())
-                      : setState(() => values = values.map((v) => {
-                          'id': v['id'],
-                          'checked': true
-                        }).toList())
-                  }, 
-                  child: Text(
-                    allSelected == true
-                      ? AppLocalizations.of(context)!.unselectAll
-                      : AppLocalizations.of(context)!.selectAll
-                  )
-                ),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context), 
-                      child: Text(AppLocalizations.of(context)!.cancel)
-                    ),
-                    const SizedBox(width: 20),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        widget.onApply(convertFinalValues());
-                      }, 
-                      child: Text(AppLocalizations.of(context)!.apply)
-                    ),
+                    Checkbox(
+                      value: values[index]['checked'], 
+                      onChanged: (value) => updateValues(value!, services[index]),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)
+                      ),
+                    )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
+          )
+        ),
+      ],
+    );
+
+    Widget actionButtons = Padding(
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton(
+            onPressed: () => {
+              allSelected == true
+                ? setState(() => values = values.map((v) => {
+                    'id': v['id'],
+                    'checked': false
+                  }).toList())
+                : setState(() => values = values.map((v) => {
+                    'id': v['id'],
+                    'checked': true
+                  }).toList())
+            }, 
+            child: Text(
+              allSelected == true
+                ? AppLocalizations.of(context)!.unselectAll
+                : AppLocalizations.of(context)!.selectAll
+            )
+          ),
+          Row(
+            children: [
+              TextButton(
+                onPressed: () => Navigator.pop(context), 
+                child: Text(AppLocalizations.of(context)!.cancel)
+              ),
+              const SizedBox(width: 20),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  widget.onApply(convertFinalValues());
+                }, 
+                child: Text(AppLocalizations.of(context)!.apply)
+              ),
+            ],
           )
         ],
       ),
     );
+
+    if (width < 700) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).dialogBackgroundColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
+          )
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: body
+            ),
+            actionButtons
+          ],
+        ),
+      );
+    }
+    else {
+      return SizedBox(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 548,
+            ),
+            child: Container(
+              width: 500,
+              height: MediaQuery.of(context).size.height-50,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dialogBackgroundColor,
+                borderRadius: BorderRadius.circular(28)
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: body
+                  ),
+                  actionButtons
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
