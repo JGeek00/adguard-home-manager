@@ -59,8 +59,6 @@ class LogsWidget extends StatefulWidget {
 }
 
 class _LogsWidgetState extends State<LogsWidget> {
-  late ScrollController scrollController;
-  
   bool isLoadingMore = false;
 
   bool showDivider = true;
@@ -131,21 +129,21 @@ class _LogsWidgetState extends State<LogsWidget> {
     }
   }
 
-  void scrollListener() {
-    if (scrollController.position.extentAfter < 500 && isLoadingMore == false) {
+  bool scrollListener(ScrollNotification scrollInfo) {
+    if (scrollInfo.metrics.extentAfter < 500 && isLoadingMore == false) {
       fetchLogs(loadingMore: true);
     }
-    if (scrollController.position.pixels > 0) {
+    if (scrollInfo.metrics.pixels > 0) {
       setState(() => showDivider = false);
     }
     else {
       setState(() => showDivider = true);
     }
+    return true;
   }
 
   @override
   void initState() {
-    scrollController = ScrollController()..addListener(scrollListener);
     fetchLogs(inOffset: 0);
     fetchFilteringRules();
     super.initState();
@@ -274,39 +272,42 @@ class _LogsWidgetState extends State<LogsWidget> {
           logsProvider.setSelectedLog(null);
           await fetchLogs(inOffset: 0);
         },
-        child: ListView.builder(
-          padding: const EdgeInsets.only(top: 0),
-          itemCount: isLoadingMore == true 
-            ? logsProvider.logsData!.data.length+1
-            : logsProvider.logsData!.data.length,
-          itemBuilder: (context, index) {
-            if (isLoadingMore == true && index == logsProvider.logsData!.data.length) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
+        child: NotificationListener<ScrollNotification>(
+          onNotification: scrollListener,
+          child: ListView.builder(
+            padding: const EdgeInsets.only(top: 0),
+            itemCount: isLoadingMore == true 
+              ? logsProvider.logsData!.data.length+1
+              : logsProvider.logsData!.data.length,
+            itemBuilder: (context, index) {
+              if (isLoadingMore == true && index == logsProvider.logsData!.data.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              else {
+                return LogTile(
+                  log: logsProvider.logsData!.data[index],
+                  index: index,
+                  length: logsProvider.logsData!.data.length,
+                  selectedLog: width >= 700 ? logsProvider.selectedLog : null,
+                  onLogSelected: (log) {
+                    if (width < 700) {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => LogDetailsScreen(log: log)
+                      ));
+                    }
+                    else {
+                      logsProvider.setSelectedLog(log);
+                    }
+                  },
+                );
+              }
             }
-            else {
-              return LogTile(
-                log: logsProvider.logsData!.data[index],
-                index: index,
-                length: logsProvider.logsData!.data.length,
-                selectedLog: width >= 700 ? logsProvider.selectedLog : null,
-                onLogSelected: (log) {
-                  if (width < 700) {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => LogDetailsScreen(log: log)
-                    ));
-                  }
-                  else {
-                    logsProvider.setSelectedLog(log);
-                  }
-                },
-              );
-            }
-          }
+          ),
         ),
       );
     }
@@ -528,7 +529,6 @@ class _LogsWidgetState extends State<LogsWidget> {
     if (width < 700) {
       return Scaffold(
         body: NestedScrollView(
-          controller: scrollController,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverAppBar.large(
               title: Text(AppLocalizations.of(context)!.logs),
@@ -560,7 +560,6 @@ class _LogsWidgetState extends State<LogsWidget> {
             SizedBox(
               width: width*0.4,
               child: NestedScrollView(
-                controller: scrollController,
                 headerSliverBuilder: (context, innerBoxIsScrolled) => [
                   SliverOverlapAbsorber(
                     handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
