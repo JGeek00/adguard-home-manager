@@ -140,7 +140,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     }
 
     void showCheckHostModal() {
-      Future.delayed(Duration(seconds: 0), () {
+      Future.delayed(const Duration(seconds: 0), () {
         if (width < 700) {
           showModalBottomSheet(
             context: context, 

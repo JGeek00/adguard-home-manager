@@ -66,6 +66,8 @@ class _ClientsListState extends State<ClientsList> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void confirmRemoveItem(String client, String type) async {
       Map<String, List<String>> body = {
         "allowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.allowedClients ?? [],
@@ -206,6 +208,33 @@ class _ClientsListState extends State<ClientsList> {
       }
     }
 
+    void openAddClient() {
+      Future.delayed(const Duration(seconds: 0), () {
+        if (width < 700) {
+          showModalBottomSheet(
+            context: context, 
+            isScrollControlled: true,
+            builder: (context) => AddClientModal(
+              type: widget.type,
+              onConfirm: confirmAddItem,
+              width: width,
+            ),
+            backgroundColor: Colors.transparent,
+          );
+        }
+        else {
+          showDialog(
+            context: context, 
+            builder: (context) => AddClientModal(
+              type: widget.type,
+              onConfirm: confirmAddItem,
+              width: width,
+            ),
+          );
+        }
+      });
+    }
+
     switch (widget.loadStatus) {
       case 0:
         return SizedBox(
@@ -323,17 +352,7 @@ class _ClientsListState extends State<ClientsList> {
               right: 20,
               child: FloatingActionButton(
                 backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context, 
-                    builder: (context) => AddClientModal(
-                      type: widget.type,
-                      onConfirm: confirmAddItem
-                    ),
-                    backgroundColor: Colors.transparent,
-                    isScrollControlled: true
-                  );
-                },
+                onPressed: openAddClient,
                 child: Icon(
                   Icons.add,
                   color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
