@@ -266,14 +266,14 @@ class _LogsWidgetState extends State<LogsWidget> {
     };
 
     Widget logsList() {
-      return RefreshIndicator(
-        color: Theme.of(context).primaryColor,
-        onRefresh: () async {
-          logsProvider.setSelectedLog(null);
-          await fetchLogs(inOffset: 0);
-        },
-        child: NotificationListener<ScrollNotification>(
-          onNotification: scrollListener,
+      return NotificationListener<ScrollNotification>(
+        onNotification: scrollListener,
+        child: RefreshIndicator(
+          color: Theme.of(context).primaryColor,
+          onRefresh: () async {
+            logsProvider.setSelectedLog(null);
+            await fetchLogs(inOffset: 0);
+          },
           child: ListView.builder(
             padding: const EdgeInsets.only(top: 0),
             itemCount: isLoadingMore == true 
