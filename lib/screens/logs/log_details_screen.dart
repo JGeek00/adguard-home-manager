@@ -155,7 +155,7 @@ class LogDetailsScreen extends StatelessWidget {
           LogListTile(
             icon: Icons.schedule, 
             title: AppLocalizations.of(context)!.time,
-            subtitle: formatTimestampUTCFromAPI(log.time, 'HH:mm:ss')
+            subtitle: formatTimestampUTC(log.time, 'HH:mm:ss')
           ),
           SectionLabel(label: AppLocalizations.of(context)!.request),
           LogListTile(
