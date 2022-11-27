@@ -7,10 +7,7 @@ String formatTimestamp(DateTime timestamp, String format) {
 }
 
 String formatTimestampUTC(DateTime timestamp, String format) {
-  final DateFormat dateFormat = DateFormat(format);
-  final String utcDate = dateFormat.format(DateTime.parse(timestamp.toString()));
-  final String localDate = dateFormat.parse(utcDate, true).toLocal().toIso8601String();
-  return dateFormat.format(DateTime.parse(localDate));
+  return DateFormat(format).format(timestamp.toLocal());
 }
 
 String formatTimeOfDay(TimeOfDay timestamp, String format) {
