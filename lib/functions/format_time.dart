@@ -6,7 +6,7 @@ String formatTimestamp(DateTime timestamp, String format) {
   return f.format(timestamp);
 }
 
-String formatTimestampUTC(DateTime timestamp, String format) {
+String convertTimestampLocalTimezone(DateTime timestamp, String format) {
   return DateFormat(format).format(timestamp.toLocal());
 }
 

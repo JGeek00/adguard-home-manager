@@ -268,7 +268,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                   //               const SizedBox(height: 5),
                   //               Text(
                   //                 logsProvider.logsOlderThan != null
-                  //                   ? formatTimestampUTC(logsProvider.logsOlderThan!, 'HH:mm - dd/MM/yyyy')
+                  //                   ? convertTimestampLocalTimezone(logsProvider.logsOlderThan!, 'HH:mm - dd/MM/yyyy')
                   //                   : AppLocalizations.of(context)!.notSelected,
                   //                 style: const TextStyle(
                   //                   fontSize: 14,

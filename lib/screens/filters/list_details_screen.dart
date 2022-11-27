@@ -292,7 +292,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
               if (widget.list.lastUpdated != null) FilterListTile(
                 icon: Icons.schedule_rounded, 
                 title: AppLocalizations.of(context)!.latestUpdate, 
-                subtitle: formatTimestampUTC(widget.list.lastUpdated!, 'dd-MM-yyyy HH:mm'), 
+                subtitle: convertTimestampLocalTimezone(widget.list.lastUpdated!, 'dd-MM-yyyy HH:mm'), 
               ),
             ],
           ),
