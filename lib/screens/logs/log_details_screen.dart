@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
-import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:adguard_home_manager/widgets/section_label.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_list_tile.dart';
 
@@ -30,10 +30,14 @@ class LogDetailsScreen extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    Filter getList(int id) {
-      return serversProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
-        return serversProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
-      });
+    Filter? getList(int id) {
+      try {
+        return serversProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
+          return serversProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
+        });
+      } catch (_) {
+        return null;
+      }
     }
 
     Widget getResult() {
@@ -202,11 +206,19 @@ class LogDetailsScreen extends StatelessWidget {
           ),
           if (log.rules.isNotEmpty) ...[
             SectionLabel(label: AppLocalizations.of(context)!.rules),
-            ...log.rules.map((rule) => LogListTile(
-              icon: Icons.rule_rounded, 
-              title: rule.text,
-              subtitle: getList(rule.filterListId).name,
-            )).toList()
+            ...log.rules.map((rule) {
+              final Filter? list = getList(rule.filterListId);
+              if (list != null) {
+                return LogListTile(
+                  icon: Icons.rule_rounded, 
+                  title: rule.text,
+                  subtitle: list.name
+                );
+              }
+              else {
+                return const SizedBox();
+              }
+            }).toList()
           ],
           if (log.answer.isNotEmpty) ...[
             SectionLabel(label: AppLocalizations.of(context)!.answers),

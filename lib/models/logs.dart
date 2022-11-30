@@ -148,7 +148,7 @@ class ClientInfo {
   });
 
   factory ClientInfo.fromJson(Map<String, dynamic> json) => ClientInfo(
-    whois: Whois.fromJson(json["whois"]),
+    whois: Whois.fromJson(Map<String, dynamic>.from(json["whois"])),
     name: json["name"],
     disallowedRule: json["disallowed_rule"],
     disallowed: json["disallowed"],
