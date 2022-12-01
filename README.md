@@ -7,8 +7,8 @@
 </h5>
 
 <p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.jgeek00.adguard_home_manager">
-  <img src="/assets/other/get_google_play.png" width="300px">
+  <a href="https://play.google.com/store/apps/details?id=com.jgeek00.adguard_home_manager" target="_blank" rel="noopener noreferrer">
+    <img src="/assets/other/get_google_play.png" width="300px">
   </a>
 </p>
 
