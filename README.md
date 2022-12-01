@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://github.com/JGeek00/adguard-home-manager/raw/master/assets/icon/icon-ios.png" width="100" />
+  <img src="https://github.com/JGeek00/adguard-home-manager/raw/master/assets/other/banner.png" height="200" />
 </h1>
 
 <h5 align="center">
