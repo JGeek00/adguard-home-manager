@@ -3,7 +3,12 @@
 </h1>
 
 <h5 align="center">
-  <b>AdGuard Home Manager is an AdGuard Home unofficial client developed with Flutter.</b>
+  <b>
+    AdGuard Home Manager is an 
+    <a href="https://adguard.com/es/adguard-home/overview.html" target="_blank" rel="noopener noreferrer">
+      AdGuard Home
+    </a> 
+    unofficial client developed with Flutter.</b>
 </h5>
 
 <p align="center">
