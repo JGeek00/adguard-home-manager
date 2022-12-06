@@ -12,7 +12,6 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
-import 'package:adguard_home_manager/config/system_overlay_style.dart';
 
 class AddServerModal extends StatefulWidget {
   final Server? server;
@@ -528,7 +527,7 @@ class _AddServerModalState extends State<AddServerModal> {
                   )
                 ),
                 child: Text(
-                  "$connectionType://${ipDomainController.text}${pathController.text}${portController.text != '' ? ':${portController.text}' : ""}",
+                  "$connectionType://${ipDomainController.text}${portController.text != '' ? ':${portController.text}' : ""}${pathController.text}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
