@@ -6,6 +6,7 @@ import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/section_label.dart';
+import 'package:adguard_home_manager/widgets/confirm_action_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_leases.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/select_interface_modal.dart';
 
@@ -319,6 +320,34 @@ class _DhcpWidgetState extends State<DhcpWidget> {
             color: Colors.red
           );
         }
+      });
+    }
+
+    void askRestoreLeases() {
+      Future.delayed(const Duration(seconds: 0), () => {
+        showDialog(
+          context: context, 
+          builder: (context) => ConfirmActionModal(
+            icon: Icons.settings_backup_restore_rounded,
+            title: AppLocalizations.of(context)!.restoreLeases,
+            message: AppLocalizations.of(context)!.restoreLeasesMessage, 
+            onConfirm: () => restoreLeases()
+          )
+        )
+      });
+    }
+
+    void askRestoreConfig() {
+      Future.delayed(const Duration(seconds: 0), () => {
+        showDialog(
+          context: context, 
+          builder: (context) => ConfirmActionModal(
+            icon: Icons.restore,
+            title: AppLocalizations.of(context)!.restoreConfiguration,
+            message: AppLocalizations.of(context)!.restoreConfigurationMessage,
+            onConfirm: () => restoreConfig()
+          )
+        )
       });
     }
 
@@ -757,7 +786,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 )
               ), 
               PopupMenuItem(
-                onTap: restoreLeases,
+                onTap: askRestoreLeases,
                 child: Row(
                   children: [
                     const Icon(Icons.settings_backup_restore_rounded),
@@ -767,7 +796,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 )
               ),
               PopupMenuItem(
-                onTap: restoreConfig,
+                onTap: askRestoreConfig,
                 child: Row(
                   children: [
                     const Icon(Icons.restore),
