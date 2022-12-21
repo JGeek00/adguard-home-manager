@@ -123,6 +123,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
           }
           else {
             privateKeyOption = 0;
+            privateKeyPathController.text = result['data'].privateKeyPath;
           }
           usePreviouslySavedKey = result['data'].privateKeySaved;
 
