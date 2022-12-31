@@ -1,10 +1,18 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 
+import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/models/filtering_status.dart';
+import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 class TopItems extends StatelessWidget {
   final String type;
   final String label;
@@ -22,6 +30,96 @@ class TopItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    bool? getIsBlocked() {
+      if (type == 'topBlockedDomains') {
+        return true;
+      }
+      else if (type == 'topQueriedDomains') {
+        return false;
+      }
+      else {
+        return null;
+      }
+    }
+
+    void blockUnblock(String domain, String newStatus) async {
+      final ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.savingUserFilters);
+
+      final rules = await getFilteringRules(server: serversProvider.selectedServer!);
+
+      if (rules['result'] == 'success') {
+        FilteringStatus oldStatus = serversProvider.serverStatus.data!.filteringStatus;
+
+        List<String> newRules = rules['data'].userRules.where((d) => !d.contains(domain)).toList();
+        if (newStatus == 'block') {
+          newRules.add("||$domain^");
+        }
+        else if (newStatus == 'unblock') {
+          newRules.add("@@||$domain^");
+        }
+        FilteringStatus newObj = serversProvider.serverStatus.data!.filteringStatus;
+        newObj.userRules = newRules;
+        serversProvider.setFilteringStatus(newObj);
+
+        final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
+        
+        processModal.close();
+        
+        if (result['result'] == 'success') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
+              backgroundColor: Colors.green,
+            )
+          );
+        }
+        else {
+          appConfigProvider.addLog(result['log']);
+          serversProvider.setFilteringStatus(oldStatus);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
+              backgroundColor: Colors.red,
+            )
+          );
+        }
+      }
+      else {
+        appConfigProvider.addLog(rules['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
+    void copyDomainClipboard(String domain) async {
+      await Clipboard.setData(
+        ClipboardData(text: domain)
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.domainCopiedClipboard),
+          backgroundColor: Colors.green,
+        )
+      );
+    }
+
+    void openOptionsModal(String domain) {
+      showDialog(
+        context: context, 
+        builder: (context) => TopItemsOptionsModal(
+          isBlocked: getIsBlocked(),
+          changeStatus: (String status) => blockUnblock(domain, status),
+          copyToClipboard: () => copyDomainClipboard(domain),
+        )
+      );
+    }
 
     Widget rowItem(Map<String, dynamic> item) {
       String? name;
@@ -33,47 +131,56 @@ class TopItems extends StatelessWidget {
         }
       }
 
-      return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 8
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.keys.toList()[0],
-                    overflow: TextOverflow.ellipsis,
-                    style:  TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
-                  ),
-                  if (name != null) ...[
-                    const SizedBox(height: 5),
-                    Text(
-                      name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant
-                      ),
-                    ),
-                  ]
-                ],
-              ),
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => {},
+          onLongPress: type == 'topQueriedDomains' || type == 'topBlockedDomains'
+            ? () => openOptionsModal(item.keys.toList()[0])
+            : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 8
             ),
-            Text(
-              item.values.toList()[0].toString(),
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface
-              ),
-            )
-          ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.keys.toList()[0],
+                        overflow: TextOverflow.ellipsis,
+                        style:  TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface
+                        ),
+                      ),
+                      if (name != null) ...[
+                        const SizedBox(height: 5),
+                        Text(
+                          name,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant
+                          ),
+                        ),
+                      ]
+                    ],
+                  ),
+                ),
+                Text(
+                  item.values.toList()[0].toString(),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
       );
     }

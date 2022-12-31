@@ -275,7 +275,7 @@ Future getServerStatus(Server server) async {
         'stats': jsonDecode(result[0]['body']),
         'clients': jsonDecode(result[6]['body'])['clients'],
         'generalEnabled': jsonDecode(result[1]['body']),
-        'filteringEnabled': jsonDecode(result[2]['body']),
+        'filtering': jsonDecode(result[2]['body']),
         'safeSearchEnabled': jsonDecode(result[3]['body']),
         'safeBrowsingEnabled': jsonDecode(result[4]['body']),
         'parentalControlEnabled': jsonDecode(result[5]['body']),

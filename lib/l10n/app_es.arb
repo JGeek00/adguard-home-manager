@@ -573,5 +573,7 @@
     "completed": "completado",
     "permissionNotGranted": "Permiso no concedido",
     "inputSearchTerm": "Introduce un término de búsqueda.",
-    "answers": "Respuestas"
+    "answers": "Respuestas",
+    "copyDomainClipboard": "Copiar dominio al portapapeles",
+    "domainCopiedClipboard": "Dominio copiado al portapapeles"
 }
