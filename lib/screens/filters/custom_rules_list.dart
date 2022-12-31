@@ -115,6 +115,40 @@ class _CustomRulesListState extends State<CustomRulesList> {
       }
     }
 
+    Widget? generateSubtitle(String rule) {
+      final allowRegex = RegExp(r'^@@.*$');
+      final blockRegex = RegExp(r'^\|\|.*$');
+      final commentRegex = RegExp(r'^(#|!).*$');
+
+      if (allowRegex.hasMatch(rule)) {
+        return Text(
+          AppLocalizations.of(context)!.allowed,
+          style: const TextStyle(
+            color: Colors.green
+          ),
+        );
+      }
+      else if (blockRegex.hasMatch(rule)) {
+        return Text(
+          AppLocalizations.of(context)!.blocked,
+          style: const TextStyle(
+            color: Colors.red
+          ),
+        );
+      }
+      else if (commentRegex.hasMatch(rule)) {
+        return Text(
+          AppLocalizations.of(context)!.comment,
+          style: const TextStyle(
+            color: Colors.grey
+          ),
+        );
+      }
+      else {
+        return null;
+      }
+    }
+
     switch (widget.loadStatus) {
       case 0:
         return SizedBox(
@@ -153,6 +187,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
                     fontWeight: FontWeight.normal,
                   ),
                 ),
+                subtitle: generateSubtitle(widget.data[index]),
                 trailing: IconButton(
                   onPressed: () => openRemoveCustomRuleModal(widget.data[index]),
                   icon: const Icon(Icons.delete)
