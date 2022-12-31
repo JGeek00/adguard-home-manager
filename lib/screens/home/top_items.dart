@@ -8,6 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 
+import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -31,6 +33,7 @@ class TopItems extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
 
     bool? getIsBlocked() {
       if (type == 'topBlockedDomains') {
@@ -134,6 +137,18 @@ class TopItems extends StatelessWidget {
       return Material(
         color: Colors.transparent,
         child: InkWell(
+          onTap: type == 'topQueriedDomains' || type == 'topBlockedDomains' 
+            ?() {
+                logsProvider.setSearchText(item.keys.toList()[0]);
+                logsProvider.setAppliedFilters(
+                  AppliedFiters(
+                    selectedResultStatus: 'all', 
+                    searchText: item.keys.toList()[0]
+                  )
+                );
+                appConfigProvider.setSelectedScreen(2);
+              }
+            : null,
           onLongPress: type == 'topQueriedDomains' || type == 'topBlockedDomains'
             ? () => openOptionsModal(item.keys.toList()[0])
             : null,

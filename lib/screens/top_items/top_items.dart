@@ -11,6 +11,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
@@ -59,6 +61,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
 
     int total = 0;
     for (var element in data) {
@@ -246,6 +249,19 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                 }
 
                 return CustomListTile(
+                  onTap: widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains'
+                    ? () {
+                        logsProvider.setSearchText(screenData[index].keys.toList()[0]);
+                        logsProvider.setAppliedFilters(
+                          AppliedFiters(
+                            selectedResultStatus: 'all', 
+                            searchText: screenData[index].keys.toList()[0]
+                          )
+                        );
+                        Navigator.pop(context);
+                        appConfigProvider.setSelectedScreen(2);
+                      }
+                    : null,
                   onLongPress: widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains'
                     ? () => openOptionsModal(screenData[index].keys.toList()[0])
                     : null,
