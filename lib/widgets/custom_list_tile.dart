@@ -8,6 +8,7 @@ class CustomListTile extends StatelessWidget {
   final IconData? icon;
   final Widget? trailing;
   final EdgeInsets? padding;
+  final void Function()? onLongPress;
 
   const CustomListTile({
     Key? key,
@@ -17,7 +18,8 @@ class CustomListTile extends StatelessWidget {
     this.onTap,
     this.icon,
     this.trailing,
-    this.padding
+    this.padding,
+    this.onLongPress
   }) : super(key: key);
 
   @override
@@ -26,6 +28,7 @@ class CustomListTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         child: Padding(
           padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(

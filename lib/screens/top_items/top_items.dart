@@ -3,12 +3,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -59,6 +63,95 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
     int total = 0;
     for (var element in data) {
       total = total + int.parse(element.values.toList()[0].toString());
+    }
+
+    void blockUnblock(String domain, String newStatus) async {
+      final ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.savingUserFilters);
+
+      final rules = await getFilteringRules(server: serversProvider.selectedServer!);
+
+      if (rules['result'] == 'success') {
+        FilteringStatus oldStatus = serversProvider.serverStatus.data!.filteringStatus;
+
+        List<String> newRules = rules['data'].userRules.where((d) => !d.contains(domain)).toList();
+        if (newStatus == 'block') {
+          newRules.add("||$domain^");
+        }
+        else if (newStatus == 'unblock') {
+          newRules.add("@@||$domain^");
+        }
+        FilteringStatus newObj = serversProvider.serverStatus.data!.filteringStatus;
+        newObj.userRules = newRules;
+        serversProvider.setFilteringStatus(newObj);
+
+        final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
+        
+        processModal.close();
+        
+        if (result['result'] == 'success') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
+              backgroundColor: Colors.green,
+            )
+          );
+        }
+        else {
+          appConfigProvider.addLog(result['log']);
+          serversProvider.setFilteringStatus(oldStatus);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
+              backgroundColor: Colors.red,
+            )
+          );
+        }
+      }
+      else {
+        appConfigProvider.addLog(rules['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+
+    void copyDomainClipboard(String domain) async {
+      await Clipboard.setData(
+        ClipboardData(text: domain)
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.domainCopiedClipboard),
+          backgroundColor: Colors.green,
+        )
+      );
+    }
+
+    bool? getIsBlocked() {
+      if (widget.type == 'topBlockedDomains') {
+        return true;
+      }
+      else if (widget.type == 'topQueriedDomains') {
+        return false;
+      }
+      else {
+        return null;
+      }
+    }
+
+    void openOptionsModal(String domain) {
+      showDialog(
+        context: context, 
+        builder: (context) => TopItemsOptionsModal(
+          isBlocked: getIsBlocked(),
+          changeStatus: (String status) => blockUnblock(domain, status),
+          copyToClipboard: () => copyDomainClipboard(domain),
+        )
+      );
     }
 
     return Scaffold(
@@ -153,6 +246,9 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                 }
 
                 return CustomListTile(
+                  onLongPress: widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains'
+                    ? () => openOptionsModal(screenData[index].keys.toList()[0])
+                    : null,
                   title: screenData[index].keys.toList()[0],
                   trailing: Text(
                     screenData[index].values.toList()[0].toString(),

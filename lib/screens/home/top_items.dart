@@ -134,7 +134,6 @@ class TopItems extends StatelessWidget {
       return Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => {},
           onLongPress: type == 'topQueriedDomains' || type == 'topBlockedDomains'
             ? () => openOptionsModal(item.keys.toList()[0])
             : null,
