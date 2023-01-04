@@ -2,12 +2,12 @@
 
 import 'dart:convert';
 
+import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/app_logs/app_log_details_modal.dart';
+import 'package:adguard_home_manager/screens/settings/app_logs/app_log_details_modal.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -18,26 +18,17 @@ class AppLogs extends StatelessWidget {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    void copyLogsClipboard() async {
-      List<Map<String, String>> logsString = appConfigProvider.logs.map((log) => log.toMap()).toList();
-      await Clipboard.setData(
-        ClipboardData(text: jsonEncode(logsString))
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.logsCopiedClipboard),
-          backgroundColor: Colors.black,
-        )
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.logs),
         actions: [
           IconButton(
             onPressed: appConfigProvider.logs.isNotEmpty
-              ? copyLogsClipboard
+              ? () => copyToClipboard(
+                  context: context, 
+                  value: jsonEncode(appConfigProvider.logs.map((log) => log.toMap()).toList()), 
+                  successMessage: AppLocalizations.of(context)!.logsCopiedClipboard
+                )
               : null, 
             icon: const Icon(Icons.share),
             tooltip: AppLocalizations.of(context)!.copyLogsClipboard,

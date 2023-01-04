@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
-import 'package:adguard_home_manager/screens/app_logs/app_logs.dart';
+import 'package:adguard_home_manager/screens/settings/app_logs/app_logs.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
