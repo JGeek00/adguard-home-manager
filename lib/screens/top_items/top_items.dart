@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,6 +11,7 @@ import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
@@ -122,18 +122,6 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
       }
     }
 
-    void copyDomainClipboard(String domain) async {
-      await Clipboard.setData(
-        ClipboardData(text: domain)
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.domainCopiedClipboard),
-          backgroundColor: Colors.green,
-        )
-      );
-    }
-
     bool? getIsBlocked() {
       if (widget.type == 'topBlockedDomains') {
         return true;
@@ -152,7 +140,11 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
         builder: (context) => TopItemsOptionsModal(
           isBlocked: getIsBlocked(),
           changeStatus: (String status) => blockUnblock(domain, status),
-          copyToClipboard: () => copyDomainClipboard(domain),
+          copyToClipboard: () => copyToClipboard(
+            context: context, 
+            value: domain, 
+            successMessage: AppLocalizations.of(context)!.domainCopiedClipboard
+          )
         )
       );
     }
