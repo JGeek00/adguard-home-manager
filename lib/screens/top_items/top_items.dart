@@ -13,9 +13,9 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
-import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/models/filtering_status.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
+import 'package:adguard_home_manager/functions/block_unblock_domain.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -68,60 +68,6 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
       total = total + int.parse(element.values.toList()[0].toString());
     }
 
-    void blockUnblock(String domain, String newStatus) async {
-      final ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.savingUserFilters);
-
-      final rules = await getFilteringRules(server: serversProvider.selectedServer!);
-
-      if (rules['result'] == 'success') {
-        FilteringStatus oldStatus = serversProvider.serverStatus.data!.filteringStatus;
-
-        List<String> newRules = rules['data'].userRules.where((d) => !d.contains(domain)).toList();
-        if (newStatus == 'block') {
-          newRules.add("||$domain^");
-        }
-        else if (newStatus == 'unblock') {
-          newRules.add("@@||$domain^");
-        }
-        FilteringStatus newObj = serversProvider.serverStatus.data!.filteringStatus;
-        newObj.userRules = newRules;
-        serversProvider.setFilteringStatus(newObj);
-
-        final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
-        
-        processModal.close();
-        
-        if (result['result'] == 'success') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
-              backgroundColor: Colors.green,
-            )
-          );
-        }
-        else {
-          appConfigProvider.addLog(result['log']);
-          serversProvider.setFilteringStatus(oldStatus);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
-              backgroundColor: Colors.red,
-            )
-          );
-        }
-      }
-      else {
-        appConfigProvider.addLog(rules['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
-            backgroundColor: Colors.red,
-          )
-        );
-      }
-    }
-
     bool? getIsBlocked() {
       if (widget.type == 'topBlockedDomains') {
         return true;
@@ -134,12 +80,22 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
       }
     }
 
+    void changeBlockStatus(String status, String domain) async {
+      final result = await blockUnblock(context, domain, status);
+      showSnacbkar(
+        context: context, 
+        appConfigProvider: appConfigProvider, 
+        label: result['message'], 
+        color: result['success'] == true ? Colors.green : Colors.red
+      );
+    }
+
     void openOptionsModal(String domain) {
       showDialog(
         context: context, 
         builder: (context) => TopItemsOptionsModal(
           isBlocked: getIsBlocked(),
-          changeStatus: (String status) => blockUnblock(domain, status),
+          changeStatus: (String status) => changeBlockStatus(status, domain),
           copyToClipboard: () => copyToClipboard(
             context: context, 
             value: domain, 
