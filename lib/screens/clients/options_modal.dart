@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/custom_list_tile_dialog.dart';
+
 class OptionsModal extends StatelessWidget {
   final void Function() onEdit;
   final void Function() onDelete;
@@ -37,39 +39,21 @@ class OptionsModal extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 24),
-          ListTile(
+          CustomListTileDialog(
             onTap: () {
               Navigator.pop(context);
               onEdit();
             },
-            title: Text(
-              AppLocalizations.of(context)!.edit,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontWeight: FontWeight.normal
-              ),
-            ),
-            leading: Icon(
-              Icons.edit,
-              color: Theme.of(context).listTileTheme.iconColor,
-            ),
+            title: AppLocalizations.of(context)!.edit,
+            icon: Icons.edit,
           ),
-          ListTile(
+          CustomListTileDialog(
             onTap: () {
               Navigator.pop(context);
               onDelete();
             },
-            title: Text(
-              AppLocalizations.of(context)!.delete,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontWeight: FontWeight.normal
-              ),
-            ),
-            leading: Icon(
-              Icons.delete,
-              color: Theme.of(context).listTileTheme.iconColor,
-            ),
+            title: AppLocalizations.of(context)!.delete,
+            icon: Icons.delete,
           ),
         ],
       ),

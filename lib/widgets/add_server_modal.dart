@@ -570,7 +570,7 @@ class _AddServerModalState extends State<AddServerModal> {
                   borderColor: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               textField(
                 label: AppLocalizations.of(context)!.ipDomain, 
                 controller: ipDomainController, 
