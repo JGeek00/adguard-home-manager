@@ -113,9 +113,12 @@ class _ClientScreenState extends State<ClientScreen> {
       widget.onConfirm(client);
     }
 
-    Widget sectionLabel(String label) {
+    Widget sectionLabel({
+      required String label, 
+      EdgeInsets? padding
+    }) {
       return Padding(
-        padding: const EdgeInsets.symmetric(
+        padding: padding ?? const EdgeInsets.symmetric(
           vertical: 24,
           horizontal: 24
         ),
@@ -309,7 +312,7 @@ class _ClientScreenState extends State<ClientScreen> {
               ),
             ),
           ),
-          sectionLabel(AppLocalizations.of(context)!.tags),
+          sectionLabel(label: AppLocalizations.of(context)!.tags),
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -354,21 +357,28 @@ class _ClientScreenState extends State<ClientScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              sectionLabel(AppLocalizations.of(context)!.identifiers),
+              sectionLabel(
+                label: AppLocalizations.of(context)!.identifiers,
+                padding: const  EdgeInsets.only(
+                  left: 24, right: 24, top: 24, bottom: 12
+                )
+              ),
               if (editMode == true) Padding(
                 padding: const EdgeInsets.only(right: 20),
                 child: IconButton(
-                  onPressed: () => setState(() => identifiersControllers.add({
-                    'id': uuid.v4(),
-                    'controller': TextEditingController()
-                  })),
+                  onPressed: () => setState(() => identifiersControllers.add(
+                    Map<String, Object>.from({
+                      'id': uuid.v4(),
+                      'controller': TextEditingController()
+                    })
+                  )),
                   icon: const Icon(Icons.add)
                 ),
               )
             ],
           ),
           if (identifiersControllers.isNotEmpty) ...identifiersControllers.map((controller) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -415,7 +425,12 @@ class _ClientScreenState extends State<ClientScreen> {
               ),
             ),
           ),
-          sectionLabel(AppLocalizations.of(context)!.settings),
+          sectionLabel(
+            label: AppLocalizations.of(context)!.settings,
+            padding: const  EdgeInsets.only(
+              left: 24, right: 24, top: 12, bottom: 24
+            )
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Material(
@@ -483,7 +498,7 @@ class _ClientScreenState extends State<ClientScreen> {
               ? (value) => setState(() => enableSafeSearch = value)
               : null
           ),
-          sectionLabel(AppLocalizations.of(context)!.blockedServices),
+          sectionLabel(label: AppLocalizations.of(context)!.blockedServices),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Material(
@@ -577,14 +592,16 @@ class _ClientScreenState extends State<ClientScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              sectionLabel(AppLocalizations.of(context)!.upstreamServers),
+              sectionLabel(label: AppLocalizations.of(context)!.upstreamServers),
               if (editMode == true) Padding(
                 padding: const EdgeInsets.only(right: 20),
                 child: IconButton(
-                  onPressed: () => setState(() => upstreamServers.add({
-                    'id': uuid.v4(),
-                    'controller': TextEditingController()
-                  })),
+                  onPressed: () => setState(() => upstreamServers.add(
+                    Map<String, Object>.from({
+                      'id': uuid.v4(),
+                      'controller': TextEditingController()
+                    })
+                  )),
                   icon: const Icon(Icons.add)
                 ),
               )
@@ -630,7 +647,7 @@ class _ClientScreenState extends State<ClientScreen> {
             ),
           )).toList(),
           if (upstreamServers.isEmpty) Container(
-            padding: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 12),
             child: Column(
               children: [
                 Text(
