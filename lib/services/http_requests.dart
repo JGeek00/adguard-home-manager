@@ -1816,6 +1816,38 @@ Future saveEncryptionSettings({
   }
 }
 
+Future resetDnsCache({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/cache_clear', 
+    method: 'post',
+    server: server,
+    type: 'clear_dns_cache'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'clear_dns_cache', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
 Future checkAppUpdatesGitHub() async {
   try {
     HttpClient httpClient = HttpClient();

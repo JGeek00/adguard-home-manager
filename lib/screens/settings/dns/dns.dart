@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/dns/clear_dns_cache_dialog.dart';
 import 'package:adguard_home_manager/screens/settings/dns/cache_config.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns_server_settings.dart';
 import 'package:adguard_home_manager/screens/settings/dns/bootstrap_dns.dart';
@@ -9,6 +12,8 @@ import 'package:adguard_home_manager/screens/settings/dns/private_reverse_server
 import 'package:adguard_home_manager/screens/settings/dns/upstream_dns.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/clear_dns_cache.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -69,6 +74,7 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     Widget generateBody() {
       switch (widget.serversProvider.dnsInfo.loadStatus) {
@@ -179,15 +185,61 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
       }
     }
 
+    void clearCache() async {
+      final result = await clearDnsCache(context, serversProvider.selectedServer!);
+      if (result == true) {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.dnsCacheCleared, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.dnsCacheNotCleared, 
+          color: Colors.red
+        );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title:  Text(AppLocalizations.of(context)!.dnsSettings),
         actions: [
-          IconButton(
-            onPressed: () => fetchData(showRefreshIndicator: true), 
-            icon: const Icon(Icons.refresh_rounded),
-            tooltip: AppLocalizations.of(context)!.refresh,
-          ),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: () => fetchData(showRefreshIndicator: true), 
+                child: Row(
+                  children: [
+                    const Icon(Icons.refresh_rounded),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.refresh)
+                  ],
+                )
+              ),
+              PopupMenuItem(
+                onTap: () => Future.delayed(
+                  const Duration(seconds: 0), () => showDialog(
+                    context: context, 
+                    builder: (context) => ClearDnsCacheDialog(
+                      onConfirm: clearCache
+                    )
+                  )
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.delete_rounded),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.clearDnsCache)
+                  ],
+                )
+              ),
+            ]
+          ), 
           const SizedBox(width: 10)
         ],
       ),

@@ -575,5 +575,10 @@
     "inputSearchTerm": "Input a search term.",
     "answers": "Answers",
     "copyDomainClipboard": "Copy domain to clipboard",
-    "domainCopiedClipboard": "Domain copied to the clipboard"
+    "domainCopiedClipboard": "Domain copied to the clipboard",
+    "clearDnsCache": "Clear DNS cache",
+    "clearDnsCacheMessage": "Are you sure you want to clear the DNS cache?",
+    "dnsCacheCleared": "DNS cache cleared successfully",
+    "clearingDnsCache": "Clearing cache...",
+    "dnsCacheNotCleared": "DNS cache couldn't be cleared"
 }

@@ -5,10 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
+import 'package:adguard_home_manager/screens/settings/dns/clear_dns_cache_dialog.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/functions/clear_dns_cache.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -149,6 +151,26 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
       );
     }
 
+    void clearCache() async {
+      final result = await clearDnsCache(context, serversProvider.selectedServer!);
+      if (result == true) {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.dnsCacheCleared, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.dnsCacheNotCleared, 
+          color: Colors.red
+        );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dnsCacheConfig),
@@ -219,6 +241,22 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
             onChanged: (value) => setState(() => optimisticCache = value), 
             title: AppLocalizations.of(context)!.optimisticCaching,
             subtitle: AppLocalizations.of(context)!.optimisticCachingDescription,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () => showDialog(
+                  context: context, 
+                  builder: (context) => ClearDnsCacheDialog(
+                    onConfirm: clearCache
+                  )
+                ), 
+                icon: const Icon(Icons.delete_rounded),
+                label: Text(AppLocalizations.of(context)!.clearDnsCache),
+              ),
+            ],
           )
         ],
       ),
