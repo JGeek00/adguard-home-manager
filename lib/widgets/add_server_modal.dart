@@ -3,7 +3,6 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
-import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -12,6 +11,8 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
+
+enum ConnectionType { http, https}
 
 class AddServerModal extends StatefulWidget {
   final Server? server;
@@ -31,7 +32,7 @@ class _AddServerModalState extends State<AddServerModal> {
   final TextEditingController nameController = TextEditingController();
   String? nameError;
 
-  String connectionType = "http";
+  ConnectionType connectionType = ConnectionType.http;
 
   final TextEditingController ipDomainController = TextEditingController();
   String? ipDomainError;
@@ -227,7 +228,7 @@ class _AddServerModalState extends State<AddServerModal> {
   void initState() {
     if (widget.server != null) {
       nameController.text = widget.server!.name;
-      connectionType = widget.server!.connectionMethod;
+      connectionType = widget.server!.connectionMethod == 'https' ? ConnectionType.https : ConnectionType.http;
       ipDomainController.text = widget.server!.domain;
       pathController.text = widget.server!.path ?? '';
       portController.text = widget.server!.port != null ? widget.server!.port.toString() : "";
@@ -247,38 +248,11 @@ class _AddServerModalState extends State<AddServerModal> {
 
     final mediaQuery = MediaQuery.of(context);
 
-    Map<int, Widget> connectionTypes = {
-      0: Text(
-        'HTTP',
-        style: TextStyle(
-          color: appConfigProvider.useDynamicColor == true
-            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
-            : connectionType == 'http'
-              ? Colors.white
-              : Theme.of(context).primaryColor,
-          fontSize: 14,
-          fontWeight: FontWeight.w500
-        ),
-      ),
-      1: Text(
-        'HTTPS',
-        style: TextStyle(
-          color: appConfigProvider.useDynamicColor == true
-            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
-            : connectionType == 'https'
-              ? Colors.white
-              : Theme.of(context).primaryColor,
-          fontSize: 14,
-          fontWeight: FontWeight.w500
-        ),
-      )
-    };
-
     void connect() async {
       Server serverObj = Server(
         id: uuid.v4(),
         name: nameController.text, 
-        connectionMethod: connectionType, 
+        connectionMethod: connectionType.name, 
         domain: ipDomainController.text, 
         port: portController.text != '' ? int.parse(portController.text) : null,
         user: userController.text, 
@@ -389,7 +363,7 @@ class _AddServerModalState extends State<AddServerModal> {
       final Server serverObj = Server(
         id: widget.server!.id,
         name: nameController.text, 
-        connectionMethod: connectionType, 
+        connectionMethod: connectionType.name, 
         domain: ipDomainController.text, 
         port: portController.text != '' ? int.parse(portController.text) : null,
         user: userController.text, 
@@ -527,7 +501,7 @@ class _AddServerModalState extends State<AddServerModal> {
                   )
                 ),
                 child: Text(
-                  "$connectionType://${ipDomainController.text}${portController.text != '' ? ':${portController.text}' : ""}${pathController.text}",
+                  "${connectionType.name}://${ipDomainController.text}${portController.text != '' ? ':${portController.text}' : ""}${pathController.text}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
@@ -553,21 +527,20 @@ class _AddServerModalState extends State<AddServerModal> {
               ),
               sectionLabel(AppLocalizations.of(context)!.connection),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: MaterialSegmentedControl(
-                  children: connectionTypes,
-                  selectionIndex: connectionType == 'http' ? 0 : 1,
-                  onSegmentChosen: (value) => setState(() {
-                    if (value == 0) {
-                      connectionType = 'http';
-                    }
-                    else if (value == 1) {
-                      connectionType = 'https';
-                    }
-                  }),
-                  selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
-                  unselectedColor: Colors.transparent,
-                  borderColor: Theme.of(context).colorScheme.onSurface,
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: SegmentedButton<ConnectionType>(
+                  segments: const [
+                    ButtonSegment(
+                      value: ConnectionType.http,
+                      label: Text("HTTP")
+                    ),
+                    ButtonSegment(
+                      value: ConnectionType.https,
+                      label: Text("HTTPS")
+                    ),
+                  ], 
+                  selected: <ConnectionType>{connectionType},
+                  onSelectionChanged: (value) => setState(() => connectionType = value.first),
                 ),
               ),
               const SizedBox(height: 30),

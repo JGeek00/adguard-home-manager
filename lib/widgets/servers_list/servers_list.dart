@@ -274,7 +274,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               PopupMenuButton(
-                color: Theme.of(context).dialogBackgroundColor,
+                // color: Theme.of(context).dialogBackgroundColor,
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     enabled: server.defaultServer == false 

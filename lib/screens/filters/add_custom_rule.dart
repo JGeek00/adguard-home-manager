@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 
 import 'package:adguard_home_manager/constants/urls.dart';
@@ -19,11 +18,13 @@ class AddCustomRule extends StatefulWidget {
   State<AddCustomRule> createState() => _AddCustomRuleState();
 }
 
+enum BlockingPresets { block, unblock, custom }
+
 class _AddCustomRuleState extends State<AddCustomRule> {
   final TextEditingController domainController = TextEditingController();
   String? domainError;
 
-  int preset = 0;
+  BlockingPresets preset = BlockingPresets.block;
 
   bool addImportant = false;
 
@@ -55,10 +56,10 @@ class _AddCustomRuleState extends State<AddCustomRule> {
 
     String fieldValue = value ?? domainController.text;
     
-    if (preset == 0) {
+    if (preset == BlockingPresets.block) {
       rule = "||${fieldValue.trim()}^";
     }
-    else if (preset == 1) {
+    else if (preset == BlockingPresets.unblock) {
       rule = "@@||${fieldValue.trim()}^";
     }
     else {
@@ -196,13 +197,26 @@ class _AddCustomRuleState extends State<AddCustomRule> {
             ),
           ),
           const SizedBox(height: 30),
-          MaterialSegmentedControl(
-            children: presets,
-            selectionIndex: preset,
-            onSegmentChosen: (value) => setState(() => preset = value),
-            selectedColor: Theme.of(context).floatingActionButtonTheme.backgroundColor!,
-            unselectedColor: Colors.transparent,
-            borderColor: Theme.of(context).colorScheme.onSurface,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: SegmentedButton(
+              segments: [
+                ButtonSegment(
+                  value: BlockingPresets.block,
+                  label: Text(AppLocalizations.of(context)!.block)
+                ),
+                ButtonSegment(
+                  value: BlockingPresets.unblock,
+                  label: Text(AppLocalizations.of(context)!.unblock)
+                ),
+                ButtonSegment(
+                  value: BlockingPresets.custom,
+                  label: Text(AppLocalizations.of(context)!.custom)
+                ),
+              ], 
+              selected: <BlockingPresets>{preset},
+              onSelectionChanged: (value) => setState(() => preset = value.first),
+            ),
           ),
           const SizedBox(height: 20),
           Material(

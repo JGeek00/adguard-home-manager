@@ -321,7 +321,6 @@ class _ClientsListState extends State<ClientsList> {
                 : -70,
               right: 20,
               child: FloatingActionButton(
-                backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                 onPressed: () {
                   showModalBottomSheet(
                     context: context, 
@@ -333,10 +332,7 @@ class _ClientsListState extends State<ClientsList> {
                     isScrollControlled: true
                   );
                 },
-                child: Icon(
-                  Icons.add,
-                  color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
-                ),
+                child: const Icon(Icons.add),
               ),
             )
           ]

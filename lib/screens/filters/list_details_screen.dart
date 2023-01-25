@@ -306,12 +306,10 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
             right: 20,
             child: FloatingActionButton(
               onPressed: () => enableDisableList(widget.list, !enabled),
-              backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
               child: Icon(
                 enabled == true
                   ? Icons.gpp_bad_rounded
                   : Icons.verified_user_rounded,
-                color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
               ),
             ),
           )

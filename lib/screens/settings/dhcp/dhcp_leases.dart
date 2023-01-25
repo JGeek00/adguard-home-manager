@@ -184,11 +184,7 @@ class DhcpLeases extends StatelessWidget {
       floatingActionButton: staticLeases == true
         ? FloatingActionButton(
             onPressed: openAddStaticLease,
-            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            child: Icon(
-              Icons.add,
-              color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
-            ),
+            child: const Icon(Icons.add),
           )
         : null,
     );

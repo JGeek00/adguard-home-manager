@@ -286,7 +286,6 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
       ),
       body: generateBody(),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
         onPressed: () => {
           showModalBottomSheet(
             context: context, 
@@ -297,10 +296,7 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
             isScrollControlled: true
           )
         },
-        child: Icon(
-          Icons.add,
-          color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
-        ),
+        child: const Icon(Icons.add),
       ),
     );
   }

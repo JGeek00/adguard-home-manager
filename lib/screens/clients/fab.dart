@@ -69,11 +69,7 @@ class ClientsFab extends StatelessWidget {
 
     return FloatingActionButton(
       onPressed: () => openAddClient(),
-      backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-      child: Icon(
-        Icons.add,
-        color: Theme.of(context).floatingActionButtonTheme.foregroundColor,
-      ),
+      child: const Icon(Icons.add),
     );
   }
 }

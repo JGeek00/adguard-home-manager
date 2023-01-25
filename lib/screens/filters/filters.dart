@@ -366,7 +366,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                   ] : [],
                   bottom: TabBar(
                     controller: tabController,
-                    isScrollable: true,
+                    isScrollable: false,
                     unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
                     tabs: [
                       Tab(
@@ -388,53 +388,43 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
             )
           ];
         }), 
-        body: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border(
-              top: BorderSide(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
+        body: TabBarView(
+          controller: tabController,
+          children: [
+            RefreshIndicator(
+              onRefresh: fetchFilters,
+              child: FiltersList(
+                loadStatus: serversProvider.filtering.loadStatus,
+                scrollController: scrollController,
+                type: 'whitelist',
+                data: serversProvider.filtering.loadStatus == 1
+                  ? serversProvider.filtering.data!.whitelistFilters : [],
+                fetchData: fetchFilters,
               )
-            )
-          ),
-          child: TabBarView(
-            controller: tabController,
-            children: [
-              RefreshIndicator(
-                onRefresh: fetchFilters,
-                child: FiltersList(
-                  loadStatus: serversProvider.filtering.loadStatus,
-                  scrollController: scrollController,
-                  type: 'whitelist',
-                  data: serversProvider.filtering.loadStatus == 1
-                    ? serversProvider.filtering.data!.whitelistFilters : [],
-                  fetchData: fetchFilters,
-                )
-              ),
-              RefreshIndicator(
-                onRefresh: fetchFilters,
-                child: FiltersList(
-                  loadStatus: serversProvider.filtering.loadStatus,
-                  scrollController: scrollController,
-                  type: 'blacklist',
-                  data: serversProvider.filtering.loadStatus == 1
-                    ? serversProvider.filtering.data!.filters : [],
-                  fetchData: fetchFilters,
-                )
-              ),
-              RefreshIndicator(
-                onRefresh: fetchFilters,
-                child: CustomRulesList(
-                  loadStatus: serversProvider.filtering.loadStatus,
-                  scrollController: scrollController,
-                  data: serversProvider.filtering.loadStatus == 1
-                    ? serversProvider.filtering.data!.userRules : [],
-                  fetchData: fetchFilters,
-                )
-              ),
-            ]
-          )
-        ),
+            ),
+            RefreshIndicator(
+              onRefresh: fetchFilters,
+              child: FiltersList(
+                loadStatus: serversProvider.filtering.loadStatus,
+                scrollController: scrollController,
+                type: 'blacklist',
+                data: serversProvider.filtering.loadStatus == 1
+                  ? serversProvider.filtering.data!.filters : [],
+                fetchData: fetchFilters,
+              )
+            ),
+            RefreshIndicator(
+              onRefresh: fetchFilters,
+              child: CustomRulesList(
+                loadStatus: serversProvider.filtering.loadStatus,
+                scrollController: scrollController,
+                data: serversProvider.filtering.loadStatus == 1
+                  ? serversProvider.filtering.data!.userRules : [],
+                fetchData: fetchFilters,
+              )
+            ),
+          ]
+        )
       )
     );
   }

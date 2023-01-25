@@ -29,7 +29,6 @@ class LogListTile extends StatelessWidget {
                 Icon(
                   icon,
                   size: 24,
-                  color: Theme.of(context).listTileTheme.iconColor,
                 ),
                 const SizedBox(width: 16),
                 Flexible(
@@ -38,9 +37,10 @@ class LogListTile extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w400
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                       const SizedBox(height: 3),

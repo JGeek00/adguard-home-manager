@@ -73,6 +73,9 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
       dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
     ),
   ),
+  iconTheme: IconThemeData(
+    color: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(117, 117, 117, 1),
+  ),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
 );
 
@@ -117,14 +120,6 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     ),
   ),
   brightness: Brightness.dark,
-  textTheme: const TextTheme(
-    bodyText1: TextStyle(
-      color: Colors.white70
-    ),
-    bodyText2: TextStyle(
-      color: Colors.white
-    ),
-  ),
   dividerColor: Colors.white12,
   listTileTheme: ListTileThemeData(
     tileColor: Colors.transparent,
@@ -153,6 +148,9 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     fillColor: MaterialStateProperty.all(
       dynamicColorScheme != null ? dynamicColorScheme.primary : adguardGreenColor
     ),
+  ),
+  iconTheme: IconThemeData(
+    color: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(187, 187, 187, 1),
   ),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch
 );
