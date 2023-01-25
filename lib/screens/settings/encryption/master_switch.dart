@@ -20,7 +20,7 @@ class EncryptionMasterSwitch extends StatelessWidget {
         right: 16
       ),
       child: Material(
-        color: Theme.of(context).primaryColor.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(28),
         child: InkWell(
           onTap: () => onChange(!value),
@@ -58,7 +58,7 @@ class EncryptionMasterSwitch extends StatelessWidget {
                 Switch(
                   value: value, 
                   onChanged: (value) => onChange(value),
-                  activeColor: Theme.of(context).primaryColor,
+                  activeColor: Theme.of(context).colorScheme.primary,
                 ),
               ],
             ),

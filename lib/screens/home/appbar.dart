@@ -63,7 +63,7 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
                   color: serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
                     ? serversProvider.serverStatus.data!.generalEnabled == true 
                       ? appConfigProvider.useThemeColorForStatus
-                        ? Theme.of(context).primaryColor
+                        ? Theme.of(context).colorScheme.primary
                         : Colors.green
                       : appConfigProvider.useThemeColorForStatus == true
                         ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)

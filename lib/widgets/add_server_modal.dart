@@ -68,7 +68,7 @@ class _AddServerModalState extends State<AddServerModal> {
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: Theme.of(context).primaryColor
+          color: Theme.of(context).colorScheme.primary
         ),
       ),
     );
@@ -494,17 +494,17 @@ class _AddServerModalState extends State<AddServerModal> {
                   right: 24
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.05),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(
-                    color: Theme.of(context).primaryColor
+                    color: Theme.of(context).colorScheme.primary
                   )
                 ),
                 child: Text(
                   "${connectionType.name}://${ipDomainController.text}${portController.text != '' ? ':${portController.text}' : ""}${pathController.text}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w500
                   ),
                 ),
@@ -612,7 +612,7 @@ class _AddServerModalState extends State<AddServerModal> {
                           onChanged: widget.server == null 
                             ? (value) => setState(() => defaultServer = value)
                             : null,
-                          activeColor: Theme.of(context).primaryColor,
+                          activeColor: Theme.of(context).colorScheme.primary,
                         )
                       ],
                     ),
@@ -638,7 +638,7 @@ class _AddServerModalState extends State<AddServerModal> {
                         Switch(
                           value: homeAssistant, 
                           onChanged: (value) => setState(() => homeAssistant = value),
-                          activeColor: Theme.of(context).primaryColor,
+                          activeColor: Theme.of(context).colorScheme.primary,
                         )
                       ],
                     ),

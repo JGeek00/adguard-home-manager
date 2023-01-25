@@ -116,7 +116,7 @@ class _CommentModalState extends State<CommentModal> {
                       AppLocalizations.of(context)!.confirm,
                       style: TextStyle(
                         color: validData == true
-                          ? Theme.of(context).primaryColor
+                          ? Theme.of(context).colorScheme.primary
                           : Colors.grey
                       ),
                     )

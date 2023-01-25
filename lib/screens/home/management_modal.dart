@@ -38,7 +38,7 @@ class ManagementModal extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Material(
-          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(28),
           child: InkWell(
             onTap: serversProvider.protectionsManagementProcess.contains('general') == false
@@ -64,7 +64,7 @@ class ManagementModal extends StatelessWidget {
                     onChanged: serversProvider.protectionsManagementProcess.contains('general') == false
                       ? (value) => updateBlocking(value, 'general')
                       : null,
-                    activeColor: Theme.of(context).primaryColor,
+                    activeColor: Theme.of(context).colorScheme.primary,
                   )
                 ],
               ),
@@ -112,7 +112,7 @@ class ManagementModal extends StatelessWidget {
                   onChanged: disabled == false
                     ? onChange
                     : null,
-                  activeColor: Theme.of(context).primaryColor,
+                  activeColor: Theme.of(context).colorScheme.primary,
                 )
               ],
             ),

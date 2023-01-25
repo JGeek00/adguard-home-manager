@@ -193,7 +193,7 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
                       AppLocalizations.of(context)!.confirm,
                       style: TextStyle(
                         color: validData == true
-                          ? Theme.of(context).primaryColor
+                          ? Theme.of(context).colorScheme.primary
                           : Colors.grey
                       ),
                     ),

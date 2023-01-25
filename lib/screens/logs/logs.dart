@@ -395,7 +395,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                         avatar: Icon(
                           Icons.search,
                           size: 24,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         label: Row(
                           children: [
@@ -441,7 +441,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                         avatar: Icon(
                           Icons.shield_rounded,
                           size: 24,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         label: Row(
                           children: [

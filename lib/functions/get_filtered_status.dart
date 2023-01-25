@@ -12,7 +12,7 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, AppConfigProvider a
           ? AppLocalizations.of(context)!.processedRow
           : AppLocalizations.of(context)!.processed,
         'color': appConfigProvider.useThemeColorForStatus == true
-            ? Theme.of(context).primaryColor
+            ? Theme.of(context).colorScheme.primary
             : Colors.green,
         'icon': Icons.verified_user_rounded,
       };
@@ -24,7 +24,7 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, AppConfigProvider a
           ? AppLocalizations.of(context)!.processedWhitelistRow
           : AppLocalizations.of(context)!.processedWhitelist,
         'color': appConfigProvider.useThemeColorForStatus == true
-          ? Theme.of(context).primaryColor
+          ? Theme.of(context).colorScheme.primary
           : Colors.green,
         'icon': Icons.verified_user_rounded,
       };
@@ -36,7 +36,7 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, AppConfigProvider a
           ? AppLocalizations.of(context)!.processedErrorRow
           : AppLocalizations.of(context)!.processedError,
         'color': appConfigProvider.useThemeColorForStatus == true
-          ? Theme.of(context).primaryColor
+          ? Theme.of(context).colorScheme.primary
           : Colors.green,
         'icon': Icons.verified_user_rounded,
       };

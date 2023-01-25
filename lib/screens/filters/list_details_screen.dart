@@ -260,7 +260,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                   : AppLocalizations.of(context)!.disabled,
                 color: enabled == true
                   ? appConfigProvider.useThemeColorForStatus == true
-                    ? Theme.of(context).primaryColor
+                    ? Theme.of(context).colorScheme.primary
                     : Colors.green
                   :  appConfigProvider.useThemeColorForStatus == true
                     ? Colors.grey

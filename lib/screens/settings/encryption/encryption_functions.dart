@@ -67,7 +67,7 @@ Widget generateStatus(BuildContext context, AppConfigProvider appConfigProvider,
       return Icon(
         Icons.check_circle_rounded,
         color: appConfigProvider.useThemeColorForStatus == true
-          ? Theme.of(context).primaryColor
+          ? Theme.of(context).colorScheme.primary
           : Colors.green,
       );
     }

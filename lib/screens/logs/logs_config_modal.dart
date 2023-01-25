@@ -147,7 +147,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Material(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(28),
                         child: InkWell(
                           onTap: () => setState(() => generalSwitch = !generalSwitch),
@@ -169,7 +169,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                                 Switch(
                                   value: generalSwitch, 
                                   onChanged: (value) => setState(() => generalSwitch = value),
-                                  activeColor: Theme.of(context).primaryColor,
+                                  activeColor: Theme.of(context).colorScheme.primary,
                                 )
                               ],
                             ),
@@ -196,7 +196,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                               Switch(
                                 value: anonymizeClientIp, 
                                 onChanged: (value) => setState(() => anonymizeClientIp = value),
-                                activeColor: Theme.of(context).primaryColor,
+                                activeColor: Theme.of(context).colorScheme.primary,
                               )
                             ],
                           ),
@@ -263,7 +263,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                             AppLocalizations.of(context)!.confirm,
                             style: TextStyle(
                               color: retentionTime != ''
-                                ? Theme.of(context).primaryColor
+                                ? Theme.of(context).colorScheme.primary
                                 : Colors.grey
                             ),
                           )

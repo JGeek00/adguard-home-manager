@@ -231,7 +231,7 @@ class _AddedListState extends State<AddedList> {
                           size: 19,
                           color: widget.data[index].filteringEnabled == true 
                             ? appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).primaryColor
+                              ? Theme.of(context).colorScheme.primary
                               : Colors.green
                             : appConfigProvider.useThemeColorForStatus == true
                               ? Colors.grey
@@ -243,7 +243,7 @@ class _AddedListState extends State<AddedList> {
                           size: 18,
                           color: widget.data[index].safebrowsingEnabled == true 
                             ? appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).primaryColor
+                              ? Theme.of(context).colorScheme.primary
                               : Colors.green
                             : appConfigProvider.useThemeColorForStatus == true
                               ? Colors.grey
@@ -255,7 +255,7 @@ class _AddedListState extends State<AddedList> {
                           size: 18,
                           color: widget.data[index].parentalEnabled == true 
                             ? appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).primaryColor
+                              ? Theme.of(context).colorScheme.primary
                               : Colors.green
                             : appConfigProvider.useThemeColorForStatus == true
                               ? Colors.grey
@@ -267,7 +267,7 @@ class _AddedListState extends State<AddedList> {
                           size: 19,
                           color: widget.data[index].safesearchEnabled == true 
                             ? appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).primaryColor
+                              ? Theme.of(context).colorScheme.primary
                               : Colors.green
                             : appConfigProvider.useThemeColorForStatus == true
                               ? Colors.grey

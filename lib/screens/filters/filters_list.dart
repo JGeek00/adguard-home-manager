@@ -111,7 +111,7 @@ class _FiltersListState extends State<FiltersList> {
                     : Icons.cancel,
                   color: widget.data[index].enabled == true
                     ? appConfigProvider.useThemeColorForStatus == true
-                      ? Theme.of(context).primaryColor
+                      ? Theme.of(context).colorScheme.primary
                       : Colors.green
                     : appConfigProvider.useThemeColorForStatus == true
                       ? Colors.grey

@@ -373,7 +373,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: Theme.of(context).dividerColor,
+                color: Theme.of(context).colorScheme.surfaceVariant,
                 width: 1
               )
             )

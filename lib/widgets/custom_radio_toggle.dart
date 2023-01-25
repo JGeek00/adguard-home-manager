@@ -31,10 +31,10 @@ class CustomRadioToggle extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: groupSelected == value 
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).primaryColor.withOpacity(0.05),
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.primary.withOpacity(0.05),
             border: Border.all(
-              color: Theme.of(context).primaryColor
+              color: Theme.of(context).colorScheme.primary
             ),
             borderRadius: BorderRadius.circular(30)
           ),
@@ -48,7 +48,7 @@ class CustomRadioToggle extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   color: groupSelected == value
                     ? Colors.white
-                    : Theme.of(context).primaryColor
+                    : Theme.of(context).colorScheme.primary
                 ),
               )
             ],

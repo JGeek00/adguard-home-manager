@@ -68,7 +68,7 @@ class CustomSwitchListTile extends StatelessWidget {
                 onChanged: disabled != null && disabled == true
                   ? null
                   : onChanged,
-                activeColor: Theme.of(context).primaryColor,
+                activeColor: Theme.of(context).colorScheme.primary,
               )
             ],
           ),

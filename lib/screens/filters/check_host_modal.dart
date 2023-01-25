@@ -71,7 +71,7 @@ class _CheckHostModalState extends State<CheckHostModal> {
                       ? Colors.grey
                       : Colors.red
                     : appConfigProvider.useThemeColorForStatus
-                      ? Theme.of(context).primaryColor
+                      ? Theme.of(context).colorScheme.primary
                       : Colors.green,
                 ),
                 const SizedBox(width: 10),
@@ -83,7 +83,7 @@ class _CheckHostModalState extends State<CheckHostModal> {
                         ? Colors.grey
                         : Colors.red
                       : appConfigProvider.useThemeColorForStatus
-                        ? Theme.of(context).primaryColor
+                        ? Theme.of(context).colorScheme.primary
                         : Colors.green,
                     fontWeight: FontWeight.w500
                   ),
@@ -223,7 +223,7 @@ class _CheckHostModalState extends State<CheckHostModal> {
                             AppLocalizations.of(context)!.check,
                             style: TextStyle(
                               color: domainController.text != '' && domainError == null
-                                ? Theme.of(context).primaryColor
+                                ? Theme.of(context).colorScheme.primary
                                 : Colors.grey
                             ),
                           ),

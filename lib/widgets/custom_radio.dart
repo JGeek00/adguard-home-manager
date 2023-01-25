@@ -25,7 +25,7 @@ class CustomRadio extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(40),
             color: value == groupValue 
-              ? Theme.of(context).primaryColor
+              ? Theme.of(context).colorScheme.primary
               : Theme.of(context).brightness == Brightness.dark
                 ? const Color.fromRGBO(184, 184, 184, 1)
                 : const Color.fromRGBO(104, 104, 104, 1)
@@ -47,7 +47,7 @@ class CustomRadio extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             color: value == groupValue 
-              ? Theme.of(context).primaryColor
+              ? Theme.of(context).colorScheme.primary
               : backgroundColor
           ),
         ),

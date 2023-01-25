@@ -37,7 +37,8 @@ class LogTile extends StatelessWidget {
       required Color color, 
       required String text
     }) {
-      return Flexible(
+      return SizedBox(
+        width: 70,
         child: Column(
           children: [
             Icon(

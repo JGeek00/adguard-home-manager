@@ -100,7 +100,7 @@ class _TagsModalState extends State<TagsModal> {
             AppLocalizations.of(context)!.confirm,
             style: TextStyle(
               color: selectedTags.isNotEmpty
-                ? Theme.of(context).primaryColor
+                ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
             ),
           )

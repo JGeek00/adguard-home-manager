@@ -101,7 +101,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
             ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
             : preset == 0
               ? Colors.white
-              : Theme.of(context).primaryColor,
+              : Theme.of(context).colorScheme.primary,
           fontSize: 14,
           fontWeight: FontWeight.w500
         ),
@@ -113,7 +113,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
             ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
             : preset == 1
               ? Colors.white
-              : Theme.of(context).primaryColor,
+              : Theme.of(context).colorScheme.primary,
           fontSize: 14,
           fontWeight: FontWeight.w500
         ),
@@ -125,7 +125,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
             ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
             : preset == 2
               ? Colors.white
-              : Theme.of(context).primaryColor,
+              : Theme.of(context).colorScheme.primary,
           fontSize: 14,
           fontWeight: FontWeight.w500
         ),
@@ -161,17 +161,17 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                   vertical: 5
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(
-                    color: Theme.of(context).primaryColor
+                    color: Theme.of(context).colorScheme.primary
                   )
                 ),
                 child: Text(
                   buildRule(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w500
                   ),
                 )
@@ -241,7 +241,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                     Switch(
                       value: addImportant, 
                       onChanged: (value) => setState(() => addImportant = value),
-                      activeColor: Theme.of(context).primaryColor,
+                      activeColor: Theme.of(context).colorScheme.primary,
                     )
                   ],
                 ),
@@ -284,7 +284,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           const SizedBox(height: 5),
@@ -292,7 +292,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             AppLocalizations.of(context)!.example1,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -302,7 +302,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           const SizedBox(height: 5),
@@ -310,7 +310,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             AppLocalizations.of(context)!.example2,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -320,7 +320,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           Text(
@@ -329,7 +329,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           const SizedBox(height: 5),
@@ -337,7 +337,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             AppLocalizations.of(context)!.example3,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -347,7 +347,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           const SizedBox(height: 5),
@@ -355,7 +355,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                             AppLocalizations.of(context)!.example4,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Theme.of(context).primaryColor
+                              color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                         ],
@@ -430,7 +430,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
         //           AppLocalizations.of(context)!.confirm,
         //           style: TextStyle(
         //             color: checkValidValues() == true
-        //               ? Theme.of(context).primaryColor
+        //               ? Theme.of(context).colorScheme.primary
         //               : Colors.grey
         //           ),
         //         )

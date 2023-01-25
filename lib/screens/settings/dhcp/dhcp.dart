@@ -408,7 +408,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     right: 16
                   ),
                   child: Material(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(28),
                     child: InkWell(
                       onTap: selectedInterface != null
@@ -449,7 +449,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                               onChanged: selectedInterface != null
                                 ? (value) => setState(() => enabled = value)
                                 : null,
-                              activeColor: Theme.of(context).primaryColor,
+                              activeColor: Theme.of(context).colorScheme.primary,
                             ),
                           ],
                         ),

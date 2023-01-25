@@ -41,10 +41,10 @@ class ThemeModeButton extends StatelessWidget {
         backgroundColor: MaterialStateProperty.all(
           value == selected
             ? disabled == null || disabled == false
-              ? Theme.of(context).primaryColor
+              ? Theme.of(context).colorScheme.primary
               : greyBackgroundColor
             : disabled == null || disabled == false
-              ? Theme.of(context).primaryColor.withOpacity(0.1)
+              ? Theme.of(context).colorScheme.surfaceVariant
               : greyBackgroundColor,
         )
       ),
@@ -60,10 +60,10 @@ class ThemeModeButton extends StatelessWidget {
               icon,
               color: value == selected
                 ? disabled == null || disabled == false
-                  ? Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white
+                  ? Theme.of(context).colorScheme.primary.computeLuminance() > 0.5 ? Colors.black : Colors.white
                   : greyIconColor
                 : disabled == null || disabled == false
-                  ? Theme.of(context).primaryColor
+                  ? Theme.of(context).colorScheme.primary
                   : greyIconColor,
               size: 30,
             ),
@@ -72,10 +72,10 @@ class ThemeModeButton extends StatelessWidget {
               style: TextStyle(
                 color: value == selected
                   ? disabled == null || disabled == false
-                      ? Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white
+                      ? Theme.of(context).colorScheme.primary.computeLuminance() > 0.5 ? Colors.black : Colors.white
                       : greyIconColor
                     : disabled == null || disabled == false
-                      ? Theme.of(context).primaryColor
+                      ? Theme.of(context).colorScheme.primary
                       : greyIconColor,
                 fontSize: 18
               ),

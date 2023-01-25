@@ -29,7 +29,7 @@ class Status extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               color: valid == true
                 ? appConfigProvider.useThemeColorForStatus == true
-                  ? Theme.of(context).primaryColor
+                  ? Theme.of(context).colorScheme.primary
                   : Colors.green
                 : appConfigProvider.useThemeColorForStatus == true
                   ? Colors.grey

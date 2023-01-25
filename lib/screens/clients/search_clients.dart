@@ -303,7 +303,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                               size: 19,
                               color: clientsScreen[index].filteringEnabled == true 
                                 ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).primaryColor
+                                  ? Theme.of(context).colorScheme.primary
                                   : Colors.green
                                 : appConfigProvider.useThemeColorForStatus == true
                                   ? Colors.grey
@@ -315,7 +315,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                               size: 18,
                               color: clientsScreen[index].safebrowsingEnabled == true 
                                 ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).primaryColor
+                                  ? Theme.of(context).colorScheme.primary
                                   : Colors.green
                                 : appConfigProvider.useThemeColorForStatus == true
                                   ? Colors.grey
@@ -327,7 +327,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                               size: 18,
                               color: clientsScreen[index].parentalEnabled == true 
                                 ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).primaryColor
+                                  ? Theme.of(context).colorScheme.primary
                                   : Colors.green
                                 : appConfigProvider.useThemeColorForStatus == true
                                   ? Colors.grey
@@ -339,7 +339,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                               size: 19,
                               color: clientsScreen[index].safesearchEnabled == true 
                                 ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).primaryColor
+                                  ? Theme.of(context).colorScheme.primary
                                   : Colors.green
                                 : appConfigProvider.useThemeColorForStatus == true
                                   ? Colors.grey

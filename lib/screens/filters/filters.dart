@@ -301,7 +301,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                                     size: 12,
                                     color: serversProvider.filtering.data!.enabled == true
                                       ? appConfigProvider.useThemeColorForStatus == true
-                                        ? Theme.of(context).primaryColor
+                                        ? Theme.of(context).colorScheme.primary
                                         : Colors.green
                                       : appConfigProvider.useThemeColorForStatus == true
                                         ? Colors.grey

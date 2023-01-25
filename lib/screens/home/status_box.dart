@@ -28,7 +28,7 @@ class StatusBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: isEnabled == true 
           ? appConfigProvider.useThemeColorForStatus == true
-            ? Theme.of(context).primaryColor
+            ? Theme.of(context).colorScheme.primary
             : Colors.green
           : appConfigProvider.useThemeColorForStatus == true
             ? Colors.grey
@@ -40,7 +40,7 @@ class StatusBox extends StatelessWidget {
           Icon(
             icon,
             color: appConfigProvider.useThemeColorForStatus == true
-              ? Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white
+              ? Theme.of(context).colorScheme.primary.computeLuminance() > 0.5 ? Colors.black : Colors.white
               : Colors.grey.computeLuminance() > 0.5 ? Colors.black : Colors.white,
           ),
           const SizedBox(width: 12),
@@ -48,7 +48,7 @@ class StatusBox extends StatelessWidget {
             label,
             style: TextStyle(
               color: appConfigProvider.useThemeColorForStatus == true
-                ? Theme.of(context).primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white
+                ? Theme.of(context).colorScheme.primary.computeLuminance() > 0.5 ? Colors.black : Colors.white
                 : Colors.grey.computeLuminance() > 0.5 ? Colors.black : Colors.white,
               fontWeight: FontWeight.w500
             ),

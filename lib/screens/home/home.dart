@@ -194,7 +194,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: const HomeAppBar(),
       body: RefreshIndicator(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).colorScheme.primary,
         onRefresh: () async {
           final result = await getServerStatus(serversProvider.selectedServer!);
           if (result['result'] == 'success') {
