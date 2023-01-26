@@ -29,6 +29,7 @@ class LogListTile extends StatelessWidget {
                 Icon(
                   icon,
                   size: 24,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: 16),
                 Flexible(
