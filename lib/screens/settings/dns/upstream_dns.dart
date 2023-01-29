@@ -173,8 +173,8 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                 child: Center(
                   child: Text(
                     AppLocalizations.of(context)!.noUpstreamDns,
-                    style: const TextStyle(
-                      color: Colors.grey,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontSize: 16
                     ),
                   ),

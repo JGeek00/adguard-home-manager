@@ -87,9 +87,9 @@ class _FiltersListState extends State<FiltersList> {
               const SizedBox(height: 30),
               Text(
                 AppLocalizations.of(context)!.loadingFilters,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               )
             ],
@@ -130,9 +130,9 @@ class _FiltersListState extends State<FiltersList> {
                       ? AppLocalizations.of(context)!.noBlackLists
                       : AppLocalizations.of(context)!.noWhiteLists,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 24,
-                      color: Colors.grey
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -175,9 +175,9 @@ class _FiltersListState extends State<FiltersList> {
               const SizedBox(height: 30),
               Text(
                 AppLocalizations.of(context)!.filtersNotLoaded,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               )
             ],

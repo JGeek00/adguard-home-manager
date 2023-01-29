@@ -419,9 +419,9 @@ class _ClientScreenState extends State<ClientScreen> {
             child: Text(
               AppLocalizations.of(context)!.noIdentifiers,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -653,18 +653,18 @@ class _ClientScreenState extends State<ClientScreen> {
                 Text(
                   AppLocalizations.of(context)!.noUpstreamServers,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
-                    color: Colors.grey
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   AppLocalizations.of(context)!.willBeUsedGeneralServers,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
-                    color: Colors.grey
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],

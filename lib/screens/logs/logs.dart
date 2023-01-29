@@ -245,9 +245,9 @@ class _LogsWidgetState extends State<LogsWidget> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.loadingLogs,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],
@@ -290,9 +290,9 @@ class _LogsWidgetState extends State<LogsWidget> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.noLogsDisplay,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 24,
-                          color: Colors.grey
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       if (logsProvider.logsOlderThan != null) Padding(
@@ -304,9 +304,9 @@ class _LogsWidgetState extends State<LogsWidget> {
                         child: Text(
                           AppLocalizations.of(context)!.noLogsThatOld,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -330,9 +330,9 @@ class _LogsWidgetState extends State<LogsWidget> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.logsNotLoaded,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],

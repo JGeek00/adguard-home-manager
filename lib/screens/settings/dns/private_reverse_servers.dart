@@ -196,8 +196,8 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
               child: Text(
                 "${AppLocalizations.of(context)!.reverseDnsDefault}:\n\n${defaultReverseResolvers.map((item) => item).join(', ').toString().replaceAll(RegExp(r'\(|\)'), '')}",
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.grey,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontSize: 16
                 ),
               ),
@@ -264,8 +264,8 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
                 child: Text(
                   AppLocalizations.of(context)!.noServerAddressesAdded,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.grey,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 16
                   ),
                 ),

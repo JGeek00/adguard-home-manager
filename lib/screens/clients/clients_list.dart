@@ -35,9 +35,9 @@ class ClientsList extends StatelessWidget {
               Text(
                 AppLocalizations.of(context)!.loadingStatus,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               )
             ],
@@ -74,9 +74,9 @@ class ClientsList extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.noClientsList,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
-                    color: Colors.grey
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -107,9 +107,9 @@ class ClientsList extends StatelessWidget {
               Text(
                 AppLocalizations.of(context)!.errorLoadServerStatus,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               )
             ],

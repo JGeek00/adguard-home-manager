@@ -71,9 +71,9 @@ class AppLogs extends StatelessWidget {
       : Center(
           child: Text(
             AppLocalizations.of(context)!.noSavedLogs,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
-              color: Colors.grey,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         )

@@ -8,7 +8,6 @@ class ConnectAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(AppLocalizations.of(context)!.connect),
-      centerTitle: true,
     );
   }
   

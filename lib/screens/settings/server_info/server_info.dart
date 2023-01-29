@@ -83,9 +83,9 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
                   child: Text(
                     AppLocalizations.of(context)!.loadingServerInfo,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
-                      color: Colors.grey,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 )
@@ -161,9 +161,9 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
                 Text(
                   AppLocalizations.of(context)!.serverInfoNotLoaded,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],

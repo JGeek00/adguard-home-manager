@@ -254,7 +254,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
             height: 1,
             decoration: BoxDecoration(
               color: showDivider == true
-                ? Colors.grey.withOpacity(0.5)
+                ? Theme.of(context).colorScheme.surfaceVariant
                 : Colors.transparent
             ),
           ),

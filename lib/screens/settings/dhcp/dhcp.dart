@@ -388,9 +388,9 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.loadingDhcp,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],
@@ -747,9 +747,9 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.dhcpSettingsNotLoaded,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],

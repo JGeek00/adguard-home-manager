@@ -234,9 +234,9 @@ class TopItems extends StatelessWidget {
             ),
             child: Text(
               AppLocalizations.of(context)!.noItems,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),

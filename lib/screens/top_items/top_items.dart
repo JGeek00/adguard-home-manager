@@ -271,9 +271,9 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                 child: Text(
                   AppLocalizations.of(context)!.noItemsSearch,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),

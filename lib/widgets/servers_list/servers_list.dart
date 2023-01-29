@@ -419,9 +419,9 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
             child: Text(
               AppLocalizations.of(context)!.noSavedConnections,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
-                color: Colors.grey,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),

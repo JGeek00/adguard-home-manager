@@ -90,9 +90,9 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
                 Text(
                   AppLocalizations.of(context)!.loadingDnsConfig,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],
@@ -171,9 +171,9 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
                 Text(
                   AppLocalizations.of(context)!.dnsConfigNotLoaded,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],

@@ -69,9 +69,9 @@ class _HomeState extends State<Home> {
                 Text(
                   AppLocalizations.of(context)!.loadingStatus,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],
@@ -177,9 +177,9 @@ class _HomeState extends State<Home> {
                 Text(
                   AppLocalizations.of(context)!.errorLoadServerStatus,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],

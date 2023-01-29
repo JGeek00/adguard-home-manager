@@ -165,8 +165,8 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
                 child: Center(
                   child: Text(
                     AppLocalizations.of(context)!.noBootstrapDns,
-                    style: const TextStyle(
-                      color: Colors.grey,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontSize: 16
                     ),
                   ),

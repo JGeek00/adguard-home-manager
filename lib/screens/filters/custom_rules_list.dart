@@ -162,9 +162,9 @@ class _CustomRulesListState extends State<CustomRulesList> {
               const SizedBox(height: 30),
               Text(
                 AppLocalizations.of(context)!.loadingFilters,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               )
             ],
@@ -205,9 +205,9 @@ class _CustomRulesListState extends State<CustomRulesList> {
                       AppLocalizations.of(context)!.noBlackLists,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 24,
-                        color: Colors.grey
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),
@@ -251,9 +251,9 @@ class _CustomRulesListState extends State<CustomRulesList> {
               const SizedBox(height: 30),
               Text(
                 AppLocalizations.of(context)!.filtersNotLoaded,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               )
             ],

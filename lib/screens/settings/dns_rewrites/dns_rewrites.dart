@@ -151,9 +151,9 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.loadingRewriteRules,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],
@@ -243,9 +243,9 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
             return Center(
               child: Text(
                 AppLocalizations.of(context)!.noRewriteRules,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             );
@@ -266,9 +266,9 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
                 const SizedBox(height: 30),
                 Text(
                   AppLocalizations.of(context)!.rewriteRulesNotLoaded,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],

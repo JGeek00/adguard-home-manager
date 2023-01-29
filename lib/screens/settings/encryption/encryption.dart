@@ -287,9 +287,9 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 Text(
                   AppLocalizations.of(context)!.loadingEncryptionSettings,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],
@@ -613,9 +613,9 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 Text(
                   AppLocalizations.of(context)!.encryptionSettingsNotLoaded,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 )
               ],

@@ -174,8 +174,8 @@ class DhcpLeases extends StatelessWidget {
                   ? AppLocalizations.of(context)!.noDhcpStaticLeases
                   : AppLocalizations.of(context)!.noLeases,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.grey,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontSize: 22
                 ),
               ),
