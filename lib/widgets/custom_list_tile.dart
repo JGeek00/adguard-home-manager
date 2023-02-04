@@ -42,7 +42,9 @@ class CustomListTile extends StatelessWidget {
                       Icon(
                         icon,
                         size: 24,
-                        color: Theme.of(context).listTileTheme.iconColor,
+                        color: onTap != null || onLongPress != null
+                          ? Theme.of(context).listTileTheme.iconColor
+                          : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
                       ),
                       const SizedBox(width: 16),
                     ],
@@ -55,7 +57,9 @@ class CustomListTile extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: onTap != null || onLongPress != null
+                                ? Theme.of(context).colorScheme.onSurface
+                                : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
                             ),
                           ),
                           if (subtitle != null || subtitleWidget != null) ...[
@@ -64,7 +68,9 @@ class CustomListTile extends StatelessWidget {
                             if (subtitle != null && subtitleWidget == null) Text(
                               subtitle!,
                               style: TextStyle(
-                                color: Theme.of(context).listTileTheme.textColor,
+                                color:  onTap != null || onLongPress != null
+                                  ? Theme.of(context).colorScheme.onSurfaceVariant
+                                  : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.38),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400
                               ),

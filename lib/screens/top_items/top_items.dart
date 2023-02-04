@@ -203,7 +203,8 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                         logsProvider.setAppliedFilters(
                           AppliedFiters(
                             selectedResultStatus: 'all', 
-                            searchText: screenData[index].keys.toList()[0]
+                            searchText: screenData[index].keys.toList()[0],
+                            clients: null
                           )
                         );
                         Navigator.pop(context);

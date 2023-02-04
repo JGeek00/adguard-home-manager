@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/models/clients.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
@@ -6,17 +7,21 @@ import 'package:adguard_home_manager/models/logs.dart';
 class LogsProvider with ChangeNotifier {
   int _loadStatus = 0;
   LogsData? _logsData;
+  List<AutoClient>? _clients;
+  int _clientsLoadStatus = 0;
 
   DateTime? _logsOlderThan;
   String _selectedResultStatus = 'all';
   String? _searchText;
+  List<String>? _selectedClients;
 
   int _logsQuantity = 100;
   int _offset = 0;
 
   AppliedFiters _appliedFilters = AppliedFiters(
     selectedResultStatus: 'all', 
-    searchText: null
+    searchText: null,
+    clients: null
   );
 
   int get loadStatus {
@@ -25,6 +30,10 @@ class LogsProvider with ChangeNotifier {
 
   LogsData? get logsData {
     return _logsData;
+  }
+
+  List<AutoClient>? get clients {
+    return _clients;
   }
 
   DateTime? get logsOlderThan {
@@ -47,6 +56,14 @@ class LogsProvider with ChangeNotifier {
     return _offset;
   }
 
+  List<String>? get selectedClients {
+    return _selectedClients;
+  }
+
+  int get clientsLoadStatus {
+    return _clientsLoadStatus;
+  }
+
   AppliedFiters get appliedFilters {
     return _appliedFilters;
   }
@@ -62,6 +79,16 @@ class LogsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setClients(List<AutoClient> clients) {
+    _clients = clients;
+    notifyListeners();
+  }
+
+  void setClientsLoadStatus(int status) {
+    _clientsLoadStatus = status;
+    notifyListeners();
+  }
+ 
   void setLogsOlderThan(DateTime? value) {
     _logsOlderThan = value;
     notifyListeners();
@@ -91,6 +118,11 @@ class LogsProvider with ChangeNotifier {
 
   void setSearchText(String? value) {
     _searchText = value;
+    notifyListeners();
+  }
+
+  void setSelectedClients(List<String>? clients) {
+    _selectedClients = clients;
     notifyListeners();
   }
 

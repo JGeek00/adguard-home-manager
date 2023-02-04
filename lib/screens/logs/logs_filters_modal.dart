@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/screens/logs/clients_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -111,7 +112,8 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       logsProvider.setAppliedFilters(
         AppliedFiters(
           selectedResultStatus: 'all', 
-          searchText: null
+          searchText: null,
+          clients: null
         )
       );
 
@@ -130,6 +132,17 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
         context: context, 
         builder: (context) => FilterStatusModal(
           value: logsProvider.selectedResultStatus,
+        ),
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent
+      );
+    }
+
+    void openSelectClients() {
+      showModalBottomSheet(
+        context: context, 
+        builder: (context) => ClientsModal(
+          value: logsProvider.selectedClients,
         ),
         isScrollControlled: true,
         backgroundColor: Colors.transparent
@@ -155,6 +168,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
         AppliedFiters(
           selectedResultStatus: logsProvider.selectedResultStatus,
           searchText: logsProvider.searchText,
+          clients: logsProvider.selectedClients
         )
       );
 
@@ -171,7 +185,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 360,
+        height: 430,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -282,6 +296,31 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                   //     ),
                   //   ),
                   // ),
+                  CustomListTile(
+                    title: AppLocalizations.of(context)!.client,
+                    subtitle: logsProvider.selectedClients != null
+                      ? "${logsProvider.selectedClients!.length} ${AppLocalizations.of(context)!.clientsSelected}"
+                      : AppLocalizations.of(context)!.all,
+                    onTap: logsProvider.clientsLoadStatus == 1 
+                      ? openSelectClients
+                      : null,
+                    icon: Icons.smartphone_rounded,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    trailing: logsProvider.clientsLoadStatus == 0 
+                      ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                      : logsProvider.clientsLoadStatus == 2 
+                        ? const Icon(
+                            Icons.error_rounded,
+                            color: Colors.red,
+                          )
+                        : null,
+                  ),
                   CustomListTile(
                     title: AppLocalizations.of(context)!.responseStatus,
                     subtitle: "${translatedString[logsProvider.selectedResultStatus]}",

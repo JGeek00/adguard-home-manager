@@ -580,5 +580,6 @@
     "clearDnsCacheMessage": "¿Estás seguro que deseas eliminar la caché de DNS?",
     "dnsCacheCleared": "Caché de DNS borrada correctamente",
     "clearingDnsCache": "Borrando caché...",
-    "dnsCacheNotCleared": "La caché de DNS no pudo ser borrada"
+    "dnsCacheNotCleared": "La caché de DNS no pudo ser borrada",
+    "clientsSelected": "clientes seleccionados"
 }

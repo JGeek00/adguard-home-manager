@@ -129,6 +129,26 @@ class _LogsWidgetState extends State<LogsWidget> {
     }
   }
 
+  Future fetchClients() async {
+    final result = await getClients(widget.serversProvider.selectedServer!);
+    if (mounted) {
+      if (result['result'] == 'success') {
+        widget.logsProvider.setClientsLoadStatus(1);
+        widget.logsProvider.setClients(result['data'].autoClientsData);
+      }
+      else {
+        widget.logsProvider.setClientsLoadStatus(2);
+        widget.appConfigProvider.addLog(result['log']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    }
+  }
+
   void scrollListener() {
     if (scrollController.position.extentAfter < 500 && isLoadingMore == false) {
       fetchLogs(loadingMore: true);
@@ -146,6 +166,7 @@ class _LogsWidgetState extends State<LogsWidget> {
     scrollController = ScrollController()..addListener(scrollListener);
     fetchLogs(inOffset: 0);
     fetchFilteringRules();
+    fetchClients();
     super.initState();
   }
 
@@ -417,7 +438,8 @@ class _LogsWidgetState extends State<LogsWidget> {
                           logsProvider.setAppliedFilters(
                             AppliedFiters(
                               selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
-                              searchText: null
+                              searchText: null,
+                              clients: null
                             )
                           );
                           logsProvider.setSearchText(null);
@@ -463,7 +485,8 @@ class _LogsWidgetState extends State<LogsWidget> {
                           logsProvider.setAppliedFilters(
                             AppliedFiters(
                               selectedResultStatus: 'all', 
-                              searchText: logsProvider.appliedFilters.searchText
+                              searchText: logsProvider.appliedFilters.searchText,
+                              clients: null
                             )
                           );
                           logsProvider.setSelectedResultStatus('all');

@@ -143,7 +143,8 @@ class TopItems extends StatelessWidget {
                 logsProvider.setAppliedFilters(
                   AppliedFiters(
                     selectedResultStatus: 'all', 
-                    searchText: item.keys.toList()[0]
+                    searchText: item.keys.toList()[0],
+                    clients: null
                   )
                 );
                 appConfigProvider.setSelectedScreen(2);

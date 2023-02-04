@@ -580,5 +580,6 @@
     "clearDnsCacheMessage": "Are you sure you want to clear the DNS cache?",
     "dnsCacheCleared": "DNS cache cleared successfully",
     "clearingDnsCache": "Clearing cache...",
-    "dnsCacheNotCleared": "DNS cache couldn't be cleared"
+    "dnsCacheNotCleared": "DNS cache couldn't be cleared",
+    "clientsSelected": "clients selected"
 }
