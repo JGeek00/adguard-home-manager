@@ -110,8 +110,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                         color: selectedOption == 0
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).textTheme.bodyText1!.color
+                                          ? Theme.of(context).colorScheme.onInverseSurface
+                                          : Theme.of(context).colorScheme.onSurface
                                       ),
                                       child: Text(AppLocalizations.of(context)!.never),
                                     ),
@@ -136,8 +136,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                         color: selectedOption == 1
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).textTheme.bodyText1!.color
+                                          ? Theme.of(context).colorScheme.onInverseSurface
+                                          : Theme.of(context).colorScheme.onSurface
                                       ),
                                       child: Text(AppLocalizations.of(context)!.hour1),
                                     ),
@@ -167,8 +167,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                         color: selectedOption == 12
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).textTheme.bodyText1!.color
+                                          ? Theme.of(context).colorScheme.onInverseSurface
+                                          : Theme.of(context).colorScheme.onSurface
                                       ),
                                       child: Text(AppLocalizations.of(context)!.hours12),
                                     ),
@@ -193,8 +193,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                         color: selectedOption == 24
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).textTheme.bodyText1!.color
+                                          ? Theme.of(context).colorScheme.onInverseSurface
+                                          : Theme.of(context).colorScheme.onSurface
                                       ),
                                       child: Text(AppLocalizations.of(context)!.hours24),
                                     ),
@@ -224,8 +224,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                         color: selectedOption == 72
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).textTheme.bodyText1!.color
+                                          ? Theme.of(context).colorScheme.onInverseSurface
+                                          : Theme.of(context).colorScheme.onSurface
                                       ),
                                       child: Text(AppLocalizations.of(context)!.days3),
                                     ),
@@ -250,8 +250,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                         color: selectedOption == 168
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).textTheme.bodyText1!.color
+                                          ? Theme.of(context).colorScheme.onInverseSurface
+                                          : Theme.of(context).colorScheme.onSurface
                                       ),
                                       child: Text(AppLocalizations.of(context)!.days7),
                                     ),
