@@ -113,13 +113,14 @@ class TopItems extends StatelessWidget {
       );
     }
 
-    void openOptionsModal(String domain) {
+    void openOptionsModal(String domain, String type) {
       showDialog(
         context: context, 
         builder: (context) => TopItemsOptionsModal(
           isBlocked: getIsBlocked(),
           changeStatus: (String status) => blockUnblock(domain, status),
           copyToClipboard: () => copyDomainClipboard(domain),
+          type: type,
         )
       );
     }
@@ -137,22 +138,33 @@ class TopItems extends StatelessWidget {
       return Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: type == 'topQueriedDomains' || type == 'topBlockedDomains' 
-            ?() {
-                logsProvider.setSearchText(item.keys.toList()[0]);
-                logsProvider.setAppliedFilters(
-                  AppliedFiters(
-                    selectedResultStatus: 'all', 
-                    searchText: item.keys.toList()[0],
-                    clients: null
-                  )
-                );
-                appConfigProvider.setSelectedScreen(2);
-              }
-            : null,
-          onLongPress: type == 'topQueriedDomains' || type == 'topBlockedDomains'
-            ? () => openOptionsModal(item.keys.toList()[0])
-            : null,
+          onTap: () {
+            if (type == 'topQueriedDomains' || type == 'topBlockedDomains') {
+              logsProvider.setSearchText(item.keys.toList()[0]);
+              logsProvider.setSelectedClients(null);
+              logsProvider.setAppliedFilters(
+                AppliedFiters(
+                  selectedResultStatus: 'all', 
+                  searchText: item.keys.toList()[0],
+                  clients: null
+                )
+              );
+              appConfigProvider.setSelectedScreen(2);
+            }
+            else if (type == 'topClients') {
+              logsProvider.setSearchText(null);
+              logsProvider.setSelectedClients([item.keys.toList()[0]]);
+              logsProvider.setAppliedFilters(
+                AppliedFiters(
+                  selectedResultStatus: 'all', 
+                  searchText: null,
+                  clients: [item.keys.toList()[0]]
+                )
+              );
+              appConfigProvider.setSelectedScreen(2);
+            }
+          },
+          onLongPress: () => openOptionsModal(item.keys.toList()[0], type),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20,

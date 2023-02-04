@@ -90,7 +90,8 @@ class LogTile extends StatelessWidget {
             context: context, 
             value: log.question.name, 
             successMessage: AppLocalizations.of(context)!.domainCopiedClipboard
-          )
+          ),
+          type: 'topQueriedDomains', // topQueriedDomains can also be used here. It's the same
         )
       );
     }

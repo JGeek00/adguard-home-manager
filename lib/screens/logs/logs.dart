@@ -97,10 +97,21 @@ class _LogsWidgetState extends State<LogsWidget> {
         if (loadingMore != null && loadingMore == true && widget.logsProvider.logsData != null) {
           LogsData newLogsData = result['data'];
           newLogsData.data = [...widget.logsProvider.logsData!.data, ...result['data'].data];
+          if (widget.logsProvider.selectedClients != null) {
+            newLogsData.data = newLogsData.data.where(
+              (item) => widget.logsProvider.selectedClients!.contains(item.clientInfo!.name)
+            ).toList();
+          }
           widget.logsProvider.setLogsData(newLogsData);
         }
         else {
-          widget.logsProvider.setLogsData(result['data']);
+          LogsData newLogsData = result['data'];
+          if (widget.logsProvider.selectedClients != null) {
+            newLogsData.data = newLogsData.data.where(
+              (item) => widget.logsProvider.selectedClients!.contains(item.clientInfo!.name)
+            ).toList();
+          }
+          widget.logsProvider.setLogsData(newLogsData);
         }
         widget.logsProvider.setLoadStatus(1);
       }

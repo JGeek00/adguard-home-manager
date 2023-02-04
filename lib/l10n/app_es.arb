@@ -574,7 +574,7 @@
     "permissionNotGranted": "Permiso no concedido",
     "inputSearchTerm": "Introduce un término de búsqueda.",
     "answers": "Respuestas",
-    "copyDomainClipboard": "Copiar dominio al portapapeles",
+    "copyClipboard": "Copiar al portapapeles",
     "domainCopiedClipboard": "Dominio copiado al portapapeles",
     "clearDnsCache": "Borrar caché de DNS",
     "clearDnsCacheMessage": "¿Estás seguro que deseas eliminar la caché de DNS?",

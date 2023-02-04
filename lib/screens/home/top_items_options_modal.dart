@@ -7,12 +7,14 @@ class TopItemsOptionsModal extends StatelessWidget {
   final bool? isBlocked;
   final void Function(String status)? changeStatus;
   final void Function() copyToClipboard;
+  final String type;
 
   const TopItemsOptionsModal({
     Key? key,
     this.isBlocked,
     this.changeStatus,
     required this.copyToClipboard,
+    required this.type
   }) : super(key: key);
 
   @override
@@ -38,24 +40,26 @@ class TopItemsOptionsModal extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (isBlocked == true && changeStatus != null) CustomListTileDialog(
-            title: AppLocalizations.of(context)!.unblock,
-            icon: Icons.check,
-            onTap: () {
-              Navigator.pop(context);
-              changeStatus!('unblock');
-            },
-          ),
-          if (isBlocked == false && changeStatus != null) CustomListTileDialog(
-            title: AppLocalizations.of(context)!.block,
-            icon: Icons.block,
-            onTap: () {
-              Navigator.pop(context);
-              changeStatus!('block');
-            },
-          ),
+          if (type == 'topQueriedDomains' || type == 'topBlockedDomains') ...[
+            if (isBlocked == true && changeStatus != null) CustomListTileDialog(
+              title: AppLocalizations.of(context)!.unblock,
+              icon: Icons.check,
+              onTap: () {
+                Navigator.pop(context);
+                changeStatus!('unblock');
+              },
+            ),
+            if (isBlocked == false && changeStatus != null) CustomListTileDialog(
+              title: AppLocalizations.of(context)!.block,
+              icon: Icons.block,
+              onTap: () {
+                Navigator.pop(context);
+                changeStatus!('block');
+              },
+            ),
+          ],
           CustomListTileDialog(
-            title: AppLocalizations.of(context)!.copyDomainClipboard,
+            title: AppLocalizations.of(context)!.copyClipboard,
             icon: Icons.copy,
             onTap: () {
               Navigator.pop(context);

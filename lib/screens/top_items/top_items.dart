@@ -90,7 +90,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
       );
     }
 
-    void openOptionsModal(String domain) {
+    void openOptionsModal(String domain, String type) {
       showDialog(
         context: context, 
         builder: (context) => TopItemsOptionsModal(
@@ -100,7 +100,8 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
             context: context, 
             value: domain, 
             successMessage: AppLocalizations.of(context)!.domainCopiedClipboard
-          )
+          ),
+          type: type,
         )
       );
     }
@@ -197,23 +198,38 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                 }
 
                 return CustomListTile(
-                  onTap: widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains'
-                    ? () {
-                        logsProvider.setSearchText(screenData[index].keys.toList()[0]);
-                        logsProvider.setAppliedFilters(
-                          AppliedFiters(
-                            selectedResultStatus: 'all', 
-                            searchText: screenData[index].keys.toList()[0],
-                            clients: null
-                          )
-                        );
-                        Navigator.pop(context);
-                        appConfigProvider.setSelectedScreen(2);
-                      }
-                    : null,
-                  onLongPress: widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains'
-                    ? () => openOptionsModal(screenData[index].keys.toList()[0])
-                    : null,
+                  onTap: () {
+                    if (widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains') {
+                      logsProvider.setSearchText(screenData[index].keys.toList()[0]);
+                      logsProvider.setSelectedClients(null);
+                      logsProvider.setAppliedFilters(
+                        AppliedFiters(
+                          selectedResultStatus: 'all', 
+                          searchText: screenData[index].keys.toList()[0],
+                          clients: null
+                        )
+                      );
+                      appConfigProvider.setSelectedScreen(2);
+                      Navigator.pop(context);
+                    }
+                    else if (widget.type == 'topClients') {
+                      logsProvider.setSearchText(null);
+                      logsProvider.setSelectedClients([screenData[index].keys.toList()[0]]);
+                      logsProvider.setAppliedFilters(
+                        AppliedFiters(
+                          selectedResultStatus: 'all', 
+                          searchText: null,
+                          clients: [screenData[index].keys.toList()[0]]
+                        )
+                      );
+                      appConfigProvider.setSelectedScreen(2);
+                      Navigator.pop(context);
+                    }
+                  },
+                  onLongPress: () => openOptionsModal(
+                    screenData[index].keys.toList()[0], 
+                    widget.type
+                  ),
                   title: screenData[index].keys.toList()[0],
                   trailing: Text(
                     screenData[index].values.toList()[0].toString(),

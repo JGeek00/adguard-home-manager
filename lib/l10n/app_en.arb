@@ -574,7 +574,7 @@
     "permissionNotGranted": "Permission not granted",
     "inputSearchTerm": "Input a search term.",
     "answers": "Answers",
-    "copyDomainClipboard": "Copy domain to clipboard",
+    "copyClipboard": "Copy to clipboard",
     "domainCopiedClipboard": "Domain copied to the clipboard",
     "clearDnsCache": "Clear DNS cache",
     "clearDnsCacheMessage": "Are you sure you want to clear the DNS cache?",
