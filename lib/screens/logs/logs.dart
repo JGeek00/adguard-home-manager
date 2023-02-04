@@ -97,18 +97,18 @@ class _LogsWidgetState extends State<LogsWidget> {
         if (loadingMore != null && loadingMore == true && widget.logsProvider.logsData != null) {
           LogsData newLogsData = result['data'];
           newLogsData.data = [...widget.logsProvider.logsData!.data, ...result['data'].data];
-          if (widget.logsProvider.selectedClients != null) {
+          if (widget.logsProvider.appliedFilters.clients != null) {
             newLogsData.data = newLogsData.data.where(
-              (item) => widget.logsProvider.selectedClients!.contains(item.clientInfo!.name)
+              (item) => widget.logsProvider.appliedFilters.clients!.contains(item.client)
             ).toList();
           }
           widget.logsProvider.setLogsData(newLogsData);
         }
         else {
           LogsData newLogsData = result['data'];
-          if (widget.logsProvider.selectedClients != null) {
+          if (widget.logsProvider.appliedFilters.clients != null) {
             newLogsData.data = newLogsData.data.where(
-              (item) => widget.logsProvider.selectedClients!.contains(item.clientInfo!.name)
+              (item) => widget.logsProvider.appliedFilters.clients!.contains(item.client)
             ).toList();
           }
           widget.logsProvider.setLogsData(newLogsData);
@@ -402,7 +402,7 @@ class _LogsWidgetState extends State<LogsWidget> {
           ),
           const SizedBox(width: 5),
         ],
-        bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all'
+        bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients != null
           ? PreferredSize(
               preferredSize: const Size(double.maxFinite, 50),
               child: Container(
@@ -424,33 +424,26 @@ class _LogsWidgetState extends State<LogsWidget> {
                     if (logsProvider.appliedFilters.searchText != null) ...[
                       const SizedBox(width: 15),
                       Chip(
-                        avatar: Icon(
+                        avatar: const Icon(
                           Icons.search,
-                          size: 24,
-                          color: Theme.of(context).colorScheme.primary,
                         ),
                         label: Row(
                           children: [
                             Text(
                               logsProvider.appliedFilters.searchText!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500
-                              ),
                             ),
                           ],
                         ),
-                        deleteIcon: Icon(
-                          Icons.cancel_rounded,
+                        deleteIcon: const Icon(
+                          Icons.clear,
                           size: 18,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant
                         ),
                         onDeleted: () {
                           logsProvider.setAppliedFilters(
                             AppliedFiters(
                               selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
                               searchText: null,
-                              clients: null
+                              clients: logsProvider.appliedFilters.clients
                             )
                           );
                           logsProvider.setSearchText(null);
@@ -459,45 +452,31 @@ class _LogsWidgetState extends State<LogsWidget> {
                             searchText: ''
                           );
                         },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant
-                          )
-                        ),
-                        backgroundColor: Theme.of(context).dialogBackgroundColor,
                       ),
                     ],
                     if (logsProvider.appliedFilters.selectedResultStatus != 'all') ...[
                       const SizedBox(width: 15),
                       Chip(
-                        avatar: Icon(
+                        avatar: const Icon(
                           Icons.shield_rounded,
-                          size: 24,
-                          color: Theme.of(context).colorScheme.primary,
                         ),
                         label: Row(
                           children: [
                             Text(
                               translatedString[logsProvider.appliedFilters.selectedResultStatus]!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500
-                              ),
                             ),
                           ],
                         ),
-                        deleteIcon: Icon(
-                          Icons.cancel_rounded,
+                        deleteIcon: const Icon(
+                          Icons.clear,
                           size: 18,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant
                         ),
                         onDeleted: () {
                           logsProvider.setAppliedFilters(
                             AppliedFiters(
                               selectedResultStatus: 'all', 
                               searchText: logsProvider.appliedFilters.searchText,
-                              clients: null
+                              clients: logsProvider.appliedFilters.clients
                             )
                           );
                           logsProvider.setSelectedResultStatus('all');
@@ -506,13 +485,41 @@ class _LogsWidgetState extends State<LogsWidget> {
                             responseStatus: 'all'
                           );
                         },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant
-                          )
+                      ),
+                    ],
+                    if (logsProvider.appliedFilters.clients != null) ...[
+                      const SizedBox(width: 15),
+                      Chip(
+                        avatar: const Icon(
+                          Icons.smartphone_rounded,
                         ),
-                        backgroundColor: Theme.of(context).dialogBackgroundColor,
+                        label: Row(
+                          children: [
+                            Text(
+                              logsProvider.appliedFilters.clients!.length == 1
+                                ? logsProvider.appliedFilters.clients![0]
+                                : "${logsProvider.appliedFilters.clients!.length} ${AppLocalizations.of(context)!.clients}",
+                            ),
+                          ],
+                        ),
+                        deleteIcon: const Icon(
+                          Icons.clear,
+                          size: 18,
+                        ),
+                        onDeleted: () {
+                          logsProvider.setAppliedFilters(
+                            AppliedFiters(
+                              selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
+                              searchText: logsProvider.appliedFilters.searchText,
+                              clients: null
+                            )
+                          );
+                          logsProvider.setSelectedClients(null);
+                          fetchLogs(
+                            inOffset: 0,
+                            responseStatus: logsProvider.appliedFilters.selectedResultStatus
+                          );
+                        },
                       ),
                     ],
                     const SizedBox(width: 15),
