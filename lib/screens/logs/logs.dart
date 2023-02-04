@@ -413,7 +413,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                   border: Border(
                     bottom: BorderSide(
                       color: showDivider == true
-                        ? Theme.of(context).dividerColor
+                        ? Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
                         : Colors.transparent,
                     )
                   )

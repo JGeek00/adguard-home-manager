@@ -1,13 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/screens/logs/clients_modal.dart';
-import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/logs/clients_modal.dart';
 import 'package:adguard_home_manager/screens/logs/filter_status_modal.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -145,7 +146,13 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       );
 
       if (result['result'] == 'success') {
-        logsProvider.setLogsData(result['data']);
+        LogsData newLogsData = result['data'];
+        if (widget.logsProvider.appliedFilters.clients != null) {
+          newLogsData.data = newLogsData.data.where(
+            (item) => widget.logsProvider.appliedFilters.clients!.contains(item.client)
+          ).toList();
+        }
+        logsProvider.setLogsData(newLogsData);
         logsProvider.setLoadStatus(1);
       }
       else {
