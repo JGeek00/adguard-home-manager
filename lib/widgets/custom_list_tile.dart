@@ -9,6 +9,7 @@ class CustomListTile extends StatelessWidget {
   final Widget? trailing;
   final EdgeInsets? padding;
   final void Function()? onLongPress;
+  final bool? disabled;
 
   const CustomListTile({
     Key? key,
@@ -19,7 +20,8 @@ class CustomListTile extends StatelessWidget {
     this.icon,
     this.trailing,
     this.padding,
-    this.onLongPress
+    this.onLongPress,
+    this.disabled
   }) : super(key: key);
 
   @override
@@ -42,9 +44,9 @@ class CustomListTile extends StatelessWidget {
                       Icon(
                         icon,
                         size: 24,
-                        color: onTap != null || onLongPress != null
-                          ? Theme.of(context).listTileTheme.iconColor
-                          : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
+                        color: disabled == true
+                          ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                          : Theme.of(context).listTileTheme.iconColor,
                       ),
                       const SizedBox(width: 16),
                     ],
@@ -57,9 +59,9 @@ class CustomListTile extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
-                              color: onTap != null || onLongPress != null
-                                ? Theme.of(context).colorScheme.onSurface
-                                : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
+                              color: disabled == true
+                                ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                                : Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           if (subtitle != null || subtitleWidget != null) ...[
@@ -68,9 +70,9 @@ class CustomListTile extends StatelessWidget {
                             if (subtitle != null && subtitleWidget == null) Text(
                               subtitle!,
                               style: TextStyle(
-                                color:  onTap != null || onLongPress != null
-                                  ? Theme.of(context).colorScheme.onSurfaceVariant
-                                  : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.38),
+                                color:  disabled == true
+                                  ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.38)
+                                  : Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400
                               ),

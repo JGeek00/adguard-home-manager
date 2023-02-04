@@ -304,6 +304,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                     onTap: logsProvider.clientsLoadStatus == 1 
                       ? openSelectClients
                       : null,
+                    disabled: logsProvider.clientsLoadStatus != 1 ,
                     icon: Icons.smartphone_rounded,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     trailing: logsProvider.clientsLoadStatus == 0 
