@@ -12,7 +12,7 @@ class LogsProvider with ChangeNotifier {
 
   DateTime? _logsOlderThan;
   String _selectedResultStatus = 'all';
-  String? _searchText;
+  String? _domainText;
   List<String>? _selectedClients;
 
   int _logsQuantity = 100;
@@ -20,7 +20,7 @@ class LogsProvider with ChangeNotifier {
 
   AppliedFiters _appliedFilters = AppliedFiters(
     selectedResultStatus: 'all', 
-    searchText: null,
+    domainText: null,
     clients: null
   );
 
@@ -44,8 +44,8 @@ class LogsProvider with ChangeNotifier {
     return _selectedResultStatus;
   }
 
-  String? get searchText {
-    return _searchText;
+  String? get domainText {
+    return _domainText;
   }
   
   int get logsQuantity {
@@ -98,7 +98,7 @@ class LogsProvider with ChangeNotifier {
     _logsOlderThan = null;
     _offset = 0;
     _selectedResultStatus = 'all';
-    _searchText = null;
+    _domainText = null;
     notifyListeners();
   }
 
@@ -116,8 +116,8 @@ class LogsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSearchText(String? value) {
-    _searchText = value;
+  void setDomainText(String? value) {
+    _domainText = value;
     notifyListeners();
   }
 

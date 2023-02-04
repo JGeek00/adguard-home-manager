@@ -31,7 +31,7 @@ class Logs extends StatelessWidget {
       appConfigProvider: appConfigProvider,
       logsProvider: logsProvider,
       selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus,
-      searchText: logsProvider.appliedFilters.searchText,
+      domainText: logsProvider.appliedFilters.domainText,
     );
   }
 }
@@ -41,7 +41,7 @@ class LogsWidget extends StatefulWidget {
   final AppConfigProvider appConfigProvider;
   final LogsProvider logsProvider;
   final String selectedResultStatus;
-  final String? searchText;
+  final String? domainText;
 
   const LogsWidget({
     Key? key,
@@ -49,7 +49,7 @@ class LogsWidget extends StatefulWidget {
     required this.appConfigProvider,
     required this.logsProvider,
     required this.selectedResultStatus,
-    required this.searchText,
+    required this.domainText,
   }) : super(key: key);
 
   @override
@@ -67,12 +67,12 @@ class _LogsWidgetState extends State<LogsWidget> {
     int? inOffset,
     bool? loadingMore,
     String? responseStatus,
-    String? searchText,
+    String? domainText,
   }) async {
     int offst = inOffset ?? widget.logsProvider.offset;
 
     String resStatus = responseStatus ?? widget.selectedResultStatus;
-    String? search = searchText ?? widget.searchText;
+    String? search = domainText ?? widget.domainText;
 
     if (loadingMore != null && loadingMore == true) {
       setState(() => isLoadingMore = true);
@@ -402,7 +402,7 @@ class _LogsWidgetState extends State<LogsWidget> {
           ),
           const SizedBox(width: 5),
         ],
-        bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients != null
+        bottom: logsProvider.appliedFilters.domainText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients != null
           ? PreferredSize(
               preferredSize: const Size(double.maxFinite, 50),
               child: Container(
@@ -421,16 +421,16 @@ class _LogsWidgetState extends State<LogsWidget> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    if (logsProvider.appliedFilters.searchText != null) ...[
+                    if (logsProvider.appliedFilters.domainText != null) ...[
                       const SizedBox(width: 15),
                       Chip(
                         avatar: const Icon(
-                          Icons.search,
+                          Icons.link_rounded,
                         ),
                         label: Row(
                           children: [
                             Text(
-                              logsProvider.appliedFilters.searchText!,
+                              logsProvider.appliedFilters.domainText!,
                             ),
                           ],
                         ),
@@ -442,14 +442,14 @@ class _LogsWidgetState extends State<LogsWidget> {
                           logsProvider.setAppliedFilters(
                             AppliedFiters(
                               selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
-                              searchText: null,
+                              domainText: null,
                               clients: logsProvider.appliedFilters.clients
                             )
                           );
-                          logsProvider.setSearchText(null);
+                          logsProvider.setDomainText(null);
                           fetchLogs(
                             inOffset: 0,
-                            searchText: ''
+                            domainText: ''
                           );
                         },
                       ),
@@ -475,7 +475,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                           logsProvider.setAppliedFilters(
                             AppliedFiters(
                               selectedResultStatus: 'all', 
-                              searchText: logsProvider.appliedFilters.searchText,
+                              domainText: logsProvider.appliedFilters.domainText,
                               clients: logsProvider.appliedFilters.clients
                             )
                           );
@@ -510,7 +510,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                           logsProvider.setAppliedFilters(
                             AppliedFiters(
                               selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
-                              searchText: logsProvider.appliedFilters.searchText,
+                              domainText: logsProvider.appliedFilters.domainText,
                               clients: null
                             )
                           );

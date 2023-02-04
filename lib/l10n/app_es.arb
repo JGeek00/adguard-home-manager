@@ -581,5 +581,6 @@
     "dnsCacheCleared": "Caché de DNS borrada correctamente",
     "clearingDnsCache": "Borrando caché...",
     "dnsCacheNotCleared": "La caché de DNS no pudo ser borrada",
-    "clientsSelected": "clientes seleccionados"
+    "clientsSelected": "clientes seleccionados",
+    "invalidDomain": "Dominio no válido"
 }

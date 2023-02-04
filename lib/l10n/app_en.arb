@@ -581,5 +581,6 @@
     "dnsCacheCleared": "DNS cache cleared successfully",
     "clearingDnsCache": "Clearing cache...",
     "dnsCacheNotCleared": "DNS cache couldn't be cleared",
-    "clientsSelected": "clients selected"
+    "clientsSelected": "clients selected",
+    "invalidDomain": "Invalid domain"
 }
