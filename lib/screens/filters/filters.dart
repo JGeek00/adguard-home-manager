@@ -2,12 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/filters_list.dart';
+import 'package:adguard_home_manager/screens/filters/blocked_services_scren.dart';
 import 'package:adguard_home_manager/screens/filters/check_host_modal.dart';
-import 'package:adguard_home_manager/screens/filters/blocked_services_modal.dart';
 import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
 import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal.dart';
 
@@ -211,51 +210,12 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
       }
     }
 
-    void updateBlockedServices(List<String> values) async {
-      ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.updating);
-
-      final result = await setBlockedServices(server: serversProvider.selectedServer!, data: values);
-
-      processModal.close();
-
-      if (result['result'] == 'success') {
-        serversProvider.setBlockedServices(values);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.blockedServicesUpdated, 
-          color: Colors.green
-        );
-      }
-      else {
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.blockedServicesNotUpdated, 
-          color: Colors.red
-        );
-      }
-    }
-
     void openBlockedServicesModal() {
-      ScaffoldMessenger.of(context).clearSnackBars();
       Future.delayed(const Duration(seconds: 0), () {
-        showFlexibleBottomSheet(
-          minHeight: 0.6,
-          initHeight: 0.6,
-          maxHeight: 0.95,
-          isCollapsible: true,
-          duration: const Duration(milliseconds: 250),
-          anchors: [0.95],
-          context: context, 
-          builder: (ctx, controller, offset) => BlockedServicesModal(
-            scrollController: controller,
-            blockedServices: serversProvider.filtering.data!.blockedServices,
-            onApply: updateBlockedServices,
-          ),
-          bottomSheetColor: Colors.transparent
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const BlockedServicesScreen(),
+          )
         );
       });
     }

@@ -8,7 +8,8 @@ void showSnacbkar({
   required BuildContext context, 
   required AppConfigProvider appConfigProvider,
   required String label, 
-  required Color color
+  required Color color,
+  Color? labelColor
 }) async {
   if (appConfigProvider.showingSnackbar == true) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -17,7 +18,12 @@ void showSnacbkar({
   appConfigProvider.setShowingSnackbar(true);
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(label),
+      content: Text(
+        label,
+        style: TextStyle(
+          color: labelColor ?? Colors.white
+        ),
+      ),
       backgroundColor: color,
     )
   ).closed.then((value) => appConfigProvider.setShowingSnackbar(false));

@@ -582,5 +582,7 @@
     "clearingDnsCache": "Clearing cache...",
     "dnsCacheNotCleared": "DNS cache couldn't be cleared",
     "clientsSelected": "clients selected",
-    "invalidDomain": "Invalid domain"
+    "invalidDomain": "Invalid domain",
+    "loadingBlockedServicesList": "Loading blocked services list...",
+    "blockedServicesListNotLoaded": "The blocked services list could not be loaded"
 }

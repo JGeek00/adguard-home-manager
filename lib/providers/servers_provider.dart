@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -49,6 +50,11 @@ class ServersProvider with ChangeNotifier {
     data: null
   );
 
+  final BlockedServices _blockedServicesList = BlockedServices(
+    loadStatus: 0,
+    services: null
+  );
+
   FilteringStatus? _filteringStatus;
 
   List<Server> get serversList {
@@ -89,6 +95,10 @@ class ServersProvider with ChangeNotifier {
 
   DnsInfo get dnsInfo {
     return _dnsInfo;
+  }
+
+  BlockedServices get blockedServicesList {
+    return _blockedServicesList;
   }
 
   void setDbInstance(Database db) {
@@ -196,6 +206,18 @@ class ServersProvider with ChangeNotifier {
 
   void setDnsInfoLoadStatus(int status, bool notify) {
     _dnsInfo.loadStatus = status;
+    if (notify == true) {
+      notifyListeners();
+    }
+  }
+
+  void setBlockedServiceListData(List<BlockedService> data) {
+    _blockedServicesList.services = data;
+    notifyListeners();
+  }
+
+  void setBlockedServicesListLoadStatus(int status, bool notify) {
+    _blockedServicesList.loadStatus = status;
     if (notify == true) {
       notifyListeners();
     }

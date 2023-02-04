@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/encryption.dart';
@@ -1725,6 +1726,43 @@ Future getEncryptionSettings({
       return { 
         'result': 'success',
         'data': EncryptionData.fromJson(jsonDecode(result['body']))
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_encryption_settings', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future getBlockedServices({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/blocked_services/all', 
+    method: 'get',
+    server: server,
+    type: 'get_blocked_services'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 
+        'result': 'success',
+        'data': List<BlockedService>.from(
+          BlockedServicesFromApi.fromJson(jsonDecode(result['body'])).blockedServices
+        )
       };
     }
     else {

@@ -582,5 +582,7 @@
     "clearingDnsCache": "Borrando caché...",
     "dnsCacheNotCleared": "La caché de DNS no pudo ser borrada",
     "clientsSelected": "clientes seleccionados",
-    "invalidDomain": "Dominio no válido"
+    "invalidDomain": "Dominio no válido",
+    "loadingBlockedServicesList": "Cargando lista de servicios bloqueados...",
+    "blockedServicesListNotLoaded": "No se ha podido cargar la lista de servicios bloqueados"
 }
