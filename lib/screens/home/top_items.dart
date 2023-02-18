@@ -140,24 +140,24 @@ class TopItems extends StatelessWidget {
         child: InkWell(
           onTap: () {
             if (type == 'topQueriedDomains' || type == 'topBlockedDomains') {
-              logsProvider.setDomainText(item.keys.toList()[0]);
+              logsProvider.setSearchText(item.keys.toList()[0]);
               logsProvider.setSelectedClients(null);
               logsProvider.setAppliedFilters(
                 AppliedFiters(
                   selectedResultStatus: 'all', 
-                  domainText: item.keys.toList()[0],
+                  searchText: item.keys.toList()[0],
                   clients: null
                 )
               );
               appConfigProvider.setSelectedScreen(2);
             }
             else if (type == 'topClients') {
-              logsProvider.setDomainText(null);
+              logsProvider.setSearchText(null);
               logsProvider.setSelectedClients([item.keys.toList()[0]]);
               logsProvider.setAppliedFilters(
                 AppliedFiters(
                   selectedResultStatus: 'all', 
-                  domainText: null,
+                  searchText: null,
                   clients: [item.keys.toList()[0]]
                 )
               );

@@ -41,13 +41,11 @@ class LogsFiltersModalWidget extends StatefulWidget {
 }
 
 class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
-  TextEditingController domainController = TextEditingController();
-  String? domainError;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
-    domainController.text = widget.logsProvider.domainText ?? '';
-    domainError = null;
+    searchController.text = widget.logsProvider.searchText ?? '';
     super.initState();
   }
 
@@ -70,7 +68,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
 
     void resetFilters() async {
       setState(() {
-        domainController.text = '';
+        searchController.text = '';
       });
 
       logsProvider.setLoadStatus(0);
@@ -85,7 +83,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       logsProvider.setAppliedFilters(
         AppliedFiters(
           selectedResultStatus: 'all', 
-          domainText: null,
+          searchText: null,
           clients: null
         )
       );
@@ -134,13 +132,13 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
         count: logsProvider.logsQuantity,
         olderThan: logsProvider.logsOlderThan,
         responseStatus: logsProvider.selectedResultStatus,
-        search: logsProvider.domainText,
+        search: logsProvider.searchText,
       );
 
       logsProvider.setAppliedFilters(
         AppliedFiters(
           selectedResultStatus: logsProvider.selectedResultStatus,
-          domainText: logsProvider.domainText,
+          searchText: logsProvider.searchText,
           clients: logsProvider.selectedClients
         )
       );
@@ -208,39 +206,25 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                       children: [
                         Expanded(
                           child: TextFormField(
-                            controller: domainController,
-                            onChanged: (value) {
-                              logsProvider.setDomainText(value);
-                              RegExp domain = RegExp(r'^([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$');
-                              if (value == '' || domain.hasMatch(value) == true) {
-                                setState(() {
-                                  domainError = null;
-                                });
-                              }
-                              else {
-                                setState(() {
-                                  domainError = AppLocalizations.of(context)!.invalidDomain;
-                                });
-                              }
-                            },
+                            controller: searchController,
+                            onChanged: logsProvider.setSearchText,
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.link_rounded),
+                              prefixIcon: const Icon(Icons.search_rounded),
                               border: const OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(10)
                                 )
                               ),
-                              labelText: AppLocalizations.of(context)!.domain,
+                              labelText: AppLocalizations.of(context)!.search,
                               suffixIcon: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    domainController.text = '';
+                                    searchController.text = '';
                                   });
-                                  logsProvider.setDomainText(null);
+                                  logsProvider.setSearchText(null);
                                 },
                                 icon: const Icon(Icons.clear)
                               ),
-                              errorText: domainError
                             ),
                           ),
                         )
@@ -294,9 +278,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                     child: Text(AppLocalizations.of(context)!.resetFilters)
                   ),
                   TextButton(
-                    onPressed: domainError == null 
-                      ? () => filterLogs()
-                      : null, 
+                    onPressed: () => filterLogs(),
                     child: Text(AppLocalizations.of(context)!.apply)
                   ),
                 ],

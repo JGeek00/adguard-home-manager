@@ -200,12 +200,12 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                 return CustomListTile(
                   onTap: () {
                     if (widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains') {
-                      logsProvider.setDomainText(screenData[index].keys.toList()[0]);
+                      logsProvider.setSearchText(screenData[index].keys.toList()[0]);
                       logsProvider.setSelectedClients(null);
                       logsProvider.setAppliedFilters(
                         AppliedFiters(
                           selectedResultStatus: 'all', 
-                          domainText: screenData[index].keys.toList()[0],
+                          searchText: screenData[index].keys.toList()[0],
                           clients: null
                         )
                       );
@@ -213,12 +213,12 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                       Navigator.pop(context);
                     }
                     else if (widget.type == 'topClients') {
-                      logsProvider.setDomainText(null);
+                      logsProvider.setSearchText(null);
                       logsProvider.setSelectedClients([screenData[index].keys.toList()[0]]);
                       logsProvider.setAppliedFilters(
                         AppliedFiters(
                           selectedResultStatus: 'all', 
-                          domainText: null,
+                          searchText: null,
                           clients: [screenData[index].keys.toList()[0]]
                         )
                       );
