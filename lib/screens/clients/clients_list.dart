@@ -1,9 +1,13 @@
+import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/models/clients.dart';
+import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class ClientsList extends StatelessWidget {
   final ScrollController scrollController;
@@ -21,6 +25,9 @@ class ClientsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
+
     switch (loadStatus) {
       case 0:
         return SizedBox(
@@ -62,6 +69,18 @@ class ClientsList extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurface
                 ),
               ),
+              onTap: () {
+                logsProvider.setSearchText(null);
+                logsProvider.setSelectedClients([data[index].ip]);
+                logsProvider.setAppliedFilters(
+                  AppliedFiters(
+                    selectedResultStatus: 'all', 
+                    searchText: null,
+                    clients: [data[index].ip]
+                  )
+                );
+                appConfigProvider.setSelectedScreen(2);
+              },
             )
           );
         }
