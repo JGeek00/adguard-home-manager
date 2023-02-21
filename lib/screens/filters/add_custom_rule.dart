@@ -91,47 +91,6 @@ class _AddCustomRuleState extends State<AddCustomRule> {
     
   @override
   Widget build(BuildContext context) {
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    Map<int, Widget> presets = {
-      0: Text(
-        AppLocalizations.of(context)!.block,
-        style: TextStyle(
-          color: appConfigProvider.useDynamicColor == true
-            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
-            : preset == 0
-              ? Colors.white
-              : Theme.of(context).colorScheme.primary,
-          fontSize: 14,
-          fontWeight: FontWeight.w500
-        ),
-      ),
-      1: Text(
-        AppLocalizations.of(context)!.unblock,
-        style: TextStyle(
-          color: appConfigProvider.useDynamicColor == true
-            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
-            : preset == 1
-              ? Colors.white
-              : Theme.of(context).colorScheme.primary,
-          fontSize: 14,
-          fontWeight: FontWeight.w500
-        ),
-      ),
-      2: Text(
-        AppLocalizations.of(context)!.custom,
-        style: TextStyle(
-          color: appConfigProvider.useDynamicColor == true
-            ? Theme.of(context).floatingActionButtonTheme.foregroundColor!
-            : preset == 2
-              ? Colors.white
-              : Theme.of(context).colorScheme.primary,
-          fontSize: 14,
-          fontWeight: FontWeight.w500
-        ),
-      ),
-    };
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.addCustomRule),
@@ -404,37 +363,3 @@ class _AddCustomRuleState extends State<AddCustomRule> {
     );
   }
 }
-        // Padding(
-        //   padding: const EdgeInsets.only(
-        //     left: 28,
-        //     right: 28,
-        //     top: 20,
-        //     bottom: 28
-        //   ),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.end,
-        //     children: [
-        //       TextButton(
-        //         onPressed: () => Navigator.pop(context), 
-        //         child: Text(AppLocalizations.of(context)!.cancel)
-        //       ),
-        //       const SizedBox(width: 20),
-        //       TextButton(
-        //         onPressed: checkValidValues() == true
-        //           ? () {
-        //               Navigator.pop(context);
-        //               widget.onConfirm(buildRule());
-        //             }
-        //           : null, 
-        //         child: Text(
-        //           AppLocalizations.of(context)!.confirm,
-        //           style: TextStyle(
-        //             color: checkValidValues() == true
-        //               ? Theme.of(context).colorScheme.primary
-        //               : Colors.grey
-        //           ),
-        //         )
-        //       ),
-        //     ],
-        //   ),
-        // )
