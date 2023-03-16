@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -123,7 +125,7 @@ class ManagementModal extends StatelessWidget {
 
     return Container(
       width: double.maxFinite,
-      height: 540,
+      height: Platform.isIOS ? 556 : 540,
       decoration: BoxDecoration(
         color: Theme.of(context).dialogBackgroundColor,
         borderRadius: const BorderRadius.only(
@@ -135,7 +137,7 @@ class ManagementModal extends StatelessWidget {
         children: [
           Expanded(
             child: ListView(
-              physics: 540 < MediaQuery.of(context).size.height
+              physics: (Platform.isIOS ? 556 : 540) < MediaQuery.of(context).size.height
                 ? const NeverScrollableScrollPhysics() 
                 : null,
               children: [
@@ -202,7 +204,8 @@ class ManagementModal extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
+          if (Platform.isIOS) const SizedBox(height: 16)
         ],
       ),
     );

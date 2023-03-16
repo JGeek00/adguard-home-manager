@@ -630,6 +630,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.encryptionSettings),
+        centerTitle: false,
         actions: [
           IconButton(
             onPressed: certKeyValidApi == 2 && validDataError != null

@@ -379,6 +379,7 @@ class _LogsWidgetState extends State<LogsWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.logs),
+        centerTitle: false,
         actions: [
           logsProvider.loadStatus == 1 
             ? IconButton(

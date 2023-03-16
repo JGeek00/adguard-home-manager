@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/filters_list.dart';
-import 'package:adguard_home_manager/screens/filters/blocked_services_scren.dart';
 import 'package:adguard_home_manager/screens/filters/check_host_modal.dart';
 import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
+import 'package:adguard_home_manager/screens/filters/blocked_services_screen.dart';
 import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -235,6 +235,7 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                   pinned: true,
                   floating: true,
                   forceElevated: innerBoxIsScrolled,
+                  centerTitle: false,
                   actions: serversProvider.filtering.loadStatus == 1 ? [
                     IconButton(
                       onPressed: enableDisableFiltering, 

@@ -146,7 +146,12 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
                   serversProvider.blockedServicesList.services![index]
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 5),
+                  padding: const EdgeInsets.only(
+                    top: 6,
+                    bottom: 6,
+                    right: 12,
+                    left: 24
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

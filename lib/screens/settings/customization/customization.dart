@@ -59,6 +59,7 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.customization),
+        centerTitle: false,
       ),
       body: ListView(
         children: [

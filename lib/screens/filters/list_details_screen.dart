@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -301,7 +303,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
             curve: Curves.easeInOut,
             bottom: fabVisible ?
               appConfigProvider.showingSnackbar
-                ? 70 : 20
+                ? 70 : (Platform.isIOS ? 40 : 20)
               : -70,
             right: 20,
             child: FloatingActionButton(

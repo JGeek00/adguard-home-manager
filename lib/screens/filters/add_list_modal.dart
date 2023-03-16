@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -69,7 +71,7 @@ class _AddListModalState extends State<AddListModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 370,
+        height: Platform.isIOS ? 386 : 370,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(28),
@@ -81,7 +83,7 @@ class _AddListModalState extends State<AddListModal> {
           children: [
             Expanded(
               child: ListView(
-                physics: 410 < MediaQuery.of(context).size.height
+                physics: (Platform.isIOS ? 426 : 410) < MediaQuery.of(context).size.height
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
@@ -192,7 +194,8 @@ class _AddListModalState extends State<AddListModal> {
                   ),
                 ],
               ),
-            )
+            ),
+            if (Platform.isIOS) const SizedBox(height: 16)
           ],
         ),
       ),

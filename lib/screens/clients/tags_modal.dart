@@ -68,20 +68,54 @@ class _TagsModalState extends State<TagsModal> {
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: widget.tags.length,
-          itemBuilder: (context, index) => CheckboxListTile(
-            title: Text(
-              widget.tags[index],
-              style: TextStyle(
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.onSurface
+          itemBuilder: (context, index) => Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => checkUncheckTag(!selectedTags.contains(widget.tags[index]), widget.tags[index]),
+              child: Container(
+                padding: const EdgeInsets.only(
+                  left: 24,
+                  top: 8,
+                  bottom: 8,
+                  right: 12
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.tags[index],
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    Checkbox(
+                      value: selectedTags.contains(widget.tags[index]), 
+                      onChanged: (value) => checkUncheckTag(value!, widget.tags[index]),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-            value: selectedTags.contains(widget.tags[index]), 
-            checkboxShape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5)
-            ),
-            onChanged: (value) => checkUncheckTag(value!, widget.tags[index])
-          )
+          ),
+          // itemBuilder: (context, index) => CheckboxListTile(
+          //   title: Text(
+          //     widget.tags[index],
+          //     style: TextStyle(
+          //       fontWeight: FontWeight.normal,
+          //       color: Theme.of(context).colorScheme.onSurface
+          //     ),
+          //   ),
+          //   value: selectedTags.contains(widget.tags[index]), 
+          //   checkboxShape: RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.circular(5)
+          //   ),
+          //   onChanged: (value) => checkUncheckTag(value!, widget.tags[index])
+          // )
         ),
       ),
       actions: [

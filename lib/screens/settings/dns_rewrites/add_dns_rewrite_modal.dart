@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -51,7 +53,7 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 400,
+        height: Platform.isIOS ? 416 : 400,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(28),
@@ -63,7 +65,7 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
           children: [
             Expanded(
               child: ListView(
-                physics: 410 < MediaQuery.of(context).size.height
+                physics: (Platform.isIOS ? 426 : 410) < MediaQuery.of(context).size.height
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
@@ -155,7 +157,8 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                   ),
                 ],
               ),
-            )
+            ),
+            if (Platform.isIOS) const SizedBox(height: 16)
           ],
         ),
       ),

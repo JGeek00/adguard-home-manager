@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -48,15 +50,22 @@ class _ClientsModalState extends State<ClientsModal> {
         child: InkWell(
           onTap: () => onChanged(),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            padding: const EdgeInsets.only(
+              left: 24,
+              top: 8,
+              right: 12,
+              bottom: 8
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).colorScheme.onSurface
+                Flexible(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onSurface
+                    ),
                   ),
                 ),
                 Checkbox(
@@ -88,7 +97,7 @@ class _ClientsModalState extends State<ClientsModal> {
     return Container(
       height: height >= (logsProvider.clients!.length*64) == true
         ? logsProvider.clients!.length*64
-        : height-25,
+        : height-50,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(28),
@@ -164,7 +173,8 @@ class _ClientsModalState extends State<ClientsModal> {
                 )
               ],
             ),
-          )
+          ),
+          if (Platform.isIOS) const SizedBox(height: 16)
         ],
       ),
     );

@@ -39,6 +39,7 @@ class AdvancedSettings extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.advancedSettings),
+        centerTitle: false,
       ),
       body: ListView(
         children: [

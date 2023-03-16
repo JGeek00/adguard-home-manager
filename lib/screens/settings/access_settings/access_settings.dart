@@ -87,6 +87,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
                     title: Text(AppLocalizations.of(context)!.accessSettings),
                     pinned: true,
                     floating: true,
+                    centerTitle: false,
                     forceElevated: innerBoxIsScrolled,
                     bottom: TabBar(
                       controller: tabController,
@@ -112,45 +113,35 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
               )
             ];
           }), 
-          body: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: Border(
-                top: BorderSide(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
-                )
-              )
-            ),
-            child: TabBarView(
-              controller: tabController,
-              children: [
-                ClientsList(
-                  type: 'allowed',
-                  scrollController: scrollController, 
-                  loadStatus: serversProvider.clients.loadStatus, 
-                  data: serversProvider.clients.loadStatus == 1
-                    ? serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients : [], 
-                  fetchClients: fetchClients
-                ),
-                ClientsList(
-                  type: 'disallowed',
-                  scrollController: scrollController, 
-                  loadStatus: serversProvider.clients.loadStatus, 
-                  data: serversProvider.clients.loadStatus == 1
-                    ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 
-                  fetchClients: fetchClients
-                ),
-                ClientsList(
-                  type: 'domains',
-                  scrollController: scrollController, 
-                  loadStatus: serversProvider.clients.loadStatus, 
-                  data: serversProvider.clients.loadStatus == 1
-                    ? serversProvider.clients.data!.clientsAllowedBlocked!.blockedHosts : [], 
-                  fetchClients: fetchClients
-                ),
-              ]
-            )
-          ),
+          body: TabBarView(
+            controller: tabController,
+            children: [
+              ClientsList(
+                type: 'allowed',
+                scrollController: scrollController, 
+                loadStatus: serversProvider.clients.loadStatus, 
+                data: serversProvider.clients.loadStatus == 1
+                  ? serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients : [], 
+                fetchClients: fetchClients
+              ),
+              ClientsList(
+                type: 'disallowed',
+                scrollController: scrollController, 
+                loadStatus: serversProvider.clients.loadStatus, 
+                data: serversProvider.clients.loadStatus == 1
+                  ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 
+                fetchClients: fetchClients
+              ),
+              ClientsList(
+                type: 'domains',
+                scrollController: scrollController, 
+                loadStatus: serversProvider.clients.loadStatus, 
+                data: serversProvider.clients.loadStatus == 1
+                  ? serversProvider.clients.data!.clientsAllowedBlocked!.blockedHosts : [], 
+                fetchClients: fetchClients
+              ),
+            ]
+          )
         )
       ),
     );

@@ -283,6 +283,7 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dnsRewrites),
+        centerTitle: false,
       ),
       body: generateBody(),
       floatingActionButton: FloatingActionButton(

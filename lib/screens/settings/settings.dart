@@ -57,7 +57,10 @@ class Settings extends StatelessWidget {
     }    
 
     return Scaffold(
-      appBar: const SettingsAppBar(),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings),
+        centerTitle: false,
+      ),
       body: ListView(
         children: [
           if (serversProvider.selectedServer != null) ...[

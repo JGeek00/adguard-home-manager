@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -317,7 +319,7 @@ class _ClientsListState extends State<ClientsList> {
               curve: Curves.easeInOut,
               bottom: isVisible ?
                 appConfigProvider.showingSnackbar
-                  ? 70 : 20
+                  ? 70 : (Platform.isIOS ? 40 : 20)
                 : -70,
               right: 20,
               child: FloatingActionButton(
@@ -341,7 +343,7 @@ class _ClientsListState extends State<ClientsList> {
       case 2: 
         return SizedBox(
           width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-171,
+          height: MediaQuery.of(context).size.height-101,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

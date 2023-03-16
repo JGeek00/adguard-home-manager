@@ -42,7 +42,7 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
     return Padding(
       padding: mediaQueryData.viewInsets,
       child: Container(
-        height: 390,
+        height: Platform.isIOS ? 406 : 390,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -55,7 +55,7 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
           children: [
             Expanded(
               child: ListView(
-                physics: 410 < MediaQuery.of(context).size.height
+                physics: (Platform.isIOS ? 426 : 410) < MediaQuery.of(context).size.height
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
@@ -298,7 +298,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                   ),
                 ],
               ),
-            )
+            ),
+            if (Platform.isIOS) const SizedBox(height: 16)
           ],
         ),
       ),

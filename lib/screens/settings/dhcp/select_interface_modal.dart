@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -137,20 +139,15 @@ class SelectInterfaceModal extends StatelessWidget {
                             if (interfaces[index].ipv4Addresses.isNotEmpty) ...[
                               Row(
                                 children: [
-                                  Text(
-                                    "${AppLocalizations.of(context)!.ipv4addresses}: ",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                                  Flexible(
+                                    child: Text(
+                                      "${AppLocalizations.of(context)!.ipv4addresses}: ${interfaces[index].ipv4Addresses.join(', ')}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    interfaces[index].ipv4Addresses.join(', '),
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant
-                                    ),
-                                  ),
+                                  )
                                 ],
                               ),
                               const SizedBox(height: 5),
@@ -158,20 +155,15 @@ class SelectInterfaceModal extends StatelessWidget {
                             if (interfaces[index].ipv6Addresses.isNotEmpty) ...[
                               Row(
                                 children: [
-                                  Text(
-                                    "${AppLocalizations.of(context)!.ipv4addresses}: ",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                                  Flexible(
+                                    child: Text(
+                                      "${AppLocalizations.of(context)!.ipv6addresses}: ${interfaces[index].ipv6Addresses.join(', ')}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    interfaces[index].ipv6Addresses.join(', '),
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant
-                                    ),
-                                  ),
+                                  )
                                 ],
                               ),
                             ]
@@ -195,7 +187,8 @@ class SelectInterfaceModal extends StatelessWidget {
                 )
               ],
             ),
-          )
+          ),
+          if (Platform.isIOS) const SizedBox(height: 16)
         ],
       ),
     );

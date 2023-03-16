@@ -104,6 +104,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                   title: Text(AppLocalizations.of(context)!.clients),
                   pinned: true,
                   floating: true,
+                  centerTitle: false,
                   forceElevated: innerBoxIsScrolled,
                   actions: [
                     if (serversProvider.clients.loadStatus == 1) ...[

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -82,8 +84,8 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
     }
 
     return Container(
-      height: height >= 720 == true
-        ? 720
+      height: height >= (Platform.isIOS ? 736 : 720) == true
+        ? (Platform.isIOS ? 736 : 720)
         : height-25,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
@@ -183,7 +185,8 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
                 )
               ],
             ),
-          )
+          ),
+          if (Platform.isIOS) const SizedBox(height: 16)
         ],
       ),
     );

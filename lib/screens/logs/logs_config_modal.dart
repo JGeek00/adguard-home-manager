@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -122,7 +124,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
             children: [
               Expanded(
                 child: ListView(
-                  physics: 420 < MediaQuery.of(context).size.height
+                  physics: (Platform.isIOS ? 436 : 420) < MediaQuery.of(context).size.height
                     ? const NeverScrollableScrollPhysics() 
                     : null,
                   children: [
@@ -178,54 +180,61 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () => setState(() => anonymizeClientIp = !anonymizeClientIp),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.anonymizeClientIp,
-                                style: const TextStyle(
-                                  fontSize: 16
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Column(
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => setState(() => anonymizeClientIp = !anonymizeClientIp),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 30),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.anonymizeClientIp,
+                                      style: const TextStyle(
+                                        fontSize: 16
+                                      ),
+                                    ),
+                                    Switch(
+                                      value: anonymizeClientIp, 
+                                      onChanged: (value) => setState(() => anonymizeClientIp = value),
+                                      activeColor: Theme.of(context).colorScheme.primary,
+                                    )
+                                  ],
                                 ),
                               ),
-                              Switch(
-                                value: anonymizeClientIp, 
-                                onChanged: (value) => setState(() => anonymizeClientIp = value),
-                                activeColor: Theme.of(context).colorScheme.primary,
-                              )
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: DropdownButtonFormField(
-                        items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
-                          return DropdownMenuItem<String>(
-                            value: item['value'].toString(),
-                            child: Text(item['label']),
-                          );
-                        }).toList(),
-                        value: retentionTime,
-                        onChanged: (value) => setState(() => retentionTime = value),
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10)
-                            )
+                          const SizedBox(height: 16),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: DropdownButtonFormField(
+                              items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
+                                return DropdownMenuItem<String>(
+                                  value: item['value'].toString(),
+                                  child: Text(item['label']),
+                                );
+                              }).toList(),
+                              value: retentionTime,
+                              onChanged: (value) => setState(() => retentionTime = value),
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                label: Text(AppLocalizations.of(context)!.retentionTime)
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
-                          label: Text(AppLocalizations.of(context)!.retentionTime)
-                        ),
-                        borderRadius: BorderRadius.circular(20),
+                        ],
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -272,7 +281,8 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                     )
                   ],
                 ),
-              )
+              ),
+              if (Platform.isIOS) const SizedBox(height: 16)
             ],
           );
 
@@ -310,7 +320,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
     }
 
     return Container(
-      height: 420,
+      height: Platform.isIOS ? 436 : 420,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(28),

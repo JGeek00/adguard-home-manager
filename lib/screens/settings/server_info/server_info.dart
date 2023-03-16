@@ -179,6 +179,7 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.serverInformation),
+        centerTitle: false,
       ),
       body: generateBody()
     );

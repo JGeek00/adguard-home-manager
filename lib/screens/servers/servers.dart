@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/rendering.dart';
@@ -69,6 +71,7 @@ class _ServersState extends State<Servers> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.servers),
+        centerTitle: false,
       ),
       body: Stack(
         children: [
@@ -83,7 +86,7 @@ class _ServersState extends State<Servers> {
             curve: Curves.easeInOut,
             bottom: isVisible ?
               appConfigProvider.showingSnackbar
-                ? 70 : 20
+                ? 70 : (Platform.isIOS ? 40 : 20)
               : -70,
             right: 20,
             child: FloatingActionButton(

@@ -765,6 +765,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dhcpSettings),
+        centerTitle: false,
         actions: selectedInterface != null ? [
           IconButton(
             onPressed: checkDataValid() == true

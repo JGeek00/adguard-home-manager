@@ -85,7 +85,7 @@ class CustomListTile extends StatelessWidget {
                 ),
               ),
               if (trailing != null) ...[
-                const SizedBox(width: 10),
+                const SizedBox(width: 16),
                 trailing!
               ]
             ],

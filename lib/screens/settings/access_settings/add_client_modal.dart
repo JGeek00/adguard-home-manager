@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -66,7 +68,7 @@ class _AddClientModalState extends State<AddClientModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 305,
+        height: Platform.isIOS ? 321 : 305,
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
@@ -79,7 +81,7 @@ class _AddClientModalState extends State<AddClientModal> {
           children: [
             Expanded(
               child: ListView(
-                physics: 322 < MediaQuery.of(context).size.height
+                physics: (Platform.isIOS ? 338 : 322) < MediaQuery.of(context).size.height
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
@@ -146,7 +148,8 @@ class _AddClientModalState extends State<AddClientModal> {
                   ),
                 ],
               ),
-            )
+            ),
+            if (Platform.isIOS) const SizedBox(height: 16)
           ],
         ),
       ),
