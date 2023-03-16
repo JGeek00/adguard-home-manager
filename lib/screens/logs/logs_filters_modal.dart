@@ -164,7 +164,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        height: 455,
+        height: Platform.isIOS ? 446 : 430,
         decoration: BoxDecoration(
           color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -176,7 +176,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
           children: [
             Expanded(
               child: ListView(
-                physics: 400 < MediaQuery.of(context).size.height
+                physics: (Platform.isIOS ? 416 : 400) < MediaQuery.of(context).size.height
                   ? const NeverScrollableScrollPhysics() 
                   : null,
                 children: [
