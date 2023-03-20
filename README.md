@@ -37,6 +37,9 @@ AdGuard Home Manager does not collect any personal user data. All data stored in
 ## Disclaimer
 This is an unofficial application. The AdGuard Home team and the development of the AdGuard Home software is not related in any way with this application.
 
+## Recommended configuration and lists
+On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a recommended configuration for AdGuard Home and some lists. Thanks to [JuanRodenas](https://github.com/JuanRodenas).
+
 ## Third party libraries
 - [provider](https://pub.dev/packages/provider)
 - [sqflite](https://pub.dev/packages/sqflite)
