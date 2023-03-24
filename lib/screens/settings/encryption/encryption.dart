@@ -11,9 +11,10 @@ import 'package:adguard_home_manager/screens/settings/encryption/status.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/custom_text_field.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/master_switch.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/encryption_functions.dart';
+import 'package:adguard_home_manager/screens/settings/encryption/error_message.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/functions/encode_base64.dart';
+import 'package:adguard_home_manager/functions/base64.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -112,7 +113,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
           dnsOverQuicPortController.text = result['data'].portDnsOverQuic != null ? result['data'].portDnsOverQuic.toString() : '';
           if (result['data'].certificateChain != '') {
             certificateOption = 1;
-            certificateContentController.text = "-----BEGIN CERTIFICATE-----\n${result['data'].certificateChain}\n-----END CERTIFICATE-----";
+            certificateContentController.text = decodeBase64(result['data'].certificateChain);
           }
           else {
             certificateOption = 0;
@@ -244,8 +245,8 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
         "port_https": int.parse(httpsPortController.text),
         "port_dns_over_tls": int.parse(tlsPortController.text),
         "port_dns_over_quic": int.parse(dnsOverQuicPortController.text),
-        "certificate_chain": certificateContentController.text,
-        "private_key": pastePrivateKeyController.text,
+        "certificate_chain": encodeBase64(certificateContentController.text),
+        "private_key": encodeBase64(pastePrivateKeyController.text),
         "private_key_saved": usePreviouslySavedKey,
         "certificate_path": certificatePathController.text,
         "private_key_path": privateKeyPathController.text,
@@ -270,6 +271,15 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
           label: AppLocalizations.of(context)!.encryptionConfigNotSaved, 
           color: Colors.red
         );
+
+        if (result['log'].resBody != null) {
+          showDialog(
+            context: context, 
+            builder: (context) => ErrorMessageEncryption(
+              errorMessage: result['log'].resBody
+            )
+          );
+        }
       }
     }
 
@@ -644,9 +654,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
             tooltip: generateStatusString(context, localValidationValid, certKeyValidApi)
           ),
           IconButton(
-            onPressed: localValidationValid == true && certKeyValidApi == 1
-              ? () => saveData()
-              : null, 
+            onPressed: saveData, 
             icon: const Icon(Icons.save),
             tooltip: AppLocalizations.of(context)!.save,
           ),

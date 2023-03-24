@@ -584,5 +584,6 @@
     "clientsSelected": "clientes seleccionados",
     "invalidDomain": "Dominio no válido",
     "loadingBlockedServicesList": "Cargando lista de servicios bloqueados...",
-    "blockedServicesListNotLoaded": "No se ha podido cargar la lista de servicios bloqueados"
+    "blockedServicesListNotLoaded": "No se ha podido cargar la lista de servicios bloqueados",
+    "error": "Error"
 }
