@@ -5,10 +5,10 @@ class Server {
   String domain;
   String? path;
   int? port;
-  String user;
-  String password;
+  String? user;
+  String? password;
   bool defaultServer;
-  String authToken;
+  String? authToken;
   bool runningOnHa;
 
   Server({
@@ -18,10 +18,10 @@ class Server {
     required this.domain,
     this.path,
     this.port,
-    required this.user,
-    required this.password,
+    this.user,
+    this.password,
     required this.defaultServer,
-    required this.authToken,
+    this.authToken,
     required this.runningOnHa,
   });
 }

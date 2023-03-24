@@ -35,7 +35,9 @@ Future<Map<String, dynamic>> apiRequest({
     HttpClient httpClient = HttpClient();
     if (method == 'get') {
       HttpClientRequest request = await httpClient.getUrl(Uri.parse(connectionString));
-      request.headers.set('Authorization', 'Basic ${server.authToken}');
+      if (server.authToken != null) {
+        request.headers.set('Authorization', 'Basic ${server.authToken}');
+      }
       HttpClientResponse response = overrideTimeout == true 
         ? await request.close()
         : await request.close().timeout(const Duration(seconds: 10));
@@ -60,7 +62,9 @@ Future<Map<String, dynamic>> apiRequest({
     }
     else if (method == 'post') {
       HttpClientRequest request = await httpClient.postUrl(Uri.parse(connectionString));
-      request.headers.set('Authorization', 'Basic ${server.authToken}');
+      if (server.authToken != null) {
+        request.headers.set('Authorization', 'Basic ${server.authToken}');
+      }
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(json.encode(body)));
       HttpClientResponse response = overrideTimeout == true 
