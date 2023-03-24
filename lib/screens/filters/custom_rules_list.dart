@@ -194,15 +194,15 @@ class _CustomRulesListState extends State<CustomRulesList> {
                 ),
               )
             ),
-            if (widget.data.isEmpty) SizedBox(
+            if (widget.data.isEmpty) Container(
               width: double.maxFinite,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width-100,
+                  Flexible(
                     child: Text(
-                      AppLocalizations.of(context)!.noBlackLists,
+                      AppLocalizations.of(context)!.noCustomFilters,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

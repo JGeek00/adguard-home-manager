@@ -120,19 +120,22 @@ class _FiltersListState extends State<FiltersList> {
                 onTap: () => openDetailsModal(widget.data[index]),
               ),
             ),
-            if (widget.data.isEmpty) if (widget.data.isEmpty) SizedBox(
+            if (widget.data.isEmpty) if (widget.data.isEmpty) Container(
               width: double.maxFinite,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    widget.type == 'blacklist'
-                      ? AppLocalizations.of(context)!.noBlackLists
-                      : AppLocalizations.of(context)!.noWhiteLists,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  Flexible(
+                    child: Text(
+                      widget.type == 'blacklist'
+                        ? AppLocalizations.of(context)!.noBlackLists
+                        : AppLocalizations.of(context)!.noWhiteLists,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
