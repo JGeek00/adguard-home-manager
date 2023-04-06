@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -51,18 +52,18 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
   final ScrollController scrollController = ScrollController();
 
   Future fetchFilters() async {
-    widget.serversProvider.setFilteringLoadStatus(0, false);
+    widget.serversProvider.setFilteringLoadStatus(LoadStatus.loading, false);
 
     final result = await getFiltering(server: widget.serversProvider.selectedServer!);
 
     if (mounted) {
       if (result['result'] == 'success') {
         widget.serversProvider.setFilteringData(result['data']);
-        widget.serversProvider.setFilteringLoadStatus(1, false);
+        widget.serversProvider.setFilteringLoadStatus(LoadStatus.loaded, false);
       }
       else {
         widget.appConfigProvider.addLog(result['log']);
-        widget.serversProvider.setFilteringLoadStatus(2, false);
+        widget.serversProvider.setFilteringLoadStatus(LoadStatus.error, false);
       }
     }
   }
@@ -228,123 +229,120 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
           return [
             SliverOverlapAbsorber(
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverSafeArea(
-                top: false,
-                sliver: SliverAppBar(
-                  title: Text(AppLocalizations.of(context)!.filters),
-                  pinned: true,
-                  floating: true,
-                  forceElevated: innerBoxIsScrolled,
-                  centerTitle: false,
-                  actions: serversProvider.filtering.loadStatus == 1 ? [
-                    IconButton(
-                      onPressed: enableDisableFiltering, 
-                      tooltip: serversProvider.filtering.data!.enabled == true
-                        ? AppLocalizations.of(context)!.disableFiltering
-                        : AppLocalizations.of(context)!.enableFiltering,
-                      icon: Stack(
-                        children: [
-                          const Icon(Icons.power_settings_new_rounded),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Colors.white
-                                  ),
-                                  child: Icon(
-                                    serversProvider.filtering.data!.enabled == true
-                                      ? Icons.check_circle_rounded
-                                      : Icons.cancel,
-                                    size: 12,
-                                    color: serversProvider.filtering.data!.enabled == true
-                                      ? appConfigProvider.useThemeColorForStatus == true
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Colors.green
-                                      : appConfigProvider.useThemeColorForStatus == true
-                                        ? Colors.grey
-                                        : Colors.red
-                                  ),
+              sliver: SliverAppBar(
+                title: Text(AppLocalizations.of(context)!.filters),
+                pinned: true,
+                floating: true,
+                forceElevated: innerBoxIsScrolled,
+                centerTitle: false,
+                actions: serversProvider.filtering.loadStatus == LoadStatus.loaded ? [
+                  IconButton(
+                    onPressed: enableDisableFiltering, 
+                    tooltip: serversProvider.filtering.data!.enabled == true
+                      ? AppLocalizations.of(context)!.disableFiltering
+                      : AppLocalizations.of(context)!.enableFiltering,
+                    icon: Stack(
+                      children: [
+                        const Icon(Icons.power_settings_new_rounded),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Colors.white
                                 ),
-                              ],
-                            ),
-                          )
-                        ],
-                      )
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context, 
-                          builder: (context) => UpdateIntervalListsModal(
-                            interval: serversProvider.filtering.data!.interval,
-                            onChange: setUpdateFrequency
+                                child: Icon(
+                                  serversProvider.filtering.data!.enabled == true
+                                    ? Icons.check_circle_rounded
+                                    : Icons.cancel,
+                                  size: 12,
+                                  color: serversProvider.filtering.data!.enabled == true
+                                    ? appConfigProvider.useThemeColorForStatus == true
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.green
+                                    : appConfigProvider.useThemeColorForStatus == true
+                                      ? Colors.grey
+                                      : Colors.red
+                                ),
+                              ),
+                            ],
                           ),
-                          backgroundColor: Colors.transparent,
-                          isScrollControlled: true
-                        );
-                      }, 
-                      icon: const Icon(Icons.update_rounded)
-                    ),
-                    PopupMenuButton(
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          onTap: fetchUpdateLists,
-                          child: Row(
-                            children: [
-                              const Icon(Icons.sync_rounded),
-                              const SizedBox(width: 10),
-                              Text(AppLocalizations.of(context)!.updateLists)
-                            ],
-                          )
+                        )
+                      ],
+                    )
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context, 
+                        builder: (context) => UpdateIntervalListsModal(
+                          interval: serversProvider.filtering.data!.interval,
+                          onChange: setUpdateFrequency
                         ),
-                        PopupMenuItem(
-                          onTap: openBlockedServicesModal,
-                          child: Row(
-                            children: [
-                              const Icon(Icons.block),
-                              const SizedBox(width: 10),
-                              Text(AppLocalizations.of(context)!.blockedServices)
-                            ],
-                          )
-                        ),
-                        PopupMenuItem(
-                          onTap: showCheckHostModal,
-                          child: Row(
-                            children: [
-                              const Icon(Icons.shield_rounded),
-                              const SizedBox(width: 10),
-                              Text(AppLocalizations.of(context)!.checkHostFiltered)
-                            ],
-                          )
-                        ),
-                      ]
-                    ),
-                    const SizedBox(width: 5),
-                  ] : [],
-                  bottom: TabBar(
-                    controller: tabController,
-                    isScrollable: false,
-                    unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                    tabs: [
-                      Tab(
-                        icon: const Icon(Icons.verified_user_rounded),
-                        text: AppLocalizations.of(context)!.whitelists,
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true
+                      );
+                    }, 
+                    icon: const Icon(Icons.update_rounded)
+                  ),
+                  PopupMenuButton(
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        onTap: fetchUpdateLists,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.sync_rounded),
+                            const SizedBox(width: 10),
+                            Text(AppLocalizations.of(context)!.updateLists)
+                          ],
+                        )
                       ),
-                      Tab(
-                        icon: const Icon(Icons.gpp_bad_rounded),
-                        text: AppLocalizations.of(context)!.blacklist,
+                      PopupMenuItem(
+                        onTap: openBlockedServicesModal,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.block),
+                            const SizedBox(width: 10),
+                            Text(AppLocalizations.of(context)!.blockedServices)
+                          ],
+                        )
                       ),
-                      Tab(
-                        icon: const Icon(Icons.shield_rounded),
-                        text: AppLocalizations.of(context)!.customRules,
+                      PopupMenuItem(
+                        onTap: showCheckHostModal,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.shield_rounded),
+                            const SizedBox(width: 10),
+                            Text(AppLocalizations.of(context)!.checkHostFiltered)
+                          ],
+                        )
                       ),
                     ]
-                  )
-                ),
+                  ),
+                  const SizedBox(width: 5),
+                ] : [],
+                bottom: TabBar(
+                  controller: tabController,
+                  isScrollable: false,
+                  unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                  tabs: [
+                    Tab(
+                      icon: const Icon(Icons.verified_user_rounded),
+                      text: AppLocalizations.of(context)!.whitelists,
+                    ),
+                    Tab(
+                      icon: const Icon(Icons.gpp_bad_rounded),
+                      text: AppLocalizations.of(context)!.blacklist,
+                    ),
+                    Tab(
+                      icon: const Icon(Icons.shield_rounded),
+                      text: AppLocalizations.of(context)!.customRules,
+                    ),
+                  ]
+                )
               ),
             )
           ];
@@ -352,37 +350,28 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
         body: TabBarView(
           controller: tabController,
           children: [
-            RefreshIndicator(
-              onRefresh: fetchFilters,
-              child: FiltersList(
-                loadStatus: serversProvider.filtering.loadStatus,
-                scrollController: scrollController,
-                type: 'whitelist',
-                data: serversProvider.filtering.loadStatus == 1
-                  ? serversProvider.filtering.data!.whitelistFilters : [],
-                fetchData: fetchFilters,
-              )
+            FiltersList(
+              loadStatus: serversProvider.filtering.loadStatus,
+              scrollController: scrollController,
+              type: 'whitelist',
+              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
+                ? serversProvider.filtering.data!.whitelistFilters : [],
+              fetchData: fetchFilters,
             ),
-            RefreshIndicator(
-              onRefresh: fetchFilters,
-              child: FiltersList(
-                loadStatus: serversProvider.filtering.loadStatus,
-                scrollController: scrollController,
-                type: 'blacklist',
-                data: serversProvider.filtering.loadStatus == 1
-                  ? serversProvider.filtering.data!.filters : [],
-                fetchData: fetchFilters,
-              )
+            FiltersList(
+              loadStatus: serversProvider.filtering.loadStatus,
+              scrollController: scrollController,
+              type: 'blacklist',
+              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
+                ? serversProvider.filtering.data!.filters : [],
+              fetchData: fetchFilters,
             ),
-            RefreshIndicator(
-              onRefresh: fetchFilters,
-              child: CustomRulesList(
-                loadStatus: serversProvider.filtering.loadStatus,
-                scrollController: scrollController,
-                data: serversProvider.filtering.loadStatus == 1
-                  ? serversProvider.filtering.data!.userRules : [],
-                fetchData: fetchFilters,
-              )
+            CustomRulesList(
+              loadStatus: serversProvider.filtering.loadStatus,
+              scrollController: scrollController,
+              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
+                ? serversProvider.filtering.data!.userRules : [],
+              fetchData: fetchFilters,
             ),
           ]
         )

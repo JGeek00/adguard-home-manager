@@ -7,8 +7,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/fab.dart';
 import 'package:adguard_home_manager/screens/filters/remove_custom_rule_modal.dart';
+import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -16,10 +18,10 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
 class CustomRulesList extends StatefulWidget {
-  final int loadStatus;
+  final LoadStatus loadStatus;
   final ScrollController scrollController;
   final List<String> data;
-  final void Function() fetchData;
+  final Future<void> Function() fetchData;
 
   const CustomRulesList({
     Key? key,
@@ -149,120 +151,98 @@ class _CustomRulesListState extends State<CustomRulesList> {
       }
     }
 
-    switch (widget.loadStatus) {
-      case 0:
-        return SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-171,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.loadingFilters,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              )
-            ],
-          ),
-        );
-
-      case 1:
-        return Stack(
+    return CustomTabContentList(
+      loadingGenerator: () => SizedBox(
+        width: double.maxFinite,
+        height: MediaQuery.of(context).size.height-171,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (widget.data.isNotEmpty) ListView.builder(
-              padding: const EdgeInsets.only(top: 0),
-              itemCount: widget.data.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(
-                  widget.data[index],
-                  style: TextStyle(
-                    color: checkIfComment(widget.data[index]) == true
-                      ? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)
-                      : Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                subtitle: generateSubtitle(widget.data[index]),
-                trailing: IconButton(
-                  onPressed: () => openRemoveCustomRuleModal(widget.data[index]),
-                  icon: const Icon(Icons.delete)
-                ),
-              )
-            ),
-            if (widget.data.isEmpty) Container(
-              width: double.maxFinite,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.noCustomFilters,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  TextButton.icon(
-                    onPressed: widget.fetchData, 
-                    icon: const Icon(Icons.refresh_rounded), 
-                    label: Text(AppLocalizations.of(context)!.refresh),
-                  )
-                ],
+            const CircularProgressIndicator(),
+            const SizedBox(height: 30),
+            Text(
+              AppLocalizations.of(context)!.loadingFilters,
+              style: TextStyle(
+                fontSize: 22,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
-            ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeInOut,
-              bottom: isVisible ?
-                appConfigProvider.showingSnackbar
-                  ? 70 : 20
-                : -70,
-              right: 20,
-              child: const FiltersFab(
-                type: 'custom_rule',
-              )
             )
           ],
-        );
-
-      case 2:
-        return SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-171,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 50,
-              ),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.filtersNotLoaded,
+        ),
+      ), 
+      itemsCount: widget.data.length, 
+      contentWidget: (index) => ListTile(
+        title: Text(
+          widget.data[index],
+          style: TextStyle(
+            color: checkIfComment(widget.data[index]) == true
+              ? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)
+              : Theme.of(context).colorScheme.onSurface,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        subtitle: generateSubtitle(widget.data[index]),
+        trailing: IconButton(
+          onPressed: () => openRemoveCustomRuleModal(widget.data[index]),
+          icon: const Icon(Icons.delete)
+        ),
+      ), 
+      noData: Container(
+        width: double.maxFinite,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(
+                AppLocalizations.of(context)!.noCustomFilters,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 24,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-              )
-            ],
-          ),
-        );
-
-      default:
-        return const SizedBox();
-    }
-
+              ),
+            ),
+            const SizedBox(height: 30),
+            TextButton.icon(
+              onPressed: widget.fetchData, 
+              icon: const Icon(Icons.refresh_rounded), 
+              label: Text(AppLocalizations.of(context)!.refresh),
+            )
+          ],
+        ),
+      ), 
+      errorGenerator: () => SizedBox(
+        width: double.maxFinite,
+        height: MediaQuery.of(context).size.height-171,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 50,
+            ),
+            const SizedBox(height: 30),
+            Text(
+              AppLocalizations.of(context)!.filtersNotLoaded,
+              style: TextStyle(
+                fontSize: 22,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            )
+          ],
+        ),
+      ), 
+      loadStatus: widget.loadStatus, 
+      onRefresh: widget.fetchData,
+      fab: const FiltersFab(
+        type: 'custom_rule',
+      ),
+      fabVisible: isVisible,
+    );
   }
 }

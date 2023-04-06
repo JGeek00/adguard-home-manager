@@ -32,7 +32,7 @@ class ServersProvider with ChangeNotifier {
   );
 
   final Filtering _filtering = Filtering(
-    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    loadStatus: LoadStatus.loading,
     data: null
   );
 
@@ -153,7 +153,7 @@ class ServersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setFilteringLoadStatus(int loadStatus, bool notify) {
+  void setFilteringLoadStatus(LoadStatus loadStatus, bool notify) {
     _filtering.loadStatus = loadStatus;
     if (notify == true) {
       notifyListeners();

@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/screens/filters/delete_list_modal.dart';
 
 import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -92,11 +93,11 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
 
         if (result2['result'] == 'success') {
           serversProvider.setFilteringData(result2['data']);
-          serversProvider.setFilteringLoadStatus(1, true);
+          serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
         }
         else {
           appConfigProvider.addLog(result2['log']);
-          serversProvider.setFilteringLoadStatus(2, true);
+          serversProvider.setFilteringLoadStatus(LoadStatus.error, true);
         }
 
         setState(() => enabled = newStatus);
@@ -139,11 +140,11 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
 
         if (result2['result'] == 'success') {
           serversProvider.setFilteringData(result2['data']);
-          serversProvider.setFilteringLoadStatus(1, true);
+          serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
         }
         else {
           appConfigProvider.addLog(result2['log']);
-          serversProvider.setFilteringLoadStatus(2, true);
+          serversProvider.setFilteringLoadStatus(LoadStatus.error, true);
         }
 
         processModal.close();
@@ -184,11 +185,11 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
 
         if (result2['result'] == 'success') {
           serversProvider.setFilteringData(result2['data']);
-          serversProvider.setFilteringLoadStatus(1, true);
+          serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
         }
         else {
           appConfigProvider.addLog(result2['log']);
-          serversProvider.setFilteringLoadStatus(2, true);
+          serversProvider.setFilteringLoadStatus(LoadStatus.loading, true);
         }
 
         processModal.close();

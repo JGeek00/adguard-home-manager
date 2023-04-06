@@ -10,16 +10,18 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/filters/fab.dart';
 import 'package:adguard_home_manager/screens/filters/list_details_screen.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 
 class FiltersList extends StatefulWidget {
-  final int loadStatus;
+  final LoadStatus loadStatus;
   final ScrollController scrollController;
   final List<Filter> data;
-  final void Function() fetchData;
+  final Future<void> Function() fetchData;
   final String type;
 
   const FiltersList({
@@ -74,122 +76,100 @@ class _FiltersListState extends State<FiltersList> {
       );
     }
 
-    switch (widget.loadStatus) {
-      case 0:
-        return SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-171,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.loadingFilters,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              )
-            ],
-          ),
-        );
-
-      case 1:
-        return Stack(
+    return CustomTabContentList(
+      loadingGenerator: () => SizedBox(
+        width: double.maxFinite,
+        height: MediaQuery.of(context).size.height-171,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (widget.data.isNotEmpty) ListView.builder(
-              padding: const EdgeInsets.only(top: 0),
-              itemCount: widget.data.length,
-              itemBuilder: (context, index) => CustomListTile(
-                title: widget.data[index].name,
-                subtitle: "${intFormat(widget.data[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
-                trailing: Icon(
-                  widget.data[index].enabled == true
-                    ? Icons.check_circle_rounded
-                    : Icons.cancel,
-                  color: widget.data[index].enabled == true
-                    ? appConfigProvider.useThemeColorForStatus == true
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.green
-                    : appConfigProvider.useThemeColorForStatus == true
-                      ? Colors.grey
-                      : Colors.red
-                ),
-                onTap: () => openDetailsModal(widget.data[index]),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 30),
+            Text(
+              AppLocalizations.of(context)!.loadingFilters,
+              style: TextStyle(
+                fontSize: 22,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
-            ),
-            if (widget.data.isEmpty) if (widget.data.isEmpty) Container(
-              width: double.maxFinite,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      widget.type == 'blacklist'
-                        ? AppLocalizations.of(context)!.noBlackLists
-                        : AppLocalizations.of(context)!.noWhiteLists,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  TextButton.icon(
-                    onPressed: widget.fetchData, 
-                    icon: const Icon(Icons.refresh_rounded), 
-                    label: Text(AppLocalizations.of(context)!.refresh),
-                  )
-                ],
-              ),
-            ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeInOut,
-              bottom: isVisible ?
-                appConfigProvider.showingSnackbar
-                  ? 70 : 20
-                : -70,
-              right: 20,
-              child: FiltersFab(
-                type: widget.type
-              )
             )
           ],
-        );
-
-      case 2:
-        return SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-171,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 50,
-              ),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.filtersNotLoaded,
+        ),
+      ), 
+      itemsCount: widget.data.length, 
+      contentWidget: (index) => CustomListTile(
+        title: widget.data[index].name,
+        subtitle: "${intFormat(widget.data[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
+        trailing: Icon(
+          widget.data[index].enabled == true
+            ? Icons.check_circle_rounded
+            : Icons.cancel,
+          color: widget.data[index].enabled == true
+            ? appConfigProvider.useThemeColorForStatus == true
+              ? Theme.of(context).colorScheme.primary
+              : Colors.green
+            : appConfigProvider.useThemeColorForStatus == true
+              ? Colors.grey
+              : Colors.red
+        ),
+        onTap: () => openDetailsModal(widget.data[index]),
+      ), 
+      noData: Container(
+        width: double.maxFinite,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(
+                widget.type == 'blacklist'
+                  ? AppLocalizations.of(context)!.noBlackLists
+                  : AppLocalizations.of(context)!.noWhiteLists,
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 24,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-              )
-            ],
-          ),
-        );
-
-      default:
-        return const SizedBox();
-    }
-
+              ),
+            ),
+            const SizedBox(height: 30),
+            TextButton.icon(
+              onPressed: widget.fetchData, 
+              icon: const Icon(Icons.refresh_rounded), 
+              label: Text(AppLocalizations.of(context)!.refresh),
+            )
+          ],
+        ),
+      ), 
+      errorGenerator: () => SizedBox(
+        width: double.maxFinite,
+        height: MediaQuery.of(context).size.height-171,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 50,
+            ),
+            const SizedBox(height: 30),
+            Text(
+              AppLocalizations.of(context)!.filtersNotLoaded,
+              style: TextStyle(
+                fontSize: 22,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            )
+          ],
+        ),
+      ), 
+      loadStatus: widget.loadStatus, 
+      onRefresh: widget.fetchData,
+      fab: FiltersFab(
+        type: widget.type,
+      ),
+      fabVisible: isVisible,
+    );
   }
 }

@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:adguard_home_manager/constants/enums.dart';
+
 FilteringData filteringFromJson(String str) => FilteringData.fromJson(json.decode(str));
 
 String filteringToJson(FilteringData data) => json.encode(data.toJson());
 
 class Filtering {
-  int loadStatus = 0;
+  LoadStatus loadStatus = LoadStatus.loading;
   FilteringData? data;
 
   Filtering({
