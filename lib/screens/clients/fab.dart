@@ -14,12 +14,7 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class ClientsFab extends StatelessWidget {
-  final bool isVisible;
-
-  const ClientsFab({
-    Key? key,
-    required this.isVisible
-  }) : super(key: key);
+  const ClientsFab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -67,18 +62,9 @@ class ClientsFab extends StatelessWidget {
       ));
     }
 
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.easeInOut,
-      bottom: isVisible ?
-        appConfigProvider.showingSnackbar
-          ? 70 : 20
-        : -70,
-      right: 20,
-      child: FloatingActionButton(
-        onPressed: openAddClient,
-        child: const Icon(Icons.add),
-      )
+    return FloatingActionButton(
+      onPressed: openAddClient,
+      child: const Icon(Icons.add),
     );
   }
 }
