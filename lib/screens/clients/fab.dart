@@ -14,11 +14,11 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class ClientsFab extends StatelessWidget {
-  final int tab;
+  final bool isVisible;
 
   const ClientsFab({
     Key? key,
-    required this.tab,
+    required this.isVisible
   }) : super(key: key);
 
   @override
@@ -67,9 +67,18 @@ class ClientsFab extends StatelessWidget {
       ));
     }
 
-    return FloatingActionButton(
-      onPressed: () => openAddClient(),
-      child: const Icon(Icons.add),
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeInOut,
+      bottom: isVisible ?
+        appConfigProvider.showingSnackbar
+          ? 70 : 20
+        : -70,
+      right: 20,
+      child: FloatingActionButton(
+        onPressed: openAddClient,
+        child: const Icon(Icons.add),
+      )
     );
   }
 }

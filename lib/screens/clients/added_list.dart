@@ -10,8 +10,10 @@ import 'package:adguard_home_manager/screens/clients/client_screen.dart';
 import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
+import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -20,7 +22,7 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class AddedList extends StatefulWidget {
   final ScrollController scrollController;
-  final int loadStatus;
+  final LoadStatus loadStatus;
   final List<Client> data;
   final Future Function() fetchClients;
 
@@ -169,180 +171,163 @@ class _AddedListState extends State<AddedList> {
       );
     }
 
-    switch (widget.loadStatus) {
-      case 0:
-        return SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-171,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.loadingStatus,
-                textAlign: TextAlign.center,
+    return Stack(
+      children: [
+        CustomTabContentList(
+          loadingGenerator: () => SizedBox(
+            width: double.maxFinite,
+            height: MediaQuery.of(context).size.height-171,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 30),
+                Text(
+                  AppLocalizations.of(context)!.loadingStatus,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                )
+              ],
+            ),
+          ), 
+          itemsCount: widget.data.length,
+          contentWidget: (index) => ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            isThreeLine: true,
+            onLongPress: () => openOptionsModal(widget.data[index]),
+            onTap: () => openClientModal(widget.data[index]),
+            title: Padding(
+              padding: const EdgeInsets.only(bottom: 5),
+              child: Text(
+                widget.data[index].name,
                 style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 18,
+                  fontWeight: FontWeight.normal,
+                  color: Theme.of(context).colorScheme.onSurface
                 ),
-              )
-            ],
-          ),
-        );
-
-      case 1:
-        return Stack(
-          children: [
-            if (widget.data.isNotEmpty) ListView.builder(
-              padding: const EdgeInsets.only(top: 0),
-              itemCount: widget.data.length,
-              itemBuilder: (context, index) => ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                isThreeLine: true,
-                onLongPress: () => openOptionsModal(widget.data[index]),
-                onTap: () => openClientModal(widget.data[index]),
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: Text(
-                    widget.data[index].name,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.normal,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
+                  style: TextStyle(
+                    color: Theme.of(context).listTileTheme.textColor
                   ),
                 ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 7),
+                Row(
                   children: [
-                    Text(
-                      widget.data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
-                      style: TextStyle(
-                        color: Theme.of(context).listTileTheme.textColor
-                      ),
+                    Icon(
+                      Icons.filter_list_rounded,
+                      size: 19,
+                      color: widget.data[index].filteringEnabled == true 
+                        ? appConfigProvider.useThemeColorForStatus == true
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.green
+                        : appConfigProvider.useThemeColorForStatus == true
+                          ? Colors.grey
+                          : Colors.red,
                     ),
-                    const SizedBox(height: 7),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.filter_list_rounded,
-                          size: 19,
-                          color: widget.data[index].filteringEnabled == true 
-                            ? appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.green
-                            : appConfigProvider.useThemeColorForStatus == true
-                              ? Colors.grey
-                              : Colors.red,
-                        ),
-                        const SizedBox(width: 10),
-                        Icon(
-                          Icons.vpn_lock_rounded,
-                          size: 18,
-                          color: widget.data[index].safebrowsingEnabled == true 
-                            ? appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.green
-                            : appConfigProvider.useThemeColorForStatus == true
-                              ? Colors.grey
-                              : Colors.red,
-                        ),
-                        const SizedBox(width: 10),
-                        Icon(
-                          Icons.block,
-                          size: 18,
-                          color: widget.data[index].parentalEnabled == true 
-                            ? appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.green
-                            : appConfigProvider.useThemeColorForStatus == true
-                              ? Colors.grey
-                              : Colors.red,
-                        ),
-                        const SizedBox(width: 10),
-                        Icon(
-                          Icons.search_rounded,
-                          size: 19,
-                          color: widget.data[index].safesearchEnabled == true 
-                            ? appConfigProvider.useThemeColorForStatus == true
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.green
-                            : appConfigProvider.useThemeColorForStatus == true
-                              ? Colors.grey
-                              : Colors.red,
-                        )
-                      ],
+                    const SizedBox(width: 10),
+                    Icon(
+                      Icons.vpn_lock_rounded,
+                      size: 18,
+                      color: widget.data[index].safebrowsingEnabled == true 
+                        ? appConfigProvider.useThemeColorForStatus == true
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.green
+                        : appConfigProvider.useThemeColorForStatus == true
+                          ? Colors.grey
+                          : Colors.red,
+                    ),
+                    const SizedBox(width: 10),
+                    Icon(
+                      Icons.block,
+                      size: 18,
+                      color: widget.data[index].parentalEnabled == true 
+                        ? appConfigProvider.useThemeColorForStatus == true
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.green
+                        : appConfigProvider.useThemeColorForStatus == true
+                          ? Colors.grey
+                          : Colors.red,
+                    ),
+                    const SizedBox(width: 10),
+                    Icon(
+                      Icons.search_rounded,
+                      size: 19,
+                      color: widget.data[index].safesearchEnabled == true 
+                        ? appConfigProvider.useThemeColorForStatus == true
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.green
+                        : appConfigProvider.useThemeColorForStatus == true
+                          ? Colors.grey
+                          : Colors.red,
                     )
                   ],
-                ),
-              )
+                )
+              ],
             ),
-            if (widget.data.isEmpty) SizedBox(
-              width: double.maxFinite,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.noClientsList,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+          ), 
+          noData: SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.noClientsList,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(height: 30),
-                  TextButton.icon(
-                    onPressed: widget.fetchClients, 
-                    icon: const Icon(Icons.refresh_rounded), 
-                    label: Text(AppLocalizations.of(context)!.refresh),
-                  )
-                ],
-              ),
-            ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeInOut,
-              bottom: isVisible ?
-                appConfigProvider.showingSnackbar
-                  ? 70 : 20
-                : -70,
-              right: 20,
-              child: const ClientsFab(tab: 1),
-            )
-          ],
-        );
-      
-      case 2:
-        return SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-171,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 50,
-              ),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.errorLoadServerStatus,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-              )
-            ],
-          ),
-        );
-
-      default:
-        return const SizedBox();
-    }
-
+                const SizedBox(height: 30),
+                TextButton.icon(
+                  onPressed: widget.fetchClients, 
+                  icon: const Icon(Icons.refresh_rounded), 
+                  label: Text(AppLocalizations.of(context)!.refresh),
+                )
+              ],
+            ),
+          ), 
+          errorGenerator: () => SizedBox(
+            width: double.maxFinite,
+            height: MediaQuery.of(context).size.height-171,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                  size: 50,
+                ),
+                const SizedBox(height: 30),
+                Text(
+                  AppLocalizations.of(context)!.errorLoadServerStatus,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                )
+              ],
+            ),
+          ), 
+          loadStatus: widget.loadStatus, 
+          onRefresh: widget.fetchClients
+        ),
+        ClientsFab(
+          isVisible: isVisible,
+        )
+      ],
+    );
   }
 }

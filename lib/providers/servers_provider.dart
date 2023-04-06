@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -26,7 +27,7 @@ class ServersProvider with ChangeNotifier {
   List<String> _protectionsManagementProcess = []; // protections that are currenty being enabled or disabled
 
   final Clients _clients = Clients(
-    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
+    loadStatus: LoadStatus.loading,
     data: null
   );
 
@@ -125,7 +126,7 @@ class ServersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setClientsLoadStatus(int status, bool notify) {
+  void setClientsLoadStatus(LoadStatus status, bool notify) {
     _clients.loadStatus = status;
     if (notify == true) {
       notifyListeners();

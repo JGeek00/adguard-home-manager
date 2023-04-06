@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -42,16 +43,16 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
   late TabController tabController;
 
   Future fetchClients() async {
-    widget.serversProvider.setClientsLoadStatus(0, false);
+    widget.serversProvider.setClientsLoadStatus(LoadStatus.loading, false);
     final result = await getClients(widget.serversProvider.selectedServer!);
     if (mounted) {
       if (result['result'] == 'success') {
         widget.serversProvider.setClientsData(result['data']);
-        widget.serversProvider.setClientsLoadStatus(1, true);
+        widget.serversProvider.setClientsLoadStatus(LoadStatus.loaded, true);
       }
       else {
         widget.appConfigProvider.addLog(result['log']);
-        widget.serversProvider.setClientsLoadStatus(2, true);
+        widget.serversProvider.setClientsLoadStatus(LoadStatus.error, true);
       }
     }
   }
@@ -120,7 +121,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
                 type: 'allowed',
                 scrollController: scrollController, 
                 loadStatus: serversProvider.clients.loadStatus, 
-                data: serversProvider.clients.loadStatus == 1
+                data: serversProvider.clients.loadStatus == LoadStatus.loaded
                   ? serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients : [], 
                 fetchClients: fetchClients
               ),
@@ -128,7 +129,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
                 type: 'disallowed',
                 scrollController: scrollController, 
                 loadStatus: serversProvider.clients.loadStatus, 
-                data: serversProvider.clients.loadStatus == 1
+                data: serversProvider.clients.loadStatus == LoadStatus.loaded
                   ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 
                 fetchClients: fetchClients
               ),
@@ -136,7 +137,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
                 type: 'domains',
                 scrollController: scrollController, 
                 loadStatus: serversProvider.clients.loadStatus, 
-                data: serversProvider.clients.loadStatus == 1
+                data: serversProvider.clients.loadStatus == LoadStatus.loaded
                   ? serversProvider.clients.data!.clientsAllowedBlocked!.blockedHosts : [], 
                 fetchClients: fetchClients
               ),

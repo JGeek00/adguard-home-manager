@@ -9,6 +9,7 @@ import 'package:adguard_home_manager/screens/clients/added_list.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -33,7 +34,7 @@ class Clients extends StatelessWidget {
 
 class ClientsWidget extends StatefulWidget {
   final Server server;
-  final void Function(int, bool) setLoadingStatus;
+  final void Function(LoadStatus, bool) setLoadingStatus;
   final void Function(ClientsData) setClientsData;
   final void Function(int) setSelectedClientsTab;
   final void Function(AppLog) addLog;
@@ -56,16 +57,16 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   final ScrollController scrollController = ScrollController();
 
   Future fetchClients() async {
-    widget.setLoadingStatus(0, false);
+    widget.setLoadingStatus(LoadStatus.loading, false);
     final result = await getClients(widget.server);
     if (mounted) {
       if (result['result'] == 'success') {
         widget.setClientsData(result['data']);
-        widget.setLoadingStatus(1, true);
+        widget.setLoadingStatus(LoadStatus.loaded, true);
       }
       else {
         widget.addLog(result['log']);
-        widget.setLoadingStatus(2, true);
+        widget.setLoadingStatus(LoadStatus.error, true);
       }
     }
   }
@@ -98,43 +99,40 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
           return [
             SliverOverlapAbsorber(
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverSafeArea(
-                top: false,
-                sliver: SliverAppBar(
-                  title: Text(AppLocalizations.of(context)!.clients),
-                  pinned: true,
-                  floating: true,
-                  centerTitle: false,
-                  forceElevated: innerBoxIsScrolled,
-                  actions: [
-                    if (serversProvider.clients.loadStatus == 1) ...[
-                      IconButton(
-                        onPressed: () => {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SearchClients()
-                          ))
-                        }, 
-                        icon: const Icon(Icons.search),
-                        tooltip: AppLocalizations.of(context)!.searchClients,
-                      ),
-                      const SizedBox(width: 10),
-                    ]
-                  ],
-                  bottom: TabBar(
-                    controller: tabController,
-                    unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                    tabs: [
-                      Tab(
-                        icon: const Icon(Icons.devices),
-                        text: AppLocalizations.of(context)!.activeClients,
-                      ),
-                      Tab(
-                        icon: const Icon(Icons.add_rounded),
-                        text: AppLocalizations.of(context)!.added,
-                      ),
-                    ]
-                  )
-                ),
+              sliver: SliverAppBar(
+                title: Text(AppLocalizations.of(context)!.clients),
+                pinned: true,
+                floating: true,
+                centerTitle: false,
+                forceElevated: innerBoxIsScrolled,
+                actions: [
+                  if (serversProvider.clients.loadStatus == LoadStatus.loaded) ...[
+                    IconButton(
+                      onPressed: () => {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => const SearchClients()
+                        ))
+                      }, 
+                      icon: const Icon(Icons.search),
+                      tooltip: AppLocalizations.of(context)!.searchClients,
+                    ),
+                    const SizedBox(width: 10),
+                  ]
+                ],
+                bottom: TabBar(
+                  controller: tabController,
+                  unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                  tabs: [
+                    Tab(
+                      icon: const Icon(Icons.devices),
+                      text: AppLocalizations.of(context)!.activeClients,
+                    ),
+                    Tab(
+                      icon: const Icon(Icons.add_rounded),
+                      text: AppLocalizations.of(context)!.added,
+                    ),
+                  ]
+                )
               ),
             )
           ];
@@ -151,25 +149,19 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
           child: TabBarView(
             controller: tabController,
             children: [
-              RefreshIndicator(
-                onRefresh: fetchClients,
-                child: ClientsList(
-                  scrollController: scrollController,
-                  loadStatus: serversProvider.clients.loadStatus,
-                  data: serversProvider.clients.loadStatus == 1
-                    ? serversProvider.clients.data!.autoClientsData : [],
-                  fetchClients: fetchClients,
-                ),
+              ClientsList(
+                scrollController: scrollController,
+                loadStatus: serversProvider.clients.loadStatus,
+                data: serversProvider.clients.loadStatus == LoadStatus.loaded
+                  ? serversProvider.clients.data!.autoClientsData : [],
+                fetchClients: fetchClients,
               ),
-              RefreshIndicator(
-                onRefresh: fetchClients,
-                child: AddedList(
-                  scrollController: scrollController,
-                  loadStatus: serversProvider.clients.loadStatus,
-                  data: serversProvider.clients.loadStatus == 1
-                    ? serversProvider.clients.data!.clients : [], 
-                  fetchClients: fetchClients,
-                )
+              AddedList(
+                scrollController: scrollController,
+                loadStatus: serversProvider.clients.loadStatus,
+                data: serversProvider.clients.loadStatus == LoadStatus.loaded
+                  ? serversProvider.clients.data!.clients : [], 
+                fetchClients: fetchClients,
               ),
             ]
           )

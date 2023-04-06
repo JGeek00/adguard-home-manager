@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 
 class Clients {
-  int loadStatus;
+  LoadStatus loadStatus;
   ClientsData? data;
 
   Clients({

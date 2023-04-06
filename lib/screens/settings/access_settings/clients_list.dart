@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ import 'package:adguard_home_manager/classes/process_modal.dart';
 class ClientsList extends StatefulWidget {
   final String type;
   final ScrollController scrollController;
-  final int loadStatus;
+  final LoadStatus loadStatus;
   final List<String> data;
   final Future Function() fetchClients;
 
@@ -209,7 +210,7 @@ class _ClientsListState extends State<ClientsList> {
     }
 
     switch (widget.loadStatus) {
-      case 0:
+      case LoadStatus.loading:
         return SizedBox(
           width: double.maxFinite,
           height: MediaQuery.of(context).size.height-171,
@@ -231,7 +232,7 @@ class _ClientsListState extends State<ClientsList> {
           ),
         );
 
-      case 1: 
+      case LoadStatus.loaded: 
         return Stack(
           children: [
             RefreshIndicator(
@@ -340,7 +341,7 @@ class _ClientsListState extends State<ClientsList> {
           ]
         );
 
-      case 2: 
+      case LoadStatus.error: 
         return SizedBox(
           width: double.maxFinite,
           height: MediaQuery.of(context).size.height-101,
