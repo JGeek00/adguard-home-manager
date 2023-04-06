@@ -1,10 +1,10 @@
-import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/access_settings/clients_list.dart';
 
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -72,7 +72,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-
+print(serversProvider.clients.data!.clientsAllowedBlocked!.blockedHosts.length);
     return Scaffold(
       body: DefaultTabController(
         length: 3,

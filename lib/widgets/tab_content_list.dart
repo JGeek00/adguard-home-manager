@@ -12,6 +12,7 @@ class CustomTabContentList extends StatelessWidget {
   final Widget Function() errorGenerator;
   final LoadStatus loadStatus;
   final Future<void> Function() onRefresh;
+  final double? refreshIndicatorOffset;
   final Widget? fab;
   final bool? fabVisible;
 
@@ -24,6 +25,7 @@ class CustomTabContentList extends StatelessWidget {
     required this.errorGenerator,
     required this.loadStatus,
     required this.onRefresh,
+    this.refreshIndicatorOffset,
     this.fab,
     this.fabVisible
   }) : super(key: key);
@@ -65,7 +67,7 @@ class CustomTabContentList extends StatelessWidget {
                 builder: (BuildContext context) {
                   return RefreshIndicator(
                     onRefresh: onRefresh,
-                    edgeOffset: 95,
+                    edgeOffset: refreshIndicatorOffset ?? 95,
                     child: CustomScrollView(
                       slivers: <Widget>[
                         SliverOverlapInjector(

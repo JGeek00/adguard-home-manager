@@ -1,8 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
-
-import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -10,11 +7,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/access_settings/add_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
+import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
@@ -209,167 +208,173 @@ class _ClientsListState extends State<ClientsList> {
       }
     }
 
-    switch (widget.loadStatus) {
-      case LoadStatus.loading:
-        return SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-171,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.loadingClients,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              )
-            ],
-          ),
-        );
-
-      case LoadStatus.loaded: 
-        return Stack(
+    return CustomTabContentList(
+      loadingGenerator: () => SizedBox(
+        width: double.maxFinite,
+        height: MediaQuery.of(context).size.height-171,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            RefreshIndicator(
-              onRefresh: widget.fetchClients,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.info_rounded,
-                              color: Theme.of(context).listTileTheme.iconColor,
-                            ),
-                            const SizedBox(width: 20),
-                            Flexible(
-                              child: Text(
-                                description(),
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (widget.data.isNotEmpty) Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.only(top: 0),
-                      itemCount: widget.data.length,
-                      itemBuilder: (context, index) => ListTile(
-                        title: Text(
-                          widget.data[index],
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            color: Theme.of(context).colorScheme.onSurface
-                          ),
-                        ),
-                        trailing: IconButton(
-                          onPressed: () => {
-                            showDialog(
-                              context: context, 
-                              builder: (context) => RemoveClientModal(
-                                onConfirm: () => confirmRemoveItem(widget.data[index], widget.type),
-                              )
-                            )
-                          }, 
-                          icon: const Icon(Icons.delete_rounded)
-                        ),
-                      )
-                    ),
-                  ),
-                  if (widget.data.isEmpty) Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          noItems(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        TextButton.icon(
-                          onPressed: widget.fetchClients, 
-                          icon: const Icon(Icons.refresh_rounded), 
-                          label: Text(AppLocalizations.of(context)!.refresh),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeInOut,
-              bottom: isVisible ?
-                appConfigProvider.showingSnackbar
-                  ? 70 : (Platform.isIOS ? 40 : 20)
-                : -70,
-              right: 20,
-              child: FloatingActionButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context, 
-                    builder: (context) => AddClientModal(
-                      type: widget.type,
-                      onConfirm: confirmAddItem
-                    ),
-                    backgroundColor: Colors.transparent,
-                    isScrollControlled: true
-                  );
-                },
-                child: const Icon(Icons.add),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 30),
+            Text(
+              AppLocalizations.of(context)!.loadingClients,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             )
-          ]
-        );
-
-      case LoadStatus.error: 
-        return SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height-101,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 50,
-              ),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.clientsNotLoaded,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ],
+        ),
+      ), 
+      itemsCount: widget.data.isNotEmpty
+        ? widget.data.length+1
+        : 0, 
+      contentWidget: (index) {
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.all(10),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_rounded,
+                      color: Theme.of(context).listTileTheme.iconColor,
+                    ),
+                    const SizedBox(width: 20),
+                    Flexible(
+                      child: Text(
+                        description(),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
+              ),
+            ),
+          );
+        }
+        else {
+          return ListTile(
+            title: Text(
+              widget.data[index-1],
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                color: Theme.of(context).colorScheme.onSurface
+              ),
+            ),
+            trailing: IconButton(
+              onPressed: () => {
+                showDialog(
+                  context: context, 
+                  builder: (context) => RemoveClientModal(
+                    onConfirm: () => confirmRemoveItem(widget.data[index-1], widget.type),
+                  )
+                )
+              }, 
+              icon: const Icon(Icons.delete_rounded)
+            ),
+          );
+        }
+      },
+      noData: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_rounded,
+                      color: Theme.of(context).listTileTheme.iconColor,
+                    ),
+                    const SizedBox(width: 20),
+                    Flexible(
+                      child: Text(
+                        description(),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ),
-        );
-
-      default:
-        return const SizedBox();
-    }
-
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  noItems(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                TextButton.icon(
+                  onPressed: widget.fetchClients, 
+                  icon: const Icon(Icons.refresh_rounded), 
+                  label: Text(AppLocalizations.of(context)!.refresh),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+      errorGenerator: () => SizedBox(
+        width: double.maxFinite,
+        height: MediaQuery.of(context).size.height-101,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 50,
+            ),
+            const SizedBox(height: 30),
+            Text(
+              AppLocalizations.of(context)!.clientsNotLoaded,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            )
+          ],
+        ),
+      ), 
+      loadStatus: widget.loadStatus, 
+      onRefresh: widget.fetchClients,
+      refreshIndicatorOffset: 0,
+      fab: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context, 
+            builder: (context) => AddClientModal(
+              type: widget.type,
+              onConfirm: confirmAddItem
+            ),
+            backgroundColor: Colors.transparent,
+            isScrollControlled: true
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+      fabVisible: isVisible,
+    );
   }
 }
