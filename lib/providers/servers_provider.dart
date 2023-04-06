@@ -1,5 +1,3 @@
-import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -9,11 +7,15 @@ import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
+import 'package:adguard_home_manager/models/update_available.dart';
+import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
 
 class ServersProvider with ChangeNotifier {
   Database? _dbInstance;
@@ -54,6 +56,11 @@ class ServersProvider with ChangeNotifier {
   final BlockedServices _blockedServicesList = BlockedServices(
     loadStatus: 0,
     services: null
+  );
+
+  final UpdateAvailable _updateAvailable = UpdateAvailable(
+    loadStatus: LoadStatus.loading,
+    data: null,
   );
 
   FilteringStatus? _filteringStatus;
@@ -100,6 +107,10 @@ class ServersProvider with ChangeNotifier {
 
   BlockedServices get blockedServicesList {
     return _blockedServicesList;
+  }
+
+  UpdateAvailable get updateAvailable {
+    return _updateAvailable;
   }
 
   void setDbInstance(Database db) {
@@ -222,6 +233,18 @@ class ServersProvider with ChangeNotifier {
     if (notify == true) {
       notifyListeners();
     }
+  }
+
+  void setUpdateAvailableLoadStatus(LoadStatus status, bool notify) {
+    _updateAvailable.loadStatus = status;
+    if (notify == true) {
+      notifyListeners();
+    }
+  }
+
+  void setUpdateAvailableData(UpdateAvailableData data) {
+    _updateAvailable.data = data;
+    notifyListeners();
   }
  
   Future<dynamic> createServer(Server server) async {
@@ -460,6 +483,40 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
+  void checkServerUpdatesAvailable(Server server) async {
+    setUpdateAvailableLoadStatus(LoadStatus.loading, true);
+    final result = await Future.wait([
+      checkServerUpdates(server: server),
+      getUpdateChangelog(server: server)
+    ]);
+    if (result[0]['result'] == 'success') {
+      UpdateAvailableData data = result[0]['data'];
+      data.changelog = result[1]['body'];
+      data.updateAvailable = data.newVersion.contains('b')
+        ? compareBetaVersions(
+            currentVersion: data.currentVersion.replaceAll('v', ''),
+            newVersion: data.newVersion.replaceAll('v', ''),
+          )
+        : compareVersions(
+            currentVersion: data.currentVersion.replaceAll('v', ''),
+            newVersion: data.newVersion.replaceAll('v', ''),
+          );
+      setUpdateAvailableData(data);
+      setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
+    }
+    else {
+      setUpdateAvailableLoadStatus(LoadStatus.error, true);
+    }
+  }
+
+  void clearUpdateAvailable(Server server, String newCurrentVersion) {
+    if (_updateAvailable.data != null) {
+      _updateAvailable.data!.updateAvailable = null;
+      _updateAvailable.data!.currentVersion = newCurrentVersion;
+      notifyListeners();
+    }
+  }
+
   void saveFromDb(List<Map<String, dynamic>>? data) async {
     if (data != null) {
       for (var server in data) {
@@ -484,6 +541,7 @@ class ServersProvider with ChangeNotifier {
           if (serverStatus['result'] == 'success') {
             _serverStatus.data = serverStatus['data'];
             _serverStatus.loadStatus = 1;
+            checkServerUpdatesAvailable(serverObj); // Do not await
           }
           else {
             _serverStatus.loadStatus = 2;

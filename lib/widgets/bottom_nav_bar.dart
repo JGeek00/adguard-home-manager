@@ -50,11 +50,33 @@ class BottomNavBar extends StatelessWidget {
     return NavigationBar(
       selectedIndex: appConfigProvider.selectedScreen,
       destinations: screens.map((screen) => NavigationDestination(
-        icon: Icon(
-          screen.icon,
-          color: screens[appConfigProvider.selectedScreen] == screen
-            ? Theme.of(context).colorScheme.onSecondaryContainer
-            : Theme.of(context).colorScheme.onSurfaceVariant,
+        icon: Stack(
+          children: [
+            Icon(
+              screen.icon,
+              color: screens[appConfigProvider.selectedScreen] == screen
+                ? Theme.of(context).colorScheme.onSecondaryContainer
+                : Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            if (
+              screen.name == 'settings' &&
+              serversProvider.updateAvailable.data != null &&
+              serversProvider.updateAvailable.data!.updateAvailable != null &&
+              serversProvider.updateAvailable.data!.updateAvailable == true
+            ) Positioned(
+                bottom: 0,
+                right: -12,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.red
+                  ),
+                ),
+              )
+          ],
         ), 
         label: translatedName(screen.name)
       )).toList(),

@@ -585,5 +585,16 @@
     "invalidDomain": "Dominio no válido",
     "loadingBlockedServicesList": "Cargando lista de servicios bloqueados...",
     "blockedServicesListNotLoaded": "No se ha podido cargar la lista de servicios bloqueados",
-    "error": "Error"
+    "error": "Error",
+    "updates": "Actualizaciones",
+    "updatesDescription": "Actualiza el servidor AdGuard Home",
+    "updateNow": "Actualizar ahora",
+    "currentVersion": "Versión actual",
+    "requestStartUpdateFailed": "Petición para iniciar la actualización fallida",
+    "requestStartUpdateSuccessful": "Petición para iniciar la actualización satisfactoria",
+    "serverUpdated": "Servidor actualizado",
+    "unknownStatus": "Estado desconocido",
+    "checkingUpdates": "Comprobando actualizaciones...",
+    "checkUpdates": "Comprobar actualizaciones",
+    "requestingUpdate": "Solicitando actualización..."
 }

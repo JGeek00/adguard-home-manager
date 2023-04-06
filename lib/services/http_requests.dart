@@ -20,6 +20,7 @@ import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
+import 'package:adguard_home_manager/models/update_available.dart';
 
 
 Future<Map<String, dynamic>> apiRequest({
@@ -1959,4 +1960,171 @@ Future checkAppUpdatesGitHub() async {
       )
     };
   } 
+}
+
+Future checkServerUpdates({
+  required Server server,
+}) async {
+  final result = await Future.wait([
+    apiRequest(
+      urlPath: '/version.json', 
+      method: 'get',
+      server: server,
+      type: 'check_server_updates',
+      body: json.encode({
+        "recheck_now": true
+      })
+    ),
+    apiRequest(
+      urlPath: '/status', 
+      method: 'get',
+      server: server,
+      type: 'check_server_updates',
+      body: json.encode({
+        "recheck_now": true
+      })
+    ),
+  ]);
+
+  if (result[0]['hasResponse'] == true && result[0]['hasResponse'] == true) {
+    if (result[0]['statusCode'] == 200 && result[0]['statusCode'] == 200) {
+      final Map<String, dynamic> obj = {
+        ...jsonDecode(result[0]['body']),
+        'current_version': jsonDecode(result[1]['body'])['version']
+      };
+      return {
+        'result': 'success',
+        'data': UpdateAvailableData.fromJson(obj)
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_filtering_status', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+        )
+      };
+    }
+  }
+  else {
+    return {
+      'result': 'error',
+      'log': AppLog(
+        type: 'get_filtering_status', 
+        dateTime: DateTime.now(), 
+        message: 'no_response',
+        statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+        resBody: result.map((res) => res['body'] ?? 'null').toString(),
+      )
+    };
+  }
+}
+
+Future getUpdateChangelog({
+  required Server server,
+}) async {
+  try {
+    HttpClient httpClient = HttpClient();
+    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.adGuardHomeLatestRelease));
+    HttpClientResponse response = await request.close();
+    String reply = await response.transform(utf8.decoder).join();
+    httpClient.close();
+    if (response.statusCode == 200) {
+      return {
+        'result': 'success',
+        'hasResponse': true,
+        'error': false,
+        'statusCode': response.statusCode,
+        'body': jsonDecode(reply)['body']
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_encryption_settings', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: response.statusCode.toString(),
+          resBody: reply,
+        )
+      };
+    }    
+  } on SocketException {
+    return {
+      'result': 'no_connection', 
+      'message': 'SocketException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'SocketException'
+      )
+    };
+  } on TimeoutException {
+    return {
+      'result': 'no_connection', 
+      'message': 'TimeoutException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } on HandshakeException {
+    return {
+      'result': 'ssl_error', 
+      'message': 'HandshakeException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'HandshakeException'
+      )
+    };
+  } catch (e) {
+    return {
+      'result': 'error', 
+      'message': e.toString(),
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: e.toString()
+      )
+    };
+  } 
+}
+
+Future requestUpdateServer({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/update', 
+    method: 'post',
+    server: server,
+    type: 'update_server'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_server', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
 }

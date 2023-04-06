@@ -50,6 +50,10 @@ dependencies:
   bottom_sheet: ^3.1.2
   percent_indicator: ^4.2.2
   store_checker: ^1.1.0
+  flutter_markdown: ^0.6.14
+  markdown: ^7.0.2
+  html: ^0.15.2
+  flutter_html: ^3.0.0-alpha.6
 
 dev_dependencies:
   flutter_test:
