@@ -12,7 +12,7 @@ class UpdateAvailable {
 
 class UpdateAvailableData {
   String currentVersion;
-  final String newVersion;
+  String? newVersion;
   final String announcement;
   final String announcementUrl;
   final bool canAutoupdate;
@@ -22,7 +22,7 @@ class UpdateAvailableData {
 
   UpdateAvailableData({
     required this.currentVersion,
-    required this.newVersion,
+    this.newVersion,
     required this.announcement,
     required this.announcementUrl,
     required this.canAutoupdate,

@@ -41,7 +41,7 @@ class UpdateScreen extends StatelessWidget {
       processModal.close();
       
       if (result['result'] == 'success') {
-        serversProvider.clearUpdateAvailable(serversProvider.selectedServer!, serversProvider.updateAvailable.data!.newVersion);
+        serversProvider.clearUpdateAvailable(serversProvider.selectedServer!, serversProvider.updateAvailable.data!.newVersion!);
         showSnacbkar(
           context: context, 
           appConfigProvider: appConfigProvider, 
@@ -140,7 +140,7 @@ class UpdateScreen extends StatelessWidget {
                         Text(
                           serversProvider.updateAvailable.data!.updateAvailable != null
                             ? serversProvider.updateAvailable.data!.updateAvailable == true
-                              ? serversProvider.updateAvailable.data!.newVersion
+                              ? serversProvider.updateAvailable.data!.newVersion ?? 'N/A'
                               : serversProvider.updateAvailable.data!.currentVersion
                             : "N/A",
                           style: TextStyle(
@@ -156,7 +156,7 @@ class UpdateScreen extends StatelessWidget {
                       icon: const Icon(Icons.download_rounded),
                       label: Text(AppLocalizations.of(context)!.updateNow),
                       onPressed: serversProvider.updateAvailable.data!.updateAvailable != null && serversProvider.updateAvailable.data!.updateAvailable == true 
-                        ? serversProvider.updateAvailable.data!.canAutoupdate == true
+                        ? serversProvider.updateAvailable.data!.canAutoupdate != null && serversProvider.updateAvailable.data!.canAutoupdate == true
                           ? () => update()
                           : () => showAutoUpdateUnavailableModal()
                         : null
@@ -252,7 +252,7 @@ class UpdateScreen extends StatelessWidget {
                             Text(
                               serversProvider.updateAvailable.data!.updateAvailable != null
                                 ? serversProvider.updateAvailable.data!.updateAvailable == true
-                                  ? serversProvider.updateAvailable.data!.newVersion
+                                  ? serversProvider.updateAvailable.data!.newVersion ?? 'N/A'
                                   : serversProvider.updateAvailable.data!.currentVersion
                                 : "N/A",
                               style: TextStyle(
@@ -290,7 +290,9 @@ class UpdateScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "Changelog ${serversProvider.updateAvailable.data!.newVersion}",
+              "Changelog ${serversProvider.updateAvailable.data!.updateAvailable == true 
+                ? serversProvider.updateAvailable.data!.newVersion
+                : serversProvider.updateAvailable.data!.currentVersion}",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,

@@ -1994,7 +1994,7 @@ Future checkServerUpdates({
       };
       return {
         'result': 'success',
-        'data': UpdateAvailableData.fromJson(obj)
+        'data': obj
       };
     }
     else {

@@ -109,7 +109,7 @@ class Settings extends StatelessWidget {
                 )
               },
             ),
-            CustomListTile(
+            if (serversProvider.updateAvailable.data != null) CustomListTile(
               icon: Icons.system_update_rounded,
               title: AppLocalizations.of(context)!.updates,
               subtitle: AppLocalizations.of(context)!.updatesDescription,
