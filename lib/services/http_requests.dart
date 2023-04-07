@@ -2026,10 +2026,11 @@ Future checkServerUpdates({
 
 Future getUpdateChangelog({
   required Server server,
+  required String releaseTag
 }) async {
   try {
     HttpClient httpClient = HttpClient();
-    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.adGuardHomeLatestRelease));
+    HttpClientRequest request = await httpClient.getUrl(Uri.parse("${Urls.adGuardHomeReleasesTags}/$releaseTag"));
     HttpClientResponse response = await request.close();
     String reply = await response.transform(utf8.decoder).join();
     httpClient.close();

@@ -596,5 +596,7 @@
     "unknownStatus": "Unknown status",
     "checkingUpdates": "Checking updates...",
     "checkUpdates": "Check updates",
-    "requestingUpdate": "Requesting update..."
+    "requestingUpdate": "Requesting update...",
+    "autoupdateUnavailable": "Autoupdate unavailable",
+    "autoupdateUnavailableDescription": "The autoupdate service is not available for this server. It could be because the server is running on a Docker container. You have to update your server manually."
 }

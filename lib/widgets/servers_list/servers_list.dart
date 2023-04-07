@@ -117,6 +117,7 @@ class _ServersListState extends State<ServersList> with SingleTickerProviderStat
         final serverStatus = await getServerStatus(server);
         if (serverStatus['result'] == 'success') {
           serversProvider.setServerStatusData(serverStatus['data']);
+          serversProvider.checkServerUpdatesAvailable(server);
           serversProvider.setServerStatusLoad(1);
         }
         else {

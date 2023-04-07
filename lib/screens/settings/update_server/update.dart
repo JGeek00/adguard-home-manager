@@ -1,13 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/screens/settings/update_server/autoupdate_unavailable.dart';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart' as html;
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -24,6 +24,13 @@ class UpdateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    
+    void showAutoUpdateUnavailableModal() {
+      showModal(
+        context: context, 
+        builder: (context) => const AutoUpdateUnavailableModal()
+      );
+    }
 
     void update() async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -149,7 +156,9 @@ class UpdateScreen extends StatelessWidget {
                       icon: const Icon(Icons.download_rounded),
                       label: Text(AppLocalizations.of(context)!.updateNow),
                       onPressed: serversProvider.updateAvailable.data!.updateAvailable != null && serversProvider.updateAvailable.data!.updateAvailable == true 
-                        ? () => update()
+                        ? serversProvider.updateAvailable.data!.canAutoupdate == true
+                          ? () => update()
+                          : () => showAutoUpdateUnavailableModal()
                         : null
                     )
                   ],
@@ -259,7 +268,9 @@ class UpdateScreen extends StatelessWidget {
                           icon: const Icon(Icons.download_rounded),
                           label: Text(AppLocalizations.of(context)!.updateNow),
                           onPressed: serversProvider.updateAvailable.data!.updateAvailable != null && serversProvider.updateAvailable.data!.updateAvailable == true 
-                            ? () => update()
+                            ? serversProvider.updateAvailable.data!.canAutoupdate == true
+                              ? () => update()
+                              : () => showAutoUpdateUnavailableModal()
                             : null
                         )
                       ],

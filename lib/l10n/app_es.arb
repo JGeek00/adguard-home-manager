@@ -596,5 +596,7 @@
     "unknownStatus": "Estado desconocido",
     "checkingUpdates": "Comprobando actualizaciones...",
     "checkUpdates": "Comprobar actualizaciones",
-    "requestingUpdate": "Solicitando actualización..."
+    "requestingUpdate": "Solicitando actualización...",
+    "autoupdateUnavailable": "Autoactualización no disponible",
+    "autoupdateUnavailableDescription": "El servicio de actualización automática del servidor no está disponible. Puede ser porque el servidor se esté ejecutando en un contenedor Docker. Tienes que actualizar tu servidor manualmente."
 }

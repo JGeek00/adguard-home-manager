@@ -485,13 +485,13 @@ class ServersProvider with ChangeNotifier {
 
   void checkServerUpdatesAvailable(Server server) async {
     setUpdateAvailableLoadStatus(LoadStatus.loading, true);
-    final result = await Future.wait([
-      checkServerUpdates(server: server),
-      getUpdateChangelog(server: server)
-    ]);
-    if (result[0]['result'] == 'success') {
-      UpdateAvailableData data = result[0]['data'];
-      data.changelog = result[1]['body'];
+    final result = await checkServerUpdates(server: server);
+    if (result['result'] == 'success') {
+      UpdateAvailableData data = result['data'];
+      final gitHubResult = await getUpdateChangelog(server: server, releaseTag: data.newVersion);
+      if (gitHubResult['result'] == 'success') {
+        data.changelog = gitHubResult['body'];
+      }
       data.updateAvailable = data.newVersion.contains('b')
         ? compareBetaVersions(
             currentVersion: data.currentVersion.replaceAll('v', ''),
