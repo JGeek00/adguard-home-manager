@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -328,18 +329,35 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> updateBlocking(Server server, String block, bool newStatus) async {
+  Future<dynamic> updateBlocking({
+    required Server server,
+    required String block, 
+    required bool newStatus,
+    int? time
+  }) async {
     switch (block) {
       case 'general':
         _protectionsManagementProcess.add('general');
         notifyListeners();
 
-        final result = await updateGeneralProtection(server, newStatus);
+        final result = await updateGeneralProtection(
+          server: server, 
+          enable: newStatus,
+          time: time
+        );
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
 
         if (result['result'] == 'success') {
           _serverStatus.data!.generalEnabled = newStatus;
+          if (time != null) {
+            _serverStatus.data!.timeGeneralDisabled = time;
+            _serverStatus.data!.disabledUntil = generateTimeDeadline(time);
+          }
+          else {
+            _serverStatus.data!.timeGeneralDisabled = 0;
+            _serverStatus.data!.disabledUntil = null;
+          }
           notifyListeners();
           return null;
         }
@@ -352,7 +370,10 @@ class ServersProvider with ChangeNotifier {
         _protectionsManagementProcess.add('filtering');
         notifyListeners();
 
-        final result = await updateFiltering(server, newStatus);
+        final result = await updateFiltering(
+          server: server, 
+          enable: newStatus,
+        );
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'filtering').toList();
 

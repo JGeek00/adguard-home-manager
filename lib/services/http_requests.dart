@@ -318,7 +318,10 @@ Future getServerStatus(Server server) async {
   }
 }
 
-Future updateFiltering(Server server, bool enable) async {
+Future updateFiltering({
+  required Server server,
+  required bool enable, 
+}) async {
   final result = await apiRequest(
     urlPath: '/filtering/config', 
     method: 'post',
@@ -462,13 +465,18 @@ Future updateParentalControl(Server server, bool enable) async {
   }
 }
 
-Future updateGeneralProtection(Server server, bool enable) async {
+Future updateGeneralProtection({
+  required Server server, 
+  required bool enable,
+  int? time
+}) async {
     final result = await apiRequest(
-    urlPath: '/dns_config', 
+    urlPath: '/protection', 
     method: 'post',
     server: server, 
     body: {
-      'protection_enabled': enable
+      'enabled': enable,
+      'duration': time
     },
     type: 'general_protection'
   );

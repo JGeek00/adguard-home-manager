@@ -1,27 +1,133 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
 import 'dart:io';
 
+import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class ManagementModal extends StatelessWidget {
+class ManagementModal extends StatefulWidget {
   const ManagementModal({Key? key}) : super(key: key);
+
+  @override
+  State<ManagementModal> createState() => _ManagementModalState();
+}
+
+class _ManagementModalState extends State<ManagementModal> with SingleTickerProviderStateMixin {
+  double height = 540;
+  bool showTimes = false;
+  late AnimationController animationController;
+  late Animation<double> animation;
+  final ExpandableController expandableController = ExpandableController();
+
+  DateTime? currentDeadline;
+  Timer? countdown;
+  int start = 0;
+
+  @override
+  void initState() {
+    expandableController.addListener(() async {
+      await Future.delayed(const Duration(milliseconds: 200));
+      if (expandableController.value == false) {
+        animationController.animateTo(0);
+      }
+      else {
+        animationController.animateBack(1);
+      }
+    });
+
+    animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    )
+    ..addListener(() => setState(() => {}));
+    animation = Tween(
+      begin: 0.0,
+      end: 0.5,
+    ).animate(CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeInOut
+    ));
+    
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (countdown != null) countdown!.cancel();
+    animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    void updateBlocking(bool value, String filter) async {
+    void startTimer(DateTime deadline) {
+      setState(() {
+        currentDeadline = deadline;
+        start = deadline.difference(DateTime.now()).inSeconds+1;
+      });
+
+      const oneSec = Duration(seconds: 1);
+      countdown = Timer.periodic(
+        oneSec,
+        (Timer timer) async {
+          if (start == 0) {
+            setState(() {
+              timer.cancel();
+            });
+            final result = await getServerStatus(serversProvider.selectedServer!);
+            if (result['result'] == 'success') {
+              serversProvider.setServerStatusData(result['data']);
+            }
+          } else {
+            setState(() {
+              start = start - 1;
+            });
+          }
+        },
+      );
+    }
+
+    if (
+      serversProvider.serverStatus.data != null && 
+      serversProvider.serverStatus.data!.disabledUntil != null && 
+      serversProvider.serverStatus.data!.disabledUntil != currentDeadline
+    ) {
+      startTimer(serversProvider.serverStatus.data!.disabledUntil!);
+    }
+
+    if (
+      serversProvider.serverStatus.data != null && 
+      serversProvider.serverStatus.data!.generalEnabled == true
+    ) {
+      setState(() {
+        start = 0;
+        currentDeadline = null;
+        if (countdown != null) countdown!.cancel();
+        countdown = null;
+      });
+    }
+
+    void updateBlocking({
+      required bool value, 
+      required String filter,
+      int? time
+    }) async {
       final result = await serversProvider.updateBlocking(
-        serversProvider.selectedServer!,
-        filter, 
-        value
+        server: serversProvider.selectedServer!,
+        block: filter, 
+        newStatus: value,
+        time: time
       );
       if (result != null) {
         if (result != false) {
@@ -36,42 +142,139 @@ class ManagementModal extends StatelessWidget {
       }
     }
 
+    void disableWithCountdown(int time) {
+      updateBlocking(value: false, filter: 'general', time: time);
+      expandableController.toggle();
+    }
+
     Widget mainSwitch() {
+      Widget topRow() {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                RotationTransition(
+                  turns: animation,
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 26,
+                    color: serversProvider.serverStatus.data!.generalEnabled == true
+                      ? Theme.of(context).colorScheme.onSurfaceVariant
+                      : Colors.grey,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.allProtections,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    if (serversProvider.serverStatus.data!.timeGeneralDisabled > 0) ...[
+                      const SizedBox(height: 2),
+                      if (currentDeadline != null) Text(
+                        "${AppLocalizations.of(context)!.remainingTime}: ${generateRemainingTimeString(currentDeadline!.difference(DateTime.now()))}"
+                      )
+                    ]
+                  ],
+                ),
+              ],
+            ),
+            Switch(
+              value: serversProvider.serverStatus.data!.generalEnabled, 
+              onChanged: serversProvider.protectionsManagementProcess.contains('general') == false
+                ? (value) => updateBlocking(value:  value, filter: 'general')
+                : null,
+              activeColor: Theme.of(context).colorScheme.primary,
+            )
+          ]
+        );
+      }
+
+      Widget bottomRow() {
+        return Container(
+          height: 40,
+          margin: const EdgeInsets.only(top: 8),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              ActionChip(
+                label: Text(AppLocalizations.of(context)!.seconds(30)),
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                  ? () => disableWithCountdown(29000)
+                  : null,
+              ),
+              const SizedBox(width: 8),
+              ActionChip(
+                label: Text(AppLocalizations.of(context)!.minute(1)),
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                  ? () => disableWithCountdown(59000)
+                  : null,
+              ),
+              const SizedBox(width: 8),
+              ActionChip(
+                label: Text(AppLocalizations.of(context)!.minutes(10)),
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                  ? () => disableWithCountdown(599000)
+                  : null,
+              ),
+              const SizedBox(width: 8),
+              ActionChip(
+                label: Text(AppLocalizations.of(context)!.hour(1)),
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                  ? () => disableWithCountdown(3599000)
+                  : null,
+              ),
+              const SizedBox(width: 8),
+              ActionChip(
+                label: Text(AppLocalizations.of(context)!.hours(24)),
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                  ? () => disableWithCountdown(86399000)
+                  : null,
+              ),
+            ],
+          ),
+        );
+      }
+
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Material(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(28),
-          child: InkWell(
-            onTap: serversProvider.protectionsManagementProcess.contains('general') == false
-              ? () => updateBlocking(!serversProvider.serverStatus.data!.generalEnabled, 'general')
-              : null,
+        child: ExpandableNotifier(
+          controller: expandableController,
+          child: Material(
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(28),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 12
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.allProtections,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  Switch(
-                    value: serversProvider.serverStatus.data!.generalEnabled, 
-                    onChanged: serversProvider.protectionsManagementProcess.contains('general') == false
-                      ? (value) => updateBlocking(value, 'general')
-                      : null,
-                    activeColor: Theme.of(context).colorScheme.primary,
+            child: InkWell(
+              onTap: serversProvider.serverStatus.data!.generalEnabled == true
+                ? () => expandableController.toggle()
+                : null,
+              borderRadius: BorderRadius.circular(28),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+                  color: Theme.of(context).primaryColor.withOpacity(0.1)
+                ),
+                child: Expandable(
+                  collapsed: topRow(), 
+                  expanded: Column(
+                    children: [
+                      topRow(),
+                      bottomRow(),
+                      const SizedBox(height: 8)
+                    ],
                   )
-                ],
+                ),
               ),
             ),
-          ),
+          )
         ),
       );
     }
@@ -125,7 +328,7 @@ class ManagementModal extends StatelessWidget {
 
     return Container(
       width: double.maxFinite,
-      height: Platform.isIOS ? 556 : 540,
+      height: Platform.isIOS ? height+16 : height,
       decoration: BoxDecoration(
         color: Theme.of(context).dialogBackgroundColor,
         borderRadius: const BorderRadius.only(
@@ -137,7 +340,7 @@ class ManagementModal extends StatelessWidget {
         children: [
           Expanded(
             child: ListView(
-              physics: (Platform.isIOS ? 556 : 540) < MediaQuery.of(context).size.height
+              physics: (Platform.isIOS ? height+16 : height) < MediaQuery.of(context).size.height
                 ? const NeverScrollableScrollPhysics() 
                 : null,
               children: [
@@ -166,28 +369,28 @@ class ManagementModal extends StatelessWidget {
                   AppLocalizations.of(context)!.ruleFiltering,
                   Icons.filter_list_rounded,
                   serversProvider.serverStatus.data!.filteringEnabled, 
-                  (value) => updateBlocking(value, 'filtering'),
+                  (value) => updateBlocking(value: value, filter: 'filtering'),
                   serversProvider.protectionsManagementProcess.contains('filtering')
                 ),
                 smallSwitch(
                   AppLocalizations.of(context)!.safeBrowsing,
                   Icons.vpn_lock_rounded,
                   serversProvider.serverStatus.data!.safeBrowsingEnabled, 
-                  (value) => updateBlocking(value, 'safeBrowsing'),
+                  (value) => updateBlocking(value: value, filter: 'safeBrowsing'),
                   serversProvider.protectionsManagementProcess.contains('safeBrowsing')
                 ),
                 smallSwitch(
                   AppLocalizations.of(context)!.parentalFiltering,
                   Icons.block,
                   serversProvider.serverStatus.data!.parentalControlEnabled, 
-                  (value) => updateBlocking(value, 'parentalControl'),
+                  (value) => updateBlocking(value: value, filter: 'parentalControl'),
                   serversProvider.protectionsManagementProcess.contains('parentalControl')
                 ),
                 smallSwitch(
                   AppLocalizations.of(context)!.safeSearch,
                   Icons.search_rounded,
                   serversProvider.serverStatus.data!.safeSearchEnabled, 
-                  (value) => updateBlocking(value, 'safeSearch'),
+                  (value) => updateBlocking(value: value, filter: 'safeSearch'),
                   serversProvider.protectionsManagementProcess.contains('safeSearch')
                 ),
               ],

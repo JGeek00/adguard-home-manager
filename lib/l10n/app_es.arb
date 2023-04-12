@@ -355,7 +355,7 @@
     "gateway": "Puerta de enlace",
     "gatewayNotValid": "Puerta de enlace no válida",
     "leaseTime": "Tiempo de asignación",
-    "seconds": "segundos",
+    "seconds": "{time} segundos",
     "leaseTimeNotValid": "Tiempo de asignación no válido",
     "restoreConfiguration": "Restaurar configuración",
     "restoreConfigurationMessage": "¿Estás seguro de que deseas continuar? Se reseteará toda la configuración. Esta acción no se puede deshacer.",
@@ -598,5 +598,10 @@
     "checkUpdates": "Comprobar actualizaciones",
     "requestingUpdate": "Solicitando actualización...",
     "autoupdateUnavailable": "Autoactualización no disponible",
-    "autoupdateUnavailableDescription": "El servicio de actualización automática del servidor no está disponible. Puede ser porque el servidor se esté ejecutando en un contenedor Docker. Tienes que actualizar tu servidor manualmente."
+    "autoupdateUnavailableDescription": "El servicio de actualización automática del servidor no está disponible. Puede ser porque el servidor se esté ejecutando en un contenedor Docker. Tienes que actualizar tu servidor manualmente.",
+    "minute": "{time} minuto",
+    "minutes": "{time} minutos",
+    "hour": "{time} hora",
+    "hours": "{time} horas",
+    "remainingTime": "Tiempo restante"
 }

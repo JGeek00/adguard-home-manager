@@ -156,7 +156,10 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
           : AppLocalizations.of(context)!.enableFiltering
       );
 
-      final result = await updateFiltering(serversProvider.selectedServer!, !serversProvider.serverStatus.data!.filteringEnabled);
+      final result = await updateFiltering(
+        server: serversProvider.selectedServer!, 
+        enable: !serversProvider.serverStatus.data!.filteringEnabled
+      );
 
       processModal.close();
 
