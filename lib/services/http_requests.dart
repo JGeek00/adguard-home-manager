@@ -14,13 +14,13 @@ import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
+import 'package:adguard_home_manager/models/safe_search.dart';
 import 'package:adguard_home_manager/models/server_info.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
-import 'package:adguard_home_manager/models/update_available.dart';
 
 
 Future<Map<String, dynamic>> apiRequest({
@@ -61,8 +61,23 @@ Future<Map<String, dynamic>> apiRequest({
         };
       }    
     }
-    else if (method == 'post') {
-      HttpClientRequest request = await httpClient.postUrl(Uri.parse(connectionString));
+    else if (method == 'post' || method == 'put') {
+      HttpClientRequest? request;
+      if (method == 'post') {
+        request = await httpClient.postUrl(Uri.parse(connectionString));
+      }  
+      else if (method == 'put') {
+        request = await httpClient.putUrl(Uri.parse(connectionString));
+      }
+      else {
+        return {
+          'hasResponse': false,
+          'error': true,
+          'statusCode': null,
+          'body': 'Invalid method [selected $method]'
+        };
+      }
+
       if (server.authToken != null) {
         request.headers.set('Authorization', 'Basic ${server.authToken}');
       }
@@ -282,7 +297,7 @@ Future getServerStatus(Server server) async {
         'clients': jsonDecode(result[6]['body'])['clients'],
         'status': jsonDecode(result[1]['body']),
         'filtering': jsonDecode(result[2]['body']),
-        'safeSearchEnabled': jsonDecode(result[3]['body']),
+        'safeSearch': jsonDecode(result[3]['body']),
         'safeBrowsingEnabled': jsonDecode(result[4]['body']),
         'parentalControlEnabled': jsonDecode(result[5]['body']),
       };
@@ -2158,6 +2173,75 @@ Future requestUpdateServer({
         'result': 'error',
         'log': AppLog(
           type: 'update_server', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future getSafeSearchSettings({
+  required Server server,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/safesearch/status', 
+    method: 'get',
+    server: server,
+    type: 'safesearch_settings'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {
+        'result': 'success',
+        'data': SafeSearchData.fromJson(jsonDecode(result['body']))
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'safesearch_settings', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future updateSafeSearchSettings({
+  required Server server,
+  required Map<String, dynamic> body
+}) async {
+  final result = await apiRequest(
+    urlPath: '/safesearch/settings', 
+    method: 'put',
+    server: server,
+    type: 'safesearch_settings',
+    body: body
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'safesearch_settings', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),

@@ -247,7 +247,7 @@ class ServersProvider with ChangeNotifier {
     _updateAvailable.data = data;
     notifyListeners();
   }
- 
+
   Future<dynamic> createServer(Server server) async {
     final saved = await saveServerIntoDb(server);
     if (saved == null) {

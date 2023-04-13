@@ -603,5 +603,8 @@
     "minutes": "{time} minutes",
     "hour": "{time} hour",
     "hours": "{time} hours",
-    "remainingTime": "Remaining time"
+    "remainingTime": "Remaining time",
+    "safeSearchSettings": "Safe search settings",
+    "loadingSafeSearchSettings": "Loading safe search settings...",
+    "safeSearchSettingsNotLoaded": "Error when loading safe search settings."
 }

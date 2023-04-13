@@ -24,6 +24,12 @@ class ServerStatusData {
   bool safeBrowsingEnabled;
   bool parentalControlEnabled;
   final String serverVersion;
+  bool safeSeachBing;
+  bool safeSearchGoogle;
+  bool safeSearchDuckduckgo;
+  bool safeSearchPixabay;
+  bool safeSearchYandex;
+  bool safeSearchYoutube;
 
   ServerStatusData({
     required this.stats,
@@ -36,7 +42,13 @@ class ServerStatusData {
     required this.safeSearchEnabled,
     required this.safeBrowsingEnabled,
     required this.parentalControlEnabled,
-    required this.serverVersion
+    required this.serverVersion,
+    required this.safeSeachBing,
+    required this.safeSearchGoogle,
+    required this.safeSearchDuckduckgo,
+    required this.safeSearchPixabay,
+    required this.safeSearchYandex,
+    required this.safeSearchYoutube
   });
 
   factory ServerStatusData.fromJson(Map<String, dynamic> json) => ServerStatusData(
@@ -49,9 +61,15 @@ class ServerStatusData {
       : null ,
     filteringStatus: FilteringStatus.fromJson(json['filtering']),
     filteringEnabled: json['filtering']['enabled'],
-    safeSearchEnabled: json['safeSearchEnabled']['enabled'],
+    safeSearchEnabled: json['safeSearch']['enabled'],
     safeBrowsingEnabled: json['safeBrowsingEnabled']['enabled'],
     parentalControlEnabled: json['parentalControlEnabled']['enabled'],
-    serverVersion: json['status']['version']
+    serverVersion: json['status']['version'],
+    safeSeachBing: json['safeSearch']['bing'],
+    safeSearchDuckduckgo: json['safeSearch']['duckduckgo'],
+    safeSearchGoogle: json['safeSearch']['google'],
+    safeSearchPixabay: json['safeSearch']['pixabay'],
+    safeSearchYandex: json['safeSearch']['yandex'],
+    safeSearchYoutube: json['safeSearch']['youtube'],
   );
 }

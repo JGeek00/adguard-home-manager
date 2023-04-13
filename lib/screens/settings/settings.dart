@@ -8,6 +8,7 @@ import 'package:adguard_home_manager/screens/settings/encryption/encryption.dart
 import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
 import 'package:adguard_home_manager/screens/settings/customization/customization.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
+import 'package:adguard_home_manager/screens/settings/safe_search_settings.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/screens/settings/update_server/update.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns.dart';
@@ -20,6 +21,7 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/constants/strings.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -49,6 +51,22 @@ class Settings extends StatelessWidget {
         children: [
           if (serversProvider.selectedServer != null) ...[
             SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
+            if (versionIsGreater(
+              currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+              referenceVersion: 'v0.107.28',
+              referenceVersionBeta: 'v0.108.0-b.33'
+            ) == true) CustomListTile(
+              icon: Icons.search_rounded,
+              title: AppLocalizations.of(context)!.safeSearch,
+              subtitle: AppLocalizations.of(context)!.safeSearchSettings,
+              onTap: () => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SafeSearchSettingsScreen()
+                  )
+                )
+              },
+            ),
             CustomListTile(
               icon: Icons.lock_rounded,
               title: AppLocalizations.of(context)!.accessSettings,

@@ -6,6 +6,7 @@ class CustomSwitchListTile extends StatelessWidget {
   final String title;
   final String? subtitle;
   final bool? disabled;
+  final EdgeInsets? padding;
 
   const CustomSwitchListTile({
     Key? key,
@@ -14,6 +15,7 @@ class CustomSwitchListTile extends StatelessWidget {
     required this.title,
     this.disabled,
     this.subtitle,
+    this.padding
   }) : super(key: key);
 
   @override
@@ -25,7 +27,7 @@ class CustomSwitchListTile extends StatelessWidget {
           ? null
           : () => onChanged(!value),
         child: Padding(
-          padding: const EdgeInsets.only(
+          padding: padding ?? const EdgeInsets.only(
             top: 12, left: 16, right: 18, bottom: 16
           ),
           child: Row(
@@ -68,7 +70,6 @@ class CustomSwitchListTile extends StatelessWidget {
                 onChanged: disabled != null && disabled == true
                   ? null
                   : onChanged,
-                activeColor: Theme.of(context).colorScheme.primary,
               )
             ],
           ),
