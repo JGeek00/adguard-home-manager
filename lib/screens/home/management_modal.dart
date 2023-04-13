@@ -3,12 +3,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/functions/compare_versions.dart';
+import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -146,23 +147,25 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
     }
 
     Widget mainSwitch() {
-      Widget topRow() {
+      Widget topRow(bool legacyMode) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                RotationTransition(
-                  turns: animation,
-                  child: Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: 26,
-                    color: serversProvider.serverStatus.data!.generalEnabled == true
-                      ? Theme.of(context).colorScheme.onSurfaceVariant
-                      : Colors.grey,
+                if (legacyMode == true) ...[
+                  RotationTransition(
+                    turns: animation,
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 26,
+                      color: serversProvider.serverStatus.data!.generalEnabled == true
+                        ? Theme.of(context).colorScheme.onSurfaceVariant
+                        : Colors.grey,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
+                  const SizedBox(width: 8),
+                ],
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -185,8 +188,15 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
             Switch(
               value: serversProvider.serverStatus.data!.generalEnabled, 
               onChanged: serversProvider.protectionsManagementProcess.contains('general') == false
-                ? (value) => updateBlocking(value:  value, filter: 'general')
-                : null,
+                ? (value) {
+                  if (value == false) {
+                    expandableController.toggle();
+                  }
+                  updateBlocking(
+                    value: value, 
+                    filter: legacyMode == true ? 'general_legacy' : 'general'
+                  );
+                } : null,
               activeColor: Theme.of(context).colorScheme.primary,
             )
           ]
@@ -241,43 +251,71 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
 
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: ExpandableNotifier(
-          controller: expandableController,
-          child: Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(28),
-            child: InkWell(
-              onTap: serversProvider.serverStatus.data!.generalEnabled == true
-                ? () => expandableController.toggle()
-                : null,
-              borderRadius: BorderRadius.circular(28),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12
-                ),
-                decoration: BoxDecoration(
+        child: versionIsGreater(
+          currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+          referenceVersion: 'v0.107.28',
+          referenceVersionBeta: 'v0.108.0-b.33'
+        ) == true
+          ? ExpandableNotifier(
+              controller: expandableController,
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(28),
+                child: InkWell(
+                  onTap: serversProvider.serverStatus.data!.generalEnabled == true
+                    ? () => expandableController.toggle()
+                    : null,
                   borderRadius: BorderRadius.circular(28),
-                  color: Theme.of(context).primaryColor.withOpacity(0.1)
-                ),
-                child: Expandable(
-                  theme: const ExpandableThemeData(
-                    animationDuration: Duration(milliseconds: 200),
-                    fadeCurve: Curves.ease
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(28),
+                      color: Theme.of(context).primaryColor.withOpacity(0.1)
+                    ),
+                    child: Expandable(
+                      theme: const ExpandableThemeData(
+                        animationDuration: Duration(milliseconds: 200),
+                        fadeCurve: Curves.ease
+                      ),
+                      collapsed: topRow(true), 
+                      expanded: Column(
+                        children: [
+                          topRow(true),
+                          bottomRow(),
+                          const SizedBox(height: 8)
+                        ],
+                      )
+                    ),
                   ),
-                  collapsed: topRow(), 
-                  expanded: Column(
-                    children: [
-                      topRow(),
-                      bottomRow(),
-                      const SizedBox(height: 8)
-                    ],
-                  )
+                ),
+              )
+            )
+          : Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(28),
+              child: InkWell(
+                onTap: serversProvider.protectionsManagementProcess.contains('general') == false
+                  ? () => updateBlocking(
+                    value: !serversProvider.serverStatus.data!.generalEnabled, 
+                    filter: 'general_legacy'
+                  ) : null,
+                borderRadius: BorderRadius.circular(28),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(28),
+                    color: Theme.of(context).primaryColor.withOpacity(0.1)
+                  ),
+                  child: topRow(false)
                 ),
               ),
-            ),
-          )
-        ),
+            )
       );
     }
 

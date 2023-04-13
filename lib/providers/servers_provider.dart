@@ -366,6 +366,25 @@ class ServersProvider with ChangeNotifier {
           return result['log'];
         }
 
+      case 'general_legacy':
+        _protectionsManagementProcess.add('general');
+        notifyListeners();
+
+        final result = await updateGeneralProtectionLegacy(server, newStatus);
+
+        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
+
+        if (result['result'] == 'success') {
+          _serverStatus.data!.generalEnabled = newStatus;
+          notifyListeners();
+          return null;
+        }
+        else {
+          notifyListeners();
+          return result['log'];
+        }
+
+
       case 'filtering':
         _protectionsManagementProcess.add('filtering');
         notifyListeners();

@@ -280,7 +280,7 @@ Future getServerStatus(Server server) async {
       final Map<String, dynamic> mappedData = {
         'stats': jsonDecode(result[0]['body']),
         'clients': jsonDecode(result[6]['body'])['clients'],
-        'generalEnabled': jsonDecode(result[1]['body']),
+        'status': jsonDecode(result[1]['body']),
         'filtering': jsonDecode(result[2]['body']),
         'safeSearchEnabled': jsonDecode(result[3]['body']),
         'safeBrowsingEnabled': jsonDecode(result[4]['body']),
@@ -477,6 +477,39 @@ Future updateGeneralProtection({
     body: {
       'enabled': enable,
       'duration': time
+    },
+    type: 'general_protection'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'general_protection', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future updateGeneralProtectionLegacy(Server server, bool enable) async {
+  final result = await apiRequest(
+    urlPath: '/dns_config', 
+    method: 'post',
+    server: server, 
+    body: {
+      'protection_enabled': enable
     },
     type: 'general_protection'
   );
