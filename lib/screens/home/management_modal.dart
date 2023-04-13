@@ -21,8 +21,6 @@ class ManagementModal extends StatefulWidget {
 }
 
 class _ManagementModalState extends State<ManagementModal> with SingleTickerProviderStateMixin {
-  double height = 540;
-  bool showTimes = false;
   late AnimationController animationController;
   late Animation<double> animation;
   final ExpandableController expandableController = ExpandableController();
@@ -142,7 +140,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
       }
     }
 
-    void disableWithCountdown(int time) {
+    void disableWithCountdown(int time) async {
       updateBlocking(value: false, filter: 'general', time: time);
       expandableController.toggle();
     }
@@ -263,6 +261,10 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                   color: Theme.of(context).primaryColor.withOpacity(0.1)
                 ),
                 child: Expandable(
+                  theme: const ExpandableThemeData(
+                    animationDuration: Duration(milliseconds: 200),
+                    fadeCurve: Curves.ease
+                  ),
                   collapsed: topRow(), 
                   expanded: Column(
                     children: [
@@ -326,90 +328,91 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
       );
     }
 
-    return Container(
-      width: double.maxFinite,
-      height: Platform.isIOS ? height+16 : height,
-      decoration: BoxDecoration(
-        color: Theme.of(context).dialogBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28)
-        )
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              physics: (Platform.isIOS ? height+16 : height) < MediaQuery.of(context).size.height
-                ? const NeverScrollableScrollPhysics() 
-                : null,
+    return SafeArea(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
+          )
+        ),
+        child: Wrap(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 24),
-                  child: Icon(
-                    Icons.shield_rounded,
-                    size: 24,
-                    color: Theme.of(context).listTileTheme.iconColor
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    AppLocalizations.of(context)!.manageServer,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurface,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: Icon(
+                      Icons.shield_rounded,
+                      size: 24,
+                      color: Theme.of(context).listTileTheme.iconColor
                     ),
                   ),
-                ),
-                mainSwitch(),
-                const SizedBox(height: 10),
-                smallSwitch(
-                  AppLocalizations.of(context)!.ruleFiltering,
-                  Icons.filter_list_rounded,
-                  serversProvider.serverStatus.data!.filteringEnabled, 
-                  (value) => updateBlocking(value: value, filter: 'filtering'),
-                  serversProvider.protectionsManagementProcess.contains('filtering')
-                ),
-                smallSwitch(
-                  AppLocalizations.of(context)!.safeBrowsing,
-                  Icons.vpn_lock_rounded,
-                  serversProvider.serverStatus.data!.safeBrowsingEnabled, 
-                  (value) => updateBlocking(value: value, filter: 'safeBrowsing'),
-                  serversProvider.protectionsManagementProcess.contains('safeBrowsing')
-                ),
-                smallSwitch(
-                  AppLocalizations.of(context)!.parentalFiltering,
-                  Icons.block,
-                  serversProvider.serverStatus.data!.parentalControlEnabled, 
-                  (value) => updateBlocking(value: value, filter: 'parentalControl'),
-                  serversProvider.protectionsManagementProcess.contains('parentalControl')
-                ),
-                smallSwitch(
-                  AppLocalizations.of(context)!.safeSearch,
-                  Icons.search_rounded,
-                  serversProvider.serverStatus.data!.safeSearchEnabled, 
-                  (value) => updateBlocking(value: value, filter: 'safeSearch'),
-                  serversProvider.protectionsManagementProcess.contains('safeSearch')
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      AppLocalizations.of(context)!.manageServer,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  ],
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context), 
-                  child: Text(AppLocalizations.of(context)!.close),
-                ),
-              ],
+            mainSwitch(),
+            const SizedBox(height: 10),
+            smallSwitch(
+              AppLocalizations.of(context)!.ruleFiltering,
+              Icons.filter_list_rounded,
+              serversProvider.serverStatus.data!.filteringEnabled, 
+              (value) => updateBlocking(value: value, filter: 'filtering'),
+              serversProvider.protectionsManagementProcess.contains('filtering')
             ),
-          ),
-          if (Platform.isIOS) const SizedBox(height: 16)
-        ],
+            smallSwitch(
+              AppLocalizations.of(context)!.safeBrowsing,
+              Icons.vpn_lock_rounded,
+              serversProvider.serverStatus.data!.safeBrowsingEnabled, 
+              (value) => updateBlocking(value: value, filter: 'safeBrowsing'),
+              serversProvider.protectionsManagementProcess.contains('safeBrowsing')
+            ),
+            smallSwitch(
+              AppLocalizations.of(context)!.parentalFiltering,
+              Icons.block,
+              serversProvider.serverStatus.data!.parentalControlEnabled, 
+              (value) => updateBlocking(value: value, filter: 'parentalControl'),
+              serversProvider.protectionsManagementProcess.contains('parentalControl')
+            ),
+            smallSwitch(
+              AppLocalizations.of(context)!.safeSearch,
+              Icons.search_rounded,
+              serversProvider.serverStatus.data!.safeSearchEnabled, 
+              (value) => updateBlocking(value: value, filter: 'safeSearch'),
+              serversProvider.protectionsManagementProcess.contains('safeSearch')
+            ),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context), 
+                    child: Text(AppLocalizations.of(context)!.close),
+                  ),
+                ],
+              ),
+            ),
+            if (Platform.isIOS) const SizedBox(height: 16)
+          ],
+        ),
       ),
     );
   }
