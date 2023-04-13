@@ -369,7 +369,7 @@ Future updateFiltering({
   }
 }
 
-Future updateSafeSearch(Server server, bool enable) async {
+Future updateSafeSearchLegacy(Server server, bool enable) async {
   final result = enable == true 
     ? await apiRequest(
         urlPath: '/safesearch/enable', 
@@ -2223,7 +2223,7 @@ Future getSafeSearchSettings({
 
 Future updateSafeSearchSettings({
   required Server server,
-  required Map<String, dynamic> body
+  required Map<String, bool> body
 }) async {
   final result = await apiRequest(
     urlPath: '/safesearch/settings', 

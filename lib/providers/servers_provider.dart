@@ -411,7 +411,13 @@ class ServersProvider with ChangeNotifier {
         _protectionsManagementProcess.add('safeSearch');
         notifyListeners();
 
-        final result = await updateSafeSearch(server, newStatus);
+        final result = versionIsGreater(
+          currentVersion: serverStatus.data!.serverVersion, 
+          referenceVersion: 'v0.107.28',
+          referenceVersionBeta: 'v0.108.0-b.33'
+        ) == true
+          ? await updateSafeSearchSettings(server: server, body: { 'enabled': newStatus })
+          : await updateSafeSearchLegacy(server, newStatus);
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'safeSearch').toList();
 
