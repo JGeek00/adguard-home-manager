@@ -580,7 +580,6 @@ class _AddServerModalState extends State<AddServerModal> {
                           onChanged: widget.server == null 
                             ? (value) => setState(() => defaultServer = value)
                             : null,
-                          activeColor: Theme.of(context).colorScheme.primary,
                         )
                       ],
                     ),
@@ -606,7 +605,6 @@ class _AddServerModalState extends State<AddServerModal> {
                         Switch(
                           value: homeAssistant, 
                           onChanged: (value) => setState(() => homeAssistant = value),
-                          activeColor: Theme.of(context).colorScheme.primary,
                         )
                       ],
                     ),

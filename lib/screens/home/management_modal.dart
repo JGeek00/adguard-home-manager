@@ -197,7 +197,6 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                     filter: legacyMode == true ? 'general_legacy' : 'general'
                   );
                 } : null,
-              activeColor: Theme.of(context).colorScheme.primary,
             )
           ]
         );
@@ -357,7 +356,6 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                   onChanged: disabled == false
                     ? onChange
                     : null,
-                  activeColor: Theme.of(context).colorScheme.primary,
                 )
               ],
             ),

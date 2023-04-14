@@ -202,7 +202,6 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                                 Switch(
                                   value: generalSwitch, 
                                   onChanged: (value) => setState(() => generalSwitch = value),
-                                  activeColor: Theme.of(context).colorScheme.primary,
                                 )
                               ],
                             ),
@@ -233,7 +232,6 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                                     Switch(
                                       value: anonymizeClientIp, 
                                       onChanged: (value) => setState(() => anonymizeClientIp = value),
-                                      activeColor: Theme.of(context).colorScheme.primary,
                                     )
                                   ],
                                 ),

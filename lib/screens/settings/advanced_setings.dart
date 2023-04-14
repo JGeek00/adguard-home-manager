@@ -50,7 +50,6 @@ class AdvancedSettings extends StatelessWidget {
             trailing: Switch(
               value: appConfigProvider.overrideSslCheck, 
               onChanged: updateSslCheck,
-              activeColor: Theme.of(context).colorScheme.primary,
             ),
             onTap: () => updateSslCheck(!appConfigProvider.overrideSslCheck),
             padding: const EdgeInsets.only(

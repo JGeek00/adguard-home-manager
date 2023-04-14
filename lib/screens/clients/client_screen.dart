@@ -4,20 +4,26 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/safe_search_modal.dart';
 import 'package:adguard_home_manager/screens/clients/services_modal.dart';
 import 'package:adguard_home_manager/screens/clients/tags_modal.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/compare_versions.dart';
+import 'package:adguard_home_manager/models/safe_search.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientScreen extends StatefulWidget {
   final Client? client;
+  final String serverVersion;
   final void Function(Client) onConfirm;
   final void Function(Client)? onDelete;
 
   const ClientScreen({
     Key? key,
     this.client,
+    required this.serverVersion,
     required this.onConfirm,
     this.onDelete,
   }) : super(key: key);
@@ -46,6 +52,15 @@ class _ClientScreenState extends State<ClientScreen> {
   bool? enableSafeBrowsing;
   bool? enableParentalControl;
   bool? enableSafeSearch;
+  SafeSearch safeSearch = SafeSearch(
+    enabled: false,
+    bing: false,
+    duckduckgo: false,
+    google: false,
+    pixabay: false,
+    yandex: false,
+    youtube: false
+  );
 
   bool useGlobalSettingsServices = true;
   List<String> blockedServices = [];
@@ -66,8 +81,16 @@ class _ClientScreenState extends State<ClientScreen> {
     }
   }
 
+  bool version = false;
+
   @override
   void initState() {
+    version = versionIsGreater(
+      currentVersion: widget.serverVersion, 
+      referenceVersion: 'v0.107.28',
+      referenceVersionBeta: 'v0.108.0-b.33'
+    );
+
     if (widget.client != null) {
       editMode = false;
 
@@ -81,7 +104,12 @@ class _ClientScreenState extends State<ClientScreen> {
       enableFiltering = widget.client!.filteringEnabled;
       enableParentalControl = widget.client!.parentalEnabled;
       enableSafeBrowsing = widget.client!.safebrowsingEnabled;
-      enableSafeSearch = widget.client!.safesearchEnabled;
+      if (version == true) {
+        safeSearch = widget.client!.safeSearch!;
+      }
+      else {
+        enableSafeSearch = widget.client!.safesearchEnabled!;
+      }
       useGlobalSettingsServices = widget.client!.useGlobalBlockedServices;
       blockedServices = widget.client!.blockedServices;
       upstreamServers = widget.client!.upstreams.map((e) => {
@@ -104,7 +132,8 @@ class _ClientScreenState extends State<ClientScreen> {
         filteringEnabled: enableFiltering ?? false, 
         parentalEnabled: enableParentalControl ?? false, 
         safebrowsingEnabled: enableSafeBrowsing ?? false, 
-        safesearchEnabled: enableSafeSearch ?? false, 
+        safesearchEnabled: version == true ? enableSafeSearch : null, 
+        safeSearch: version == true ? safeSearch : null, 
         useGlobalBlockedServices: useGlobalSettingsServices, 
         blockedServices: blockedServices, 
         upstreams: List<String>.from(upstreamServers.map((e) => e['controller'].text)), 
@@ -141,7 +170,7 @@ class _ClientScreenState extends State<ClientScreen> {
           enableFiltering = false;
           enableSafeBrowsing = false;
           enableParentalControl = false;
-          enableSafeSearch = false;
+          safeSearch.enabled = false;
         });
       }
       else if (useGlobalSettingsFiltering == false) {
@@ -151,7 +180,7 @@ class _ClientScreenState extends State<ClientScreen> {
           enableFiltering = null;
           enableSafeBrowsing = null;
           enableParentalControl = null;
-          enableSafeSearch = null;
+          safeSearch.enabled = false;
         });
       }
     }
@@ -203,6 +232,17 @@ class _ClientScreenState extends State<ClientScreen> {
       );
     }
 
+    void openSafeSearchModal() {
+      showDialog(
+        context: context, 
+        builder: (context) => SafeSearchModal(
+          safeSearch: safeSearch, 
+          disabled: !editMode,
+          onConfirm: (s) => setState(() => safeSearch = s)
+        )
+      );
+    }
+
     Widget settignsTile({
       required String label,
       required bool? value,
@@ -233,10 +273,12 @@ class _ClientScreenState extends State<ClientScreen> {
                   ? Switch(
                       value: value!, 
                       onChanged: onChange,
-                      activeColor: Theme.of(context).colorScheme.primary,
                     )
                   : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 12
+                      ),
                       child: Text(
                         "Global",
                         style: TextStyle(
@@ -461,7 +503,6 @@ class _ClientScreenState extends State<ClientScreen> {
                         onChanged: editMode == true
                           ? (value) => enableDisableGlobalSettingsFiltering()
                           : null,
-                        activeColor: Theme.of(context).colorScheme.primary,
                       )
                     ],
                   ),
@@ -491,7 +532,34 @@ class _ClientScreenState extends State<ClientScreen> {
               ? (value) => setState(() => enableParentalControl = value)
               : null
           ),
-          settignsTile(
+          if (
+            versionIsGreater(
+              currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+              referenceVersion: 'v0.107.28',
+              referenceVersionBeta: 'v0.108.0-b.33'
+            ) == true
+          ) CustomListTile(
+            title: AppLocalizations.of(context)!.safeSearch,
+            padding: const  EdgeInsets.symmetric(
+              horizontal: 42,
+              vertical: 16
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Icon(
+                Icons.chevron_right_rounded,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            onTap: openSafeSearchModal,
+          ),
+          if (
+            versionIsGreater(
+              currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+              referenceVersion: 'v0.107.28',
+              referenceVersionBeta: 'v0.108.0-b.33'
+            ) == false
+          ) settignsTile(
             label: AppLocalizations.of(context)!.enableSafeSearch,
             value: enableSafeSearch, 
             onChange: editMode == true
@@ -529,7 +597,6 @@ class _ClientScreenState extends State<ClientScreen> {
                         onChanged: editMode == true
                           ? (value) => updateServicesGlobalSettings(value)
                           : null,
-                        activeColor: Theme.of(context).colorScheme.primary,
                       )
                     ],
                   ),

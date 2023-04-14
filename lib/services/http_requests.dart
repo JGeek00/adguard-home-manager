@@ -2255,41 +2255,6 @@ Future requestUpdateServer({
   }
 }
 
-Future getSafeSearchSettings({
-  required Server server,
-}) async {
-  final result = await apiRequest(
-    urlPath: '/safesearch/status', 
-    method: 'get',
-    server: server,
-    type: 'safesearch_settings'
-  );
-
-  if (result['hasResponse'] == true) {
-    if (result['statusCode'] == 200) {
-      return {
-        'result': 'success',
-        'data': SafeSearchData.fromJson(jsonDecode(result['body']))
-      };
-    }
-    else {
-      return {
-        'result': 'error',
-        'log': AppLog(
-          type: 'safesearch_settings', 
-          dateTime: DateTime.now(), 
-          message: 'error_code_not_expected',
-          statusCode: result['statusCode'].toString(),
-          resBody: result['body'],
-        )
-      };
-    }
-  }
-  else {
-    return result;
-  }
-}
-
 Future updateSafeSearchSettings({
   required Server server,
   required Map<String, bool> body

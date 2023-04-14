@@ -1,25 +1,13 @@
-import 'package:adguard_home_manager/constants/enums.dart';
-
 class SafeSearch {
-  LoadStatus loadStatus = LoadStatus.loading;
-  SafeSearchData? data;
+  bool enabled = false;
+  bool bing = false;
+  bool duckduckgo = false;
+  bool google = false;
+  bool pixabay = false;
+  bool yandex = false;
+  bool youtube = false;
 
   SafeSearch({
-    required this.loadStatus,
-    this.data
-  });
-}
-
-class SafeSearchData {
-  final bool enabled;
-  final bool bing;
-  final bool duckduckgo;
-  final bool google;
-  final bool pixabay;
-  final bool yandex;
-  final bool youtube;
-
-  SafeSearchData({
     required this.enabled,
     required this.bing,
     required this.duckduckgo,
@@ -29,7 +17,7 @@ class SafeSearchData {
     required this.youtube,
   });
 
-  factory SafeSearchData.fromJson(Map<String, dynamic> json) => SafeSearchData(
+  factory SafeSearch.fromJson(Map<String, dynamic> json) => SafeSearch(
     enabled: json["enabled"],
     bing: json["bing"],
     duckduckgo: json["duckduckgo"],
