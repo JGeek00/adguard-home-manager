@@ -8,6 +8,7 @@ import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -216,7 +217,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
                     ),
                   ),
                 ),
-                CustomSwitchListTile(
+                CustomCheckboxListTile(
                   value: bingEnabled, 
                   onChanged: (value) => setState(() => bingEnabled = value), 
                   title: "Bing",
@@ -225,7 +226,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
                   ),
                   disabled: !generalEnabled,
                 ),
-                CustomSwitchListTile(
+                CustomCheckboxListTile(
                   value: duckduckgoEnabled, 
                   onChanged: (value) => setState(() => duckduckgoEnabled = value), 
                   title: "DuckDuckGo",
@@ -234,7 +235,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
                   ),
                   disabled: !generalEnabled,
                 ),
-                CustomSwitchListTile(
+                CustomCheckboxListTile(
                   value: googleEnabled, 
                   onChanged: (value) => setState(() => googleEnabled = value), 
                   title: "Google",
@@ -243,7 +244,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
                   ),
                   disabled: !generalEnabled,
                 ),
-                CustomSwitchListTile(
+                CustomCheckboxListTile(
                   value: pixabayEnabled, 
                   onChanged: (value) => setState(() => pixabayEnabled = value), 
                   title: "Pixabay",
@@ -252,7 +253,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
                   ),
                   disabled: !generalEnabled,
                 ),
-                CustomSwitchListTile(
+                CustomCheckboxListTile(
                   value: yandexEnabled, 
                   onChanged: (value) => setState(() => yandexEnabled = value), 
                   title: "Yandex",
@@ -261,7 +262,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
                   ),
                   disabled: !generalEnabled,
                 ),
-                CustomSwitchListTile(
+                CustomCheckboxListTile(
                   value: youtubeEnabled, 
                   onChanged: (value) => setState(() => youtubeEnabled = value), 
                   title: "YouTube",
