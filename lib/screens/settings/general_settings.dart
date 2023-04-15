@@ -69,7 +69,6 @@ class GeneralSettings extends StatelessWidget {
             trailing: Switch(
               value: appConfigProvider.hideZeroValues, 
               onChanged: updateHideZeroValues,
-              activeColor: Theme.of(context).colorScheme.primary,
             ),
             onTap: () => updateHideZeroValues(!appConfigProvider.hideZeroValues),
             padding: const EdgeInsets.only(
@@ -86,7 +85,6 @@ class GeneralSettings extends StatelessWidget {
             trailing: Switch(
               value: appConfigProvider.showNameTimeLogs, 
               onChanged: updateShowNameTimeLogs,
-              activeColor: Theme.of(context).colorScheme.primary,
             ),
             onTap: () => updateShowNameTimeLogs(!appConfigProvider.showNameTimeLogs),
             padding: const EdgeInsets.only(

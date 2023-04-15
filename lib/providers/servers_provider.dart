@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -246,7 +247,7 @@ class ServersProvider with ChangeNotifier {
     _updateAvailable.data = data;
     notifyListeners();
   }
- 
+
   Future<dynamic> createServer(Server server) async {
     final saved = await saveServerIntoDb(server);
     if (saved == null) {
@@ -328,13 +329,48 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> updateBlocking(Server server, String block, bool newStatus) async {
+  Future<dynamic> updateBlocking({
+    required Server server,
+    required String block, 
+    required bool newStatus,
+    int? time
+  }) async {
     switch (block) {
       case 'general':
         _protectionsManagementProcess.add('general');
         notifyListeners();
 
-        final result = await updateGeneralProtection(server, newStatus);
+        final result = await updateGeneralProtection(
+          server: server, 
+          enable: newStatus,
+          time: time
+        );
+
+        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
+
+        if (result['result'] == 'success') {
+          _serverStatus.data!.generalEnabled = newStatus;
+          if (time != null) {
+            _serverStatus.data!.timeGeneralDisabled = time;
+            _serverStatus.data!.disabledUntil = generateTimeDeadline(time);
+          }
+          else {
+            _serverStatus.data!.timeGeneralDisabled = 0;
+            _serverStatus.data!.disabledUntil = null;
+          }
+          notifyListeners();
+          return null;
+        }
+        else {
+          notifyListeners();
+          return result['log'];
+        }
+
+      case 'general_legacy':
+        _protectionsManagementProcess.add('general');
+        notifyListeners();
+
+        final result = await updateGeneralProtectionLegacy(server, newStatus);
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
 
@@ -348,11 +384,15 @@ class ServersProvider with ChangeNotifier {
           return result['log'];
         }
 
+
       case 'filtering':
         _protectionsManagementProcess.add('filtering');
         notifyListeners();
 
-        final result = await updateFiltering(server, newStatus);
+        final result = await updateFiltering(
+          server: server, 
+          enable: newStatus,
+        );
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'filtering').toList();
 
@@ -371,7 +411,13 @@ class ServersProvider with ChangeNotifier {
         _protectionsManagementProcess.add('safeSearch');
         notifyListeners();
 
-        final result = await updateSafeSearch(server, newStatus);
+        final result = serverVersionIsAhead(
+          currentVersion: serverStatus.data!.serverVersion, 
+          referenceVersion: 'v0.107.28',
+          referenceVersionBeta: 'v0.108.0-b.33'
+        ) == true
+          ? await updateSafeSearchSettings(server: server, body: { 'enabled': newStatus })
+          : await updateSafeSearchLegacy(server, newStatus);
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'safeSearch').toList();
 
@@ -487,28 +533,24 @@ class ServersProvider with ChangeNotifier {
     setUpdateAvailableLoadStatus(LoadStatus.loading, true);
     final result = await checkServerUpdates(server: server);
     if (result['result'] == 'success') {
-      try {
-        UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
-        final gitHubResult = await getUpdateChangelog(server: server, releaseTag: data.newVersion ?? data.currentVersion);
-        if (gitHubResult['result'] == 'success') {
-          data.changelog = gitHubResult['body'];
-        }
-        data.updateAvailable = data.newVersion != null 
-          ?  data.newVersion!.contains('b')
-            ? compareBetaVersions(
-                currentVersion: data.currentVersion.replaceAll('v', ''),
-                newVersion: data.newVersion!.replaceAll('v', ''),
-              )
-            : compareVersions(
-                currentVersion: data.currentVersion.replaceAll('v', ''),
-                newVersion: data.newVersion!.replaceAll('v', ''),
-              )
-          : false;
-        setUpdateAvailableData(data);
-        setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
-      } catch (_) {
-        // AUTO UPDATE NOT AVAILABLE //
+      UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
+      final gitHubResult = await getUpdateChangelog(server: server, releaseTag: data.newVersion ?? data.currentVersion);
+      if (gitHubResult['result'] == 'success') {
+        data.changelog = gitHubResult['body'];
       }
+      data.updateAvailable = data.newVersion != null 
+        ?  data.newVersion!.contains('b')
+          ? compareBetaVersions(
+              currentVersion: data.currentVersion.replaceAll('v', ''),
+              newVersion: data.newVersion!.replaceAll('v', ''),
+            )
+          : compareVersions(
+              currentVersion: data.currentVersion.replaceAll('v', ''),
+              newVersion: data.newVersion!.replaceAll('v', ''),
+            )
+        : false;
+      setUpdateAvailableData(data);
+      setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
     }
     else {
       setUpdateAvailableLoadStatus(LoadStatus.error, true);

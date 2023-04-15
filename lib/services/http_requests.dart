@@ -14,13 +14,13 @@ import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
+import 'package:adguard_home_manager/models/safe_search.dart';
 import 'package:adguard_home_manager/models/server_info.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
-import 'package:adguard_home_manager/models/update_available.dart';
 
 
 Future<Map<String, dynamic>> apiRequest({
@@ -61,8 +61,23 @@ Future<Map<String, dynamic>> apiRequest({
         };
       }    
     }
-    else if (method == 'post') {
-      HttpClientRequest request = await httpClient.postUrl(Uri.parse(connectionString));
+    else if (method == 'post' || method == 'put') {
+      HttpClientRequest? request;
+      if (method == 'post') {
+        request = await httpClient.postUrl(Uri.parse(connectionString));
+      }  
+      else if (method == 'put') {
+        request = await httpClient.putUrl(Uri.parse(connectionString));
+      }
+      else {
+        return {
+          'hasResponse': false,
+          'error': true,
+          'statusCode': null,
+          'body': 'Invalid method [selected $method]'
+        };
+      }
+
       if (server.authToken != null) {
         request.headers.set('Authorization', 'Basic ${server.authToken}');
       }
@@ -280,9 +295,9 @@ Future getServerStatus(Server server) async {
       final Map<String, dynamic> mappedData = {
         'stats': jsonDecode(result[0]['body']),
         'clients': jsonDecode(result[6]['body'])['clients'],
-        'generalEnabled': jsonDecode(result[1]['body']),
+        'status': jsonDecode(result[1]['body']),
         'filtering': jsonDecode(result[2]['body']),
-        'safeSearchEnabled': jsonDecode(result[3]['body']),
+        'safeSearch': jsonDecode(result[3]['body']),
         'safeBrowsingEnabled': jsonDecode(result[4]['body']),
         'parentalControlEnabled': jsonDecode(result[5]['body']),
       };
@@ -318,7 +333,10 @@ Future getServerStatus(Server server) async {
   }
 }
 
-Future updateFiltering(Server server, bool enable) async {
+Future updateFiltering({
+  required Server server,
+  required bool enable, 
+}) async {
   final result = await apiRequest(
     urlPath: '/filtering/config', 
     method: 'post',
@@ -351,7 +369,7 @@ Future updateFiltering(Server server, bool enable) async {
   }
 }
 
-Future updateSafeSearch(Server server, bool enable) async {
+Future updateSafeSearchLegacy(Server server, bool enable) async {
   final result = enable == true 
     ? await apiRequest(
         urlPath: '/safesearch/enable', 
@@ -462,8 +480,46 @@ Future updateParentalControl(Server server, bool enable) async {
   }
 }
 
-Future updateGeneralProtection(Server server, bool enable) async {
+Future updateGeneralProtection({
+  required Server server, 
+  required bool enable,
+  int? time
+}) async {
     final result = await apiRequest(
+    urlPath: '/protection', 
+    method: 'post',
+    server: server, 
+    body: {
+      'enabled': enable,
+      'duration': time
+    },
+    type: 'general_protection'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return {'result': 'success'};
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'general_protection', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future updateGeneralProtectionLegacy(Server server, bool enable) async {
+  final result = await apiRequest(
     urlPath: '/dns_config', 
     method: 'post',
     server: server, 
@@ -1537,6 +1593,41 @@ Future getQueryLogInfo({
   required Server server,
 }) async {
   final result = await apiRequest(
+    urlPath: '/querylog/config', 
+    method: 'get',
+    server: server, 
+    type: 'get_query_log_info'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 
+        'result': 'success', 
+        'data': jsonDecode(result['body']) 
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_query_log_info', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future getQueryLogInfoLegacy({
+  required Server server,
+}) async {
+  final result = await apiRequest(
     urlPath: '/querylog_info', 
     method: 'get',
     server: server, 
@@ -1569,6 +1660,40 @@ Future getQueryLogInfo({
 }
 
 Future updateQueryLogParameters({
+  required Server server,
+  required Map<String, dynamic> data,
+}) async {
+  final result = await apiRequest(
+    urlPath: '/querylog/config/update', 
+    method: 'put',
+    server: server, 
+    body: data,
+    type: 'update_query_log_config'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_query_log_config', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future updateQueryLogParametersLegacy({
   required Server server,
   required Map<String, dynamic> data,
 }) async {
@@ -2117,6 +2242,40 @@ Future requestUpdateServer({
         'result': 'error',
         'log': AppLog(
           type: 'update_server', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body'],
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
+Future updateSafeSearchSettings({
+  required Server server,
+  required Map<String, bool> body
+}) async {
+  final result = await apiRequest(
+    urlPath: '/safesearch/settings', 
+    method: 'put',
+    server: server,
+    type: 'safesearch_settings',
+    body: body
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200) {
+      return { 'result': 'success' };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'safesearch_settings', 
           dateTime: DateTime.now(), 
           message: 'error_code_not_expected',
           statusCode: result['statusCode'].toString(),

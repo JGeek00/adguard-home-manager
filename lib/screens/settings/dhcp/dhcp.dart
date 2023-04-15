@@ -449,7 +449,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                               onChanged: selectedInterface != null
                                 ? (value) => setState(() => enabled = value)
                                 : null,
-                              activeColor: Theme.of(context).colorScheme.primary,
                             ),
                           ],
                         ),

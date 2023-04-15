@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
+import 'package:adguard_home_manager/models/safe_search.dart';
 
 class Clients {
   LoadStatus loadStatus;
@@ -100,9 +101,10 @@ class Client {
   final bool filteringEnabled;
   final bool parentalEnabled;
   final bool safebrowsingEnabled;
-  final bool safesearchEnabled;
+  final bool? safesearchEnabled;
   final bool useGlobalBlockedServices;
   final bool useGlobalSettings;
+  final SafeSearch? safeSearch;
 
   Client({
     required this.name,
@@ -116,6 +118,7 @@ class Client {
     required this.safesearchEnabled,
     required this.useGlobalBlockedServices,
     required this.useGlobalSettings,
+    required this.safeSearch,
   });
 
   factory Client.fromJson(Map<String, dynamic> json) => Client(
@@ -130,6 +133,9 @@ class Client {
     safesearchEnabled: json["safesearch_enabled"],
     useGlobalBlockedServices: json["use_global_blocked_services"],
     useGlobalSettings: json["use_global_settings"],
+    safeSearch: json["safe_search"] != null
+      ? SafeSearch.fromJson(json["safe_search"]) 
+      : null
   );
 
   Map<String, dynamic> toJson() => {
@@ -142,6 +148,7 @@ class Client {
     "parental_enabled": parentalEnabled,
     "safebrowsing_enabled": safebrowsingEnabled,
     "safesearch_enabled": safesearchEnabled,
+    "safe_search": safeSearch,
     "use_global_blocked_services": useGlobalBlockedServices,
     "use_global_settings": useGlobalSettings,
   };

@@ -7,7 +7,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/clients/client_screen.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/clients.dart';
+import 'package:adguard_home_manager/functions/maps_fns.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -25,7 +27,16 @@ class ClientsFab extends StatelessWidget {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
-      final result = await postAddClient(server: serversProvider.selectedServer!, data: client.toJson());
+      final result = await postAddClient(
+        server: serversProvider.selectedServer!, 
+        data: serverVersionIsAhead(
+          currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+          referenceVersion: 'v0.107.28',
+          referenceVersionBeta: 'v0.108.0-b.33'
+        ) == false
+          ? removePropFromMap(client.toJson(), 'safesearch_enabled')
+          : removePropFromMap(client.toJson(), 'safe_search')
+      );
       
       processModal.close();
 
@@ -58,6 +69,7 @@ class ClientsFab extends StatelessWidget {
         fullscreenDialog: true,
         builder: (BuildContext context) => ClientScreen(
           onConfirm: confirmAddClient,
+          serverVersion: serversProvider.serverStatus.data!.serverVersion,
         )
       ));
     }

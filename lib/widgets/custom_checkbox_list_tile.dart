@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomSwitchListTile extends StatelessWidget {
+class CustomCheckboxListTile extends StatelessWidget {
   final bool value;
   final void Function(bool) onChanged;
   final String title;
@@ -8,7 +8,7 @@ class CustomSwitchListTile extends StatelessWidget {
   final bool? disabled;
   final EdgeInsets? padding;
 
-  const CustomSwitchListTile({
+  const CustomCheckboxListTile({
     Key? key,
     required this.value,
     required this.onChanged,
@@ -65,11 +65,26 @@ class CustomSwitchListTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              Switch(
-                value: value, 
-                onChanged: disabled != null && disabled == true
-                  ? null
-                  : onChanged,
+              Theme(
+                data: ThemeData(
+                  unselectedWidgetColor: disabled == true
+                    ? Colors.grey
+                    : Theme.of(context).colorScheme.onSurface,
+                  disabledColor: Colors.grey
+                ),
+                child: Checkbox(
+                  value: value, 
+                  onChanged: (value) => disabled != null && disabled == true && value != null
+                    ? null
+                    : onChanged(value!),
+                  tristate: false,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  activeColor: disabled == true
+                    ? Colors.grey
+                    : Theme.of(context).colorScheme.primary,
+                ),
               )
             ],
           ),

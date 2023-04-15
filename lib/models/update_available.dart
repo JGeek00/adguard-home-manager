@@ -13,9 +13,9 @@ class UpdateAvailable {
 class UpdateAvailableData {
   String currentVersion;
   String? newVersion;
-  final String announcement;
-  final String announcementUrl;
-  final bool canAutoupdate;
+  final String? announcement;
+  final String? announcementUrl;
+  final bool? canAutoupdate;
   final bool disabled;
   String? changelog;
   bool? updateAvailable;

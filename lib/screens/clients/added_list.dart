@@ -13,9 +13,11 @@ import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/functions/maps_fns.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -73,7 +75,13 @@ class _AddedListState extends State<AddedList> {
       
       final result = await postUpdateClient(server: serversProvider.selectedServer!, data: {
         'name': client.name,
-        'data': client.toJson()
+        'data':  serverVersionIsAhead(
+          currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+          referenceVersion: 'v0.107.28',
+          referenceVersionBeta: 'v0.108.0-b.33'
+        ) == false
+          ? removePropFromMap(client.toJson(), 'safesearch_enabled')
+          : removePropFromMap(client.toJson(), 'safe_search')
       });
 
       processModal.close();
@@ -146,6 +154,7 @@ class _AddedListState extends State<AddedList> {
         fullscreenDialog: true,
         builder: (BuildContext context) => ClientScreen(
           onConfirm: confirmEditClient,
+          serverVersion: serversProvider.serverStatus.data!.serverVersion,
           onDelete: deleteClient,
           client: client,
         )
@@ -260,13 +269,25 @@ class _AddedListState extends State<AddedList> {
                 Icon(
                   Icons.search_rounded,
                   size: 19,
-                  color: widget.data[index].safesearchEnabled == true 
-                    ? appConfigProvider.useThemeColorForStatus == true
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.green
-                    : appConfigProvider.useThemeColorForStatus == true
-                      ? Colors.grey
-                      : Colors.red,
+                  color: serverVersionIsAhead(
+                    currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+                    referenceVersion: 'v0.107.28',
+                    referenceVersionBeta: 'v0.108.0-b.33'
+                  ) == true 
+                    ? widget.data[index].safeSearch != null && widget.data[index].safeSearch!.enabled == true 
+                      ? appConfigProvider.useThemeColorForStatus == true
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.green
+                      : appConfigProvider.useThemeColorForStatus == true
+                        ? Colors.grey
+                        : Colors.red
+                    : widget.data[index].safesearchEnabled == true
+                      ? appConfigProvider.useThemeColorForStatus == true
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.green
+                      : appConfigProvider.useThemeColorForStatus == true
+                        ? Colors.grey
+                        : Colors.red,
                 )
               ],
             )

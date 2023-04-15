@@ -188,7 +188,7 @@ class LogDetailsScreen extends StatelessWidget {
             title: AppLocalizations.of(context)!.elapsedTime,
             subtitle: "${double.parse(log.elapsedMs).toStringAsFixed(2)} ms"
           ),
-          LogListTile(
+          if (log.status != null) LogListTile(
             icon: Icons.system_update_alt_rounded, 
             title: AppLocalizations.of(context)!.responseCode,
             subtitle: log.status

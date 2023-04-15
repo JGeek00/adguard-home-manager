@@ -355,7 +355,7 @@
     "gateway": "Gateway",
     "gatewayNotValid": "Gateway not valid",
     "leaseTime": "Lease time",
-    "seconds": "seconds",
+    "seconds": "{time} seconds",
     "leaseTimeNotValid": "Lease time not valid",
     "restoreConfiguration": "Reset configuration",
     "restoreConfigurationMessage": "Are you sure you want to continue? This will reset all the configuration. This action cannot be undone.",
@@ -598,5 +598,13 @@
     "checkUpdates": "Check updates",
     "requestingUpdate": "Requesting update...",
     "autoupdateUnavailable": "Autoupdate unavailable",
-    "autoupdateUnavailableDescription": "The autoupdate service is not available for this server. It could be because the server is running on a Docker container. You have to update your server manually."
+    "autoupdateUnavailableDescription": "The autoupdate service is not available for this server. It could be because the server is running on a Docker container. You have to update your server manually.",
+    "minute": "{time} minute",
+    "minutes": "{time} minutes",
+    "hour": "{time} hour",
+    "hours": "{time} hours",
+    "remainingTime": "Remaining time",
+    "safeSearchSettings": "Safe search settings",
+    "loadingSafeSearchSettings": "Loading safe search settings...",
+    "safeSearchSettingsNotLoaded": "Error when loading safe search settings."
 }

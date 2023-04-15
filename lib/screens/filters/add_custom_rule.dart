@@ -200,7 +200,6 @@ class _AddCustomRuleState extends State<AddCustomRule> {
                     Switch(
                       value: addImportant, 
                       onChanged: (value) => setState(() => addImportant = value),
-                      activeColor: Theme.of(context).colorScheme.primary,
                     )
                   ],
                 ),

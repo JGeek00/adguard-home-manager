@@ -11,6 +11,7 @@ import 'package:adguard_home_manager/screens/logs/log_tile.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -191,7 +192,13 @@ class _LogsWidgetState extends State<LogsWidget> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
 
-      final result = await updateQueryLogParameters(server: serversProvider.selectedServer!, data: data);
+      final result = serverVersionIsAhead(
+        currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
+        referenceVersion: 'v0.107.28',
+        referenceVersionBeta: 'v0.108.0-b.33'
+      ) == true 
+        ? await updateQueryLogParameters(server: serversProvider.selectedServer!, data: data)
+        : await updateQueryLogParametersLegacy(server: serversProvider.selectedServer!, data: data);
 
       processModal.close();
 

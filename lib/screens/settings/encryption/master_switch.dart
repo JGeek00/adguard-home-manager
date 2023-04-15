@@ -58,7 +58,6 @@ class EncryptionMasterSwitch extends StatelessWidget {
                 Switch(
                   value: value, 
                   onChanged: (value) => onChange(value),
-                  activeColor: Theme.of(context).colorScheme.primary,
                 ),
               ],
             ),

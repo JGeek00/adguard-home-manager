@@ -35,7 +35,7 @@ class LogsData {
 }
 
 class Log {
-  final bool answerDnssec;
+  final bool? answerDnssec;
   final bool cached;
   final String client;
   final ClientInfo? clientInfo;
@@ -44,7 +44,7 @@ class Log {
   final Question question;
   final String reason;
   final List<Rule> rules;
-  final String status;
+  final String? status;
   final DateTime time;
   final String upstream;
   final List<Answer> answer;
@@ -53,7 +53,7 @@ class Log {
   final List<Answer>? originalAnswer;
 
   Log({
-    required this.answerDnssec,
+    this.answerDnssec,
     required this.cached,
     required this.client,
     this.clientInfo,
@@ -62,7 +62,7 @@ class Log {
     required this.question,
     required this.reason,
     required this.rules,
-    required this.status,
+    this.status,
     required this.time,
     required this.upstream,
     required this.answer,

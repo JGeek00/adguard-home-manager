@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
@@ -63,7 +64,13 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
   int loadStatus = 0;
 
   void loadData() async {
-    final result = await getQueryLogInfo(server: widget.serversProvider.selectedServer!);
+    final result = serverVersionIsAhead(
+      currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
+      referenceVersion: 'v0.107.28',
+      referenceVersionBeta: 'v0.108.0-b.33'
+    ) == true 
+      ? await getQueryLogInfo(server: widget.serversProvider.selectedServer!)
+      : await getQueryLogInfoLegacy(server: widget.serversProvider.selectedServer!);
 
     if (mounted) {
       if (result['result'] == 'success') {
@@ -82,7 +89,32 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
 
   @override
   void initState() {
-    retentionItems = [
+    retentionItems = serverVersionIsAhead(
+      currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
+      referenceVersion: 'v0.107.28',
+      referenceVersionBeta: 'v0.108.0-b.33'
+    ) == true ? [
+      {
+        'label': AppLocalizations.of(widget.context)!.hours6,
+        'value': 21600000
+      },
+      {
+        'label': AppLocalizations.of(widget.context)!.hours24,
+        'value': 86400000
+      },
+      {
+        'label': AppLocalizations.of(widget.context)!.days7,
+        'value': 604800000
+      },
+      {
+        'label': AppLocalizations.of(widget.context)!.days30,
+        'value': 2592000000
+      },
+      {
+        'label': AppLocalizations.of(widget.context)!.days90,
+        'value': 7776000000
+      },
+    ] : [
       {
         'label': AppLocalizations.of(widget.context)!.hours6,
         'value': 0.25
@@ -111,7 +143,6 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget generateBody() {
       switch (loadStatus) {
         case 0:
@@ -171,7 +202,6 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                                 Switch(
                                   value: generalSwitch, 
                                   onChanged: (value) => setState(() => generalSwitch = value),
-                                  activeColor: Theme.of(context).colorScheme.primary,
                                 )
                               ],
                             ),
@@ -202,7 +232,6 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                                     Switch(
                                       value: anonymizeClientIp, 
                                       onChanged: (value) => setState(() => anonymizeClientIp = value),
-                                      activeColor: Theme.of(context).colorScheme.primary,
                                     )
                                   ],
                                 ),

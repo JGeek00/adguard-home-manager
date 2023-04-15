@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -188,6 +189,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
           onConfirm: confirmEditClient,
           onDelete: deleteClient,
           client: client,
+          serverVersion: serversProvider.serverStatus.data!.serverVersion,
         )
       ));
     }
@@ -337,13 +339,25 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                             Icon(
                               Icons.search_rounded,
                               size: 19,
-                              color: clientsScreen[index].safesearchEnabled == true 
-                                ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.green
-                                : appConfigProvider.useThemeColorForStatus == true
-                                  ? Colors.grey
-                                  : Colors.red,
+                              color: serverVersionIsAhead(
+                                currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+                                referenceVersion: 'v0.107.28',
+                                referenceVersionBeta: 'v0.108.0-b.33'
+                              ) == true 
+                                ? clientsScreen[index].safeSearch != null && clientsScreen[index].safeSearch!.enabled == true 
+                                  ? appConfigProvider.useThemeColorForStatus == true
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.green
+                                  : appConfigProvider.useThemeColorForStatus == true
+                                    ? Colors.grey
+                                    : Colors.red
+                                : clientsScreen[index].safesearchEnabled == true
+                                  ? appConfigProvider.useThemeColorForStatus == true
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.green
+                                  : appConfigProvider.useThemeColorForStatus == true
+                                    ? Colors.grey
+                                    : Colors.red,
                             )
                           ],
                         )
