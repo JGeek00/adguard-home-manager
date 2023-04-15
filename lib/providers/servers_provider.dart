@@ -533,28 +533,24 @@ class ServersProvider with ChangeNotifier {
     setUpdateAvailableLoadStatus(LoadStatus.loading, true);
     final result = await checkServerUpdates(server: server);
     if (result['result'] == 'success') {
-      try {
-        UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
-        final gitHubResult = await getUpdateChangelog(server: server, releaseTag: data.newVersion ?? data.currentVersion);
-        if (gitHubResult['result'] == 'success') {
-          data.changelog = gitHubResult['body'];
-        }
-        data.updateAvailable = data.newVersion != null 
-          ?  data.newVersion!.contains('b')
-            ? compareBetaVersions(
-                currentVersion: data.currentVersion.replaceAll('v', ''),
-                newVersion: data.newVersion!.replaceAll('v', ''),
-              )
-            : compareVersions(
-                currentVersion: data.currentVersion.replaceAll('v', ''),
-                newVersion: data.newVersion!.replaceAll('v', ''),
-              )
-          : false;
-        setUpdateAvailableData(data);
-        setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
-      } catch (_) {
-        // AUTO UPDATE NOT AVAILABLE //
+      UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
+      final gitHubResult = await getUpdateChangelog(server: server, releaseTag: data.newVersion ?? data.currentVersion);
+      if (gitHubResult['result'] == 'success') {
+        data.changelog = gitHubResult['body'];
       }
+      data.updateAvailable = data.newVersion != null 
+        ?  data.newVersion!.contains('b')
+          ? compareBetaVersions(
+              currentVersion: data.currentVersion.replaceAll('v', ''),
+              newVersion: data.newVersion!.replaceAll('v', ''),
+            )
+          : compareVersions(
+              currentVersion: data.currentVersion.replaceAll('v', ''),
+              newVersion: data.newVersion!.replaceAll('v', ''),
+            )
+        : false;
+      setUpdateAvailableData(data);
+      setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
     }
     else {
       setUpdateAvailableLoadStatus(LoadStatus.error, true);
