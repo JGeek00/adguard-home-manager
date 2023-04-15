@@ -54,7 +54,9 @@ class _ClientScreenState extends State<ClientScreen> {
   bool? enableSafeBrowsing;
   bool? enableParentalControl;
   bool? enableSafeSearch;
-  SafeSearch safeSearch = SafeSearch(
+  SafeSearch? safeSearch;
+
+  final SafeSearch defaultSafeSearch = SafeSearch(
     enabled: false,
     bing: false,
     duckduckgo: false,
@@ -109,7 +111,7 @@ class _ClientScreenState extends State<ClientScreen> {
       enableParentalControl = widget.client!.parentalEnabled;
       enableSafeBrowsing = widget.client!.safebrowsingEnabled;
       if (version == true) {
-        safeSearch = widget.client!.safeSearch!;
+        safeSearch = widget.client!.safeSearch;
       }
       else {
         enableSafeSearch = widget.client!.safesearchEnabled ?? false;
@@ -175,7 +177,7 @@ class _ClientScreenState extends State<ClientScreen> {
           enableSafeBrowsing = false;
           enableParentalControl = false;
           enableSafeSearch = false;
-          safeSearch.enabled = false;
+          safeSearch = defaultSafeSearch;
         });
       }
       else if (useGlobalSettingsFiltering == false) {
@@ -186,7 +188,7 @@ class _ClientScreenState extends State<ClientScreen> {
           enableSafeBrowsing = null;
           enableParentalControl = null;
           enableSafeSearch = null;
-          safeSearch.enabled = false;
+          safeSearch = null;
         });
       }
     }
@@ -242,7 +244,7 @@ class _ClientScreenState extends State<ClientScreen> {
       showDialog(
         context: context, 
         builder: (context) => SafeSearchModal(
-          safeSearch: safeSearch, 
+          safeSearch: safeSearch ?? defaultSafeSearch, 
           disabled: !editMode,
           onConfirm: (s) => setState(() => safeSearch = s)
         )
@@ -554,10 +556,14 @@ class _ClientScreenState extends State<ClientScreen> {
               padding: const EdgeInsets.only(right: 16),
               child: Icon(
                 Icons.chevron_right_rounded,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: useGlobalSettingsFiltering == true
+                  ? Colors.grey
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
-            onTap: openSafeSearchModal,
+            onTap: useGlobalSettingsFiltering == false
+              ? () => openSafeSearchModal()
+              : null,
           ),
           if (
             serverVersionIsAhead(

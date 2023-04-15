@@ -274,7 +274,7 @@ class _AddedListState extends State<AddedList> {
                     referenceVersion: 'v0.107.28',
                     referenceVersionBeta: 'v0.108.0-b.33'
                   ) == true 
-                    ? widget.data[index].safeSearch!.enabled == true 
+                    ? widget.data[index].safeSearch != null && widget.data[index].safeSearch!.enabled == true 
                       ? appConfigProvider.useThemeColorForStatus == true
                         ? Theme.of(context).colorScheme.primary
                         : Colors.green

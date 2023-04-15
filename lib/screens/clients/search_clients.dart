@@ -344,7 +344,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                                 referenceVersion: 'v0.107.28',
                                 referenceVersionBeta: 'v0.108.0-b.33'
                               ) == true 
-                                ? clientsScreen[index].safeSearch!.enabled == true 
+                                ? clientsScreen[index].safeSearch != null && clientsScreen[index].safeSearch!.enabled == true 
                                   ? appConfigProvider.useThemeColorForStatus == true
                                     ? Theme.of(context).colorScheme.primary
                                     : Colors.green
