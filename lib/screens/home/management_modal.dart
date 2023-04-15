@@ -147,13 +147,13 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
     }
 
     Widget mainSwitch() {
-      Widget topRow(bool legacyMode) {
+      Widget topRow({required bool legacyMode}) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                if (legacyMode == true) ...[
+                if (legacyMode == false) ...[
                   RotationTransition(
                     turns: animation,
                     child: Icon(
@@ -189,7 +189,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
               value: serversProvider.serverStatus.data!.generalEnabled, 
               onChanged: serversProvider.protectionsManagementProcess.contains('general') == false
                 ? (value) {
-                  if (value == false) {
+                  if (value == false && expandableController.expanded == true && legacyMode == false) {
                     expandableController.toggle();
                   }
                   updateBlocking(
@@ -211,35 +211,35 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
             children: [
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.seconds(30)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
                   ? () => disableWithCountdown(29000)
                   : null,
               ),
               const SizedBox(width: 8),
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.minute(1)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
                   ? () => disableWithCountdown(59000)
                   : null,
               ),
               const SizedBox(width: 8),
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.minutes(10)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
                   ? () => disableWithCountdown(599000)
                   : null,
               ),
               const SizedBox(width: 8),
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.hour(1)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
                   ? () => disableWithCountdown(3599000)
                   : null,
               ),
               const SizedBox(width: 8),
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.hours(24)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false
+                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
                   ? () => disableWithCountdown(86399000)
                   : null,
               ),
@@ -261,7 +261,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(28),
                 child: InkWell(
-                  onTap: serversProvider.serverStatus.data!.generalEnabled == true
+                  onTap: serversProvider.serverStatus.data!.generalEnabled == true && !serversProvider.protectionsManagementProcess.contains('general')
                     ? () => expandableController.toggle()
                     : null,
                   borderRadius: BorderRadius.circular(28),
@@ -279,10 +279,10 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                         animationDuration: Duration(milliseconds: 200),
                         fadeCurve: Curves.ease
                       ),
-                      collapsed: topRow(true), 
+                      collapsed: topRow(legacyMode: false), 
                       expanded: Column(
                         children: [
-                          topRow(true),
+                          topRow(legacyMode: false),
                           bottomRow(),
                           const SizedBox(height: 8)
                         ],
@@ -311,7 +311,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                     borderRadius: BorderRadius.circular(28),
                     color: Theme.of(context).primaryColor.withOpacity(0.1)
                   ),
-                  child: topRow(false)
+                  child: topRow(legacyMode: true)
                 ),
               ),
             )
