@@ -250,7 +250,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
 
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: versionIsGreater(
+        child: serverVersionIsAhead(
           currentVersion: serversProvider.serverStatus.data!.serverVersion, 
           referenceVersion: 'v0.107.28',
           referenceVersionBeta: 'v0.108.0-b.33'

@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/functions/maps_fns.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -74,7 +75,13 @@ class _AddedListState extends State<AddedList> {
       
       final result = await postUpdateClient(server: serversProvider.selectedServer!, data: {
         'name': client.name,
-        'data': client.toJson()
+        'data':  serverVersionIsAhead(
+          currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+          referenceVersion: 'v0.107.28',
+          referenceVersionBeta: 'v0.108.0-b.33'
+        ) == false
+          ? removePropFromMap(client.toJson(), 'safesearch_enabled')
+          : removePropFromMap(client.toJson(), 'safe_search')
       });
 
       processModal.close();
@@ -262,7 +269,7 @@ class _AddedListState extends State<AddedList> {
                 Icon(
                   Icons.search_rounded,
                   size: 19,
-                  color: versionIsGreater(
+                  color: serverVersionIsAhead(
                     currentVersion: serversProvider.serverStatus.data!.serverVersion, 
                     referenceVersion: 'v0.107.28',
                     referenceVersionBeta: 'v0.108.0-b.33'

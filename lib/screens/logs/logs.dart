@@ -192,7 +192,7 @@ class _LogsWidgetState extends State<LogsWidget> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
 
-      final result = versionIsGreater(
+      final result = serverVersionIsAhead(
         currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
         referenceVersion: 'v0.107.28',
         referenceVersionBeta: 'v0.108.0-b.33'

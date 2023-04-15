@@ -72,7 +72,6 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-print(serversProvider.clients.data!.clientsAllowedBlocked!.blockedHosts.length);
     return Scaffold(
       body: DefaultTabController(
         length: 3,

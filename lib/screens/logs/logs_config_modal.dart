@@ -64,7 +64,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
   int loadStatus = 0;
 
   void loadData() async {
-    final result = versionIsGreater(
+    final result = serverVersionIsAhead(
       currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
       referenceVersion: 'v0.107.28',
       referenceVersionBeta: 'v0.108.0-b.33'
@@ -89,7 +89,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
 
   @override
   void initState() {
-    retentionItems = versionIsGreater(
+    retentionItems = serverVersionIsAhead(
       currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
       referenceVersion: 'v0.107.28',
       referenceVersionBeta: 'v0.108.0-b.33'

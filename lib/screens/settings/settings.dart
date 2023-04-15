@@ -51,7 +51,7 @@ class Settings extends StatelessWidget {
         children: [
           if (serversProvider.selectedServer != null) ...[
             SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
-            if (versionIsGreater(
+            if (serverVersionIsAhead(
               currentVersion: serversProvider.serverStatus.data!.serverVersion, 
               referenceVersion: 'v0.107.28',
               referenceVersionBeta: 'v0.108.0-b.33'

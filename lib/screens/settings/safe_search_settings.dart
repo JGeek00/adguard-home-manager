@@ -81,12 +81,12 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
     }
     else if (widget.serversProvider.serverStatus.loadStatus == 1) {
       generalEnabled = widget.serversProvider.serverStatus.data!.safeSearchEnabled;
-      bingEnabled = widget.serversProvider.serverStatus.data!.safeSeachBing;
-      duckduckgoEnabled = widget.serversProvider.serverStatus.data!.safeSearchDuckduckgo;
-      googleEnabled = widget.serversProvider.serverStatus.data!.safeSearchGoogle;
-      pixabayEnabled = widget.serversProvider.serverStatus.data!.safeSearchPixabay;
-      yandexEnabled = widget.serversProvider.serverStatus.data!.safeSearchYandex;
-      youtubeEnabled = widget.serversProvider.serverStatus.data!.safeSearchYoutube;
+      bingEnabled = widget.serversProvider.serverStatus.data!.safeSeachBing!;
+      duckduckgoEnabled = widget.serversProvider.serverStatus.data!.safeSearchDuckduckgo!;
+      googleEnabled = widget.serversProvider.serverStatus.data!.safeSearchGoogle!;
+      pixabayEnabled = widget.serversProvider.serverStatus.data!.safeSearchPixabay!;
+      yandexEnabled = widget.serversProvider.serverStatus.data!.safeSearchYandex!;
+      youtubeEnabled = widget.serversProvider.serverStatus.data!.safeSearchYoutube!;
     }
     super.initState();
   }

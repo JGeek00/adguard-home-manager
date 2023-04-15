@@ -46,7 +46,7 @@ bool compareBetaVersions({
   }
 }
 
-bool versionIsGreater({
+bool serverVersionIsAhead({
   required String currentVersion, 
   required String referenceVersion, 
   String? referenceVersionBeta
@@ -66,16 +66,16 @@ bool versionIsGreater({
       if (newSplit[0] == currentSplit[0] && newSplit[1] == currentSplit[1] && newSplit[2] == currentSplit[2] && newBeta == currentBeta) {
         return true;
       }
-      else if (newSplit[0] > currentSplit[0]) {
+      else if (newSplit[0] < currentSplit[0]) {
         return true;
       }
-      else if (newSplit[1] > currentSplit[1]) {
+      else if (newSplit[1] < currentSplit[1]) {
         return true;
       }
-      else if (newSplit[2] > currentSplit[2]) {
+      else if (newSplit[2] < currentSplit[2]) {
         return true;
       }
-      else if (newBeta > currentBeta) {
+      else if (newBeta < currentBeta) {
         return true;
       }
       else {
@@ -93,13 +93,13 @@ bool versionIsGreater({
     if (newSplit[0] == currentSplit[0] && newSplit[1] == currentSplit[1] && newSplit[2] == currentSplit[2]) {
       return true;
     }
-    else if (newSplit[0] > currentSplit[0]) {
+    else if (newSplit[0] < currentSplit[0]) {
       return true;
     }
-    else if (newSplit[1] > currentSplit[1]) {
+    else if (newSplit[1] < currentSplit[1]) {
       return true;
     }
-    else if (newSplit[2] > currentSplit[2]) {
+    else if (newSplit[2] < currentSplit[2]) {
       return true;
     }   
     else {

@@ -411,7 +411,7 @@ class ServersProvider with ChangeNotifier {
         _protectionsManagementProcess.add('safeSearch');
         notifyListeners();
 
-        final result = versionIsGreater(
+        final result = serverVersionIsAhead(
           currentVersion: serverStatus.data!.serverVersion, 
           referenceVersion: 'v0.107.28',
           referenceVersionBeta: 'v0.108.0-b.33'

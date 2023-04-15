@@ -85,7 +85,7 @@ class _ClientScreenState extends State<ClientScreen> {
 
   @override
   void initState() {
-    version = versionIsGreater(
+    version = serverVersionIsAhead(
       currentVersion: widget.serverVersion, 
       referenceVersion: 'v0.107.28',
       referenceVersionBeta: 'v0.108.0-b.33'
@@ -108,7 +108,7 @@ class _ClientScreenState extends State<ClientScreen> {
         safeSearch = widget.client!.safeSearch!;
       }
       else {
-        enableSafeSearch = widget.client!.safesearchEnabled!;
+        enableSafeSearch = widget.client!.safesearchEnabled ?? false;
       }
       useGlobalSettingsServices = widget.client!.useGlobalBlockedServices;
       blockedServices = widget.client!.blockedServices;
@@ -132,7 +132,7 @@ class _ClientScreenState extends State<ClientScreen> {
         filteringEnabled: enableFiltering ?? false, 
         parentalEnabled: enableParentalControl ?? false, 
         safebrowsingEnabled: enableSafeBrowsing ?? false, 
-        safesearchEnabled: version == true ? enableSafeSearch : null, 
+        safesearchEnabled: version == false ? enableSafeSearch : null, 
         safeSearch: version == true ? safeSearch : null, 
         useGlobalBlockedServices: useGlobalSettingsServices, 
         blockedServices: blockedServices, 
@@ -170,6 +170,7 @@ class _ClientScreenState extends State<ClientScreen> {
           enableFiltering = false;
           enableSafeBrowsing = false;
           enableParentalControl = false;
+          enableSafeSearch = false;
           safeSearch.enabled = false;
         });
       }
@@ -180,6 +181,7 @@ class _ClientScreenState extends State<ClientScreen> {
           enableFiltering = null;
           enableSafeBrowsing = null;
           enableParentalControl = null;
+          enableSafeSearch = null;
           safeSearch.enabled = false;
         });
       }
@@ -533,7 +535,7 @@ class _ClientScreenState extends State<ClientScreen> {
               : null
           ),
           if (
-            versionIsGreater(
+            serverVersionIsAhead(
               currentVersion: serversProvider.serverStatus.data!.serverVersion, 
               referenceVersion: 'v0.107.28',
               referenceVersionBeta: 'v0.108.0-b.33'
@@ -554,7 +556,7 @@ class _ClientScreenState extends State<ClientScreen> {
             onTap: openSafeSearchModal,
           ),
           if (
-            versionIsGreater(
+            serverVersionIsAhead(
               currentVersion: serversProvider.serverStatus.data!.serverVersion, 
               referenceVersion: 'v0.107.28',
               referenceVersionBeta: 'v0.108.0-b.33'

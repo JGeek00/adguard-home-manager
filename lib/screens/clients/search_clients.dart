@@ -339,7 +339,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                             Icon(
                               Icons.search_rounded,
                               size: 19,
-                              color: versionIsGreater(
+                              color: serverVersionIsAhead(
                                 currentVersion: serversProvider.serverStatus.data!.serverVersion, 
                                 referenceVersion: 'v0.107.28',
                                 referenceVersionBeta: 'v0.108.0-b.33'

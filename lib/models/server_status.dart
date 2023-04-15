@@ -24,12 +24,12 @@ class ServerStatusData {
   bool safeBrowsingEnabled;
   bool parentalControlEnabled;
   final String serverVersion;
-  bool safeSeachBing;
-  bool safeSearchGoogle;
-  bool safeSearchDuckduckgo;
-  bool safeSearchPixabay;
-  bool safeSearchYandex;
-  bool safeSearchYoutube;
+  bool? safeSeachBing;
+  bool? safeSearchGoogle;
+  bool? safeSearchDuckduckgo;
+  bool? safeSearchPixabay;
+  bool? safeSearchYandex;
+  bool? safeSearchYoutube;
 
   ServerStatusData({
     required this.stats,
@@ -56,9 +56,11 @@ class ServerStatusData {
     clients: json["clients"] != null ? List<Client>.from(json["clients"].map((x) => Client.fromJson(x))) : [],
     generalEnabled: json['status']['protection_enabled'],
     timeGeneralDisabled: json['status']['protection_disabled_duration'] ?? 0,
-    disabledUntil: json['status']['protection_disabled_duration'] > 0 
-      ? generateTimeDeadline(json['status']['protection_disabled_duration'])
-      : null ,
+    disabledUntil: json['status']['protection_disabled_duration'] != null
+      ? json['status']['protection_disabled_duration'] > 0 
+        ? generateTimeDeadline(json['status']['protection_disabled_duration'])
+        : null
+      : null,
     filteringStatus: FilteringStatus.fromJson(json['filtering']),
     filteringEnabled: json['filtering']['enabled'],
     safeSearchEnabled: json['safeSearch']['enabled'],
