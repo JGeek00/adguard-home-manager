@@ -36,6 +36,8 @@ class _ClientScreenState extends State<ClientScreen> {
   final Uuid uuid = const Uuid();
   bool editMode = true;
 
+  bool validValues = false;
+
   TextEditingController nameController = TextEditingController();
 
   List<String> selectedTags = [];
@@ -68,16 +70,16 @@ class _ClientScreenState extends State<ClientScreen> {
   List<Map<dynamic, dynamic>> upstreamServers = [];
 
 
-  bool checkValidValues() {
+  void checkValidValues() {
     if (
       nameController.text != '' &&
       identifiersControllers.isNotEmpty && 
       identifiersControllers[0]['controller'].text != ''
     ) {
-      return true;
+      setState(() => validValues = true);
     }
     else {
-      return false;
+      setState(() => validValues = false);
     }
   }
 
@@ -93,6 +95,8 @@ class _ClientScreenState extends State<ClientScreen> {
 
     if (widget.client != null) {
       editMode = false;
+
+      validValues = true;
 
       nameController.text = widget.client!.name;
       selectedTags = widget.client!.tags;
@@ -308,7 +312,7 @@ class _ClientScreenState extends State<ClientScreen> {
         ),
         actions: [
           if (widget.client == null || (widget.client != null && editMode == true)) IconButton(
-            onPressed: checkValidValues() == true
+            onPressed: validValues == true
               ? () {
                   createClient();
                   Navigator.pop(context);
