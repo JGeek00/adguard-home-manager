@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=AdGuard Home Manager
+Comment=Manage your AdGuard Home server
+Exec=adguard-home-manager
+Icon=${SNAP}/meta/gui/adguard-home-manager.png
+Terminal=false
+Type=Application
+Categories=Utilities;
