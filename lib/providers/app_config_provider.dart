@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqlite_api.dart';
 
+import 'package:adguard_home_manager/services/db/queries.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 
@@ -160,7 +161,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setOverrideSslCheck(bool status) async {
-    final updated = await _updateOverrideSslCheck(status == true ? 1 : 0);
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'overrideSslCheck',
+      value: status == true ? 1 : 0
+    );
     if (updated == true) {
       _overrideSslCheck = status == true ? 1 : 0;
       notifyListeners();
@@ -172,7 +177,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setHideZeroValues(bool status) async {
-    final updated = await _updateSetHideZeroValues(status == true ? 1 : 0);
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'overrideSslCheck',
+      value: status == true ? 1 : 0
+    );
     if (updated == true) {
       _hideZeroValues = status == true ? 1 : 0;
       notifyListeners();
@@ -184,7 +193,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setShowNameTimeLogs(bool status) async {
-    final updated = await _updateShowNameTimeLogsDb(status == true ? 1 : 0);
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'showNameTimeLogs',
+      value: status == true ? 1 : 0
+    );
     if (updated == true) {
       _showNameTimeLogs = status == true ? 1 : 0;
       notifyListeners();
@@ -196,7 +209,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setSelectedTheme(int value) async {
-    final updated = await _updateThemeDb(value);
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'theme',
+      value: value
+    );
     if (updated == true) {
       _selectedTheme = value;
       notifyListeners();
@@ -208,7 +225,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setUseDynamicColor(bool value) async {
-    final updated = await _updateDynamicColorDb(value == true ? 1 : 0);
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'useDynamicColor',
+      value: value == true ? 1 : 0
+    );
     if (updated == true) {
       _useDynamicColor = value;
       notifyListeners();
@@ -220,7 +241,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setUseThemeColorForStatus(bool value) async {
-    final updated = await _updateUseThemeColorForStatusDb(value == true ? 1 : 0);
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'useThemeColorForStatus',
+      value: value == true ? 1 : 0
+    );
     if (updated == true) {
       _useThemeColorForStatus = value;
       notifyListeners();
@@ -232,7 +257,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setStaticColor(int value) async {
-    final updated = await _updateStaticColorDb(value);
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'staticColor',
+      value: value
+    );
     if (updated == true) {
       _staticColor = value;
       notifyListeners();
@@ -244,109 +273,12 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setDoNotRememberVersion(String value) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE appConfig SET doNotRememberVersion = "$value"',
-        );
-        _doNotRememberVersion = value;
-        notifyListeners();
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> _updateThemeDb(int value) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE appConfig SET theme = $value',
-        );
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> _updateDynamicColorDb(int value) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE appConfig SET useDynamicColor = $value',
-        );
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> _updateUseThemeColorForStatusDb(int value) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE appConfig SET useThemeColorForStatus = $value',
-        );
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> _updateStaticColorDb(int value) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE appConfig SET staticColor = $value',
-        );
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> _updateOverrideSslCheck(int value) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE appConfig SET overrideSslCheck = $value',
-        );
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> _updateSetHideZeroValues(int value) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE appConfig SET hideZeroValues = $value',
-        );
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> _updateShowNameTimeLogsDb(int value) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE appConfig SET showNameTimeLogs = $value',
-        );
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'doNotRememberVersion',
+      value: value
+    );
+    return updated;
   }
 
   void saveFromDb(Database dbInstance, Map<String, dynamic> dbData) {

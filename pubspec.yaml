@@ -54,6 +54,12 @@ dependencies:
   markdown: ^7.0.2
   html: ^0.15.2
   flutter_html: ^3.0.0-alpha.6
+  sqlite3_flutter_libs: ^0.5.13
+  sqflite_common_ffi: ^2.2.3
+  window_size:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding
+      path: plugins/window_size
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +71,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.10+1
 
 # For information on the generic Dart part of this file, see the
@@ -79,6 +85,9 @@ flutter_icons:
   image_path_android: "assets/icon/icon-android.png"
   adaptive_icon_foreground: "assets/icon/icon-android-adap.png"
   adaptive_icon_background: "#ffffff"
+  macos:
+    generate: true
+    image_path: "assets/icon/icon-macos.png"
 
 flutter_native_splash:
   android12: true
@@ -102,6 +111,7 @@ flutter:
     - assets/icon/icon-android-adap.png
     - assets/icon/icon-android.png
     - assets/icon/icon-splash.png
+    - assets/icon/icon-macos.png
     - assets/icon/icon1024-white-center.png
     - assets/other/get_google_play.png
     - assets/resources/github.svg

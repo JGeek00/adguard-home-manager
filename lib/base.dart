@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
@@ -53,12 +54,14 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
   }
 
   Future<GitHubRelease?> checkInstallationSource() async {
-    Source installationSource = await StoreChecker.getSource;
-    if (installationSource != Source.IS_INSTALLED_FROM_PLAY_STORE) {
-      final result = await checkAppUpdatesGitHub();
-      if (result['result'] == 'success') {
-        if (updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName)) {
-          return result['body'];
+    if (Platform.isAndroid) {
+      Source installationSource = await StoreChecker.getSource;
+      if (installationSource != Source.IS_INSTALLED_FROM_PLAY_STORE) {
+        final result = await checkAppUpdatesGitHub();
+        if (result['result'] == 'success') {
+          if (updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName)) {
+            return result['body'];
+          }
         }
       }
     }
