@@ -36,7 +36,7 @@ dependencies:
     sdk: flutter   
   intl: ^0.17.0
   provider: ^6.0.3
-  sqflite: ^2.1.0
+  sqflite: ^2.2.5
   package_info_plus: ^1.4.3+1
   flutter_displaymode: ^0.4.0     
   dynamic_color: ^1.5.4
@@ -88,6 +88,9 @@ flutter_icons:
   macos:
     generate: true
     image_path: "assets/icon/icon-macos.png"
+  windows:
+    generate: true
+    image_path: "assets/icon/icon-circle.png"
 
 flutter_native_splash:
   android12: true
@@ -112,6 +115,7 @@ flutter:
     - assets/icon/icon-android.png
     - assets/icon/icon-splash.png
     - assets/icon/icon-macos.png
+    - assets/icon/icon-circle.png
     - assets/icon/icon1024-white-center.png
     - assets/other/get_google_play.png
     - assets/resources/github.svg
