@@ -89,6 +89,10 @@ class BottomNavBar extends StatelessWidget {
         if (value != 2) {
           logsProvider.resetFilters();
         }
+        // Reset settings selected screen
+        if (value != screens.length-1) {
+          appConfigProvider.setSelectedSettingsScreen(null);
+        }
         appConfigProvider.setSelectedScreen(value);
       },
     );

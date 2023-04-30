@@ -204,7 +204,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
 
   @override
   void initState() {
-    loadDhcpStatus();
+    if (mounted) loadDhcpStatus();
     super.initState();
   }
 

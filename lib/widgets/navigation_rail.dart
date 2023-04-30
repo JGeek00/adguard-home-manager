@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/config/app_screens.dart';
 import 'package:adguard_home_manager/models/app_screen.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -14,6 +15,7 @@ class SideNavigationRail extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
 
     List<AppScreen> screens = serversProvider.selectedServer != null
       ? screensServerConnected 
@@ -56,6 +58,18 @@ class SideNavigationRail extends StatelessWidget {
         label: Text(translatedName(screen.name))
       )).toList(),
       onDestinationSelected: (value) {
+        // Reset clients tab to 0 when changing screen
+        if (value != 1) {
+          appConfigProvider.setSelectedClientsTab(0);
+        }
+        // Reset logs filters when changing screen
+        if (value != 2) {
+          logsProvider.resetFilters();
+        }
+        // Reset settings selected screen
+        if (value != screens.length-1) {
+          appConfigProvider.setSelectedSettingsScreen(null);
+        }
         appConfigProvider.setSelectedScreen(value);
       },
       labelType: NavigationRailLabelType.all,

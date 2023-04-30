@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/server_info/server_info.dart';
@@ -9,7 +10,6 @@ import 'package:adguard_home_manager/screens/settings/access_settings/access_set
 import 'package:adguard_home_manager/screens/settings/customization/customization.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
 import 'package:adguard_home_manager/screens/settings/safe_search_settings.dart';
-import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/screens/settings/update_server/update.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns.dart';
 import 'package:adguard_home_manager/screens/settings/dns_rewrites/dns_rewrites.dart';
@@ -17,6 +17,8 @@ import 'package:adguard_home_manager/screens/servers/servers.dart';
 import 'package:adguard_home_manager/screens/settings/advanced_setings.dart';
 import 'package:adguard_home_manager/screens/settings/general_settings.dart';
 
+import 'package:adguard_home_manager/widgets/custom_settings_tile.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/constants/strings.dart';
@@ -25,22 +27,62 @@ import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const SplitView.material(
+      breakpoint: 900,
+      child: SettingsWidget(),
+    );
+  }
+}
+class SettingsWidget extends StatelessWidget {
+  const SettingsWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final serversProvider = Provider.of<ServersProvider>(context);
 
-    void navigateServers() {
-      Future.delayed(const Duration(milliseconds: 0), (() {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const Servers())
+    final width = MediaQuery.of(context).size.width;
+
+    Widget settingsTile({
+      required String title,
+      required String subtitle,
+      required IconData icon,
+      Widget? trailing,
+      required Widget screenToNavigate,
+      required int thisItem
+    }) {
+      if (width > 900) {
+        return CustomSettingsTile(
+          title: title, 
+          subtitle: subtitle,
+          icon: icon,
+          trailing: trailing,
+          thisItem: thisItem, 
+          selectedItem: appConfigProvider.selectedSettingsScreen,
+          onTap: () {
+            appConfigProvider.setSelectedSettingsScreen(thisItem);
+            SplitView.of(context).setSecondary(screenToNavigate);
+          },
         );
-      }));
-    } 
+      }
+      else {
+        return CustomListTile(
+          title: title,
+          subtitle: subtitle,
+          icon: icon,
+          trailing: trailing,
+          onTap: () {
+            appConfigProvider.setSelectedSettingsScreen(thisItem);
+            SplitView.of(context).setSecondary(screenToNavigate);
+          },
+        );
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -55,79 +97,49 @@ class Settings extends StatelessWidget {
               currentVersion: serversProvider.serverStatus.data!.serverVersion, 
               referenceVersion: 'v0.107.28',
               referenceVersionBeta: 'v0.108.0-b.33'
-            ) == true) CustomListTile(
+            ) == true) settingsTile(
               icon: Icons.search_rounded,
               title: AppLocalizations.of(context)!.safeSearch,
               subtitle: AppLocalizations.of(context)!.safeSearchSettings,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const SafeSearchSettingsScreen()
-                  )
-                )
-              },
+              thisItem: 0,
+              screenToNavigate: const SafeSearchSettingsScreen(),
             ),
-            CustomListTile(
+            settingsTile(
               icon: Icons.lock_rounded,
               title: AppLocalizations.of(context)!.accessSettings,
               subtitle: AppLocalizations.of(context)!.accessSettingsDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AccessSettings()
-                  )
-                )
-              },
+              thisItem: 1,
+              screenToNavigate: const AccessSettings(),
             ),
-            CustomListTile(
+            settingsTile(
               icon: Icons.install_desktop_rounded,
               title: AppLocalizations.of(context)!.dhcpSettings,
               subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Dhcp()
-                  )
-                )
-              },
+              thisItem: 2,
+              screenToNavigate: const Dhcp(),
             ),
-            CustomListTile(
+            settingsTile(
               icon: Icons.dns_rounded,
               title: AppLocalizations.of(context)!.dnsSettings,
               subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const DnsSettings()
-                  )
-                )
-              },
+              thisItem: 3,
+              screenToNavigate: const DnsSettings(),
             ),
-            CustomListTile(
+            settingsTile(
               icon: Icons.security_rounded,
               title: AppLocalizations.of(context)!.encryptionSettings,
               subtitle: AppLocalizations.of(context)!.encryptionSettingsDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const EncryptionSettings()
-                  )
-                )
-              },
+              thisItem: 4,
+              screenToNavigate: const EncryptionSettings(),
             ),
-            CustomListTile(
+            settingsTile(
               icon: Icons.route_rounded,
               title: AppLocalizations.of(context)!.dnsRewrites,
               subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const DnsRewrites()
-                  )
-                )
-              },
+              thisItem: 5,
+              screenToNavigate: const DnsRewrites(),
             ),
-            if (serversProvider.updateAvailable.data != null) CustomListTile(
+            if (serversProvider.updateAvailable.data != null) settingsTile(
               icon: Icons.system_update_rounded,
               title: AppLocalizations.of(context)!.updates,
               subtitle: AppLocalizations.of(context)!.updatesDescription,
@@ -144,37 +156,26 @@ class Settings extends StatelessWidget {
                       ),
                     )
                   : null,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const UpdateScreen()
-                  )
-                )
-              },
+              thisItem: 6,
+              screenToNavigate: const UpdateScreen(),
             ),
-            CustomListTile(
+            settingsTile(
               icon: Icons.info_rounded,
               title: AppLocalizations.of(context)!.serverInformation,
               subtitle: AppLocalizations.of(context)!.serverInformationDescription,
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ServerInformation()
-                  )
-                )
-              },
+              thisItem: 7,
+              screenToNavigate: const ServerInformation(),
             ),
           ],
           SectionLabel(label: AppLocalizations.of(context)!.appSettings),
-          CustomListTile(
+          settingsTile(
             icon: Icons.palette_rounded,
             title: AppLocalizations.of(context)!.customization, 
             subtitle: AppLocalizations.of(context)!.customizationDescription,
-            onTap: () => Navigator.push(context, MaterialPageRoute(
-              builder: (context) => const Customization()
-            ))
+            thisItem: 8,
+            screenToNavigate: const Customization(),
           ),
-          CustomListTile(
+          settingsTile(
             icon: Icons.storage_rounded,
             title: AppLocalizations.of(context)!.servers,
             subtitle: serversProvider.selectedServer != null
@@ -182,31 +183,22 @@ class Settings extends StatelessWidget {
                 ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
                 : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
               : AppLocalizations.of(context)!.noServerSelected,
-            onTap: navigateServers,
+            thisItem: 9,
+            screenToNavigate: const Servers(),
           ),
-          CustomListTile(
+          settingsTile(
             icon: Icons.settings,
             title: AppLocalizations.of(context)!.generalSettings,
             subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
-            onTap: () => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const GeneralSettings()
-                )
-              )
-            },
+            thisItem: 10,
+            screenToNavigate: const GeneralSettings(),
           ),
-          CustomListTile(
+          settingsTile(
             icon: Icons.build_outlined,
             title: AppLocalizations.of(context)!.advancedSettings,
             subtitle: AppLocalizations.of(context)!.advancedSetupDescription,
-            onTap: () => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const AdvancedSettings()
-                )
-              )
-            },
+            thisItem: 11,
+            screenToNavigate: const AdvancedSettings(),
           ),
           SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
           CustomListTile(

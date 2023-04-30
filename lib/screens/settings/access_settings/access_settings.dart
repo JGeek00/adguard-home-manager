@@ -60,7 +60,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
 
   @override
   void initState() {
-    fetchClients();
+    if (mounted) fetchClients();
     super.initState();
     tabController = TabController(
       initialIndex: 0,

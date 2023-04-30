@@ -17,6 +17,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _selectedScreen = 0;
 
+  int? _selectedSettingsScreen;
+
   bool _showingSnackbar = false;
 
   int _selectedTheme = 0;
@@ -119,6 +121,10 @@ class AppConfigProvider with ChangeNotifier {
     return _doNotRememberVersion;
   }
 
+  int? get selectedSettingsScreen {
+    return _selectedSettingsScreen;
+  }
+
   void setDbInstance(Database db) {
     _dbInstance = db;
   }
@@ -157,6 +163,11 @@ class AppConfigProvider with ChangeNotifier {
 
   void setShowingSnackbar(bool status) async {
     _showingSnackbar = status;
+    notifyListeners();
+  }
+
+  void setSelectedSettingsScreen(int? screen) {
+    _selectedSettingsScreen = screen;
     notifyListeners();
   }
 
