@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -60,7 +62,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
 
   @override
   void initState() {
-    if (mounted) fetchClients();
+    fetchClients();
     super.initState();
     tabController = TabController(
       initialIndex: 0,
@@ -72,78 +74,114 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-    return Scaffold(
-      body: DefaultTabController(
-        length: 3,
-        child: NestedScrollView(
-          controller: scrollController,
-          headerSliverBuilder: ((context, innerBoxIsScrolled) {
-            return [
-              SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverSafeArea(
-                  top: false,
-                  sliver: SliverAppBar(
-                    title: Text(AppLocalizations.of(context)!.accessSettings),
-                    pinned: true,
-                    floating: true,
-                    centerTitle: false,
-                    forceElevated: innerBoxIsScrolled,
-                    bottom: TabBar(
-                      controller: tabController,
-                      isScrollable: true,
-                      unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                      tabs: [
-                        Tab(
-                          icon: const Icon(Icons.check),
-                          text: AppLocalizations.of(context)!.allowedClients,
-                        ),
-                        Tab(
-                          icon: const Icon(Icons.block),
-                          text: AppLocalizations.of(context)!.disallowedClients,
-                        ),
-                        Tab(
-                          icon: const Icon(Icons.link_rounded),
-                          text: AppLocalizations.of(context)!.disallowedDomains,
-                        ),
-                      ]
-                    )
+
+    Widget body() {
+      return TabBarView(
+        controller: tabController,
+        children: [
+          ClientsList(
+            type: 'allowed',
+            scrollController: scrollController, 
+            loadStatus: serversProvider.clients.loadStatus, 
+            data: serversProvider.clients.loadStatus == LoadStatus.loaded
+              ? serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients : [], 
+            fetchClients: fetchClients
+          ),
+          ClientsList(
+            type: 'disallowed',
+            scrollController: scrollController, 
+            loadStatus: serversProvider.clients.loadStatus, 
+            data: serversProvider.clients.loadStatus == LoadStatus.loaded
+              ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 
+            fetchClients: fetchClients
+          ),
+          ClientsList(
+            type: 'domains',
+            scrollController: scrollController, 
+            loadStatus: serversProvider.clients.loadStatus, 
+            data: serversProvider.clients.loadStatus == LoadStatus.loaded
+              ? serversProvider.clients.data!.clientsAllowedBlocked!.blockedHosts : [], 
+            fetchClients: fetchClients
+          ),
+        ]
+      );
+    }
+
+    PreferredSizeWidget tabBar() {
+      return TabBar(
+        controller: tabController,
+        isScrollable: true,
+        unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+        tabs: [
+          Tab(
+            child: Row(
+              children: [
+                const Icon(Icons.check),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.allowedClients)
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              children: [
+                const Icon(Icons.block),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.disallowedClients)
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              children: [
+                const Icon(Icons.link_rounded),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.disallowedDomains)
+              ],
+            ),
+          ),
+        ]
+      );
+    }
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      return Scaffold(
+        body: DefaultTabController(
+          length: 3,
+          child: NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: ((context, innerBoxIsScrolled) {
+              return [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverSafeArea(
+                    top: false,
+                    sliver: SliverAppBar(
+                      title: Text(AppLocalizations.of(context)!.accessSettings),
+                      pinned: true,
+                      floating: true,
+                      centerTitle: false,
+                      forceElevated: innerBoxIsScrolled,
+                      bottom: tabBar()
+                    ),
                   ),
-                ),
-              )
-            ];
-          }), 
-          body: TabBarView(
-            controller: tabController,
-            children: [
-              ClientsList(
-                type: 'allowed',
-                scrollController: scrollController, 
-                loadStatus: serversProvider.clients.loadStatus, 
-                data: serversProvider.clients.loadStatus == LoadStatus.loaded
-                  ? serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients : [], 
-                fetchClients: fetchClients
-              ),
-              ClientsList(
-                type: 'disallowed',
-                scrollController: scrollController, 
-                loadStatus: serversProvider.clients.loadStatus, 
-                data: serversProvider.clients.loadStatus == LoadStatus.loaded
-                  ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 
-                fetchClients: fetchClients
-              ),
-              ClientsList(
-                type: 'domains',
-                scrollController: scrollController, 
-                loadStatus: serversProvider.clients.loadStatus, 
-                data: serversProvider.clients.loadStatus == LoadStatus.loaded
-                  ? serversProvider.clients.data!.clientsAllowedBlocked!.blockedHosts : [], 
-                fetchClients: fetchClients
-              ),
-            ]
+                )
+              ];
+            }), 
+            body: body()
           )
-        )
-      ),
-    );
+        ),
+      );
+    }
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.accessSettings),
+          centerTitle: false,
+          bottom: tabBar()
+        ),
+        body: body(),
+      );
+    }
   }
 }

@@ -6,11 +6,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class AddClientModal extends StatefulWidget {
   final String type;
   final void Function(String, String) onConfirm;
+  final bool dialog;
 
   const AddClientModal({
     Key? key,
     required this.type,
-    required this.onConfirm
+    required this.onConfirm,
+    required this.dialog,
   }) : super(key: key);
 
   @override
@@ -65,32 +67,26 @@ class _AddClientModalState extends State<AddClientModal> {
       }
     }
 
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: Platform.isIOS ? 321 : 305,
+    Widget content() {
+      return Padding(
         padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Theme.of(context).dialogBackgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
-          )
-        ),
-        child: Column(
+        child: Wrap(
           children: [
-            Expanded(
-              child: ListView(
-                physics: (Platform.isIOS ? 338 : 322) < MediaQuery.of(context).size.height
-                  ? const NeverScrollableScrollPhysics() 
-                  : null,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon(),
+                  size: 24,
+                  color: Theme.of(context).listTileTheme.iconColor
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    icon(),
-                    size: 24,
-                    color: Theme.of(context).listTileTheme.iconColor
-                  ),
-                  const SizedBox(height: 16),
                   Text(
                     title(),
                     textAlign: TextAlign.center,
@@ -99,25 +95,24 @@ class _AddClientModalState extends State<AddClientModal> {
                       color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: fieldController,
-                    onChanged: (_) => checkValidValues(),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.link_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
-                      ),
-                      helperText: widget.type == 'allowed' || widget.type == 'disallowed'
-                        ? AppLocalizations.of(context)!.addClientFieldDescription : null,
-                      labelText: widget.type == 'allowed' || widget.type == 'disallowed'
-                        ? AppLocalizations.of(context)!.clientIdentifier
-                        : AppLocalizations.of(context)!.domain,
-                    ),
-                  ),
                 ],
+              ),
+            ),
+            TextFormField(
+              controller: fieldController,
+              onChanged: (_) => checkValidValues(),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.link_rounded),
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10)
+                  )
+                ),
+                helperText: widget.type == 'allowed' || widget.type == 'disallowed'
+                  ? AppLocalizations.of(context)!.addClientFieldDescription : null,
+                labelText: widget.type == 'allowed' || widget.type == 'disallowed'
+                  ? AppLocalizations.of(context)!.clientIdentifier
+                  : AppLocalizations.of(context)!.domain,
               ),
             ),
             Padding(
@@ -129,7 +124,7 @@ class _AddClientModalState extends State<AddClientModal> {
                     onPressed: () => Navigator.pop(context), 
                     child: Text(AppLocalizations.of(context)!.cancel)
                   ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 16),
                   TextButton(
                     onPressed: validData == true
                       ? () {
@@ -152,7 +147,36 @@ class _AddClientModalState extends State<AddClientModal> {
             if (Platform.isIOS) const SizedBox(height: 16)
           ],
         ),
-      ),
-    );
+      );
+    }
+
+    if (widget.dialog == true) {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Dialog(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 400
+            ),
+            child: content()
+          ),
+        ),
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).dialogBackgroundColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28)
+            )
+          ),
+          child: content()
+        ),
+      );
+    }
   }
 }
