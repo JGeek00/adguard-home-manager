@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,10 +34,15 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SplitView.material(
-      breakpoint: 900,
-      child: SettingsWidget(),
-    );
+    if (!(Platform.isAndroid || Platform.isIOS)) {
+      return const SplitView.material(
+        breakpoint: 900,
+        child: SettingsWidget(),
+      );
+    }
+    else {
+      return const SettingsWidget();
+    }
   }
 }
 class SettingsWidget extends StatelessWidget {
@@ -78,7 +85,9 @@ class SettingsWidget extends StatelessWidget {
           trailing: trailing,
           onTap: () {
             appConfigProvider.setSelectedSettingsScreen(thisItem);
-            SplitView.of(context).setSecondary(screenToNavigate);
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => screenToNavigate)
+            );
           },
         );
       }

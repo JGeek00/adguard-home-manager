@@ -367,7 +367,7 @@ class _ClientsListState extends State<ClientsList> {
       refreshIndicatorOffset: 0,
       fab: FloatingActionButton(
         onPressed: () {
-          if (width > 900) {
+          if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
             showDialog(
               context: context, 
               builder: (context) => AddClientModal(
