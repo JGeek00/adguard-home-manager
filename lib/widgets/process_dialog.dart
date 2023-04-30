@@ -20,6 +20,7 @@ class ProcessDialog extends StatelessWidget {
             horizontal: 30
           ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               const CircularProgressIndicator(),
               const SizedBox(width: 40),

@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:expandable/expandable.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -16,56 +15,23 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class ServersListItem extends StatefulWidget {
-  final ExpandableController expandableController;
+class ServersTileItem extends StatefulWidget {
   final Server server;
   final int index;
   final void Function(int) onChange;
 
-  const ServersListItem({
+  const ServersTileItem({
     Key? key,
-    required this.expandableController,
     required this.server,
     required this.index,
     required this.onChange
   }) : super(key: key);
 
   @override
-  State<ServersListItem> createState() => _ServersListItemState();
+  State<ServersTileItem> createState() => _ServersTileItemState();
 }
 
-class _ServersListItemState extends State<ServersListItem> with SingleTickerProviderStateMixin {
-  late AnimationController animationController;
-  late Animation<double> animation;
-
-  @override
-  void initState() {
-    widget.expandableController.addListener(() async {
-      await Future.delayed(const Duration(milliseconds: 200));
-      if (widget.expandableController.value == false) {
-        animationController.animateTo(0);
-      }
-      else {
-        animationController.animateBack(1);
-      }
-    });
-
-    animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    )
-    ..addListener(() => setState(() => {}));
-    animation = Tween(
-      begin: 0.0,
-      end: 0.5,
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeInOut
-    ));
-    
-    super.initState();
-  }
-
+class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
@@ -239,7 +205,8 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
                     children: [
                       Text(
                         "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -252,6 +219,7 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
                           Text(
                             server.name,
                             overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -265,10 +233,6 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
                 ),
               ],
             ),
-          ),
-          RotationTransition(
-            turns: animation,
-            child: const Icon(Icons.keyboard_arrow_down_rounded),
           ),
         ],
       );
@@ -328,44 +292,46 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
                 ]
               ),
               SizedBox(
-                child: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-                  ? Container(
-                    margin: const EdgeInsets.only(right: 12),
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: serversProvider.serverStatus.data != null
-                        ? Colors.green
-                        : Colors.orange,
-                      borderRadius: BorderRadius.circular(30)
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          serversProvider.serverStatus.data != null
-                            ? Icons.check
-                            : Icons.warning,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          serversProvider.serverStatus.data != null
-                            ? AppLocalizations.of(context)!.connected
-                            : AppLocalizations.of(context)!.selectedDisconnected,
-                          style: const TextStyle(
+                child: serversProvider.selectedServer != null && 
+                  serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && serversProvider.serverStatus.data != null && 
+                  serversProvider.selectedServer?.id == server.id
+                    ? Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && serversProvider.serverStatus.data != null
+                          ? Colors.green
+                          : Colors.orange,
+                        borderRadius: BorderRadius.circular(30)
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && serversProvider.serverStatus.data != null
+                              ? Icons.check
+                              : Icons.warning,
                             color: Colors.white,
-                            fontWeight: FontWeight.w500
                           ),
-                        )
-                      ],
+                          const SizedBox(width: 10),
+                          Text(
+                            serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && serversProvider.serverStatus.data != null
+                              ? AppLocalizations.of(context)!.connected
+                              : AppLocalizations.of(context)!.selectedDisconnected,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500
+                            ),
+                          )
+                        ],
+                        ),
+                    )
+                    : Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: TextButton(
+                          onPressed: () => connectToServer(server),
+                          child: Text(AppLocalizations.of(context)!.connect),
+                        ),
                       ),
-                  )
-                  : Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      child: TextButton(
-                        onPressed: () => connectToServer(server),
-                        child: Text(AppLocalizations.of(context)!.connect),
-                      ),
-                    ),
               )
             ],
           )
@@ -373,47 +339,41 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
       );
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).colorScheme.surfaceVariant,
-            width: 1
-          )
-        )
-      ),
-      child: ExpandableNotifier(
-        controller: widget.expandableController,
-        child: Column(
-          children: [
-            Expandable(
-              collapsed: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => widget.onChange(widget.index),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: topRow(widget.server, widget.index),
-                  ),
-                ),
-              ),
-              expanded: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => widget.onChange(widget.index),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Column(
-                      children: [
-                        topRow(widget.server, widget.index),
-                        bottomRow(widget.server, widget.index)
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ) 
-          ],
+    EdgeInsets generateMargins(int index) {
+      if (index == 0) {
+        return const EdgeInsets.only(top: 16, left: 16, right: 8, bottom: 8);
+      }
+      if (index == 1) {
+        return const EdgeInsets.only(top: 16, left: 8, right: 16, bottom: 8);
+      }
+      else if (index == serversProvider.serversList.length-1 && (index+1)%2 == 0) {
+        return const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 16);
+      }
+      else if (index == serversProvider.serversList.length-1 && (index+1)%2 == 1) {
+        return const EdgeInsets.only(top: 8, left: 16, right: 8, bottom: 16);
+      }
+      else {
+        if ((index+1)%2 == 0) {
+          return const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8);
+        }
+        else {
+          return const EdgeInsets.only(top: 8, left: 16, right: 8, bottom: 8);
+        }
+      }
+    }
+
+    return FractionallySizedBox(
+      widthFactor: 0.5,
+      child: Card(
+        margin: generateMargins(widget.index),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              topRow(widget.server, widget.index),
+              bottomRow(widget.server, widget.index)
+            ],
+          ),
         ),
       ),
     );
