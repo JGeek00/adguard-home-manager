@@ -816,28 +816,30 @@ class _DhcpWidgetState extends State<DhcpWidget> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        AppLocalizations.of(context)!.neededSelectInterface,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 22,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          AppLocalizations.of(context)!.neededSelectInterface,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 22,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: selectInterface, 
-                      child: Text(AppLocalizations.of(context)!.selectInterface)
-                    ),
-                  ],
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: selectInterface, 
+                        child: Text(AppLocalizations.of(context)!.selectInterface)
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );

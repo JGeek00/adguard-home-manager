@@ -79,8 +79,10 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void navigate(Widget widget) {
-      if (!(Platform.isAndroid || Platform.isIOS)) {
+      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
         SplitView.of(context).push(widget);
       }
       else {

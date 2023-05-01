@@ -87,9 +87,14 @@ class SettingsWidget extends StatelessWidget {
           trailing: trailing,
           onTap: () {
             appConfigProvider.setSelectedSettingsScreen(thisItem);
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => screenToNavigate)
-            );
+            if (!(Platform.isIOS || Platform.isAndroid)) {
+              SplitView.of(context).setSecondary(screenToNavigate);
+            }
+            else {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => screenToNavigate)
+              );
+            }
           },
         );
       }
