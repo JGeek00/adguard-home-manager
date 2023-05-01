@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -22,13 +24,29 @@ class UpdateModal extends StatefulWidget {
 class _UpdateModalState extends State<UpdateModal> {
   bool doNotRemember = false;
 
-  String getDownloadLink() {
-   return widget.gitHubRelease.assets.firstWhere((item) => item.browserDownloadUrl.contains('apk')).browserDownloadUrl;
+  String? getDownloadLink() {
+    if (Platform.isAndroid) {
+      return widget.gitHubRelease.assets.firstWhere((item) => item.browserDownloadUrl.contains('apk')).browserDownloadUrl;
+    }
+    else if (Platform.isMacOS) {
+      return widget.gitHubRelease.assets.firstWhere((item) => item.browserDownloadUrl.contains('macOS')).browserDownloadUrl;  // macOS package is a zip
+    }
+    else if (Platform.isWindows) {
+      return widget.gitHubRelease.assets.firstWhere((item) => item.browserDownloadUrl.contains('exe')).browserDownloadUrl;
+    }
+    else if (Platform.isLinux) {
+      return widget.gitHubRelease.assets.firstWhere((item) => item.browserDownloadUrl.contains('deb')).browserDownloadUrl;
+    }
+    else {
+      return null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final downloadLink = getDownloadLink();
 
     return AlertDialog(
       scrollable: true,
@@ -104,10 +122,10 @@ class _UpdateModalState extends State<UpdateModal> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(
+            if (downloadLink != null) TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                widget.onDownload(getDownloadLink(), widget.gitHubRelease.tagName);
+                widget.onDownload(downloadLink, widget.gitHubRelease.tagName);
               }, 
               child: Text(AppLocalizations.of(context)!.download)
             ),

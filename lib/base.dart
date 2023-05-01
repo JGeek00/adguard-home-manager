@@ -55,14 +55,24 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
   }
 
   Future<GitHubRelease?> checkInstallationSource() async {
-    if (Platform.isAndroid) {
-      Source installationSource = await StoreChecker.getSource;
-      if (installationSource != Source.IS_INSTALLED_FROM_PLAY_STORE) {
-        final result = await checkAppUpdatesGitHub();
-        if (result['result'] == 'success') {
-          if (updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName)) {
+    final result = await checkAppUpdatesGitHub();
+    if (result['result'] == 'success') {
+      final update = updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName);
+      if (update == true) {
+        if (Platform.isAndroid) {
+          Source installationSource = await StoreChecker.getSource;
+          if (installationSource == Source.IS_INSTALLED_FROM_PLAY_STORE) {
+            return null;
+          }
+          else {
             return result['body'];
           }
+        }
+        else if (Platform.isIOS) {
+          return null;
+        }
+        else {
+          return result['body'];
         }
       }
     }

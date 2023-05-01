@@ -231,7 +231,7 @@ class SettingsWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                IconButton(
+                if (Platform.isAndroid) IconButton(
                   onPressed: () => openUrl(Urls.playStore), 
                   icon: SvgPicture.asset(
                     'assets/resources/google-play.svg',
