@@ -3,8 +3,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
-import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/section_label.dart';
@@ -752,12 +752,24 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
-                        onPressed: () => Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => DhcpLeases(
-                            items: serversProvider.dhcp.data!.dhcpStatus.leases,
-                            staticLeases: false,
-                          )
-                        )),
+                        onPressed: () {
+                          if (!(Platform.isAndroid || Platform.isIOS)) {
+                            SplitView.of(context).push(
+                              DhcpLeases(
+                                items: serversProvider.dhcp.data!.dhcpStatus.leases,
+                                staticLeases: false,
+                              )
+                            );
+                          }
+                          else {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => DhcpLeases(
+                                items: serversProvider.dhcp.data!.dhcpStatus.leases,
+                                staticLeases: false,
+                              )
+                            ));
+                          }
+                        },
                         child: Row(
                           children: [
                             Text(AppLocalizations.of(context)!.dhcpLeases),
@@ -767,12 +779,24 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                         )
                       ),
                       ElevatedButton(
-                        onPressed: () => Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => DhcpLeases(
-                            items: serversProvider.dhcp.data!.dhcpStatus.staticLeases,
-                            staticLeases: true,
-                          )
-                        )), 
+                        onPressed: () {
+                          if (!(Platform.isAndroid || Platform.isIOS)) {
+                            SplitView.of(context).push(
+                              DhcpLeases(
+                                items: serversProvider.dhcp.data!.dhcpStatus.staticLeases,
+                                staticLeases: true,
+                              )
+                            );
+                          }
+                          else {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => DhcpLeases(
+                                items: serversProvider.dhcp.data!.dhcpStatus.staticLeases,
+                                staticLeases: true,
+                              )
+                            ));
+                          }
+                        }, 
                         child: Row(
                           children: [
                             Text(AppLocalizations.of(context)!.dhcpStatic),
