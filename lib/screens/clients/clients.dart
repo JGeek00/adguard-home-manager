@@ -61,6 +61,9 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   late TabController tabController;
   final ScrollController scrollController = ScrollController();
 
+  bool searchMode = false;
+  final TextEditingController searchController = TextEditingController();
+
   Future fetchClients() async {
     widget.setLoadingStatus(LoadStatus.loading, false);
     final result = await getClients(widget.server);
@@ -136,7 +139,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
             scrollController: scrollController,
             loadStatus: serversProvider.clients.loadStatus,
             data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.clients.data!.autoClientsData : [],
+              ? serversProvider.filteredActiveClients : [],
             fetchClients: fetchClients,
             onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
               builder: (context) => LogsListClient(
@@ -151,7 +154,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
             scrollController: scrollController,
             loadStatus: serversProvider.clients.loadStatus,
             data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.clients.data!.clients : [], 
+              ? serversProvider.filteredAddedClients : [], 
             fetchClients: fetchClients,
             onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
               builder: (context) => LogsListClient(
@@ -216,19 +219,58 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
               SliverOverlapAbsorber(
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
-                  title: Text(AppLocalizations.of(context)!.clients),
+                  title: searchMode == true
+                    ? Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                searchMode = false;
+                                searchController.text = "";
+                                serversProvider.setSearchTermClients(null);
+                              });
+                            }, 
+                            icon: const Icon(Icons.arrow_back_rounded)
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: TextField(
+                              controller: searchController,
+                              onChanged: (value) => serversProvider.setSearchTermClients(value),
+                              decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      searchController.text = "";
+                                      serversProvider.setSearchTermClients(null);
+                                    });
+                                  },
+                                  icon: const Icon(Icons.clear_rounded)
+                                ),
+                                hintText: AppLocalizations.of(context)!.search,
+                                hintStyle: const TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 18
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    : Text(AppLocalizations.of(context)!.clients),
                   pinned: true,
                   floating: true,
                   centerTitle: false,
                   forceElevated: innerBoxIsScrolled,
                   actions: [
-                    if (serversProvider.clients.loadStatus == LoadStatus.loaded) ...[
+                    if (serversProvider.clients.loadStatus == LoadStatus.loaded && searchMode == false) ...[
                       IconButton(
-                        onPressed: () => {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SearchClients()
-                          ))
-                        }, 
+                        onPressed: () => setState(() => searchMode = true), 
                         icon: const Icon(Icons.search),
                         tooltip: AppLocalizations.of(context)!.searchClients,
                       ),

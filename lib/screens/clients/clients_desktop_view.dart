@@ -11,7 +11,6 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/screens/clients/search_clients.dart';
 
 
 class ClientsDesktopView extends StatefulWidget {
@@ -36,6 +35,9 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
   
   AutoClient? selectedActiveClient;
   Client? selectedAddedClient;
+
+  bool searchMode = false;
+  final TextEditingController searchController = TextEditingController();
   
   @override
   void initState() {
@@ -90,7 +92,7 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
             scrollController: scrollController,
             loadStatus: serversProvider.clients.loadStatus,
             data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.clients.data!.autoClientsData : [],
+              ? serversProvider.filteredActiveClients : [],
             fetchClients: widget.fetchClients,
             onClientSelected: (client) => setState(() {
               selectedAddedClient = null;
@@ -111,7 +113,7 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
             scrollController: scrollController,
             loadStatus: serversProvider.clients.loadStatus,
             data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.clients.data!.clients : [], 
+              ? serversProvider.filteredAddedClients : [], 
             fetchClients: widget.fetchClients,
             onClientSelected: (client) => setState(() {
               selectedActiveClient = null;
@@ -136,16 +138,55 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.clients),
+          title: searchMode == true
+            ? Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        searchMode = false;
+                        searchController.text = "";
+                        serversProvider.setSearchTermClients(null);
+                      });
+                    }, 
+                    icon: const Icon(Icons.arrow_back_rounded)
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      onChanged: (value) => serversProvider.setSearchTermClients(value),
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              searchController.text = "";
+                              serversProvider.setSearchTermClients(null);
+                            });
+                          },
+                          icon: const Icon(Icons.clear_rounded)
+                        ),
+                        hintText: AppLocalizations.of(context)!.search,
+                        hintStyle: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 18
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 18
+                      ),
+                    ),
+                  )
+                ],
+              )
+            : Text(AppLocalizations.of(context)!.clients),
           centerTitle: false,
           actions: [
-            if (serversProvider.clients.loadStatus == LoadStatus.loaded) ...[
+            if (serversProvider.clients.loadStatus == LoadStatus.loaded && searchMode == false) ...[
               IconButton(
-                onPressed: () => {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => const SearchClients()
-                  ))
-                }, 
+                onPressed: () => setState(() => searchMode = true), 
                 icon: const Icon(Icons.search),
                 tooltip: AppLocalizations.of(context)!.searchClients,
               ),

@@ -34,6 +34,9 @@ class ServersProvider with ChangeNotifier {
     loadStatus: LoadStatus.loading,
     data: null
   );
+  String? _searchTermClients;
+  List<AutoClient> _filteredActiveClients = [];
+  List<Client> _filteredAddedClients = [];
 
   final Filtering _filtering = Filtering(
     loadStatus: LoadStatus.loading,
@@ -85,6 +88,18 @@ class ServersProvider with ChangeNotifier {
 
   Clients get clients {
     return _clients;
+  }
+
+  String? get searchTermClients {
+    return _searchTermClients;
+  }
+
+  List<AutoClient> get filteredActiveClients {
+    return _filteredActiveClients;
+  }
+
+  List<Client> get filteredAddedClients {
+    return _filteredAddedClients;
   }
 
   FilteringStatus? get filteringStatus {
@@ -148,6 +163,43 @@ class ServersProvider with ChangeNotifier {
 
   void setClientsData(ClientsData data) {
     _clients.data = data;
+    if (_searchTermClients != null && _searchTermClients != '') {
+      _filteredActiveClients = _clients.data!.autoClientsData.where(
+        (client) => client.ip.contains(_searchTermClients!.toLowerCase()) || (client.name != null ? client.name!.contains(_searchTermClients!.toLowerCase()) : false)
+      ).toList();
+      _filteredAddedClients = _clients.data!.clients.where(
+        (client) {
+          isContained(String value) => value.contains(value.toLowerCase());
+          return client.ids.any(isContained);
+        }
+      ).toList();
+    }
+    else {
+      _filteredActiveClients = data.autoClientsData;
+      _filteredAddedClients = data.clients;
+    }
+    notifyListeners();
+  }
+
+  void setSearchTermClients(String? value) {
+    _searchTermClients = value;
+    if (value != null && value != '') {
+      if (_clients.data != null) {
+        _filteredActiveClients = _clients.data!.autoClientsData.where(
+          (client) => client.ip.contains(value.toLowerCase()) || (client.name != null ? client.name!.contains(value.toLowerCase()) : false)
+        ).toList();
+        _filteredAddedClients = _clients.data!.clients.where(
+          (client) {
+            isContained(String value) => value.contains(value.toLowerCase());
+            return client.ids.any(isContained);
+          }
+        ).toList();
+      }
+    }
+    else {
+      if (_clients.data != null) _filteredActiveClients = _clients.data!.autoClientsData;
+      if (_clients.data != null) _filteredAddedClients = _clients.data!.clients;
+    }
     notifyListeners();
   }
 
