@@ -7,48 +7,50 @@ import 'package:adguard_home_manager/models/dhcp.dart';
 
 class SelectInterfaceModal extends StatelessWidget {
   final List<NetworkInterface> interfaces;
-  final ScrollController scrollController;
   final void Function(NetworkInterface) onSelect;
+  final bool dialog;
 
   const SelectInterfaceModal({
     Key? key,
     required this.interfaces,
-    required this.scrollController,
     required this.onSelect,
+    required this.dialog
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).dialogBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28)
-        )
-      ),
-      child: Column(
+    Widget content() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: ListView(
-              controller: scrollController,
+          SingleChildScrollView(
+            child: Wrap(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 24),
-                  child: Icon(
-                    Icons.settings_ethernet_rounded,
-                    size: 24,
-                    color: Theme.of(context).listTileTheme.iconColor
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  AppLocalizations.of(context)!.selectInterface,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Theme.of(context).colorScheme.onSurface
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24),
+                          child: Icon(
+                            Icons.settings_ethernet_rounded,
+                            size: 24,
+                            color: Theme.of(context).listTileTheme.iconColor
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context)!.selectInterface,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Theme.of(context).colorScheme.onSurface
+                          ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 ListView.builder(
@@ -190,7 +192,30 @@ class SelectInterfaceModal extends StatelessWidget {
           ),
           if (Platform.isIOS) const SizedBox(height: 16)
         ],
-      ),
-    );
+      );
+    }
+
+    if (dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500
+          ),
+          child: content()
+        ),
+      );
+    }
+    else {
+      return Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).dialogBackgroundColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
+          )
+        ),
+        child: content()
+      );
+    }
   }
 }

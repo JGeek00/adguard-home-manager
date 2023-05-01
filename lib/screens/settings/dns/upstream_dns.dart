@@ -185,13 +185,12 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
           ),
           ...dnsServers.map((item) => Padding(
             padding: const EdgeInsets.only(
-              left: 16, right: 6, bottom: 20
+              left: 16, right: 6, bottom: 24
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (item['controller'] != null) SizedBox(
-                  width: MediaQuery.of(context).size.width-74,
+                if (item['controller'] != null) Expanded(
                   child: TextFormField(
                     controller: item['controller'],
                     onChanged: (_) => checkValidValues(),
@@ -206,6 +205,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                     )
                   ),
                 ),
+                const SizedBox(width: 8),
                 if (item['comment'] != null) Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,10 +232,12 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                   }, 
                   icon: const Icon(Icons.remove_circle_outline),
                   tooltip:  AppLocalizations.of(context)!.remove,
-                )
+                ),
+                const SizedBox(width: 4),
               ],
             ),
           )).toList(),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,

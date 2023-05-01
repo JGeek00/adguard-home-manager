@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animations/animations.dart';
@@ -29,6 +31,8 @@ class DhcpLeases extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void deleteLease(Lease lease) async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -119,14 +123,26 @@ class DhcpLeases extends StatelessWidget {
     }
 
     void openAddStaticLease() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (context) => AddStaticLeaseModal(
-          onConfirm: createLease
-        ),
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true
-      );
+      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
+          builder: (context) => AddStaticLeaseModal(
+            onConfirm: createLease,
+            dialog: true,
+          ),
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) => AddStaticLeaseModal(
+            onConfirm: createLease,
+            dialog: false,
+          ),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true
+        );
+      }
     }
 
     return Scaffold(
