@@ -60,7 +60,10 @@ dependencies:
     git:
       url: https://github.com/google/flutter-desktop-embedding
       path: plugins/window_size
-  flutter_split_view: ^0.1.2
+  flutter_split_view:
+    git:
+      url: https://github.com/JGeek00/flutter_split_view
+      ref: hide-divider
 
 dev_dependencies:
   flutter_test:

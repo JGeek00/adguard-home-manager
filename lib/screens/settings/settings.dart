@@ -39,6 +39,7 @@ class Settings extends StatelessWidget {
     if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
       return const SplitView.material(
         breakpoint: 900,
+        hideDivider: true,
         child: SettingsWidget(),
       );
     }

@@ -294,10 +294,11 @@ packages:
   flutter_split_view:
     dependency: "direct main"
     description:
-      name: flutter_split_view
-      sha256: "0fb1f3aa6a6f2031d936ae5596fc5178affacdc7d793b27cdbc191a1ae8e56bf"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: hide-divider
+      resolved-ref: e22dd0bf64e7d61a64eb99fcd9a4e111e177ccf3
+      url: "https://github.com/JGeek00/flutter_split_view"
+    source: git
     version: "0.1.2"
   flutter_svg:
     dependency: "direct main"
