@@ -71,102 +71,104 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SingleChildScrollView(
-            child: Wrap(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 24),
-                            child: Icon(
-                              Icons.add,
-                              size: 24,
-                              color: Theme.of(context).listTileTheme.iconColor
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 24),
+                              child: Icon(
+                                Icons.add,
+                                size: 24,
+                                color: Theme.of(context).listTileTheme.iconColor
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            AppLocalizations.of(context)!.addStaticLease,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Theme.of(context).colorScheme.onSurface
+                            const SizedBox(height: 16),
+                            Text(
+                              AppLocalizations.of(context)!.addStaticLease,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Theme.of(context).colorScheme.onSurface
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 24, right: 24, bottom: 12 
-                  ),
-                  child: TextFormField(
-                    controller: macController,
-                    onChanged: validateMac,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.smartphone_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
-                      ),
-                      errorText: macError,
-                      labelText: AppLocalizations.of(context)!.macAddress,
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  child: TextFormField(
-                    controller: ipController,
-                    onChanged: validateIp,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.link_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 24, right: 24, bottom: 12 
+                    ),
+                    child: TextFormField(
+                      controller: macController,
+                      onChanged: validateMac,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.smartphone_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: macError,
+                        labelText: AppLocalizations.of(context)!.macAddress,
                       ),
-                      errorText: ipError,
-                      labelText: AppLocalizations.of(context)!.ipAddress,
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 24, right: 24, top: 12
-                  ),
-                  child: TextFormField(
-                    controller: hostNameController,
-                    onChanged: (value) {
-                      if (value != '') {
-                        setState(() => hostNameError = null);
-                      }
-                      else {
-                        setState(() => hostNameError = AppLocalizations.of(context)!.hostNameError);
-                      }
-                      validateData();
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.badge_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    child: TextFormField(
+                      controller: ipController,
+                      onChanged: validateIp,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.link_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: ipError,
+                        labelText: AppLocalizations.of(context)!.ipAddress,
                       ),
-                      errorText: hostNameError,
-                      labelText: AppLocalizations.of(context)!.hostName,
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 24, right: 24, top: 12
+                    ),
+                    child: TextFormField(
+                      controller: hostNameController,
+                      onChanged: (value) {
+                        if (value != '') {
+                          setState(() => hostNameError = null);
+                        }
+                        else {
+                          setState(() => hostNameError = AppLocalizations.of(context)!.hostNameError);
+                        }
+                        validateData();
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.badge_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: hostNameError,
+                        labelText: AppLocalizations.of(context)!.hostName,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Padding(

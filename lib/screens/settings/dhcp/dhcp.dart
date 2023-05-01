@@ -382,6 +382,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
               }),
               dialog: false,
             ),
+            isScrollControlled: true
           );
         }
       });

@@ -70,49 +70,58 @@ class _AddClientModalState extends State<AddClientModal> {
     Widget content() {
       return Padding(
         padding: const EdgeInsets.all(24),
-        child: Wrap(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon(),
-                  size: 24,
-                  color: Theme.of(context).listTileTheme.iconColor
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    title(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurface
+            Flexible(
+              child: SingleChildScrollView(
+                child: Wrap(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          icon(),
+                          size: 24,
+                          color: Theme.of(context).listTileTheme.iconColor
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            TextFormField(
-              controller: fieldController,
-              onChanged: (_) => checkValidValues(),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.link_rounded),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10)
-                  )
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            title(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Theme.of(context).colorScheme.onSurface
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextFormField(
+                      controller: fieldController,
+                      onChanged: (_) => checkValidValues(),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.link_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        helperText: widget.type == 'allowed' || widget.type == 'disallowed'
+                          ? AppLocalizations.of(context)!.addClientFieldDescription : null,
+                        labelText: widget.type == 'allowed' || widget.type == 'disallowed'
+                          ? AppLocalizations.of(context)!.clientIdentifier
+                          : AppLocalizations.of(context)!.domain,
+                      ),
+                    ),
+                  ],
                 ),
-                helperText: widget.type == 'allowed' || widget.type == 'disallowed'
-                  ? AppLocalizations.of(context)!.addClientFieldDescription : null,
-                labelText: widget.type == 'allowed' || widget.type == 'disallowed'
-                  ? AppLocalizations.of(context)!.clientIdentifier
-                  : AppLocalizations.of(context)!.domain,
               ),
             ),
             Padding(
@@ -144,7 +153,6 @@ class _AddClientModalState extends State<AddClientModal> {
                 ],
               ),
             ),
-            if (Platform.isIOS) const SizedBox(height: 16)
           ],
         ),
       );

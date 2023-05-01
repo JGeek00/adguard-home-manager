@@ -54,76 +54,78 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
   Widget build(BuildContext context) {
     Widget content() {
       return Column(
-          mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SingleChildScrollView(
-            child: Wrap(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 24),
-                          child: Icon(
-                            Icons.add,
-                            size: 24,
-                            color: Theme.of(context).listTileTheme.iconColor
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 24),
+                            child: Icon(
+                              Icons.add,
+                              size: 24,
+                              color: Theme.of(context).listTileTheme.iconColor
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          AppLocalizations.of(context)!.addDnsRewrite,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Theme.of(context).colorScheme.onSurface
+                          const SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.of(context)!.addDnsRewrite,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Theme.of(context).colorScheme.onSurface
+                            ),
                           ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 24, right: 24, bottom: 12
+                    ),
+                    child: TextFormField(
+                      controller: domainController,
+                      onChanged: validateDomain,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.link_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
                         ),
-                        const SizedBox(height: 16),
-                      ],
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 24, right: 24, bottom: 12
-                  ),
-                  child: TextFormField(
-                    controller: domainController,
-                    onChanged: validateDomain,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.link_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                        errorText: domainError,
+                        labelText: AppLocalizations.of(context)!.domain,
                       ),
-                      errorText: domainError,
-                      labelText: AppLocalizations.of(context)!.domain,
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 24, right: 24, top: 12
-                  ),
-                  child: TextFormField(
-                    controller: answerController,
-                    onChanged: (_) => checkValidValues(),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.system_update_alt_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 24, right: 24, top: 12
+                    ),
+                    child: TextFormField(
+                      controller: answerController,
+                      onChanged: (_) => checkValidValues(),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.system_update_alt_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        labelText: AppLocalizations.of(context)!.answer,
                       ),
-                      labelText: AppLocalizations.of(context)!.answer,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Padding(

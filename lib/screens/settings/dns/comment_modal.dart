@@ -36,62 +36,64 @@ class _CommentModalState extends State<CommentModal> {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SingleChildScrollView(
-            child: Wrap(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 24),
-                          child: Icon(
-                            Icons.comment_rounded,
-                            size: 24,
-                            color: Theme.of(context).colorScheme.secondary,
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 24),
+                            child: Icon(
+                              Icons.comment_rounded,
+                              size: 24,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          AppLocalizations.of(context)!.comment,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Theme.of(context).colorScheme.onSurface
+                          const SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.of(context)!.comment,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Theme.of(context).colorScheme.onSurface
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: TextFormField(
-                    controller: commentController,
-                    onChanged: (value) {
-                      if (value != '') {
-                        setState(() => validData = true);
-                      }
-                      else {
-                        setState(() => validData = false);
-                      }
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.comment_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
+                          const SizedBox(height: 16),
+                        ],
                       ),
-                      labelText: AppLocalizations.of(context)!.comment,
-                      helperText: AppLocalizations.of(context)!.commentsDescription,
-                      helperMaxLines: 3
-                    )
+                    ],
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: TextFormField(
+                      controller: commentController,
+                      onChanged: (value) {
+                        if (value != '') {
+                          setState(() => validData = true);
+                        }
+                        else {
+                          setState(() => validData = false);
+                        }
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.comment_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        labelText: AppLocalizations.of(context)!.comment,
+                        helperText: AppLocalizations.of(context)!.commentsDescription,
+                        helperMaxLines: 3
+                      )
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Padding(
