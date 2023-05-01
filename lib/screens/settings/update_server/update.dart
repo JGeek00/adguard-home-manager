@@ -65,16 +65,18 @@ class UpdateScreen extends StatelessWidget {
     Widget headerPortrait() {
       return Column(
         children: [
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
+              if (Navigator.canPop(context)) IconButton(
                 icon: Icon(
                   Icons.arrow_back,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 onPressed: () => Navigator.pop(context), 
               ),
+              if (!Navigator.canPop(context)) const SizedBox(),
               IconButton(
                 icon: Icon(
                   Icons.refresh_rounded,
@@ -170,120 +172,6 @@ class UpdateScreen extends StatelessWidget {
       );
     }
 
-    Widget headerLandscape() {
-      return Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                onPressed: () => Navigator.pop(context), 
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.refresh_rounded,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                tooltip: AppLocalizations.of(context)!.checkUpdates,
-                onPressed: () => serversProvider.checkServerUpdatesAvailable(serversProvider.selectedServer!)
-              ),
-            ],
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 8, bottom: 16, left: 16, right: 16
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  serversProvider.updateAvailable.loadStatus == LoadStatus.loading
-                    ? Column(
-                        children: const [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 4)
-                        ],
-                      )
-                    : Icon(
-                        serversProvider.updateAvailable.data!.updateAvailable != null
-                          ? serversProvider.updateAvailable.data!.updateAvailable == true
-                            ? Icons.system_update_rounded
-                            : Icons.system_security_update_good_rounded
-                          : Icons.system_security_update_warning_rounded,
-                        size: 40,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                  const SizedBox(height: 16),
-                  Text(
-                    serversProvider.updateAvailable.loadStatus == LoadStatus.loading
-                      ? AppLocalizations.of(context)!.checkingUpdates
-                      : serversProvider.updateAvailable.data!.updateAvailable != null
-                        ? serversProvider.updateAvailable.data!.updateAvailable == true
-                          ? AppLocalizations.of(context)!.updateAvailable
-                          :  AppLocalizations.of(context)!.serverUpdated
-                        : AppLocalizations.of(context)!.unknownStatus,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (serversProvider.updateAvailable.loadStatus == LoadStatus.loaded) Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              serversProvider.updateAvailable.data!.updateAvailable != null && serversProvider.updateAvailable.data!.updateAvailable == true
-                                ? AppLocalizations.of(context)!.newVersion
-                                : AppLocalizations.of(context)!.currentVersion,
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              serversProvider.updateAvailable.data!.updateAvailable != null
-                                ? serversProvider.updateAvailable.data!.updateAvailable == true
-                                  ? serversProvider.updateAvailable.data!.newVersion ?? 'N/A'
-                                  : serversProvider.updateAvailable.data!.currentVersion
-                                : "N/A",
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant
-                              ),
-                            )
-                          ],
-                        ),
-                        if (serversProvider.updateAvailable.loadStatus != LoadStatus.loaded) const SizedBox(),
-                        FilledButton.icon(
-                          icon: const Icon(Icons.download_rounded),
-                          label: Text(AppLocalizations.of(context)!.updateNow),
-                          onPressed: serversProvider.updateAvailable.data!.updateAvailable != null && serversProvider.updateAvailable.data!.updateAvailable == true 
-                            ? serversProvider.updateAvailable.data!.canAutoupdate == true
-                              ? () => update()
-                              : () => showAutoUpdateUnavailableModal()
-                            : null
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
     final changelog = serversProvider.updateAvailable.loadStatus == LoadStatus.loaded && serversProvider.updateAvailable.data!.changelog != null
       ? ListView(
         children: [
@@ -313,51 +201,20 @@ class UpdateScreen extends StatelessWidget {
       : null;
 
     return Scaffold(
-      body: MediaQuery.of(context).size.width > 700
-        ? Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Container(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height,
-                        padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).viewPadding.top
-                        ),
-                        child: headerLandscape(),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: SafeArea(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width*0.6,
-                    child: changelog ?? const SizedBox(),
-                  ),
-                ),
-              )
-            ],
-          )
-        : Column(
-            children: [
-              Container(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: SafeArea(
-                  child: headerPortrait()
-                )
-              ),
-              changelog != null
-                ? Expanded(child: changelog)
-                : const SizedBox(),
-            ]
-          )
+      body: Column(
+        children: [
+          Container(
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            child: SafeArea(
+              child: headerPortrait()
+            )
+          ),
+          const SizedBox(height: 16),
+          changelog != null
+            ? Expanded(child: changelog)
+            : const SizedBox(),
+        ]
+      )
     );
   }
 }

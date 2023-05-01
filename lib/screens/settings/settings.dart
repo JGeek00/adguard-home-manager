@@ -34,7 +34,9 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!(Platform.isAndroid || Platform.isIOS)) {
+    final width = MediaQuery.of(context).size.width;
+
+    if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
       return const SplitView.material(
         breakpoint: 900,
         child: SettingsWidget(),

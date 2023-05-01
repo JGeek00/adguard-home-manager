@@ -1,6 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -15,6 +18,8 @@ class AdvancedSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
     
     Future updateSslCheck(bool newStatus) async {
       final result = await appConfigProvider.setOverrideSslCheck(newStatus);
@@ -64,11 +69,16 @@ class AdvancedSettings extends StatelessWidget {
             title: AppLocalizations.of(context)!.logs,
             subtitle: AppLocalizations.of(context)!.checkAppLogs,
             onTap: () => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const AppLogs()
+              if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                SplitView.of(context).push(const AppLogs())
+              }
+              else {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AppLogs()
+                  )
                 )
-              )
+              }
             },
             padding: const EdgeInsets.only(
               top: 10,
