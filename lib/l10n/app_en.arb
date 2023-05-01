@@ -606,5 +606,6 @@
     "remainingTime": "Remaining time",
     "safeSearchSettings": "Safe search settings",
     "loadingSafeSearchSettings": "Loading safe search settings...",
-    "safeSearchSettingsNotLoaded": "Error when loading safe search settings."
+    "safeSearchSettingsNotLoaded": "Error when loading safe search settings.",
+    "loadingLogsSettings": "Loading logs settings..."
 }

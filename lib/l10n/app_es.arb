@@ -606,5 +606,6 @@
     "remainingTime": "Tiempo restante",
     "safeSearchSettings": "Configuración de búsqueda segura",
     "loadingSafeSearchSettings": "Cargando configuración de búsqueda segura...",
-    "safeSearchSettingsNotLoaded": "Error al cargar la configuración de búsqueda segura."
+    "safeSearchSettingsNotLoaded": "Error al cargar la configuración de búsqueda segura.",
+    "loadingLogsSettings": "Cargando configuración de registros..."
 }
