@@ -15,8 +15,12 @@ class ServerStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: width > 700
+        ? const EdgeInsets.only(left: 20, right: 20, bottom: 20)
+        : const EdgeInsets.all(20),
       child: Column(
         children: [
           Text(
@@ -29,11 +33,11 @@ class ServerStatus extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            height: 140,
+            height: width > 700 ? 70 : 140,
             child: GridView(
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: width > 700 ? 4 : 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 mainAxisExtent: 65

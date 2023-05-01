@@ -44,13 +44,15 @@ class StatusBox extends StatelessWidget {
               : Colors.grey.computeLuminance() > 0.5 ? Colors.black : Colors.white,
           ),
           const SizedBox(width: 12),
-          Text(
-            label,
-            style: TextStyle(
-              color: appConfigProvider.useThemeColorForStatus == true
-                ? Theme.of(context).colorScheme.primary.computeLuminance() > 0.5 ? Colors.black : Colors.white
-                : Colors.grey.computeLuminance() > 0.5 ? Colors.black : Colors.white,
-              fontWeight: FontWeight.w500
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: appConfigProvider.useThemeColorForStatus == true
+                  ? Theme.of(context).colorScheme.primary.computeLuminance() > 0.5 ? Colors.black : Colors.white
+                  : Colors.grey.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                fontWeight: FontWeight.w500
+              ),
             ),
           )
         ],
