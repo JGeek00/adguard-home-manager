@@ -10,6 +10,7 @@ class CustomListTile extends StatelessWidget {
   final EdgeInsets? padding;
   final void Function()? onLongPress;
   final bool? disabled;
+  final void Function(bool)? onHover;
 
   const CustomListTile({
     Key? key,
@@ -21,7 +22,8 @@ class CustomListTile extends StatelessWidget {
     this.trailing,
     this.padding,
     this.onLongPress,
-    this.disabled
+    this.disabled,
+    this.onHover
   }) : super(key: key);
 
   @override
@@ -30,6 +32,7 @@ class CustomListTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        onHover: onHover,
         onLongPress: onLongPress,
         child: Padding(
           padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

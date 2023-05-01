@@ -42,7 +42,7 @@ class LogTile extends StatelessWidget {
       required String text
     }) {
       return SizedBox(
-        width: 70,
+        width: 80,
         child: Column(
           children: [
             Icon(

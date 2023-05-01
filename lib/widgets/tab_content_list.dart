@@ -16,6 +16,7 @@ class CustomTabContentList extends StatelessWidget {
   final Widget? fab;
   final bool? fabVisible;
   final bool? noSliver;
+  final EdgeInsets? listPadding;
 
   const CustomTabContentList({
     Key? key,
@@ -29,7 +30,8 @@ class CustomTabContentList extends StatelessWidget {
     this.refreshIndicatorOffset,
     this.fab,
     this.fabVisible, 
-    this.noSliver
+    this.noSliver,
+    this.listPadding
   }) : super(key: key);
 
   @override
@@ -73,6 +75,7 @@ class CustomTabContentList extends StatelessWidget {
             return Stack(
               children: [
                 ListView.builder(
+                  padding: listPadding,
                   itemCount: itemsCount,
                   itemBuilder: (context, index) => contentWidget(index),
                 ),
@@ -117,7 +120,7 @@ class CustomTabContentList extends StatelessWidget {
                   builder: (BuildContext context) {
                     return RefreshIndicator(
                       onRefresh: onRefresh,
-                      edgeOffset: refreshIndicatorOffset ?? 95,
+                      edgeOffset: refreshIndicatorOffset ?? 70,
                       child: CustomScrollView(
                         slivers: <Widget>[
                           SliverOverlapInjector(

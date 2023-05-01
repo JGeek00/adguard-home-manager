@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:provider/provider.dart';
@@ -99,6 +101,8 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void deleteClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.removingClient);
@@ -183,15 +187,31 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
     }
 
     void openClientModal(Client client) {
-      Navigator.push(context, MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (BuildContext context) => ClientScreen(
-          onConfirm: confirmEditClient,
-          onDelete: deleteClient,
-          client: client,
-          serverVersion: serversProvider.serverStatus.data!.serverVersion,
-        )
-      ));
+      if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
+        showDialog(
+          barrierDismissible: false,
+          context: context, 
+          builder: (BuildContext context) => ClientScreen(
+            onConfirm: confirmEditClient,
+            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            onDelete: deleteClient,
+            client: client,
+            dialog: true,
+          )
+        );
+      }
+      else {
+        Navigator.push(context, MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (BuildContext context) => ClientScreen(
+            onConfirm: confirmEditClient,
+            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            onDelete: deleteClient,
+            client: client,
+            dialog: false,
+          )
+        ));
+      }
     }
 
     void openDeleteModal(Client client) {
