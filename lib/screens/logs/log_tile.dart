@@ -20,6 +20,7 @@ class LogTile extends StatelessWidget {
   final int index;
   final bool? isLogSelected;
   final void Function(Log) onLogTap;
+  final bool? useAlwaysNormalTile;
 
   const LogTile({
     Key? key,
@@ -27,7 +28,8 @@ class LogTile extends StatelessWidget {
     required this.length,
     required this.index,
     this.isLogSelected,
-    required this.onLogTap
+    required this.onLogTap,
+    this.useAlwaysNormalTile
   }) : super(key: key);
 
   @override
@@ -100,7 +102,7 @@ class LogTile extends StatelessWidget {
       );
     }
 
-    if (width > 1100) {
+    if (width > 1100 && !(useAlwaysNormalTile == true)) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Material(

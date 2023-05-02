@@ -343,7 +343,10 @@ class _LogsWidgetState extends State<LogsWidget> {
                         onLogTap: (log) {
                           if (width <= 1100) {
                             Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => LogDetailsScreen(log: log)
+                              builder: (context) => LogDetailsScreen(
+                                log: log,
+                                dialog: false,
+                              )
                             ));
                           }
                           setState(() => selectedLog = log);
@@ -604,7 +607,10 @@ class _LogsWidgetState extends State<LogsWidget> {
             Expanded(
               flex: 2,
               child: selectedLog != null
-                ? LogDetailsScreen(log: selectedLog!)
+                ? LogDetailsScreen(
+                    log: selectedLog!,
+                    dialog: false,
+                  )
                 : const SizedBox()
             )
           ],

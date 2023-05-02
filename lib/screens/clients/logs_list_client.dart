@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
+import 'package:adguard_home_manager/screens/logs/log_details_screen.dart';
 
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -163,9 +164,14 @@ class _LogsListClientState extends State<LogsListClient> {
                     log: logsData!.data[index],
                     index: index,
                     length: logsData!.data.length,
-                    onLogTap: (log) {
-                     
-                    }
+                    useAlwaysNormalTile: true,
+                    onLogTap: (log) => showDialog(
+                      context: context, 
+                      builder: (context) => LogDetailsScreen(
+                        log: log, 
+                        dialog: true
+                      )
+                    )
                   );
                 }
               }

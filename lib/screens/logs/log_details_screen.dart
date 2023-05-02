@@ -19,10 +19,12 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class LogDetailsScreen extends StatelessWidget {
   final Log log;
+  final bool dialog;
 
   const LogDetailsScreen({
     Key? key,
-    required this.log
+    required this.log,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -105,25 +107,8 @@ class LogDetailsScreen extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title:  Text(AppLocalizations.of(context)!.logDetails),
-        actions: [
-          IconButton(
-            onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
-            icon: Icon(
-              getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                ? Icons.check_circle_rounded
-                : Icons.block
-            ),
-            tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-              ? AppLocalizations.of(context)!.unblockDomain
-              : AppLocalizations.of(context)!.blockDomain,
-          ),
-          const SizedBox(width: 10)
-        ],
-      ),
-      body: ListView(
+    Widget content() {
+      return ListView(
         children: [
           SectionLabel(label: AppLocalizations.of(context)!.status),
           LogListTile(
@@ -247,7 +232,87 @@ class LogDetailsScreen extends StatelessWidget {
             )).toList()
           ]
         ],
-      ),
-    );
+      );
+    }
+
+    if (dialog) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                            IconButton(
+                          onPressed: () => Navigator.pop(context), 
+                          icon: const Icon(Icons.clear_rounded)
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          AppLocalizations.of(context)!.logDetails,
+                          style: const TextStyle(
+                            fontSize: 22
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
+                          icon: Icon(
+                            getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                              ? Icons.check_circle_rounded
+                              : Icons.block
+                          ),
+                          tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                            ? AppLocalizations.of(context)!.unblockDomain
+                            : AppLocalizations.of(context)!.blockDomain,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: content(),
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          title:  Text(AppLocalizations.of(context)!.logDetails),
+          actions: [
+            IconButton(
+              onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
+              icon: Icon(
+                getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                  ? Icons.check_circle_rounded
+                  : Icons.block
+              ),
+              tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                ? AppLocalizations.of(context)!.unblockDomain
+                : AppLocalizations.of(context)!.blockDomain,
+            ),
+            const SizedBox(width: 10)
+          ],
+        ),
+        body: content()
+      );
+    }
   }
 }
