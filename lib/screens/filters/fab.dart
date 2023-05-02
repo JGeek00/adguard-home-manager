@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,6 +29,8 @@ class FiltersFab extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void confirmAddRule(String rule) async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -154,15 +158,28 @@ class FiltersFab extends StatelessWidget {
     }
 
     void openAddWhitelistBlacklist() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (ctx) => AddListModal(
-          type: type,
-          onConfirm: confirmAddList,
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
-      );
+      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
+          builder: (ctx) => AddListModal(
+            type: type,
+            onConfirm: confirmAddList,
+            dialog: true,
+          ),
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          builder: (ctx) => AddListModal(
+            type: type,
+            onConfirm: confirmAddList,
+            dialog: false,
+          ),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent
+        );
+      }
     }
 
     return FloatingActionButton(

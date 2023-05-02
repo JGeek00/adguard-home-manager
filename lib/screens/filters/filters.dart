@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -89,6 +91,8 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void fetchUpdateLists() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updatingLists);
@@ -139,12 +143,24 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
 
     void showCheckHostModal() {
       Future.delayed(const Duration(seconds: 0), () {
-        showModalBottomSheet(
-          context: context, 
-          builder: (context) => const CheckHostModal(),
-          backgroundColor: Colors.transparent,
-          isScrollControlled: true,
-        );
+        if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+          showDialog(
+            context: context, 
+            builder: (context) => const CheckHostModal(
+              dialog: true,
+            ),
+          );
+        }
+        else {
+          showModalBottomSheet(
+            context: context, 
+            builder: (context) => const CheckHostModal(
+              dialog: false,
+            ),
+            backgroundColor: Colors.transparent,
+            isScrollControlled: true,
+          );
+        }
       });
     }
 
@@ -279,15 +295,28 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                   ),
                   IconButton(
                     onPressed: () {
-                      showModalBottomSheet(
-                        context: context, 
-                        builder: (context) => UpdateIntervalListsModal(
-                          interval: serversProvider.filtering.data!.interval,
-                          onChange: setUpdateFrequency
-                        ),
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true
-                      );
+                      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                        showDialog(
+                          context: context, 
+                          builder: (context) => UpdateIntervalListsModal(
+                            interval: serversProvider.filtering.data!.interval,
+                            onChange: setUpdateFrequency,
+                            dialog: true,
+                          ),
+                        );
+                      }
+                      else {
+                        showModalBottomSheet(
+                          context: context, 
+                          builder: (context) => UpdateIntervalListsModal(
+                            interval: serversProvider.filtering.data!.interval,
+                            onChange: setUpdateFrequency,
+                            dialog: false,
+                          ),
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true
+                        );
+                      }
                     }, 
                     icon: const Icon(Icons.update_rounded)
                   ),
@@ -329,20 +358,38 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
                 ] : [],
                 bottom: TabBar(
                   controller: tabController,
-                  isScrollable: false,
+                  isScrollable: true,
                   unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
                   tabs: [
                     Tab(
-                      icon: const Icon(Icons.verified_user_rounded),
-                      text: AppLocalizations.of(context)!.whitelists,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.verified_user_rounded),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)!.whitelists,)
+                        ],
+                      ),
                     ),
                     Tab(
-                      icon: const Icon(Icons.gpp_bad_rounded),
-                      text: AppLocalizations.of(context)!.blacklist,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.gpp_bad_rounded),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)!.blacklists)
+                        ],
+                      ),
                     ),
                     Tab(
-                      icon: const Icon(Icons.shield_rounded),
-                      text: AppLocalizations.of(context)!.customRules,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.shield_rounded),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)!.customRules)
+                        ],
+                      ),
                     ),
                   ]
                 )

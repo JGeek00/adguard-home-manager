@@ -68,6 +68,8 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void enableDisableList(Filter list, bool newStatus) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(
@@ -222,16 +224,30 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
         actions: [
           IconButton(
             onPressed: () => {
-              showModalBottomSheet(
-                context: context, 
-                builder: (ctx) => AddListModal(
-                  list: widget.list,
-                  type: widget.type,
-                  onEdit: confirmEditList
-                ),
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent
-              )
+              if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+                showDialog(
+                  context: context, 
+                  builder: (ctx) => AddListModal(
+                    list: widget.list,
+                    type: widget.type,
+                    onEdit: confirmEditList,
+                    dialog: true,
+                  ),
+                )
+              }
+              else {
+                showModalBottomSheet(
+                  context: context, 
+                  builder: (ctx) => AddListModal(
+                    list: widget.list,
+                    type: widget.type,
+                    onEdit: confirmEditList,
+                    dialog: false,
+                  ),
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent
+                )
+              }
             }, 
             icon: const Icon(Icons.edit),
             tooltip: AppLocalizations.of(context)!.edit,
