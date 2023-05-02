@@ -341,7 +341,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                         length: logsProvider.logsData!.data.length,
                         isLogSelected: selectedLog != null && selectedLog == logsProvider.logsData!.data[index],
                         onLogTap: (log) {
-                          if (width <= 700) {
+                          if (width <= 1100) {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) => LogDetailsScreen(log: log)
                             ));
