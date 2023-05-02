@@ -26,8 +26,6 @@ class CustomSettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     Widget tileBody = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -80,41 +78,27 @@ class CustomSettingsTile extends StatelessWidget {
       ],
     );
 
-    if (width < 700) {
-      return Material(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Material(
         color: Colors.transparent,
+        borderRadius: BorderRadius.circular(28),
         child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: tileBody,
-          )
-        ),
-      );
-    }
-    else {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Material(
-          color: Colors.transparent,
           borderRadius: BorderRadius.circular(28),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(28),
-            onTap: onTap,
-            child: Container(
-              width: double.maxFinite,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(28),
-                color: thisItem == selectedItem 
-                  ? Theme.of(context).colorScheme.primaryContainer
-                  : null
-              ),
-              child: tileBody
+          onTap: onTap,
+          child: Container(
+            width: double.maxFinite,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              color: thisItem == selectedItem 
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null
             ),
+            child: tileBody
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 }

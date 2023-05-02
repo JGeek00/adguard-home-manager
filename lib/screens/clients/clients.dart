@@ -172,8 +172,20 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
     if (!(Platform.isAndroid || Platform.isIOS)) {
       if (width > 900) {
         return SplitView.material(
-          breakpoint: 900,
           hideDivider: true,
+          placeholder: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                AppLocalizations.of(context)!.selectClientLeftColumn,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                ),
+              ),
+            ),
+          ),
           child: ClientsDesktopView(
             serversProvider: serversProvider,
             appConfigProvider: appConfigProvider,

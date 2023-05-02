@@ -166,9 +166,11 @@ class AppConfigProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedSettingsScreen(int? screen) {
+  void setSelectedSettingsScreen({required int? screen, bool? notify}) {
     _selectedSettingsScreen = screen;
-    notifyListeners();
+    if (notify == true) {
+      notifyListeners();
+    }
   }
 
   Future<bool> setOverrideSslCheck(bool status) async {

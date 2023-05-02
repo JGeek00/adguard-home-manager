@@ -29,6 +29,7 @@ import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
 
@@ -36,11 +37,23 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
-      return const SplitView.material(
-        breakpoint: 900,
+    if (width > 900) {
+      return SplitView.material(
         hideDivider: true,
-        child: SettingsWidget(),
+        placeholder: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              AppLocalizations.of(context)!.selectOptionLeftColumn,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                color: Theme.of(context).colorScheme.onSurfaceVariant
+              ),
+            ),
+          ),
+        ),
+        child: const SettingsWidget(),
       );
     }
     else {
@@ -57,6 +70,10 @@ class SettingsWidget extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
+
+    if (width <= 900 && appConfigProvider.selectedSettingsScreen != null) {
+      appConfigProvider.setSelectedSettingsScreen(screen: null);
+    }
 
     Widget settingsTile({
       required String title,
@@ -75,7 +92,7 @@ class SettingsWidget extends StatelessWidget {
           thisItem: thisItem, 
           selectedItem: appConfigProvider.selectedSettingsScreen,
           onTap: () {
-            appConfigProvider.setSelectedSettingsScreen(thisItem);
+            appConfigProvider.setSelectedSettingsScreen(screen: thisItem, notify: true);
             SplitView.of(context).setSecondary(screenToNavigate);
           },
         );
@@ -87,15 +104,9 @@ class SettingsWidget extends StatelessWidget {
           icon: icon,
           trailing: trailing,
           onTap: () {
-            appConfigProvider.setSelectedSettingsScreen(thisItem);
-            if (!(Platform.isIOS || Platform.isAndroid)) {
-              SplitView.of(context).setSecondary(screenToNavigate);
-            }
-            else {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => screenToNavigate)
-              );
-            }
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => screenToNavigate)
+            );
           },
         );
       }

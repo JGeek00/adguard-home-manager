@@ -68,7 +68,7 @@ class SideNavigationRail extends StatelessWidget {
         }
         // Reset settings selected screen
         if (value != screens.length-1) {
-          appConfigProvider.setSelectedSettingsScreen(null);
+          appConfigProvider.setSelectedSettingsScreen(screen: null);
         }
         appConfigProvider.setSelectedScreen(value);
       },

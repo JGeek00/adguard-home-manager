@@ -607,5 +607,7 @@
     "safeSearchSettings": "Safe search settings",
     "loadingSafeSearchSettings": "Loading safe search settings...",
     "safeSearchSettingsNotLoaded": "Error when loading safe search settings.",
-    "loadingLogsSettings": "Loading logs settings..."
+    "loadingLogsSettings": "Loading logs settings...",
+    "selectOptionLeftColumn": "Select an option of the left column",
+    "selectClientLeftColumn": "Select a client of the left column"
 }
