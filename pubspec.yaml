@@ -63,7 +63,7 @@ dependencies:
   flutter_split_view:
     git:
       url: https://github.com/JGeek00/flutter_split_view
-      ref: hide-divider
+      ref: master-alt
   url_launcher: ^6.1.10
 
 dev_dependencies:

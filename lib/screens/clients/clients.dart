@@ -173,6 +173,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
       if (width > 900) {
         return SplitView.material(
           hideDivider: true,
+          flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
           placeholder: Center(
             child: Padding(
               padding: const EdgeInsets.all(24),

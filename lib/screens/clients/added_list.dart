@@ -219,7 +219,6 @@ class _AddedListState extends State<AddedList> {
         : null,
       loadingGenerator: () => SizedBox(
         width: double.maxFinite,
-        height: MediaQuery.of(context).size.height-171,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -251,12 +250,15 @@ class _AddedListState extends State<AddedList> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              AppLocalizations.of(context)!.noClientsList,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                AppLocalizations.of(context)!.noClientsList,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
             const SizedBox(height: 30),
@@ -270,7 +272,6 @@ class _AddedListState extends State<AddedList> {
       ), 
       errorGenerator: () => SizedBox(
         width: double.maxFinite,
-        height: MediaQuery.of(context).size.height-171,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
