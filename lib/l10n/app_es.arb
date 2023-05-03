@@ -611,5 +611,6 @@
     "selectOptionLeftColumn": "Selecciona una opción de la columna de la izquierda",
     "selectClientLeftColumn": "Selecciona un cliente de la columna de la izquierda",
     "disableList": "Deshabilitar lista",
-    "enableList": "Habilitar lista"
+    "enableList": "Habilitar lista",
+    "screens": "Pantallas"
 }

@@ -11,6 +11,7 @@ import 'package:store_checker/store_checker.dart';
 import 'package:flutter/services.dart';
 
 import 'package:adguard_home_manager/widgets/bottom_nav_bar.dart';
+import 'package:adguard_home_manager/widgets/menu_bar.dart';
 import 'package:adguard_home_manager/widgets/update_modal.dart';
 import 'package:adguard_home_manager/widgets/navigation_rail.dart';
 
@@ -127,43 +128,45 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
       ? screensServerConnected 
       : screensSelectServer;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.light
-          : Brightness.dark,
-        statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.dark
-          : Brightness.light,
-        systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
-        systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.dark
-          : Brightness.light,
-      ),
-      child: Scaffold(
-        body: Row(
-          children: [
-            if (width > 900) const SideNavigationRail(),
-              Expanded(
-                child: PageTransitionSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (
-                    (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
-                      animation: primaryAnimation, 
-                      secondaryAnimation: secondaryAnimation,
-                      child: child,
-                    )
-                  ),
-                  child: screens[appConfigProvider.selectedScreen].body,
-                ),
-              ),
-          ],
+    return CustomMenuBar(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness: Theme.of(context).brightness == Brightness.light
+            ? Brightness.light
+            : Brightness.dark,
+          statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
+          systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
+          systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
         ),
-        bottomNavigationBar: width <= 900 
-          ? const BottomNavBar()
-          : null,
-      )
+        child: Scaffold(
+          body: Row(
+            children: [
+              if (width > 900) const SideNavigationRail(),
+                Expanded(
+                  child: PageTransitionSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (
+                      (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
+                        animation: primaryAnimation, 
+                        secondaryAnimation: secondaryAnimation,
+                        child: child,
+                      )
+                    ),
+                    child: screens[appConfigProvider.selectedScreen].body,
+                  ),
+                ),
+            ],
+          ),
+          bottomNavigationBar: width <= 900 
+            ? const BottomNavBar()
+            : null,
+        )
+      ),
     );
   }
 }
