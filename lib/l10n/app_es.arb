@@ -609,5 +609,7 @@
     "safeSearchSettingsNotLoaded": "Error al cargar la configuración de búsqueda segura.",
     "loadingLogsSettings": "Cargando configuración de registros...",
     "selectOptionLeftColumn": "Selecciona una opción de la columna de la izquierda",
-    "selectClientLeftColumn": "Selecciona un cliente de la columna de la izquierda"
+    "selectClientLeftColumn": "Selecciona un cliente de la columna de la izquierda",
+    "disableList": "Deshabilitar lista",
+    "enableList": "Habilitar lista"
 }

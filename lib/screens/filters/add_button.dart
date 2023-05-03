@@ -17,12 +17,14 @@ import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class FiltersFab extends StatelessWidget {
+class AddFiltersButton extends StatelessWidget {
   final String type;
+  final Widget Function(void Function()) widget;
 
-  const FiltersFab({
+  const AddFiltersButton({
     Key? key,
     required this.type,
+    required this.widget
   }) : super(key: key);
 
   @override
@@ -68,14 +70,27 @@ class FiltersFab extends StatelessWidget {
     }
 
     void openAddCustomRule() {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          fullscreenDialog: true,
+      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
           builder: (context) => AddCustomRule(
-            onConfirm: confirmAddRule
+            onConfirm: confirmAddRule,
+            dialog: true,
           ),
-        )
-      );
+          barrierDismissible: false
+        );
+      }
+      else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => AddCustomRule(
+              onConfirm: confirmAddRule,
+              dialog: false,
+            ),
+          )
+        );
+      }
     }
 
     void confirmAddList({required String name, required String url, required String type}) async {
@@ -182,11 +197,10 @@ class FiltersFab extends StatelessWidget {
       }
     }
 
-    return FloatingActionButton(
-      onPressed: type == 'blacklist' || type == 'whitelist'
+    return widget(
+      type == 'blacklist' || type == 'whitelist'
         ? () => openAddWhitelistBlacklist()
         : () => openAddCustomRule(),
-      child: const Icon(Icons.add),
     );
   }
 }

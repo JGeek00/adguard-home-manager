@@ -7,8 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/fab.dart';
-import 'package:adguard_home_manager/screens/filters/list_details_screen.dart';
+import 'package:adguard_home_manager/screens/filters/add_button.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
@@ -23,6 +22,7 @@ class FiltersList extends StatefulWidget {
   final List<Filter> data;
   final Future<void> Function() fetchData;
   final String type;
+  final void Function(Filter, String) onOpenDetailsScreen;
 
   const FiltersList({
     Key? key,
@@ -31,6 +31,7 @@ class FiltersList extends StatefulWidget {
     required this.data,
     required this.fetchData,
     required this.type,
+    required this.onOpenDetailsScreen
   }) : super(key: key);
 
   @override
@@ -64,17 +65,6 @@ class _FiltersListState extends State<FiltersList> {
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    
-    void openDetailsModal(Filter filter) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) =>  ListDetailsScreen(
-            list: filter, 
-            type: widget.type,
-          )
-        )
-      );
-    }
 
     return CustomTabContentList(
       loadingGenerator: () => SizedBox(
@@ -112,7 +102,7 @@ class _FiltersListState extends State<FiltersList> {
               ? Colors.grey
               : Colors.red
         ),
-        onTap: () => openDetailsModal(widget.data[index]),
+        onTap: () => widget.onOpenDetailsScreen(widget.data[index], widget.type),
       ), 
       noData: Container(
         width: double.maxFinite,
@@ -166,8 +156,12 @@ class _FiltersListState extends State<FiltersList> {
       ), 
       loadStatus: widget.loadStatus, 
       onRefresh: widget.fetchData,
-      fab: FiltersFab(
+      fab: AddFiltersButton(
         type: widget.type,
+        widget: (fn) => FloatingActionButton(
+          onPressed: fn,
+          child: const Icon(Icons.add),
+        ),
       ),
       fabVisible: isVisible,
     );

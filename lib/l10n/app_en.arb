@@ -609,5 +609,7 @@
     "safeSearchSettingsNotLoaded": "Error when loading safe search settings.",
     "loadingLogsSettings": "Loading logs settings...",
     "selectOptionLeftColumn": "Select an option of the left column",
-    "selectClientLeftColumn": "Select a client of the left column"
+    "selectClientLeftColumn": "Select a client of the left column",
+    "disableList": "Disable list",
+    "enableList": "Enable list"
 }

@@ -23,7 +23,7 @@ class CustomListTile extends StatelessWidget {
     this.padding,
     this.onLongPress,
     this.disabled,
-    this.onHover
+    this.onHover,
   }) : super(key: key);
 
   @override
