@@ -131,7 +131,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
       );
     }
 
-    Widget tabBarView() {
+    Widget tabBarView(bool sliver) {
       return TabBarView(
         controller: tabController,
         children: [
@@ -149,6 +149,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
               )
             )),
             splitView: false,
+            sliver: sliver,
           ),
           AddedList(
             scrollController: scrollController,
@@ -168,33 +169,33 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
         ]
       );
     }
-    
-    if (!(Platform.isAndroid || Platform.isIOS)) {
-      if (width > 900) {
-        return SplitView.material(
-          hideDivider: true,
-          flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
-          placeholder: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text(
-                AppLocalizations.of(context)!.selectClientLeftColumn,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant
-                ),
+
+    if (width > 900) {
+      return SplitView.material(
+        hideDivider: true,
+        flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
+        placeholder: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              AppLocalizations.of(context)!.selectClientLeftColumn,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                color: Theme.of(context).colorScheme.onSurfaceVariant
               ),
             ),
           ),
-          child: ClientsDesktopView(
-            serversProvider: serversProvider,
-            appConfigProvider: appConfigProvider,
-            fetchClients: fetchClients,
-          )
-        );
-      }
-      else {
+        ),
+        child: ClientsDesktopView(
+          serversProvider: serversProvider,
+          appConfigProvider: appConfigProvider,
+          fetchClients: fetchClients,
+        )
+      );
+    }
+    else {
+      if (!(Platform.isAndroid || Platform.isIOS)) {
         return DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -217,87 +218,87 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
               ],
               bottom: tabBar() 
             ),
-            body: tabBarView(),
+            body: tabBarView(false),
           ),
         );
       }
-    }
-    else {
-      return DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          controller: scrollController,
-          headerSliverBuilder: ((context, innerBoxIsScrolled) {
-            return [
-              SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverAppBar(
-                  title: searchMode == true
-                    ? Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                searchMode = false;
-                                searchController.text = "";
-                                serversProvider.setSearchTermClients(null);
-                              });
-                            }, 
-                            icon: const Icon(Icons.arrow_back_rounded)
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: TextField(
-                              controller: searchController,
-                              onChanged: (value) => serversProvider.setSearchTermClients(value),
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      searchController.text = "";
-                                      serversProvider.setSearchTermClients(null);
-                                    });
-                                  },
-                                  icon: const Icon(Icons.clear_rounded)
+      else {
+        return DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: ((context, innerBoxIsScrolled) {
+              return [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    title: searchMode == true
+                      ? Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  searchMode = false;
+                                  searchController.text = "";
+                                  serversProvider.setSearchTermClients(null);
+                                });
+                              }, 
+                              icon: const Icon(Icons.arrow_back_rounded)
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: TextField(
+                                controller: searchController,
+                                onChanged: (value) => serversProvider.setSearchTermClients(value),
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        searchController.text = "";
+                                        serversProvider.setSearchTermClients(null);
+                                      });
+                                    },
+                                    icon: const Icon(Icons.clear_rounded)
+                                  ),
+                                  hintText: AppLocalizations.of(context)!.search,
+                                  hintStyle: const TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 18
+                                  ),
+                                  border: InputBorder.none,
                                 ),
-                                hintText: AppLocalizations.of(context)!.search,
-                                hintStyle: const TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 18
                                 ),
-                                border: InputBorder.none,
                               ),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18
-                              ),
-                            ),
-                          )
-                        ],
-                      )
-                    : Text(AppLocalizations.of(context)!.clients),
-                  pinned: true,
-                  floating: true,
-                  centerTitle: false,
-                  forceElevated: innerBoxIsScrolled,
-                  actions: [
-                    if (serversProvider.clients.loadStatus == LoadStatus.loaded && searchMode == false) ...[
-                      IconButton(
-                        onPressed: () => setState(() => searchMode = true), 
-                        icon: const Icon(Icons.search),
-                        tooltip: AppLocalizations.of(context)!.searchClients,
-                      ),
-                      const SizedBox(width: 10),
-                    ]
-                  ],
-                  bottom: tabBar() 
-                ),
-              )
-            ];
-          }), 
-          body: tabBarView()
-        )
-      );
+                            )
+                          ],
+                        )
+                      : Text(AppLocalizations.of(context)!.clients),
+                    pinned: true,
+                    floating: true,
+                    centerTitle: false,
+                    forceElevated: innerBoxIsScrolled,
+                    actions: [
+                      if (serversProvider.clients.loadStatus == LoadStatus.loaded && searchMode == false) ...[
+                        IconButton(
+                          onPressed: () => setState(() => searchMode = true), 
+                          icon: const Icon(Icons.search),
+                          tooltip: AppLocalizations.of(context)!.searchClients,
+                        ),
+                        const SizedBox(width: 10),
+                      ]
+                    ],
+                    bottom: tabBar() 
+                  ),
+                )
+              ];
+            }), 
+            body: tabBarView(true)
+          )
+        );
+      }
     }
   }
 }

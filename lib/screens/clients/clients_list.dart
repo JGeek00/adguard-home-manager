@@ -18,6 +18,7 @@ class ClientsList extends StatelessWidget {
   final void Function(AutoClient) onClientSelected;
   final AutoClient? selectedClient;
   final bool splitView;
+  final bool sliver;
 
   const ClientsList({
     Key? key,
@@ -27,7 +28,8 @@ class ClientsList extends StatelessWidget {
     required this.fetchClients,
     required this.onClientSelected,
     this.selectedClient,
-    required this.splitView
+    required this.splitView,
+    required this.sliver
   }) : super(key: key);
 
   @override
@@ -36,7 +38,7 @@ class ClientsList extends StatelessWidget {
       listPadding: splitView == true 
         ? const EdgeInsets.only(top: 8)
         : null,
-      noSliver: !(Platform.isAndroid || Platform.isIOS),
+      noSliver: !sliver,
       loadingGenerator: () =>  SizedBox(
         width: double.maxFinite,
         height: MediaQuery.of(context).size.height-171,
