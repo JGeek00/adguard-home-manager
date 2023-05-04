@@ -68,6 +68,7 @@ dependencies:
       url: https://github.com/JGeek00/flutter_split_view
       ref: master-alt
   url_launcher: ^6.1.10
+  contextmenu: ^3.0.0
 
 dev_dependencies:
   flutter_test:

@@ -127,3 +127,42 @@ Map<String, dynamic> getFilteredStatus(BuildContext context, AppConfigProvider a
       return {'filtered': null, 'label': 'Unknown'};
   }
 }
+
+bool isDomainBlocked(String filterKey) {
+  switch (filterKey) {
+    case 'NotFilteredNotFound':
+      return false;
+
+    case 'NotFilteredWhiteList':
+      return false;
+
+    case 'NotFilteredError':
+      return false;
+
+    case 'FilteredBlackList':
+      return true;
+
+    case 'FilteredSafeBrowsing':
+      return true;
+
+    case 'FilteredParental':
+      return true;
+
+    case 'FilteredInvalid':
+      return true;
+
+    case 'FilteredSafeSearch':
+      return true;
+
+    case 'FilteredBlockedService':
+      return true;
+
+    case 'Rewrite':
+    case 'RewriteEtcHosts':
+    case 'RewriteRule':
+      return false;
+
+    default:
+      return false;
+  }
+}

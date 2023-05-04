@@ -612,5 +612,7 @@
     "selectClientLeftColumn": "Select a client of the left column",
     "disableList": "Disable list",
     "enableList": "Enable list",
-    "screens": "Screens"
+    "screens": "Screens",
+    "copiedClipboard": "Copied to clipboard",
+    "seeDetails": "See details"
 }

@@ -7,11 +7,10 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
+import 'package:adguard_home_manager/widgets/domain_options.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
-import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
@@ -66,45 +65,7 @@ class _TopItemsModalState extends State<TopItemsModal> {
     for (var element in data) {
       total = total + int.parse(element.values.toList()[0].toString());
     }
-
-    bool? getIsBlocked() {
-      if (widget.type == 'topBlockedDomains') {
-        return true;
-      }
-      else if (widget.type == 'topQueriedDomains') {
-        return false;
-      }
-      else {
-        return null;
-      }
-    }
-
-    void changeBlockStatus(String status, String domain) async {
-      final result = await blockUnblock(context, domain, status);
-      showSnacbkar(
-        context: context, 
-        appConfigProvider: appConfigProvider, 
-        label: result['message'], 
-        color: result['success'] == true ? Colors.green : Colors.red
-      );
-    }
-
-    void openOptionsModal(String domain, String type) {
-      showDialog(
-        context: context, 
-        builder: (context) => TopItemsOptionsModal(
-          isBlocked: getIsBlocked(),
-          changeStatus: (String status) => changeBlockStatus(status, domain),
-          copyToClipboard: () => copyToClipboard(
-            context: context, 
-            value: domain, 
-            successMessage: AppLocalizations.of(context)!.domainCopiedClipboard
-          ),
-          type: type,
-        )
-      );
-    }
-
+    
     return Dialog(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
@@ -169,7 +130,10 @@ class _TopItemsModalState extends State<TopItemsModal> {
                     }
                   }
             
-                  return CustomListTile(
+                  return DomainOptions(
+                    isBlocked: widget.type == 'topBlockedDomains',
+                    isClient: widget.type == 'topClients',
+                    item: screenData[index].keys.toList()[0],
                     onTap: () {
                       if (widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains') {
                         logsProvider.setSearchText(screenData[index].keys.toList()[0]);
@@ -198,59 +162,57 @@ class _TopItemsModalState extends State<TopItemsModal> {
                         Navigator.pop(context);
                       }
                     },
-                    onLongPress: () => openOptionsModal(
-                      screenData[index].keys.toList()[0], 
-                      widget.type
-                    ),
-                    title: screenData[index].keys.toList()[0],
-                    trailing: Text(
-                      screenData[index].values.toList()[0].toString(),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                    child: CustomListTile(
+                      title: screenData[index].keys.toList()[0],
+                      trailing: Text(
+                        screenData[index].values.toList()[0].toString(),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant
+                        ),
                       ),
-                    ),
-                    subtitleWidget: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (name != null) ...[
-                          Text(
-                            name,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.onSurface
+                      subtitleWidget: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (name != null) ...[
+                            Text(
+                              name,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.onSurface
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 5),
-                        ],
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 50,
-                              child: Text(
-                                "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
-                                style: TextStyle(
-                                  color: Theme.of(context).listTileTheme.textColor
+                            const SizedBox(height: 5),
+                          ],
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 50,
+                                child: Text(
+                                  "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
+                                  style: TextStyle(
+                                    color: Theme.of(context).listTileTheme.textColor
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Flexible(
-                              child: LinearPercentIndicator(
-                                animation: true,
-                                lineHeight: 4,
-                                animationDuration: 500,
-                                curve: Curves.easeOut,
-                                percent: screenData[index].values.toList()[0]/total,
-                                barRadius: const Radius.circular(5),
-                                progressColor: Theme.of(context).colorScheme.primary,
-                                backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                              const SizedBox(width: 10),
+                              Flexible(
+                                child: LinearPercentIndicator(
+                                  animation: true,
+                                  lineHeight: 4,
+                                  animationDuration: 500,
+                                  curve: Curves.easeOut,
+                                  percent: screenData[index].values.toList()[0]/total,
+                                  barRadius: const Radius.circular(5),
+                                  progressColor: Theme.of(context).colorScheme.primary,
+                                  backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                          ],
-                        ),
-                      ],
-                    )
+                              const SizedBox(width: 10),
+                            ],
+                          ),
+                        ],
+                      )
+                    ),
                   );
                 }
               ),

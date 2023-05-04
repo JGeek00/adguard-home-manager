@@ -140,7 +140,11 @@ class _MainState extends State<Main> {
         ],
         builder: (context, child) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            data: MediaQuery.of(context).copyWith(
+              textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
+                ? 0.9
+                : 1.0
+            ),
             child: child!,
           );
         },

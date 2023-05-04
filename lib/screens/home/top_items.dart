@@ -2,17 +2,18 @@
 
 import 'dart:io';
 
-import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
+import 'package:adguard_home_manager/widgets/domain_options.dart';
+import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
+import 'package:adguard_home_manager/widgets/options_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
@@ -119,14 +120,32 @@ class TopItems extends StatelessWidget {
       );
     }
 
+    List<MenuOption> generateOptions(String domain) {
+      final isBlocked = getIsBlocked();
+      return [
+        if (isBlocked == true) MenuOption(
+          title: AppLocalizations.of(context)!.unblock, 
+          icon: Icons.check,
+          action: () => blockUnblock(domain, 'unblock')
+        ),
+        if (isBlocked == false) MenuOption(
+          title: AppLocalizations.of(context)!.block, 
+          icon: Icons.check,
+          action: () => blockUnblock(domain, 'block')
+        ),
+        MenuOption(
+          title: AppLocalizations.of(context)!.copyClipboard, 
+          icon: Icons.check,
+          action: () => copyDomainClipboard(domain)
+        ),
+      ];
+    }
+
     void openOptionsModal(String domain, String type) {
       showDialog(
         context: context, 
-        builder: (context) => TopItemsOptionsModal(
-          isBlocked: getIsBlocked(),
-          changeStatus: (String status) => blockUnblock(domain, status),
-          copyToClipboard: () => copyDomainClipboard(domain),
-          type: type,
+        builder: (context) => OptionsModal(
+          options: generateOptions(domain),
         )
       );
     }
@@ -143,7 +162,10 @@ class TopItems extends StatelessWidget {
 
       return Material(
         color: Colors.transparent,
-        child: InkWell(
+        child: DomainOptions(
+          item: item.keys.toList()[0],
+          isClient: type == 'topClients',
+          isBlocked: type == 'topBlockedDomains',
           onTap: () {
             if (type == 'topQueriedDomains' || type == 'topBlockedDomains') {
               logsProvider.setSearchText(item.keys.toList()[0]);
@@ -167,10 +189,8 @@ class TopItems extends StatelessWidget {
                   clients: [item.keys.toList()[0]]
                 )
               );
-              appConfigProvider.setSelectedScreen(2);
             }
           },
-          onLongPress: () => openOptionsModal(item.keys.toList()[0], type),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20,

@@ -144,53 +144,67 @@ class _LogsListClientState extends State<LogsListClient> {
           );
 
         case 1:
-          return RefreshIndicator(
-            onRefresh: fetchLogs,
-            child: ListView.builder(
-              controller: scrollController,
-              padding: const EdgeInsets.only(top: 0),
-              itemCount: isLoadingMore == true 
-                ? logsData!.data.length+1
-                : logsData!.data.length,
-              itemBuilder: (context, index) {
-                if (isLoadingMore == true && index == logsData!.data.length) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-                else {
-                  return LogTile(
-                    log: logsData!.data[index],
-                    index: index,
-                    length: logsData!.data.length,
-                    useAlwaysNormalTile: true,
-                    onLogTap: (log) => {
-                      if (width > 700) {
-                        showDialog(
-                          context: context, 
-                          builder: (context) => LogDetailsScreen(
-                            log: log, 
-                            dialog: true
+          if (logsData!.data.isNotEmpty) {
+            return RefreshIndicator(
+              onRefresh: fetchLogs,
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.only(top: 0),
+                itemCount: isLoadingMore == true 
+                  ? logsData!.data.length+1
+                  : logsData!.data.length,
+                itemBuilder: (context, index) {
+                  if (isLoadingMore == true && index == logsData!.data.length) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  else {
+                    return LogTile(
+                      log: logsData!.data[index],
+                      index: index,
+                      length: logsData!.data.length,
+                      useAlwaysNormalTile: true,
+                      onLogTap: (log) => {
+                        if (width > 700) {
+                          showDialog(
+                            context: context, 
+                            builder: (context) => LogDetailsScreen(
+                              log: log, 
+                              dialog: true
+                            )
                           )
-                        )
+                        }
+                        else {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => LogDetailsScreen(
+                              log: log, 
+                              dialog: false
+                            )
+                          ))
+                        }
                       }
-                      else {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => LogDetailsScreen(
-                            log: log, 
-                            dialog: false
-                          )
-                        ))
-                      }
-                    }
-                  );
+                    );
+                  }
                 }
-              }
-            ),
-          );
+              ),
+            );
+          }
+          else {
+            return Center(
+              child: Text(
+                AppLocalizations.of(context)!.noLogsDisplay,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            );
+          }
         
         case 2:
           return SizedBox(

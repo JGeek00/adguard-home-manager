@@ -1,13 +1,17 @@
 import 'dart:io';
 
-import 'package:adguard_home_manager/screens/filters/add_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:contextmenu/contextmenu.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/filters/add_button.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+import 'package:adguard_home_manager/widgets/options_modal.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/models/menu_option.dart';
+import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -235,20 +239,44 @@ class FiltersTripleColumn extends StatelessWidget {
                     Expanded(
                       child: ListView.builder(
                         itemCount: serversProvider.filtering.data!.userRules.length,
-                        itemBuilder: (context, index) => ListTile(
-                          title: Text(
-                            serversProvider.filtering.data!.userRules[index],
-                            style: TextStyle(
-                              color: checkIfComment(serversProvider.filtering.data!.userRules[index]) == true
-                                ? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)
-                                : Theme.of(context).colorScheme.onSurface,
-                              fontWeight: FontWeight.normal,
+                        itemBuilder: (context, index) => ContextMenuArea(
+                          builder: (context) => [
+                            CustomListTile(
+                              title: AppLocalizations.of(context)!.copyClipboard,
+                              icon: Icons.copy_rounded,
+                              onTap: () {
+                                copyToClipboard(
+                                  context: context, 
+                                  value: serversProvider.filtering.data!.userRules[index],
+                                  successMessage: AppLocalizations.of(context)!.copiedClipboard,
+                                );
+                                Navigator.pop(context);
+                              }
                             ),
-                          ),
-                          subtitle: generateSubtitle(serversProvider.filtering.data!.userRules[index]),
-                          trailing: IconButton(
-                            onPressed: () => onRemoveCustomRule(serversProvider.filtering.data!.userRules[index]),
-                            icon: const Icon(Icons.delete)
+                          ],
+                          child: CustomListTile(
+                            onLongPress: () => showDialog(
+                              context: context, 
+                              builder: (context) => OptionsModal(
+                                options: [
+                                  MenuOption(
+                                    title: AppLocalizations.of(context)!.copyClipboard,
+                                    icon: Icons.copy_rounded,
+                                    action: () => copyToClipboard(
+                                      context: context, 
+                                      value: serversProvider.filtering.data!.userRules[index],
+                                      successMessage: AppLocalizations.of(context)!.copiedClipboard,
+                                    )
+                                  )
+                                ]
+                              )
+                            ),
+                            title: serversProvider.filtering.data!.userRules[index],
+                            subtitleWidget: generateSubtitle(serversProvider.filtering.data!.userRules[index]),
+                            trailing: IconButton(
+                              onPressed: () => onRemoveCustomRule(serversProvider.filtering.data!.userRules[index]),
+                              icon: const Icon(Icons.delete)
+                            ),
                           ),
                         ),  
                       ),

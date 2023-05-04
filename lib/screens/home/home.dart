@@ -216,9 +216,9 @@ class _HomeState extends State<Home> {
                             maxWidth: 500
                           ),
                           child: TopItems(
-                            label: AppLocalizations.of(context)!.topBlockedDomains, 
-                            data: serversProvider.serverStatus.data!.stats.topBlockedDomains,
-                            type: 'topBlockedDomains',
+                            label: AppLocalizations.of(context)!.topClients, 
+                            data: serversProvider.serverStatus.data!.stats.topClients,
+                            type: 'topClients',
                           ),
                         ),
                       ),

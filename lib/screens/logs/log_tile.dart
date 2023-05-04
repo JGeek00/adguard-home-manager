@@ -2,15 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
+import 'package:adguard_home_manager/widgets/domain_options.dart';
 
-import 'package:adguard_home_manager/functions/copy_clipboard.dart';
-import 'package:adguard_home_manager/functions/block_unblock_domain.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
-import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
 
@@ -75,42 +71,16 @@ class LogTile extends StatelessWidget {
       );
     }
 
-    void changeBlockStatus(String status) async {
-      final result = await blockUnblock(context, log.question.name, status);
-      showSnacbkar(
-        context: context, 
-        appConfigProvider: appConfigProvider, 
-        label: result['message'], 
-        color: result['success'] == true ? Colors.green : Colors.red
-      );
-    }
-
-    void openOptionsModal(Log log) {
-      showDialog(
-        context: context, 
-        builder: (context) => TopItemsOptionsModal(
-          isBlocked: getFilteredStatus(context, appConfigProvider, log.reason, false)['color'] == Colors.red 
-            ? true : false,
-          changeStatus: changeBlockStatus,
-          copyToClipboard: () => copyToClipboard(
-            context: context, 
-            value: log.question.name, 
-            successMessage: AppLocalizations.of(context)!.domainCopiedClipboard
-          ),
-          type: 'topQueriedDomains', // topQueriedDomains can also be used here. It's the same
-        )
-      );
-    }
-
     if (width > 1100 && !(useAlwaysNormalTile == true)) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Material(
-          color: Colors.transparent,
+        child: InkWell(
           borderRadius: BorderRadius.circular(28),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(28),
+          child: DomainOptions(
             onTap: () => onLogTap(log),
+            borderRadius: BorderRadius.circular(28),
+            item: log.question.name,
+            isBlocked: isDomainBlocked(log.reason),
             child: Container(
               width: double.maxFinite,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -291,9 +261,10 @@ class LogTile extends StatelessWidget {
     else {
       return Material(
         color: Colors.transparent,
-        child: InkWell(
+        child: DomainOptions(
           onTap: () => onLogTap(log),
-          onLongPress: () => openOptionsModal(log),
+          item: log.question.name,
+          isBlocked: isDomainBlocked(log.reason),
           child: Container(
             width: double.maxFinite,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

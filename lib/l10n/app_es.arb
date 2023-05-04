@@ -612,5 +612,7 @@
     "selectClientLeftColumn": "Selecciona un cliente de la columna de la izquierda",
     "disableList": "Deshabilitar lista",
     "enableList": "Habilitar lista",
-    "screens": "Pantallas"
+    "screens": "Pantallas",
+    "copiedClipboard": "Copiado al portapapeles",
+    "seeDetails": "Ver los detalles"
 }
