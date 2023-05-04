@@ -1,18 +1,23 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/filters_list.dart';
 import 'package:adguard_home_manager/screens/filters/check_host_modal.dart';
-import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
+import 'package:adguard_home_manager/screens/filters/filters_tabs_view.dart';
+import 'package:adguard_home_manager/screens/filters/filters_triple_column.dart';
+import 'package:adguard_home_manager/screens/filters/list_details_screen.dart';
+import 'package:adguard_home_manager/screens/filters/remove_custom_rule_modal.dart';
 import 'package:adguard_home_manager/screens/filters/blocked_services_screen.dart';
 import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -47,10 +52,7 @@ class FiltersWidget extends StatefulWidget {
   State<FiltersWidget> createState() => _FiltersWidgetState();
 }
 
-class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateMixin {
-  late TabController tabController;
-  final ScrollController scrollController = ScrollController();
-
+class _FiltersWidgetState extends State<FiltersWidget> {
   Future fetchFilters() async {
     widget.serversProvider.setFilteringLoadStatus(LoadStatus.loading, false);
 
@@ -68,26 +70,22 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
     }
   }
 
+  List<AutoClient> generateClientsList(List<AutoClient> clients, List<String> ips) {
+    return clients.where((client) => ips.contains(client.ip)).toList();
+  }
+
   @override
   void initState() {
     fetchFilters();
     super.initState();
-    tabController = TabController(
-      initialIndex: 0,
-      length: 3,
-      vsync: this,
-    );
-    tabController.addListener(() => widget.appConfigProvider.setSelectedFiltersTab(tabController.index));
-  }
-
-  List<AutoClient> generateClientsList(List<AutoClient> clients, List<String> ips) {
-    return clients.where((client) => ips.contains(client.ip)).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void fetchUpdateLists() async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -139,12 +137,24 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
 
     void showCheckHostModal() {
       Future.delayed(const Duration(seconds: 0), () {
-        showModalBottomSheet(
-          context: context, 
-          builder: (context) => const CheckHostModal(),
-          backgroundColor: Colors.transparent,
-          isScrollControlled: true,
-        );
+        if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+          showDialog(
+            context: context, 
+            builder: (context) => const CheckHostModal(
+              dialog: true,
+            ),
+          );
+        }
+        else {
+          showModalBottomSheet(
+            context: context, 
+            builder: (context) => const CheckHostModal(
+              dialog: false,
+            ),
+            backgroundColor: Colors.transparent,
+            isScrollControlled: true,
+          );
+        }
       });
     }
 
@@ -216,169 +226,222 @@ class _FiltersWidgetState extends State<FiltersWidget> with TickerProviderStateM
 
     void openBlockedServicesModal() {
       Future.delayed(const Duration(seconds: 0), () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const BlockedServicesScreen(),
-          )
-        );
+        if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+          showDialog(
+            context: context, 
+            builder: (context) => const BlockedServicesScreen(
+              dialog: true,
+            ),
+            barrierDismissible: false
+          );
+        }
+        else {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const BlockedServicesScreen(
+                dialog: false,
+              ),
+            )
+          );
+        }
       });
     }
 
-    return DefaultTabController(
-      length: 3,
-      child: NestedScrollView(
-        controller: scrollController,
-        headerSliverBuilder: ((context, innerBoxIsScrolled) {
-          return [
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar(
-                title: Text(AppLocalizations.of(context)!.filters),
-                pinned: true,
-                floating: true,
-                forceElevated: innerBoxIsScrolled,
-                centerTitle: false,
-                actions: serversProvider.filtering.loadStatus == LoadStatus.loaded ? [
-                  IconButton(
-                    onPressed: enableDisableFiltering, 
-                    tooltip: serversProvider.filtering.data!.enabled == true
-                      ? AppLocalizations.of(context)!.disableFiltering
-                      : AppLocalizations.of(context)!.enableFiltering,
-                    icon: Stack(
-                      children: [
-                        const Icon(Icons.power_settings_new_rounded),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Colors.white
-                                ),
-                                child: Icon(
-                                  serversProvider.filtering.data!.enabled == true
-                                    ? Icons.check_circle_rounded
-                                    : Icons.cancel,
-                                  size: 12,
-                                  color: serversProvider.filtering.data!.enabled == true
-                                    ? appConfigProvider.useThemeColorForStatus == true
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.green
-                                    : appConfigProvider.useThemeColorForStatus == true
-                                      ? Colors.grey
-                                      : Colors.red
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context, 
-                        builder: (context) => UpdateIntervalListsModal(
-                          interval: serversProvider.filtering.data!.interval,
-                          onChange: setUpdateFrequency
+    void removeCustomRule(String rule) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.deletingRule);
+
+      final List<String> newRules = serversProvider.filtering.data!.userRules.where((r) => r != rule).toList();
+
+      final result = await setCustomRules(server: serversProvider.selectedServer!, rules: newRules);
+
+      processModal.close();
+
+      if (result['result'] == 'success') {
+        FilteringData filteringData = serversProvider.filtering.data!;
+        filteringData.userRules = newRules;
+        serversProvider.setFilteringData(filteringData);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.ruleRemovedSuccessfully, 
+          color: Colors.green
+        );
+      }
+      else {
+        appConfigProvider.addLog(result['log']);
+
+        showSnacbkar(
+          context: context, 
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.ruleNotRemoved, 
+          color: Colors.red
+        );
+      }
+    }
+
+    void openRemoveCustomRuleModal(String rule) {
+      showDialog(
+        context: context, 
+        builder: (context) => RemoveCustomRule(
+          onConfirm: () => removeCustomRule(rule),
+        )
+      );
+    }
+
+    void openListDetails(Filter filter, String type) {
+      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context,
+          builder: (context) => ListDetailsScreen(
+            list: filter, 
+            type: type,
+            dialog: true,
+          ),
+          barrierDismissible: false
+        );
+      }
+      else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ListDetailsScreen(
+              list: filter, 
+              type: type,
+              dialog: false,
+            )
+          )
+        );
+      }
+    }
+
+    List<Widget> actions() {
+      if (serversProvider.filtering.loadStatus == LoadStatus.loaded) {
+        return [
+          IconButton(
+            onPressed: enableDisableFiltering, 
+            tooltip: serversProvider.filtering.data!.enabled == true
+              ? AppLocalizations.of(context)!.disableFiltering
+              : AppLocalizations.of(context)!.enableFiltering,
+            icon: Stack(
+              children: [
+                const Icon(Icons.power_settings_new_rounded),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.white
                         ),
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true
-                      );
-                    }, 
-                    icon: const Icon(Icons.update_rounded)
+                        child: Icon(
+                          serversProvider.filtering.data!.enabled == true
+                            ? Icons.check_circle_rounded
+                            : Icons.cancel,
+                          size: 12,
+                          color: serversProvider.filtering.data!.enabled == true
+                            ? appConfigProvider.useThemeColorForStatus == true
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.green
+                            : appConfigProvider.useThemeColorForStatus == true
+                              ? Colors.grey
+                              : Colors.red
+                        ),
+                      ),
+                    ],
                   ),
-                  PopupMenuButton(
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        onTap: fetchUpdateLists,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.sync_rounded),
-                            const SizedBox(width: 10),
-                            Text(AppLocalizations.of(context)!.updateLists)
-                          ],
-                        )
-                      ),
-                      PopupMenuItem(
-                        onTap: openBlockedServicesModal,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.block),
-                            const SizedBox(width: 10),
-                            Text(AppLocalizations.of(context)!.blockedServices)
-                          ],
-                        )
-                      ),
-                      PopupMenuItem(
-                        onTap: showCheckHostModal,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.shield_rounded),
-                            const SizedBox(width: 10),
-                            Text(AppLocalizations.of(context)!.checkHostFiltered)
-                          ],
-                        )
-                      ),
-                    ]
+                )
+              ],
+            )
+          ),
+          IconButton(
+            onPressed: () {
+              if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                showDialog(
+                  context: context, 
+                  builder: (context) => UpdateIntervalListsModal(
+                    interval: serversProvider.filtering.data!.interval,
+                    onChange: setUpdateFrequency,
+                    dialog: true,
                   ),
-                  const SizedBox(width: 5),
-                ] : [],
-                bottom: TabBar(
-                  controller: tabController,
-                  isScrollable: false,
-                  unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                  tabs: [
-                    Tab(
-                      icon: const Icon(Icons.verified_user_rounded),
-                      text: AppLocalizations.of(context)!.whitelists,
-                    ),
-                    Tab(
-                      icon: const Icon(Icons.gpp_bad_rounded),
-                      text: AppLocalizations.of(context)!.blacklist,
-                    ),
-                    Tab(
-                      icon: const Icon(Icons.shield_rounded),
-                      text: AppLocalizations.of(context)!.customRules,
-                    ),
-                  ]
+                );
+              }
+              else {
+                showModalBottomSheet(
+                  context: context, 
+                  builder: (context) => UpdateIntervalListsModal(
+                    interval: serversProvider.filtering.data!.interval,
+                    onChange: setUpdateFrequency,
+                    dialog: false,
+                  ),
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true
+                );
+              }
+            }, 
+            icon: const Icon(Icons.update_rounded),
+            tooltip:  AppLocalizations.of(context)!.updateFrequency,
+          ),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: fetchUpdateLists,
+                child: Row(
+                  children: [
+                    const Icon(Icons.sync_rounded),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.updateLists)
+                  ],
                 )
               ),
-            )
-          ];
-        }), 
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            FiltersList(
-              loadStatus: serversProvider.filtering.loadStatus,
-              scrollController: scrollController,
-              type: 'whitelist',
-              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
-                ? serversProvider.filtering.data!.whitelistFilters : [],
-              fetchData: fetchFilters,
-            ),
-            FiltersList(
-              loadStatus: serversProvider.filtering.loadStatus,
-              scrollController: scrollController,
-              type: 'blacklist',
-              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
-                ? serversProvider.filtering.data!.filters : [],
-              fetchData: fetchFilters,
-            ),
-            CustomRulesList(
-              loadStatus: serversProvider.filtering.loadStatus,
-              scrollController: scrollController,
-              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
-                ? serversProvider.filtering.data!.userRules : [],
-              fetchData: fetchFilters,
-            ),
-          ]
-        )
-      )
-    );
+              PopupMenuItem(
+                onTap: openBlockedServicesModal,
+                child: Row(
+                  children: [
+                    const Icon(Icons.block),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.blockedServices)
+                  ],
+                )
+              ),
+              PopupMenuItem(
+                onTap: showCheckHostModal,
+                child: Row(
+                  children: [
+                    const Icon(Icons.shield_rounded),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.checkHostFiltered)
+                  ],
+                )
+              ),
+            ]
+          ),
+          const SizedBox(width: 5),
+        ];
+      }
+      else {
+        return [];
+      }
+    }
+
+    if (width > 1200) {
+      return FiltersTripleColumn(
+        onRemoveCustomRule: openRemoveCustomRuleModal,
+        onOpenDetailsModal: openListDetails,
+        actions: actions(),
+        refreshData: fetchFilters,
+      );
+    }
+    else {
+      return FiltersTabsView(
+        appConfigProvider: appConfigProvider,
+        fetchFilters: fetchFilters, 
+        actions: actions(),
+        onRemoveCustomRule: openRemoveCustomRuleModal,
+        onOpenDetailsModal: openListDetails,
+      );
+    }
   }
 }

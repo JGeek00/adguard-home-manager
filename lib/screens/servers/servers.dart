@@ -13,7 +13,12 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class Servers extends StatefulWidget {
-  const Servers({Key? key}) : super(key: key);
+  final double? breakingWidth;
+
+  const Servers({
+    Key? key,
+    this.breakingWidth
+  }) : super(key: key);
 
   @override
   State<Servers> createState() => _ServersState();
@@ -55,16 +60,31 @@ class _ServersState extends State<Servers> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     for (var i = 0; i < serversProvider.serversList.length; i++) {
       expandableControllerList.add(ExpandableController());
     }
 
     void openAddServerModal() async {
       await Future.delayed(const Duration(seconds: 0), (() => {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => const AddServerModal()
-        ))
+        if (width > 700) {
+          showDialog(
+            context: context, 
+            barrierDismissible: false,
+            builder: (context) => const AddServerModal(
+              window: true,
+            ),
+          )
+        }
+        else {
+          Navigator.push(context, MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (BuildContext context) => const AddServerModal(
+              window: false,
+            )
+          ))
+        }
       }));
     }
 
@@ -79,7 +99,8 @@ class _ServersState extends State<Servers> {
             context: context, 
             controllers: expandableControllerList, 
             onChange: expandOrContract,
-            scrollController: scrollController
+            scrollController: scrollController,
+            breakingWidth: widget.breakingWidth ?? 700,
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 100),

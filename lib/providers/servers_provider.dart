@@ -7,14 +7,15 @@ import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
-import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/server.dart';
+import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
+import 'package:adguard_home_manager/services/db/queries.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 
@@ -33,6 +34,9 @@ class ServersProvider with ChangeNotifier {
     loadStatus: LoadStatus.loading,
     data: null
   );
+  String? _searchTermClients;
+  List<AutoClient> _filteredActiveClients = [];
+  List<Client> _filteredAddedClients = [];
 
   final Filtering _filtering = Filtering(
     loadStatus: LoadStatus.loading,
@@ -84,6 +88,18 @@ class ServersProvider with ChangeNotifier {
 
   Clients get clients {
     return _clients;
+  }
+
+  String? get searchTermClients {
+    return _searchTermClients;
+  }
+
+  List<AutoClient> get filteredActiveClients {
+    return _filteredActiveClients;
+  }
+
+  List<Client> get filteredAddedClients {
+    return _filteredAddedClients;
   }
 
   FilteringStatus? get filteringStatus {
@@ -147,6 +163,43 @@ class ServersProvider with ChangeNotifier {
 
   void setClientsData(ClientsData data) {
     _clients.data = data;
+    if (_searchTermClients != null && _searchTermClients != '') {
+      _filteredActiveClients = _clients.data!.autoClientsData.where(
+        (client) => client.ip.contains(_searchTermClients!.toLowerCase()) || (client.name != null ? client.name!.contains(_searchTermClients!.toLowerCase()) : false)
+      ).toList();
+      _filteredAddedClients = _clients.data!.clients.where(
+        (client) {
+          isContained(String value) => value.contains(value.toLowerCase());
+          return client.ids.any(isContained);
+        }
+      ).toList();
+    }
+    else {
+      _filteredActiveClients = data.autoClientsData;
+      _filteredAddedClients = data.clients;
+    }
+    notifyListeners();
+  }
+
+  void setSearchTermClients(String? value) {
+    _searchTermClients = value;
+    if (value != null && value != '') {
+      if (_clients.data != null) {
+        _filteredActiveClients = _clients.data!.autoClientsData.where(
+          (client) => client.ip.contains(value.toLowerCase()) || (client.name != null ? client.name!.contains(value.toLowerCase()) : false)
+        ).toList();
+        _filteredAddedClients = _clients.data!.clients.where(
+          (client) {
+            isContained(String value) => value.contains(value.toLowerCase());
+            return client.ids.any(isContained);
+          }
+        ).toList();
+      }
+    }
+    else {
+      if (_clients.data != null) _filteredActiveClients = _clients.data!.autoClientsData;
+      if (_clients.data != null) _filteredAddedClients = _clients.data!.clients;
+    }
     notifyListeners();
   }
 
@@ -249,7 +302,7 @@ class ServersProvider with ChangeNotifier {
   }
 
   Future<dynamic> createServer(Server server) async {
-    final saved = await saveServerIntoDb(server);
+    final saved = await saveServerQuery(_dbInstance!, server);
     if (saved == null) {
       if (server.defaultServer == true) {
         final defaultServer = await setDefaultServer(server);
@@ -274,7 +327,7 @@ class ServersProvider with ChangeNotifier {
   }
 
   Future<dynamic> setDefaultServer(Server server) async {
-    final updated = await setDefaultServerDb(server.id);
+    final updated = await setDefaultServerQuery(_dbInstance!, server.id);
     if (updated == null) {
       List<Server> newServers = _serversList.map((s) {
         if (s.id == server.id) {
@@ -296,7 +349,7 @@ class ServersProvider with ChangeNotifier {
   }
 
   Future<dynamic> editServer(Server server) async {
-    final result = await editServerDb(server);
+    final result = await editServerQuery(_dbInstance!, server);
     if (result == null) {
       List<Server> newServers = _serversList.map((s) {
         if (s.id == server.id) {
@@ -316,7 +369,7 @@ class ServersProvider with ChangeNotifier {
   }
 
   Future<bool> removeServer(Server server) async {
-    final result = await removeFromDb(server.id);
+    final result = await removeServerQuery(_dbInstance!, server.id);
     if (result == true) {
       _selectedServer = null;
       List<Server> newServers = _serversList.where((s) => s.id != server.id).toList();
@@ -469,63 +522,6 @@ class ServersProvider with ChangeNotifier {
 
       default:
         return false;
-    }
-  }
-
-  Future<dynamic> saveServerIntoDb(Server server) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawInsert(
-          'INSERT INTO servers (id, name, connectionMethod, domain, path, port, user, password, defaultServer, authToken, runningOnHa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-          [server.id, server.name, server.connectionMethod, server.domain, server.path, server.port, server.user, server.password, server.defaultServer, server.authToken, convertFromBoolToInt(server.runningOnHa)]
-        );
-        return null;
-      });
-    } catch (e) {
-      return e;
-    }
-  }
-
-  Future<dynamic> editServerDb(Server server) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE servers SET name = ?, connectionMethod = ?, domain = ?, path = ?, port = ?, user = ?, password = ?, authToken = ?, runningOnHa = ? WHERE id = "${server.id}"',
-          [server.name, server.connectionMethod, server.domain, server.path, server.port, server.user, server.password, server.authToken, server.runningOnHa]
-        );
-        return null;
-      });
-    } catch (e) {
-      return e;
-    }
-  }
-
-  Future<bool> removeFromDb(String id) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawDelete(
-          'DELETE FROM servers WHERE id = "$id"',
-        );
-        return true;
-      });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<dynamic> setDefaultServerDb(String id) async {
-    try {
-      return await _dbInstance!.transaction((txn) async {
-        await txn.rawUpdate(
-          'UPDATE servers SET defaultServer = 0 WHERE defaultServer = 1',
-        );
-        await txn.rawUpdate(
-          'UPDATE servers SET defaultServer = 1 WHERE id = "$id"',
-        );
-        return null;
-      });
-    } catch (e) {
-      return e;
     }
   }
 

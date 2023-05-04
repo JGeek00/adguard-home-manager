@@ -10,7 +10,12 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class CheckHostModal extends StatefulWidget {
-  const CheckHostModal({Key? key}) : super(key: key);
+  final bool dialog;
+
+  const CheckHostModal({
+    Key? key,
+    required this.dialog
+  }) : super(key: key);
 
   @override
   State<CheckHostModal> createState() => _CheckHostModalState();
@@ -117,126 +122,141 @@ class _CheckHostModalState extends State<CheckHostModal> {
       }
     }
 
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: 330,
-        width: double.maxFinite,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28),
-          ),
-          color: Theme.of(context).dialogBackgroundColor
-        ),
-        child: Center(
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  physics: 350 < MediaQuery.of(context).size.height
-                    ? const NeverScrollableScrollPhysics() 
-                    : null,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 24),
-                      child: Icon(
-                        Icons.shield_rounded,
-                        size: 24,
-                        color: Theme.of(context).listTileTheme.iconColor
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      AppLocalizations.of(context)!.checkHostFiltered,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Theme.of(context).colorScheme.onSurface
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: TextFormField(
-                        controller: domainController,
-                        onChanged: validateDomain,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.link_rounded),
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10)
-                            )
+    Widget content() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 24),
+                            child: Icon(
+                              Icons.shield_rounded,
+                              size: 24,
+                              color: Theme.of(context).listTileTheme.iconColor
+                            ),
                           ),
-                          errorText: domainError,
-                          labelText: AppLocalizations.of(context)!.domain,
+                          const SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.of(context)!.checkHostFiltered,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Theme.of(context).colorScheme.onSurface
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: TextFormField(
+                      controller: domainController,
+                      onChanged: validateDomain,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.link_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: domainError,
+                        labelText: AppLocalizations.of(context)!.domain,
+                      ),
+                    ),
+                  ),
+                  if (resultWidget != null) Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: resultWidget,
+                  ),
+                  if (resultWidget == null) Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Center(
+                      child: Text(
+                        AppLocalizations.of(context)!.insertDomain,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
                         ),
                       ),
                     ),
-                    if (resultWidget != null) Padding(
-                      padding: const EdgeInsets.only(
-                        top: 20,
-                        left: 20,
-                        right: 20
-                      ),
-                      child: resultWidget,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 24,
+                  right: 24
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context), 
+                      child: Text(AppLocalizations.of(context)!.close),
                     ),
-                    if (resultWidget == null) Padding(
-                      padding: const EdgeInsets.only(
-                        top: 20,
-                        left: 20,
-                        right: 20
-                      ),
-                      child: Center(
-                        child: Text(
-                          AppLocalizations.of(context)!.insertDomain,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
+                    const SizedBox(width: 20),
+                    TextButton(
+                      onPressed: domainController.text != '' && domainError == null
+                        ? () => checkHost()
+                        : null, 
+                      child: Text(
+                        AppLocalizations.of(context)!.check,
+                        style: TextStyle(
+                          color: domainController.text != '' && domainError == null
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.grey
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: 24,
-                      right: 24
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context), 
-                          child: Text(AppLocalizations.of(context)!.close),
-                        ),
-                        const SizedBox(width: 20),
-                        TextButton(
-                          onPressed: domainController.text != '' && domainError == null
-                            ? () => checkHost()
-                            : null, 
-                          child: Text(
-                            AppLocalizations.of(context)!.check,
-                            style: TextStyle(
-                              color: domainController.text != '' && domainError == null
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.grey
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
               )
             ],
+          )
+        ],
+      );
+    }
+
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 400
           ),
+          child: content()
         ),
-      ),
-    );
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28),
+            ),
+            color: Theme.of(context).dialogBackgroundColor
+          ),
+          child: content()
+        ),
+      );
+    }
   }
 }

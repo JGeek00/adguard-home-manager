@@ -1,12 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/client_screen.dart';
+import 'package:adguard_home_manager/screens/clients/added_client_tile.dart';
 import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
@@ -27,13 +31,19 @@ class AddedList extends StatefulWidget {
   final LoadStatus loadStatus;
   final List<Client> data;
   final Future Function() fetchClients;
+  final void Function(Client) onClientSelected;
+  final Client? selectedClient;
+  final bool splitView;
 
   const AddedList({
     Key? key,
     required this.scrollController,
     required this.loadStatus,
     required this.data,
-    required this.fetchClients
+    required this.fetchClients,
+    required this.onClientSelected,
+    this.selectedClient,
+    required this.splitView
   }) : super(key: key);
 
   @override
@@ -68,6 +78,8 @@ class _AddedListState extends State<AddedList> {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void confirmEditClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -130,6 +142,10 @@ class _AddedListState extends State<AddedList> {
         clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
         serversProvider.setClientsData(clientsData);
 
+        if (widget.splitView == true) {
+          SplitView.of(context).popUntil(0);
+        }
+
         showSnacbkar(
           context: context, 
           appConfigProvider: appConfigProvider,
@@ -150,15 +166,31 @@ class _AddedListState extends State<AddedList> {
     }
 
     void openClientModal(Client client) {
-      Navigator.push(context, MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (BuildContext context) => ClientScreen(
-          onConfirm: confirmEditClient,
-          serverVersion: serversProvider.serverStatus.data!.serverVersion,
-          onDelete: deleteClient,
-          client: client,
-        )
-      ));
+      if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
+        showDialog(
+          barrierDismissible: false,
+          context: context, 
+          builder: (BuildContext context) => ClientScreen(
+            onConfirm: confirmEditClient,
+            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            onDelete: deleteClient,
+            client: client,
+            dialog: true,
+          )
+        );
+      }
+      else {
+        Navigator.push(context, MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (BuildContext context) => ClientScreen(
+            onConfirm: confirmEditClient,
+            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            onDelete: deleteClient,
+            client: client,
+            dialog: false,
+          )
+        ));
+      }
     }
 
     void openDeleteModal(Client client) {
@@ -181,9 +213,12 @@ class _AddedListState extends State<AddedList> {
     }
 
     return CustomTabContentList(
+      noSliver: !(Platform.isAndroid || Platform.isIOS),
+      listPadding: widget.splitView == true 
+        ? const EdgeInsets.only(top: 8)
+        : null,
       loadingGenerator: () => SizedBox(
         width: double.maxFinite,
-        height: MediaQuery.of(context).size.height-171,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -202,109 +237,28 @@ class _AddedListState extends State<AddedList> {
         ),
       ), 
       itemsCount: widget.data.length,
-      contentWidget: (index) => ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        isThreeLine: true,
-        onLongPress: () => openOptionsModal(widget.data[index]),
-        onTap: () => openClientModal(widget.data[index]),
-        title: Padding(
-          padding: const EdgeInsets.only(bottom: 5),
-          child: Text(
-            widget.data[index].name,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.normal,
-              color: Theme.of(context).colorScheme.onSurface
-            ),
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.data[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
-              style: TextStyle(
-                color: Theme.of(context).listTileTheme.textColor
-              ),
-            ),
-            const SizedBox(height: 7),
-            Row(
-              children: [
-                Icon(
-                  Icons.filter_list_rounded,
-                  size: 19,
-                  color: widget.data[index].filteringEnabled == true 
-                    ? appConfigProvider.useThemeColorForStatus == true
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.green
-                    : appConfigProvider.useThemeColorForStatus == true
-                      ? Colors.grey
-                      : Colors.red,
-                ),
-                const SizedBox(width: 10),
-                Icon(
-                  Icons.vpn_lock_rounded,
-                  size: 18,
-                  color: widget.data[index].safebrowsingEnabled == true 
-                    ? appConfigProvider.useThemeColorForStatus == true
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.green
-                    : appConfigProvider.useThemeColorForStatus == true
-                      ? Colors.grey
-                      : Colors.red,
-                ),
-                const SizedBox(width: 10),
-                Icon(
-                  Icons.block,
-                  size: 18,
-                  color: widget.data[index].parentalEnabled == true 
-                    ? appConfigProvider.useThemeColorForStatus == true
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.green
-                    : appConfigProvider.useThemeColorForStatus == true
-                      ? Colors.grey
-                      : Colors.red,
-                ),
-                const SizedBox(width: 10),
-                Icon(
-                  Icons.search_rounded,
-                  size: 19,
-                  color: serverVersionIsAhead(
-                    currentVersion: serversProvider.serverStatus.data!.serverVersion, 
-                    referenceVersion: 'v0.107.28',
-                    referenceVersionBeta: 'v0.108.0-b.33'
-                  ) == true 
-                    ? widget.data[index].safeSearch != null && widget.data[index].safeSearch!.enabled == true 
-                      ? appConfigProvider.useThemeColorForStatus == true
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.green
-                      : appConfigProvider.useThemeColorForStatus == true
-                        ? Colors.grey
-                        : Colors.red
-                    : widget.data[index].safesearchEnabled == true
-                      ? appConfigProvider.useThemeColorForStatus == true
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.green
-                      : appConfigProvider.useThemeColorForStatus == true
-                        ? Colors.grey
-                        : Colors.red,
-                )
-              ],
-            )
-          ],
-        ),
-      ), 
+      contentWidget: (index) => AddedClientTile(
+        selectedClient: widget.selectedClient,
+        client: widget.data[index], 
+        onTap: widget.onClientSelected,
+        onLongPress: openOptionsModal,
+        onEdit: openClientModal,
+        splitView: widget.splitView,
+      ),
       noData: SizedBox(
         width: double.maxFinite,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              AppLocalizations.of(context)!.noClientsList,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                AppLocalizations.of(context)!.noClientsList,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
             const SizedBox(height: 30),
@@ -318,7 +272,6 @@ class _AddedListState extends State<AddedList> {
       ), 
       errorGenerator: () => SizedBox(
         width: double.maxFinite,
-        height: MediaQuery.of(context).size.height-171,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

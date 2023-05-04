@@ -41,33 +41,35 @@ class CustomRadioListTile extends StatelessWidget {
                 backgroundColor: radioBackgroundColor,
               ),
               const SizedBox(width: 24),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width-110,
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.onSurface
-                      ),
-                    ),
-                  ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 5),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width-110,
                       child: Text(
-                        subtitle!,
+                        title,
                         style: TextStyle(
-                          color: Theme.of(context).listTileTheme.textColor,
-                          fontSize: 14
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                     ),
-                  ] 
-                ],
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width-110,
+                        child: Text(
+                          subtitle!,
+                          style: TextStyle(
+                            color: Theme.of(context).listTileTheme.textColor,
+                            fontSize: 14
+                          ),
+                        ),
+                      ),
+                    ] 
+                  ],
+                ),
               ),
             ],
           ),

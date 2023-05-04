@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
@@ -10,7 +11,9 @@ import 'package:store_checker/store_checker.dart';
 import 'package:flutter/services.dart';
 
 import 'package:adguard_home_manager/widgets/bottom_nav_bar.dart';
+import 'package:adguard_home_manager/widgets/menu_bar.dart';
 import 'package:adguard_home_manager/widgets/update_modal.dart';
+import 'package:adguard_home_manager/widgets/navigation_rail.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/github_release.dart';
@@ -53,11 +56,23 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
   }
 
   Future<GitHubRelease?> checkInstallationSource() async {
-    Source installationSource = await StoreChecker.getSource;
-    if (installationSource != Source.IS_INSTALLED_FROM_PLAY_STORE) {
-      final result = await checkAppUpdatesGitHub();
-      if (result['result'] == 'success') {
-        if (updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName)) {
+    final result = await checkAppUpdatesGitHub();
+    if (result['result'] == 'success') {
+      final update = updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName);
+      if (update == true) {
+        if (Platform.isAndroid) {
+          Source installationSource = await StoreChecker.getSource;
+          if (installationSource == Source.IS_INSTALLED_FROM_PLAY_STORE) {
+            return null;
+          }
+          else {
+            return result['body'];
+          }
+        }
+        else if (Platform.isIOS) {
+          return null;
+        }
+        else {
           return result['body'];
         }
       }
@@ -107,38 +122,51 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     List<AppScreen> screens = serversProvider.selectedServer != null
       ? screensServerConnected 
       : screensSelectServer;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.light
-          : Brightness.dark,
-        statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.dark
-          : Brightness.light,
-        systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
-        systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.dark
-          : Brightness.light,
-      ),
-      child: Scaffold(
-        body: PageTransitionSwitcher(
-          duration: const Duration(milliseconds: 200),
-          transitionBuilder: (
-            (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
-              animation: primaryAnimation, 
-              secondaryAnimation: secondaryAnimation,
-              child: child,
-            )
-          ),
-          child: screens[appConfigProvider.selectedScreen].body,
+    return CustomMenuBar(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness: Theme.of(context).brightness == Brightness.light
+            ? Brightness.light
+            : Brightness.dark,
+          statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
+          systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
+          systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
         ),
-        bottomNavigationBar: const BottomNavBar(),
-      )
+        child: Scaffold(
+          body: Row(
+            children: [
+              if (width > 900) const SideNavigationRail(),
+                Expanded(
+                  child: PageTransitionSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (
+                      (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
+                        animation: primaryAnimation, 
+                        secondaryAnimation: secondaryAnimation,
+                        child: child,
+                      )
+                    ),
+                    child: screens[appConfigProvider.selectedScreen].body,
+                  ),
+                ),
+            ],
+          ),
+          bottomNavigationBar: width <= 900 
+            ? const BottomNavBar()
+            : null,
+        )
+      ),
     );
   }
 }

@@ -71,6 +71,8 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void showDeleteModal(Server server) async {
       await Future.delayed(const Duration(seconds: 0), () => {
         showDialog(
@@ -85,10 +87,25 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
 
     void openAddServerBottomSheet({Server? server}) async {
       await Future.delayed(const Duration(seconds: 0), (() => {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => AddServerModal(server: server)
-        ))
+        if (width > 700) {
+          showDialog(
+            context: context, 
+            barrierDismissible: false,
+            builder: (context) => AddServerModal(
+              server: server,
+              window: true,
+            ),
+          )
+        }
+        else {
+          Navigator.push(context, MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (BuildContext context) => AddServerModal(
+              server: server,
+              window: false,
+            )
+          ))
+        }
       }));
     }
 
@@ -355,7 +372,6 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
         ],
       );
     }
-
 
     return Container(
       decoration: BoxDecoration(

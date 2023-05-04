@@ -12,11 +12,13 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 class LogsConfigModal extends StatelessWidget {
   final void Function(Map<String, dynamic>) onConfirm;
   final void Function() onClear;
+  final bool dialog;
 
   const LogsConfigModal({
     Key? key,
     required this.onConfirm,
     required this.onClear,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -30,6 +32,7 @@ class LogsConfigModal extends StatelessWidget {
       context: context,
       onConfirm: onConfirm,
       onClear: onClear,
+      dialog: dialog,
     );
   }
 }
@@ -40,6 +43,7 @@ class LogsConfigModalWidget extends StatefulWidget {
   final BuildContext context;
   final void Function(Map<String, dynamic>) onConfirm;
   final void Function() onClear;
+  final bool dialog;
 
   const LogsConfigModalWidget({
     Key? key,
@@ -48,6 +52,7 @@ class LogsConfigModalWidget extends StatefulWidget {
     required this.context,
     required this.onConfirm,
     required this.onClear,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -146,125 +151,154 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
     Widget generateBody() {
       switch (loadStatus) {
         case 0:
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    AppLocalizations.of(context)!.loadingLogsSettings,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                    ),
+                  ),
+                )
+              ],
+            ),
           );
 
         case 1:
           return Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: ListView(
-                  physics: (Platform.isIOS ? 436 : 420) < MediaQuery.of(context).size.height
-                    ? const NeverScrollableScrollPhysics() 
-                    : null,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 24),
-                      child: Icon(
-                        Icons.settings,
-                        size: 24,
-                        color: Theme.of(context).listTileTheme.iconColor
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      AppLocalizations.of(context)!.logsSettings,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Theme.of(context).colorScheme.onSurface
-                      ), 
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Material(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(28),
-                        child: InkWell(
-                          onTap: () => setState(() => generalSwitch = !generalSwitch),
-                          borderRadius: BorderRadius.circular(28),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 8
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.enableLog,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                  ),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 24),
+                                child: Icon(
+                                  Icons.settings,
+                                  size: 24,
+                                  color: Theme.of(context).listTileTheme.iconColor
                                 ),
-                                Switch(
-                                  value: generalSwitch, 
-                                  onChanged: (value) => setState(() => generalSwitch = value),
-                                )
-                              ],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                AppLocalizations.of(context)!.logsSettings,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Theme.of(context).colorScheme.onSurface
+                                ), 
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Material(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(28),
+                          child: InkWell(
+                            onTap: () => setState(() => generalSwitch = !generalSwitch),
+                            borderRadius: BorderRadius.circular(28),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 8
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.enableLog,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Switch(
+                                    value: generalSwitch, 
+                                    onChanged: (value) => setState(() => generalSwitch = value),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      child: Column(
-                        children: [
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => setState(() => anonymizeClientIp = !anonymizeClientIp),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 30),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.anonymizeClientIp,
-                                      style: const TextStyle(
-                                        fontSize: 16
+                      Container(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: Column(
+                          children: [
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => setState(() => anonymizeClientIp = !anonymizeClientIp),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.anonymizeClientIp,
+                                        style: const TextStyle(
+                                          fontSize: 16
+                                        ),
                                       ),
-                                    ),
-                                    Switch(
-                                      value: anonymizeClientIp, 
-                                      onChanged: (value) => setState(() => anonymizeClientIp = value),
+                                      Switch(
+                                        value: anonymizeClientIp, 
+                                        onChanged: (value) => setState(() => anonymizeClientIp = value),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(height: 16),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 24),
+                              child: DropdownButtonFormField(
+                                items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item['value'].toString(),
+                                    child: Text(item['label']),
+                                  );
+                                }).toList(),
+                                value: retentionTime,
+                                onChanged: (value) => setState(() => retentionTime = value),
+                                decoration: InputDecoration(
+                                  border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10)
                                     )
-                                  ],
+                                  ),
+                                  label: Text(AppLocalizations.of(context)!.retentionTime)
                                 ),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: DropdownButtonFormField(
-                              items: retentionItems.map<DropdownMenuItem<String>>((Map<String, dynamic> item) {
-                                return DropdownMenuItem<String>(
-                                  value: item['value'].toString(),
-                                  child: Text(item['label']),
-                                );
-                              }).toList(),
-                              value: retentionTime,
-                              onChanged: (value) => setState(() => retentionTime = value),
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10)
-                                  )
-                                ),
-                                label: Text(AppLocalizations.of(context)!.retentionTime)
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Padding(
@@ -316,31 +350,29 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
           );
 
         case 2:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 50,
-                ),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    AppLocalizations.of(context)!.logSettingsNotLoaded,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.grey,
-                    ),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 50,
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  AppLocalizations.of(context)!.logSettingsNotLoaded,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           );
 
         default:
@@ -348,16 +380,28 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
       }
     }
 
-    return Container(
-      height: Platform.isIOS ? 436 : 420,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28)
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500
+          ),
+          child: generateBody()
         ),
-        color: Theme.of(context).dialogBackgroundColor
-      ),
-      child: generateBody()
-    );
+      );
+    }
+    else {
+      return Container(
+        height: Platform.isIOS ? 436 : 420,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28)
+          ),
+          color: Theme.of(context).dialogBackgroundColor
+        ),
+        child: generateBody()
+      );
+    }
   }
 }

@@ -26,8 +26,12 @@ class EncryptionTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: width > 900
+        ? const EdgeInsets.symmetric(horizontal: 8)
+        : const EdgeInsets.symmetric(horizontal: 16),
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           maxHeight: 200

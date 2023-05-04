@@ -10,6 +10,7 @@ class AddListModal extends StatefulWidget {
   final Filter? list;
   final void Function({required String name, required String url, required String type})? onConfirm;
   final void Function({required Filter list, required String type})? onEdit;
+  final bool dialog;
 
   const AddListModal({
     Key? key,
@@ -17,6 +18,7 @@ class AddListModal extends StatefulWidget {
     this.list,
     this.onConfirm,
     this.onEdit,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -68,51 +70,49 @@ class _AddListModalState extends State<AddListModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: Platform.isIOS ? 386 : 370,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
-          ),
-          color: Theme.of(context).dialogBackgroundColor
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                physics: (Platform.isIOS ? 426 : 410) < MediaQuery.of(context).size.height
-                  ? const NeverScrollableScrollPhysics() 
-                  : null,
+    Widget content() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 24),
-                    child: Icon(
-                      widget.type == 'whitelist'
-                        ? Icons.verified_user_rounded
-                        : Icons.gpp_bad_rounded,
-                      size: 24,
-                      color: Theme.of(context).listTileTheme.iconColor
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 24),
+                            child: Icon(
+                              widget.type == 'whitelist'
+                                ? Icons.verified_user_rounded
+                                : Icons.gpp_bad_rounded,
+                              size: 24,
+                              color: Theme.of(context).listTileTheme.iconColor
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            widget.list != null
+                              ? widget.type == 'whitelist'
+                                ? AppLocalizations.of(context)!.editWhitelist
+                                : AppLocalizations.of(context)!.editBlacklist
+                              : widget.type == 'whitelist'
+                                ? AppLocalizations.of(context)!.addWhitelist
+                                : AppLocalizations.of(context)!.addBlacklist,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Theme.of(context).colorScheme.onSurface
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    widget.list != null
-                      ? widget.type == 'whitelist'
-                        ? AppLocalizations.of(context)!.editWhitelist
-                        : AppLocalizations.of(context)!.editBlacklist
-                      : widget.type == 'whitelist'
-                        ? AppLocalizations.of(context)!.addWhitelist
-                        : AppLocalizations.of(context)!.addBlacklist,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
@@ -129,7 +129,7 @@ class _AddListModalState extends State<AddListModal> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  Container(height: 30),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: TextFormField(
@@ -151,54 +151,80 @@ class _AddListModalState extends State<AddListModal> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context), 
-                    child: Text(AppLocalizations.of(context)!.cancel)
-                  ),
-                  const SizedBox(width: 20),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      if (widget.list != null) {
-                        final Filter newList = Filter(
-                          url: urlController.text,
-                          name: nameController.text, 
-                          lastUpdated: widget.list!.lastUpdated, 
-                          id: widget.list!.id, 
-                          rulesCount: widget.list!.rulesCount, 
-                          enabled: widget.list!.enabled
-                        );
-                        widget.onEdit!(
-                          list: newList,
-                          type: widget.type
-                        );
-                      }
-                      else {
-                        widget.onConfirm!(
-                          name: nameController.text,
-                          url: urlController.text,
-                          type: widget.type
-                        );
-                      }
-                    }, 
-                    child: Text(
-                      widget.list != null
-                        ? AppLocalizations.of(context)!.save
-                        : AppLocalizations.of(context)!.confirm
-                    )
-                  ),
-                ],
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context), 
+                  child: Text(AppLocalizations.of(context)!.cancel)
+                ),
+                const SizedBox(width: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    if (widget.list != null) {
+                      final Filter newList = Filter(
+                        url: urlController.text,
+                        name: nameController.text, 
+                        lastUpdated: widget.list!.lastUpdated, 
+                        id: widget.list!.id, 
+                        rulesCount: widget.list!.rulesCount, 
+                        enabled: widget.list!.enabled
+                      );
+                      widget.onEdit!(
+                        list: newList,
+                        type: widget.type
+                      );
+                    }
+                    else {
+                      widget.onConfirm!(
+                        name: nameController.text,
+                        url: urlController.text,
+                        type: widget.type
+                      );
+                    }
+                  }, 
+                  child: Text(
+                    widget.list != null
+                      ? AppLocalizations.of(context)!.save
+                      : AppLocalizations.of(context)!.confirm
+                  )
+                ),
+              ],
             ),
-            if (Platform.isIOS) const SizedBox(height: 16)
-          ],
+          ),
+          if (Platform.isIOS) const SizedBox(height: 16)
+        ],
+      );
+    }
+
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 400
+          ),
+          child: content()
         ),
-      ),
-    );
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28)
+            ),
+            color: Theme.of(context).dialogBackgroundColor
+          ),
+          child: content()
+        ),
+      );
+    }
   }
 }

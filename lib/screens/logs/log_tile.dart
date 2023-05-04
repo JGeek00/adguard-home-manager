@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/top_items_options_modal.dart';
-import 'package:adguard_home_manager/screens/logs/log_details_screen.dart';
 
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/functions/block_unblock_domain.dart';
@@ -18,12 +18,18 @@ class LogTile extends StatelessWidget {
   final Log log;
   final int length;
   final int index;
+  final bool? isLogSelected;
+  final void Function(Log) onLogTap;
+  final bool? useAlwaysNormalTile;
 
   const LogTile({
     Key? key,
     required this.log,
     required this.length,
-    required this.index
+    required this.index,
+    this.isLogSelected,
+    required this.onLogTap,
+    this.useAlwaysNormalTile
   }) : super(key: key);
 
   @override
@@ -38,7 +44,7 @@ class LogTile extends StatelessWidget {
       required String text
     }) {
       return SizedBox(
-        width: 70,
+        width: 80,
         child: Column(
           children: [
             Icon(
@@ -95,133 +101,250 @@ class LogTile extends StatelessWidget {
         )
       );
     }
-  
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => Navigator.push(context, MaterialPageRoute(
-          builder: (context) => LogDetailsScreen(log: log)
-        )),
-        onLongPress: () => openOptionsModal(log),
-        child: Container(
-          width: double.maxFinite,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: width-130,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      log.question.name,
-                      style: TextStyle(
-                        fontSize: 16,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.onSurface
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    if (log.client.length <= 15 && appConfigProvider.showNameTimeLogs == false) Row(
+
+    if (width > 1100 && !(useAlwaysNormalTile == true)) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(28),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(28),
+            onTap: () => onLogTap(log),
+            child: Container(
+              width: double.maxFinite,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(28),
+                color: isLogSelected == true
+                  ? Theme.of(context).colorScheme.primaryContainer
+                  : null
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        ...[
-                          Icon(
-                            Icons.smartphone_rounded,
-                            size: 16,
-                            color: Theme.of(context).listTileTheme.textColor,
-                          ),
-                          const SizedBox(width: 5),
-                          Flexible(
-                            child: Text(
-                              log.client,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Theme.of(context).listTileTheme.textColor,
-                                fontSize: 14,
-                                height: 1.4,
-                                fontWeight: FontWeight.w400,
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                log.question.name,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
                               ),
-                            ),
-                          )
-                        ],
-                        const SizedBox(width: 15),
-                        ...[
-                          Icon(
-                            Icons.schedule_rounded,
-                            size: 16,
-                            color: Theme.of(context).listTileTheme.textColor,
-                          ),
-                          const SizedBox(width: 5),
-                          Flexible(
-                            child: Text(
-                              convertTimestampLocalTimezone(log.time, 'HH:mm:ss'),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Theme.of(context).listTileTheme.textColor,
-                                fontSize: 13
+                              const SizedBox(height: 5),
+                              if (log.client.length <= 15 && appConfigProvider.showNameTimeLogs == false) Row(
+                                children: [
+                                  ...[
+                                    Icon(
+                                      Icons.smartphone_rounded,
+                                      size: 16,
+                                      color: Theme.of(context).listTileTheme.textColor,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Flexible(
+                                      child: Text(
+                                        log.client,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Theme.of(context).listTileTheme.textColor,
+                                          fontSize: 14,
+                                          height: 1.4,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                  const SizedBox(width: 15),
+                                  ...[
+                                    Icon(
+                                      Icons.schedule_rounded,
+                                      size: 16,
+                                      color: Theme.of(context).listTileTheme.textColor,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Flexible(
+                                      child: Text(
+                                        convertTimestampLocalTimezone(log.time, 'HH:mm:ss'),
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Theme.of(context).listTileTheme.textColor,
+                                          fontSize: 13
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ),
+                              if (log.client.length > 15 || appConfigProvider.showNameTimeLogs == true) Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.smartphone_rounded,
+                                        size: 16,
+                                        color: Theme.of(context).listTileTheme.textColor,
+                                      ),
+                                      const SizedBox(width: 15),
+                                      Flexible(
+                                        child: Text(
+                                          log.client,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Theme.of(context).listTileTheme.textColor,
+                                            fontSize: 13
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  if (appConfigProvider.showNameTimeLogs == true && log.clientInfo!.name != '') ...[
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.badge_rounded,
+                                          size: 16,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        ),
+                                        const SizedBox(width: 15),
+                                        Flexible(
+                                          child: Text(
+                                            log.clientInfo!.name,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: Theme.of(context).listTileTheme.textColor,
+                                              fontSize: 13
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.schedule_rounded,
+                                        size: 16,
+                                        color: Theme.of(context).listTileTheme.textColor,
+                                      ),
+                                      const SizedBox(width: 15),
+                                      SizedBox(
+                                        child: Text(
+                                          convertTimestampLocalTimezone(log.time, 'HH:mm:ss'),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Theme.of(context).listTileTheme.textColor,
+                                            fontSize: 13
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  if (appConfigProvider.showNameTimeLogs == true && log.elapsedMs != '') ...[
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.timer,
+                                          size: 16,
+                                          color: Theme.of(context).listTileTheme.textColor,
+                                        ),
+                                        const SizedBox(width: 15),
+                                        SizedBox(
+                                          child: Text(
+                                            "${double.parse(log.elapsedMs).toStringAsFixed(2)} ms",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: Theme.of(context).listTileTheme.textColor,
+                                              fontSize: 13
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
+                        )
                       ],
                     ),
-                    if (log.client.length > 15 || appConfigProvider.showNameTimeLogs == true) Column(
-                      children: [
-                        Row(
-                          children: [
+                  ),
+                  generateLogStatus()
+                ],
+              )
+            ),
+          ),
+        ),
+      );
+    }
+    else {
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => onLogTap(log),
+          onLongPress: () => openOptionsModal(log),
+          child: Container(
+            width: double.maxFinite,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        log.question.name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          height: 1.5,
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.onSurface
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      if (log.client.length <= 15 && appConfigProvider.showNameTimeLogs == false) Row(
+                        children: [
+                          ...[
                             Icon(
                               Icons.smartphone_rounded,
                               size: 16,
                               color: Theme.of(context).listTileTheme.textColor,
                             ),
-                            const SizedBox(width: 15),
+                            const SizedBox(width: 5),
                             Flexible(
                               child: Text(
                                 log.client,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   color: Theme.of(context).listTileTheme.textColor,
-                                  fontSize: 13
+                                  fontSize: 14,
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             )
                           ],
-                        ),
-                        if (appConfigProvider.showNameTimeLogs == true && log.clientInfo!.name != '') ...[
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.badge_rounded,
-                                size: 16,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
-                              const SizedBox(width: 15),
-                              Flexible(
-                                child: Text(
-                                  log.clientInfo!.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Theme.of(context).listTileTheme.textColor,
-                                    fontSize: 13
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
+                          const SizedBox(width: 15),
+                          ...[
                             Icon(
                               Icons.schedule_rounded,
                               size: 16,
                               color: Theme.of(context).listTileTheme.textColor,
                             ),
-                            const SizedBox(width: 15),
-                            SizedBox(
+                            const SizedBox(width: 5),
+                            Flexible(
                               child: Text(
                                 convertTimestampLocalTimezone(log.time, 'HH:mm:ss'),
                                 overflow: TextOverflow.ellipsis,
@@ -230,22 +353,23 @@ class LogTile extends StatelessWidget {
                                   fontSize: 13
                                 ),
                               ),
-                            )
+                            ),
                           ],
-                        ),
-                        if (appConfigProvider.showNameTimeLogs == true && log.elapsedMs != '') ...[
-                          const SizedBox(height: 10),
+                        ],
+                      ),
+                      if (log.client.length > 15 || appConfigProvider.showNameTimeLogs == true) Column(
+                        children: [
                           Row(
                             children: [
                               Icon(
-                                Icons.timer,
+                                Icons.smartphone_rounded,
                                 size: 16,
                                 color: Theme.of(context).listTileTheme.textColor,
                               ),
                               const SizedBox(width: 15),
-                              SizedBox(
+                              Flexible(
                                 child: Text(
-                                  "${double.parse(log.elapsedMs).toStringAsFixed(2)} ms",
+                                  log.client,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: Theme.of(context).listTileTheme.textColor,
@@ -255,18 +379,85 @@ class LogTile extends StatelessWidget {
                               )
                             ],
                           ),
+                          if (appConfigProvider.showNameTimeLogs == true && log.clientInfo!.name != '') ...[
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.badge_rounded,
+                                  size: 16,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 15),
+                                Flexible(
+                                  child: Text(
+                                    log.clientInfo!.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Theme.of(context).listTileTheme.textColor,
+                                      fontSize: 13
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.schedule_rounded,
+                                size: 16,
+                                color: Theme.of(context).listTileTheme.textColor,
+                              ),
+                              const SizedBox(width: 15),
+                              SizedBox(
+                                child: Text(
+                                  convertTimestampLocalTimezone(log.time, 'HH:mm:ss'),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Theme.of(context).listTileTheme.textColor,
+                                    fontSize: 13
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          if (appConfigProvider.showNameTimeLogs == true && log.elapsedMs != '') ...[
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.timer,
+                                  size: 16,
+                                  color: Theme.of(context).listTileTheme.textColor,
+                                ),
+                                const SizedBox(width: 15),
+                                SizedBox(
+                                  child: Text(
+                                    "${double.parse(log.elapsedMs).toStringAsFixed(2)} ms",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Theme.of(context).listTileTheme.textColor,
+                                      fontSize: 13
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              generateLogStatus()
-            ],
+                const SizedBox(width: 10),
+                generateLogStatus()
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

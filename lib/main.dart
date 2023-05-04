@@ -7,25 +7,33 @@ import 'package:provider/provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/base.dart';
 
 import 'package:adguard_home_manager/classes/http_override.dart';
-import 'package:adguard_home_manager/services/database.dart';
+import 'package:adguard_home_manager/services/db/database.dart';
 import 'package:adguard_home_manager/constants/colors.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/config/theme.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
-  );  
+
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    setWindowMinSize(const Size(500, 500));
+  }
+
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   
   AppConfigProvider appConfigProvider = AppConfigProvider();
   ServersProvider serversProvider = ServersProvider();

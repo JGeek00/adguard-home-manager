@@ -18,24 +18,32 @@ import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class LogsFiltersModal extends StatelessWidget {
-  const LogsFiltersModal({Key? key}) : super(key: key);
+  final bool dialog;
+
+  const LogsFiltersModal({
+    Key? key,
+    required this.dialog
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
 
     return LogsFiltersModalWidget(
-      logsProvider: logsProvider
+      logsProvider: logsProvider,
+      dialog: dialog,
     );
   }
 }
 
 class LogsFiltersModalWidget extends StatefulWidget {
   final LogsProvider logsProvider;
+  final bool dialog;
 
   const LogsFiltersModalWidget({
     Key? key,
-    required this.logsProvider
+    required this.logsProvider,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -56,6 +64,8 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     final logsProvider = Provider.of<LogsProvider>(context);
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     final Map<String, String> translatedString = {
       "all": AppLocalizations.of(context)!.all, 
@@ -101,25 +111,51 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
     }
 
     void openSelectFilterStatus() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (context) => FilterStatusModal(
-          value: logsProvider.selectedResultStatus,
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
-      );
+      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          barrierDismissible: false,
+          context: context, 
+          builder: (context) => FilterStatusModal(
+            value: logsProvider.selectedResultStatus,
+            dialog: true,
+          ),
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) => FilterStatusModal(
+            value: logsProvider.selectedResultStatus,
+            dialog: false,
+          ),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent
+        );
+      }
     }
 
     void openSelectClients() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (context) => ClientsModal(
-          value: logsProvider.selectedClients,
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
-      );
+      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context,
+          builder: (context) => ClientsModal(
+            value: logsProvider.selectedClients,
+            dialog: true,
+          ),
+          barrierDismissible: false
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) => ClientsModal(
+            value: logsProvider.selectedClients,
+            dialog: false,
+          ),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent
+        );
+      }
     }
 
     void filterLogs() async {
@@ -161,47 +197,45 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       }
     }
 
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: Platform.isIOS ? 446 : 430,
-        decoration: BoxDecoration(
-          color: Theme.of(context).dialogBackgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
-          )
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                physics: (Platform.isIOS ? 416 : 400) < MediaQuery.of(context).size.height
-                  ? const NeverScrollableScrollPhysics() 
-                  : null,
+    Widget content() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 24,
-                      bottom: 16,
-                    ),
-                    child: Icon(
-                      Icons.filter_list_rounded,
-                      size: 24,
-                      color: Theme.of(context).listTileTheme.iconColor
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 24,
+                              bottom: 16,
+                            ),
+                            child: Icon(
+                              Icons.filter_list_rounded,
+                              size: 24,
+                              color: Theme.of(context).listTileTheme.iconColor
+                            ),
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!.filters,
+                            textAlign: TextAlign.center,
+                            style:  TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w400,
+                              height: 1.3,
+                              color: Theme.of(context).colorScheme.onSurface
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ],
                   ),
-                  Text(
-                    AppLocalizations.of(context)!.filters,
-                    textAlign: TextAlign.center,
-                    style:  TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      height: 1.3,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
@@ -233,7 +267,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  Container(height: 16),
                   CustomListTile(
                     title: AppLocalizations.of(context)!.client,
                     subtitle: logsProvider.selectedClients != null
@@ -270,26 +304,55 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: resetFilters, 
-                    child: Text(AppLocalizations.of(context)!.resetFilters)
-                  ),
-                  TextButton(
-                    onPressed: () => filterLogs(),
-                    child: Text(AppLocalizations.of(context)!.apply)
-                  ),
-                ],
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: resetFilters, 
+                  child: Text(AppLocalizations.of(context)!.resetFilters)
+                ),
+                TextButton(
+                  onPressed: () => filterLogs(),
+                  child: Text(AppLocalizations.of(context)!.apply)
+                ),
+              ],
             ),
-            if (Platform.isIOS) const SizedBox(height: 16)
-          ],
+          ),
+          if (Platform.isIOS) const SizedBox(height: 16)
+        ],
+      );
+    }
+
+    if (widget.dialog == true) {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Dialog(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 500
+            ),
+            child: content()
+          )
         ),
-      ),
-    );
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).dialogBackgroundColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28)
+            )
+          ),
+          child: content()
+        ),
+      );
+    }
   }
 }

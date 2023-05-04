@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
 import 'package:adguard_home_manager/screens/clients/search_clients.dart';
+import 'package:adguard_home_manager/screens/clients/logs_list_client.dart';
+import 'package:adguard_home_manager/screens/clients/clients_desktop_view.dart';
 import 'package:adguard_home_manager/screens/clients/added_list.dart';
 
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -56,6 +61,9 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   late TabController tabController;
   final ScrollController scrollController = ScrollController();
 
+  bool searchMode = false;
+  final TextEditingController searchController = TextEditingController();
+
   Future fetchClients() async {
     widget.setLoadingStatus(LoadStatus.loading, false);
     final result = await getClients(widget.server);
@@ -90,83 +98,207 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    
+    final width = MediaQuery.of(context).size.width;
 
-    return DefaultTabController(
-      length: 2,
-      child: NestedScrollView(
-        controller: scrollController,
-        headerSliverBuilder: ((context, innerBoxIsScrolled) {
-          return [
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar(
-                title: Text(AppLocalizations.of(context)!.clients),
-                pinned: true,
-                floating: true,
-                centerTitle: false,
-                forceElevated: innerBoxIsScrolled,
-                actions: [
-                  if (serversProvider.clients.loadStatus == LoadStatus.loaded) ...[
-                    IconButton(
-                      onPressed: () => {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => const SearchClients()
-                        ))
-                      }, 
-                      icon: const Icon(Icons.search),
-                      tooltip: AppLocalizations.of(context)!.searchClients,
-                    ),
-                    const SizedBox(width: 10),
-                  ]
-                ],
-                bottom: TabBar(
-                  controller: tabController,
-                  unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                  tabs: [
-                    Tab(
-                      icon: const Icon(Icons.devices),
-                      text: AppLocalizations.of(context)!.activeClients,
-                    ),
-                    Tab(
-                      icon: const Icon(Icons.add_rounded),
-                      text: AppLocalizations.of(context)!.added,
-                    ),
-                  ]
-                )
-              ),
-            )
-          ];
-        }), 
-        body: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border(
-              top: BorderSide(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
-              )
-            )
+    PreferredSizeWidget tabBar() {
+      return TabBar(
+        controller: tabController,
+        unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+        tabs: [
+          Tab(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.devices),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.activeClients)
+              ],
+            ),
           ),
-          child: TabBarView(
-            controller: tabController,
-            children: [
-              ClientsList(
-                scrollController: scrollController,
-                loadStatus: serversProvider.clients.loadStatus,
-                data: serversProvider.clients.loadStatus == LoadStatus.loaded
-                  ? serversProvider.clients.data!.autoClientsData : [],
-                fetchClients: fetchClients,
+          Tab(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.add_rounded),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.added)
+              ],
+            ),
+          ),
+        ]
+      );
+    }
+
+    Widget tabBarView(bool sliver) {
+      return TabBarView(
+        controller: tabController,
+        children: [
+          ClientsList(
+            scrollController: scrollController,
+            loadStatus: serversProvider.clients.loadStatus,
+            data: serversProvider.clients.loadStatus == LoadStatus.loaded
+              ? serversProvider.filteredActiveClients : [],
+            fetchClients: fetchClients,
+            onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
+              builder: (context) => LogsListClient(
+                ip: client.ip, 
+                serversProvider: serversProvider, 
+                appConfigProvider: appConfigProvider
+              )
+            )),
+            splitView: false,
+            sliver: sliver,
+          ),
+          AddedList(
+            scrollController: scrollController,
+            loadStatus: serversProvider.clients.loadStatus,
+            data: serversProvider.clients.loadStatus == LoadStatus.loaded
+              ? serversProvider.filteredAddedClients : [], 
+            fetchClients: fetchClients,
+            onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
+              builder: (context) => LogsListClient(
+                ip: client.ids[0], 
+                serversProvider: serversProvider, 
+                appConfigProvider: appConfigProvider
+              )
+            )),
+            splitView: false,
+          ),
+        ]
+      );
+    }
+
+    if (width > 900) {
+      return SplitView.material(
+        hideDivider: true,
+        flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
+        placeholder: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              AppLocalizations.of(context)!.selectClientLeftColumn,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                color: Theme.of(context).colorScheme.onSurfaceVariant
               ),
-              AddedList(
-                scrollController: scrollController,
-                loadStatus: serversProvider.clients.loadStatus,
-                data: serversProvider.clients.loadStatus == LoadStatus.loaded
-                  ? serversProvider.clients.data!.clients : [], 
-                fetchClients: fetchClients,
-              ),
-            ]
-          )
+            ),
+          ),
         ),
-      )
-    );
+        child: ClientsDesktopView(
+          serversProvider: serversProvider,
+          appConfigProvider: appConfigProvider,
+          fetchClients: fetchClients,
+        )
+      );
+    }
+    else {
+      if (!(Platform.isAndroid || Platform.isIOS)) {
+        return DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(AppLocalizations.of(context)!.clients),
+              centerTitle: false,
+              actions: [
+                if (serversProvider.clients.loadStatus == LoadStatus.loaded) ...[
+                  IconButton(
+                    onPressed: () => {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const SearchClients()
+                      ))
+                    }, 
+                    icon: const Icon(Icons.search),
+                    tooltip: AppLocalizations.of(context)!.searchClients,
+                  ),
+                  const SizedBox(width: 10),
+                ]
+              ],
+              bottom: tabBar() 
+            ),
+            body: tabBarView(false),
+          ),
+        );
+      }
+      else {
+        return DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: ((context, innerBoxIsScrolled) {
+              return [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    title: searchMode == true
+                      ? Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  searchMode = false;
+                                  searchController.text = "";
+                                  serversProvider.setSearchTermClients(null);
+                                });
+                              }, 
+                              icon: const Icon(Icons.arrow_back_rounded)
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: TextField(
+                                controller: searchController,
+                                onChanged: (value) => serversProvider.setSearchTermClients(value),
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        searchController.text = "";
+                                        serversProvider.setSearchTermClients(null);
+                                      });
+                                    },
+                                    icon: const Icon(Icons.clear_rounded)
+                                  ),
+                                  hintText: AppLocalizations.of(context)!.search,
+                                  hintStyle: const TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 18
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                      : Text(AppLocalizations.of(context)!.clients),
+                    pinned: true,
+                    floating: true,
+                    centerTitle: false,
+                    forceElevated: innerBoxIsScrolled,
+                    actions: [
+                      if (serversProvider.clients.loadStatus == LoadStatus.loaded && searchMode == false) ...[
+                        IconButton(
+                          onPressed: () => setState(() => searchMode = true), 
+                          icon: const Icon(Icons.search),
+                          tooltip: AppLocalizations.of(context)!.searchClients,
+                        ),
+                        const SizedBox(width: 10),
+                      ]
+                    ],
+                    bottom: tabBar() 
+                  ),
+                )
+              ];
+            }), 
+            body: tabBarView(true)
+          )
+        );
+      }
+    }
   }
 }

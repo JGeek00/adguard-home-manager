@@ -15,7 +15,12 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class ManagementModal extends StatefulWidget {
-  const ManagementModal({Key? key}) : super(key: key);
+  final bool dialog;
+
+  const ManagementModal({
+    Key? key,
+    required this.dialog
+  }) : super(key: key);
 
   @override
   State<ManagementModal> createState() => _ManagementModalState();
@@ -364,8 +369,112 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
       );
     }
 
-    return SafeArea(
-      child: Container(
+    Widget header() {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: Icon(
+                Icons.shield_rounded,
+                size: 24,
+                color: Theme.of(context).listTileTheme.iconColor
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                AppLocalizations.of(context)!.manageServer,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    List<Widget> toggles() {
+      return [
+        mainSwitch(),
+        Container(height: 10),
+        smallSwitch(
+          AppLocalizations.of(context)!.ruleFiltering,
+          Icons.filter_list_rounded,
+          serversProvider.serverStatus.data!.filteringEnabled, 
+          (value) => updateBlocking(value: value, filter: 'filtering'),
+          serversProvider.protectionsManagementProcess.contains('filtering')
+        ),
+        smallSwitch(
+          AppLocalizations.of(context)!.safeBrowsing,
+          Icons.vpn_lock_rounded,
+          serversProvider.serverStatus.data!.safeBrowsingEnabled, 
+          (value) => updateBlocking(value: value, filter: 'safeBrowsing'),
+          serversProvider.protectionsManagementProcess.contains('safeBrowsing')
+        ),
+        smallSwitch(
+          AppLocalizations.of(context)!.parentalFiltering,
+          Icons.block,
+          serversProvider.serverStatus.data!.parentalControlEnabled, 
+          (value) => updateBlocking(value: value, filter: 'parentalControl'),
+          serversProvider.protectionsManagementProcess.contains('parentalControl')
+        ),
+        smallSwitch(
+          AppLocalizations.of(context)!.safeSearch,
+          Icons.search_rounded,
+          serversProvider.serverStatus.data!.safeSearchEnabled, 
+          (value) => updateBlocking(value: value, filter: 'safeSearch'),
+          serversProvider.protectionsManagementProcess.contains('safeSearch')
+        ),
+      ];
+    }
+
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 400
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    children: [
+                      header(),
+                      ...toggles()
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context), 
+                      child: Text(AppLocalizations.of(context)!.close),
+                    ),
+                  ],
+                ),
+              ),
+              if (Platform.isIOS) const SizedBox(height: 16)
+            ],
+          ),
+        ),
+      );
+    }
+    else {
+      return Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: const BorderRadius.only(
@@ -373,66 +482,18 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
             topRight: Radius.circular(28)
           )
         ),
-        child: Wrap(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            Flexible(
+              child: SingleChildScrollView(
+                child: Wrap(
                   children: [
-                    Padding(
-                    padding: const EdgeInsets.only(top: 24),
-                    child: Icon(
-                      Icons.shield_rounded,
-                      size: 24,
-                      color: Theme.of(context).listTileTheme.iconColor
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      AppLocalizations.of(context)!.manageServer,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                  ),
+                    header(),
+                    ...toggles()
                   ],
                 ),
-              ],
-            ),
-            mainSwitch(),
-            const SizedBox(height: 10),
-            smallSwitch(
-              AppLocalizations.of(context)!.ruleFiltering,
-              Icons.filter_list_rounded,
-              serversProvider.serverStatus.data!.filteringEnabled, 
-              (value) => updateBlocking(value: value, filter: 'filtering'),
-              serversProvider.protectionsManagementProcess.contains('filtering')
-            ),
-            smallSwitch(
-              AppLocalizations.of(context)!.safeBrowsing,
-              Icons.vpn_lock_rounded,
-              serversProvider.serverStatus.data!.safeBrowsingEnabled, 
-              (value) => updateBlocking(value: value, filter: 'safeBrowsing'),
-              serversProvider.protectionsManagementProcess.contains('safeBrowsing')
-            ),
-            smallSwitch(
-              AppLocalizations.of(context)!.parentalFiltering,
-              Icons.block,
-              serversProvider.serverStatus.data!.parentalControlEnabled, 
-              (value) => updateBlocking(value: value, filter: 'parentalControl'),
-              serversProvider.protectionsManagementProcess.contains('parentalControl')
-            ),
-            smallSwitch(
-              AppLocalizations.of(context)!.safeSearch,
-              Icons.search_rounded,
-              serversProvider.serverStatus.data!.safeSearchEnabled, 
-              (value) => updateBlocking(value: value, filter: 'safeSearch'),
-              serversProvider.protectionsManagementProcess.contains('safeSearch')
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(24),
@@ -449,7 +510,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
             if (Platform.isIOS) const SizedBox(height: 16)
           ],
         ),
-      ),
-    );
+      );
+    }
   }
 }

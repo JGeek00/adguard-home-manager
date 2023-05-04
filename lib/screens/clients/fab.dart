@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -22,6 +24,8 @@ class ClientsFab extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void confirmAddClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -65,13 +69,27 @@ class ClientsFab extends StatelessWidget {
     }
 
     void openAddClient() {
-      Navigator.push(context, MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (BuildContext context) => ClientScreen(
-          onConfirm: confirmAddClient,
-          serverVersion: serversProvider.serverStatus.data!.serverVersion,
-        )
-      ));
+      if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
+        showDialog(
+          barrierDismissible: false,
+          context: context, 
+          builder: (BuildContext context) => ClientScreen(
+            onConfirm: confirmAddClient,
+            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            dialog: true,
+          )
+        );
+      }
+      else {
+        Navigator.push(context, MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (BuildContext context) => ClientScreen(
+            onConfirm: confirmAddClient,
+            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            dialog: false,
+          )
+        ));
+      }
     }
 
     return FloatingActionButton(

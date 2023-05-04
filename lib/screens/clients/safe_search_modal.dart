@@ -64,109 +64,114 @@ class _SafeSearchModalState extends State<SafeSearchModal> {
           )
         ],
       ),
-      content: Wrap(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Material(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(28),
-              child: InkWell(
-                onTap: widget.disabled == true
-                  ? null
-                  : () => setState(() => generalEnabled = !generalEnabled),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 400
+        ),
+        child: Wrap(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Material(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(28),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 5
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.enable,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: widget.disabled == true
-                            ? Colors.grey
-                            : Theme.of(context).colorScheme.onSurface
+                child: InkWell(
+                  onTap: widget.disabled == true
+                    ? null
+                    : () => setState(() => generalEnabled = !generalEnabled),
+                  borderRadius: BorderRadius.circular(28),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 5
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.enable,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: widget.disabled == true
+                              ? Colors.grey
+                              : Theme.of(context).colorScheme.onSurface
+                          ),
                         ),
-                      ),
-                      Switch(
-                        value: generalEnabled, 
-                        onChanged: widget.disabled == true
-                          ? null
-                          : (value) => setState(() => generalEnabled = value),
-                      )
-                    ],
+                        Switch(
+                          value: generalEnabled, 
+                          onChanged: widget.disabled == true
+                            ? null
+                            : (value) => setState(() => generalEnabled = value),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 4, width: double.maxFinite),
-          CustomCheckboxListTile(
-            value: bingEnabled, 
-            onChanged: (value) => setState(() => bingEnabled = value), 
-            title: "Bing",
-            disabled: widget.disabled || !generalEnabled,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 36,
-              vertical: 4
+            const SizedBox(height: 4, width: double.maxFinite),
+            CustomCheckboxListTile(
+              value: bingEnabled, 
+              onChanged: (value) => setState(() => bingEnabled = value), 
+              title: "Bing",
+              disabled: widget.disabled || !generalEnabled,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 36,
+                vertical: 4
+              ),
             ),
-          ),
-          CustomCheckboxListTile(
-            value: duckduckgoEnabled, 
-            onChanged: (value) => setState(() => duckduckgoEnabled = value), 
-            title: "DuckDuckGo",
-            disabled: widget.disabled || !generalEnabled,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 36,
-              vertical: 4
+            CustomCheckboxListTile(
+              value: duckduckgoEnabled, 
+              onChanged: (value) => setState(() => duckduckgoEnabled = value), 
+              title: "DuckDuckGo",
+              disabled: widget.disabled || !generalEnabled,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 36,
+                vertical: 4
+              ),
             ),
-          ),
-          CustomCheckboxListTile(
-            value: googleEnabled, 
-            onChanged: (value) => setState(() => googleEnabled = value), 
-            title: "Google",
-            disabled: widget.disabled || !generalEnabled,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 36,
-              vertical: 4
+            CustomCheckboxListTile(
+              value: googleEnabled, 
+              onChanged: (value) => setState(() => googleEnabled = value), 
+              title: "Google",
+              disabled: widget.disabled || !generalEnabled,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 36,
+                vertical: 4
+              ),
             ),
-          ),
-          CustomCheckboxListTile(
-            value: pixabayEnabled, 
-            onChanged: (value) => setState(() => pixabayEnabled = value), 
-            title: "Pixabay",
-            disabled: widget.disabled || !generalEnabled,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 36,
-              vertical: 4
+            CustomCheckboxListTile(
+              value: pixabayEnabled, 
+              onChanged: (value) => setState(() => pixabayEnabled = value), 
+              title: "Pixabay",
+              disabled: widget.disabled || !generalEnabled,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 36,
+                vertical: 4
+              ),
             ),
-          ),
-          CustomCheckboxListTile(
-            value: yandexEnabled, 
-            onChanged: (value) => setState(() => yandexEnabled = value), 
-            title: "Yandex",
-            disabled: widget.disabled || !generalEnabled,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 36,
-              vertical: 4
+            CustomCheckboxListTile(
+              value: yandexEnabled, 
+              onChanged: (value) => setState(() => yandexEnabled = value), 
+              title: "Yandex",
+              disabled: widget.disabled || !generalEnabled,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 36,
+                vertical: 4
+              ),
             ),
-          ),
-          CustomCheckboxListTile(
-            value: youtubeEnabled, 
-            onChanged: (value) => setState(() => youtubeEnabled = value), 
-            title: "YouTube",
-            disabled: widget.disabled || !generalEnabled,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 36,
-              vertical: 4
+            CustomCheckboxListTile(
+              value: youtubeEnabled, 
+              onChanged: (value) => setState(() => youtubeEnabled = value), 
+              title: "YouTube",
+              disabled: widget.disabled || !generalEnabled,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 36,
+                vertical: 4
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(

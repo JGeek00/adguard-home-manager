@@ -45,10 +45,10 @@
     "save": "Save",
     "serverStatus": "Server status",
     "connectionNotUpdated": "Connection not updated",
-    "ruleFilteringWidget": "Rule\nfiltering",
-    "safeBrowsingWidget": "Safe\nbrowsing",
-    "parentalFilteringWidget": "Parental\nfiltering",
-    "safeSearchWidget": "Safe\nsearch",
+    "ruleFilteringWidget": "Rule filtering",
+    "safeBrowsingWidget": "Safe browsing",
+    "parentalFilteringWidget": "Parental filtering",
+    "safeSearchWidget": "Safe search",
     "ruleFiltering": "Rule filtering",
     "safeBrowsing": "Safe browsing",
     "parentalFiltering": "Parental filtering",
@@ -606,5 +606,11 @@
     "remainingTime": "Remaining time",
     "safeSearchSettings": "Safe search settings",
     "loadingSafeSearchSettings": "Loading safe search settings...",
-    "safeSearchSettingsNotLoaded": "Error when loading safe search settings."
+    "safeSearchSettingsNotLoaded": "Error when loading safe search settings.",
+    "loadingLogsSettings": "Loading logs settings...",
+    "selectOptionLeftColumn": "Select an option of the left column",
+    "selectClientLeftColumn": "Select a client of the left column",
+    "disableList": "Disable list",
+    "enableList": "Enable list",
+    "screens": "Screens"
 }

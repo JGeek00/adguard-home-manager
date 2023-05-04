@@ -52,24 +52,26 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
   bool youtubeEnabled = false;
 
   Future requestSafeSearchSettings() async {
-    final result = await getServerStatus(widget.serversProvider.selectedServer!);
     if (mounted) {
-      if (result['result'] == 'success') {
-        widget.serversProvider.setServerStatusData(result['data']);
-        widget.serversProvider.setServerStatusLoad(1);
-        setState(() {
-          generalEnabled = result['data'].safeSearchEnabled;
-          bingEnabled = result['data'].safeSeachBing;
-          duckduckgoEnabled = result['data'].safeSearchDuckduckgo;
-          googleEnabled = result['data'].safeSearchGoogle;
-          pixabayEnabled = result['data'].safeSearchPixabay;
-          yandexEnabled = result['data'].safeSearchYandex;
-          youtubeEnabled = result['data'].safeSearchYoutube;
-        });
-      }
-      else {
-        widget.appConfigProvider.addLog(result['log']);
-        widget.serversProvider.setServerStatusLoad(2);
+      final result = await getServerStatus(widget.serversProvider.selectedServer!);
+      if (mounted) {
+        if (result['result'] == 'success') {
+          widget.serversProvider.setServerStatusData(result['data']);
+          widget.serversProvider.setServerStatusLoad(1);
+          setState(() {
+            generalEnabled = result['data'].safeSearchEnabled;
+            bingEnabled = result['data'].safeSeachBing;
+            duckduckgoEnabled = result['data'].safeSearchDuckduckgo;
+            googleEnabled = result['data'].safeSearchGoogle;
+            pixabayEnabled = result['data'].safeSearchPixabay;
+            yandexEnabled = result['data'].safeSearchYandex;
+            youtubeEnabled = result['data'].safeSearchYoutube;
+          });
+        }
+        else {
+          widget.appConfigProvider.addLog(result['log']);
+          widget.serversProvider.setServerStatusLoad(2);
+        }
       }
     }
   }

@@ -257,7 +257,8 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
                 label: Text(AppLocalizations.of(context)!.clearDnsCache),
               ),
             ],
-          )
+          ),
+          const SizedBox(height: 16)
         ],
       ),
     );

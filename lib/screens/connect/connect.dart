@@ -66,6 +66,7 @@ class _ConnectState extends State<Connect> {
             controllers: expandableControllerList, 
             onChange: expandOrContract,
             scrollController: scrollController,
+            breakingWidth: 700,
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 100),

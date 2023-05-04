@@ -7,10 +7,12 @@ import 'package:adguard_home_manager/models/rewrite_rules.dart';
 
 class AddDnsRewriteModal extends StatefulWidget {
   final void Function(RewriteRulesData) onConfirm;
+  final bool dialog;
 
   const AddDnsRewriteModal({
     Key? key,
-    required this.onConfirm
+    required this.onConfirm,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -50,45 +52,45 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: Platform.isIOS ? 416 : 400,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
-          ),
-          color: Theme.of(context).dialogBackgroundColor,
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                physics: (Platform.isIOS ? 426 : 410) < MediaQuery.of(context).size.height
-                  ? const NeverScrollableScrollPhysics() 
-                  : null,
+    Widget content() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 24),
-                    child: Icon(
-                      Icons.add,
-                      size: 24,
-                      color: Theme.of(context).listTileTheme.iconColor
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 24),
+                            child: Icon(
+                              Icons.add,
+                              size: 24,
+                              color: Theme.of(context).listTileTheme.iconColor
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.of(context)!.addDnsRewrite,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Theme.of(context).colorScheme.onSurface
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    AppLocalizations.of(context)!.addDnsRewrite,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.only(
+                      left: 24, right: 24, bottom: 12
+                    ),
                     child: TextFormField(
                       controller: domainController,
                       onChanged: validateDomain,
@@ -104,9 +106,10 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.only(
+                      left: 24, right: 24, top: 12
+                    ),
                     child: TextFormField(
                       controller: answerController,
                       onChanged: (_) => checkValidValues(),
@@ -124,44 +127,70 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(AppLocalizations.of(context)!.cancel),
-                  ),
-                  const SizedBox(width: 20),
-                  TextButton(
-                    onPressed: validData == true
-                      ? () {
-                        Navigator.pop(context);
-                        widget.onConfirm(
-                          RewriteRulesData(
-                            domain: domainController.text, 
-                            answer: answerController.text
-                          )
-                        );
-                      }
-                      : null,
-                    child: Text(
-                      AppLocalizations.of(context)!.confirm,
-                      style: TextStyle(
-                        color: validData == true
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
-                      ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(AppLocalizations.of(context)!.cancel),
+                ),
+                const SizedBox(width: 20),
+                TextButton(
+                  onPressed: validData == true
+                    ? () {
+                      Navigator.pop(context);
+                      widget.onConfirm(
+                        RewriteRulesData(
+                          domain: domainController.text, 
+                          answer: answerController.text
+                        )
+                      );
+                    }
+                    : null,
+                  child: Text(
+                    AppLocalizations.of(context)!.confirm,
+                    style: TextStyle(
+                      color: validData == true
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            if (Platform.isIOS) const SizedBox(height: 16)
-          ],
+          ),
+          if (Platform.isIOS) const SizedBox(height: 16)
+        ],
+      );
+    }
+
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 400
+          ),
+          child: content()
         ),
-      ),
-    );
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28)
+            ),
+            color: Theme.of(context).dialogBackgroundColor,
+          ),
+          child: content()
+        ),
+      );
+    }
   }
 }

@@ -1,36 +1,44 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+import 'package:adguard_home_manager/screens/clients/active_client_tile.dart';
+
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/models/applied_filters.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class ClientsList extends StatelessWidget {
   final ScrollController scrollController;
   final LoadStatus loadStatus;
   final List<AutoClient> data;
   final Future Function() fetchClients;
+  final void Function(AutoClient) onClientSelected;
+  final AutoClient? selectedClient;
+  final bool splitView;
+  final bool sliver;
 
   const ClientsList({
     Key? key,
     required this.scrollController,
     required this.loadStatus,
     required this.data,
-    required this.fetchClients
+    required this.fetchClients,
+    required this.onClientSelected,
+    this.selectedClient,
+    required this.splitView,
+    required this.sliver
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    final logsProvider = Provider.of<LogsProvider>(context);
-
     return CustomTabContentList(
+      listPadding: splitView == true 
+        ? const EdgeInsets.only(top: 8)
+        : null,
+      noSliver: !sliver,
       loadingGenerator: () =>  SizedBox(
         width: double.maxFinite,
         height: MediaQuery.of(context).size.height-171,
@@ -52,32 +60,12 @@ class ClientsList extends StatelessWidget {
         ),
       ), 
       itemsCount: data.length, 
-      contentWidget: (index) => CustomListTile(
-        title: data[index].name != '' 
-          ? data[index].name!
-          : data[index].ip,
-        subtitle: data[index].name != '' 
-          ? data[index].ip 
-          : null,
-        trailing: Text(
-          data[index].source,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface
-          ),
-        ),
-        onTap: () {
-          logsProvider.setSearchText(null);
-          logsProvider.setSelectedClients([data[index].ip]);
-          logsProvider.setAppliedFilters(
-            AppliedFiters(
-              selectedResultStatus: 'all', 
-              searchText: null,
-              clients: [data[index].ip]
-            )
-          );
-          appConfigProvider.setSelectedScreen(2);
-        },
-      ), 
+      contentWidget: (index) => ActiveClientTile(
+        client: data[index], 
+        onTap: onClientSelected,
+        splitView: splitView,
+        selectedClient: selectedClient,
+      ),
       noData: SizedBox(
         width: double.maxFinite,
         child: Column(

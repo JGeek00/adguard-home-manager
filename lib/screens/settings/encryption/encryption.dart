@@ -234,6 +234,8 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
@@ -343,43 +345,59 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 disabled: !enabled,
               ),
               const SizedBox(height: 10),
-              EncryptionTextField(
-                enabled: enabled, 
-                controller: httpsPortController, 
-                icon: Icons.numbers_rounded, 
-                onChanged: (value) {
-                  setState(() => httpsPortError = validatePort(context, value));
-                  onEditValidate();
-                },
-                errorText: httpsPortError,
-                label: AppLocalizations.of(context)!.httpsPort,
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 30),
-              EncryptionTextField(
-                enabled: enabled, 
-                controller: tlsPortController, 
-                icon: Icons.numbers_rounded, 
-                onChanged: (value) {
-                  setState(() => tlsPortError = validatePort(context, value));
-                  onEditValidate();
-                },
-                errorText: tlsPortError,
-                label: AppLocalizations.of(context)!.tlsPort,
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 30),
-              EncryptionTextField(
-                enabled: enabled, 
-                controller: dnsOverQuicPortController, 
-                icon: Icons.numbers_rounded, 
-                onChanged: (value) {
-                  setState(() => dnsOverQuicPortError = validatePort(context, value));
-                  onEditValidate();
-                },
-                errorText: dnsOverQuicPortError,
-                label: AppLocalizations.of(context)!.dnsOverQuicPort,
-                keyboardType: TextInputType.number,
+              Wrap(
+                children: [
+                  FractionallySizedBox(
+                    widthFactor: width > 900 ? 0.33 : 1,
+                    child: EncryptionTextField(
+                      enabled: enabled, 
+                      controller: httpsPortController, 
+                      icon: Icons.numbers_rounded, 
+                      onChanged: (value) {
+                        setState(() => httpsPortError = validatePort(context, value));
+                        onEditValidate();
+                      },
+                      errorText: httpsPortError,
+                      label: AppLocalizations.of(context)!.httpsPort,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  Padding(
+                    padding: width <= 900
+                      ? const EdgeInsets.symmetric(vertical: 24)
+                      : const EdgeInsets.all(0),
+                    child: FractionallySizedBox(
+                      widthFactor: width > 900 ? 0.33 : 1,
+                      child: EncryptionTextField(
+                        enabled: enabled, 
+                        controller: tlsPortController, 
+                        icon: Icons.numbers_rounded, 
+                        onChanged: (value) {
+                          setState(() => tlsPortError = validatePort(context, value));
+                          onEditValidate();
+                        },
+                        errorText: tlsPortError,
+                        label: AppLocalizations.of(context)!.tlsPort,
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                  ),
+                  FractionallySizedBox(
+                    widthFactor: width > 900 ? 0.33 : 1,
+                    child: EncryptionTextField(
+                      enabled: enabled, 
+                      controller: dnsOverQuicPortController, 
+                      icon: Icons.numbers_rounded, 
+                      onChanged: (value) {
+                        setState(() => dnsOverQuicPortError = validatePort(context, value));
+                        onEditValidate();
+                      },
+                      errorText: dnsOverQuicPortError,
+                      label: AppLocalizations.of(context)!.dnsOverQuicPort,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
               ),
               SectionLabel(
                 label: AppLocalizations.of(context)!.certificates,

@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -69,6 +71,8 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void deleteDnsRewrite(RewriteRulesData rule) async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -288,14 +292,26 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
       body: generateBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          showModalBottomSheet(
-            context: context, 
-            builder: (context) => AddDnsRewriteModal(
-              onConfirm: addDnsRewrite,
-            ),
-            backgroundColor: Colors.transparent,
-            isScrollControlled: true
-          )
+          if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+            showDialog(
+              context: context, 
+              builder: (context) => AddDnsRewriteModal(
+                onConfirm: addDnsRewrite,
+                dialog: true,
+              ),
+            )
+          }
+          else {
+            showModalBottomSheet(
+              context: context, 
+              builder: (context) => AddDnsRewriteModal(
+                onConfirm: addDnsRewrite,
+                dialog: false,
+              ),
+              backgroundColor: Colors.transparent,
+              isScrollControlled: true
+            )
+          }
         },
         child: const Icon(Icons.add),
       ),

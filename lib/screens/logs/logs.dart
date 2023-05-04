@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/logs/logs_filters_modal.dart';
 import 'package:adguard_home_manager/screens/logs/logs_config_modal.dart';
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
+import 'package:adguard_home_manager/screens/logs/log_details_screen.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -63,6 +66,8 @@ class _LogsWidgetState extends State<LogsWidget> {
   bool isLoadingMore = false;
 
   bool showDivider = true;
+
+  Log? selectedLog;
 
   Future fetchLogs({
     int? inOffset,
@@ -188,6 +193,8 @@ class _LogsWidgetState extends State<LogsWidget> {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void updateConfig(Map<String, dynamic> data) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
@@ -252,12 +259,25 @@ class _LogsWidgetState extends State<LogsWidget> {
 
 
     void openFilersModal() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (context) => const LogsFiltersModal(),
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true
-      );
+      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
+          builder: (context) => const LogsFiltersModal(
+            dialog: true,
+          ),
+          barrierDismissible: false
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) => const LogsFiltersModal(
+            dialog: false,
+          ),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true
+        );
+      }
     }
 
     final Map<String, String> translatedString = {
@@ -319,6 +339,18 @@ class _LogsWidgetState extends State<LogsWidget> {
                         log: logsProvider.logsData!.data[index],
                         index: index,
                         length: logsProvider.logsData!.data.length,
+                        isLogSelected: selectedLog != null && selectedLog == logsProvider.logsData!.data[index],
+                        onLogTap: (log) {
+                          if (width <= 1100) {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => LogDetailsScreen(
+                                log: log,
+                                dialog: false,
+                              )
+                            ));
+                          }
+                          setState(() => selectedLog = log);
+                        }
                       );
                     }
                   }
@@ -383,161 +415,210 @@ class _LogsWidgetState extends State<LogsWidget> {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.logs),
-        centerTitle: false,
-        actions: [
-          logsProvider.loadStatus == 1 
-            ? IconButton(
-                onPressed: openFilersModal, 
-                icon: const Icon(Icons.filter_list_rounded)
-              )
-            : const SizedBox(),
-          IconButton(
-            onPressed: () => {
-              showModalBottomSheet(
-                context: context, 
-                builder: (context) => LogsConfigModal(
-                  onConfirm: updateConfig,
-                  onClear: clearQueries,
-                ),
-                backgroundColor: Colors.transparent,
-                isScrollControlled: true
-              )
-            }, 
-            icon: const Icon(Icons.settings)
-          ),
-          const SizedBox(width: 5),
-        ],
-        bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients != null
-          ? PreferredSize(
-              preferredSize: const Size(double.maxFinite, 50),
-              child: Container(
-                height: 50,
-                width: double.maxFinite,
-                padding: const EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: showDivider == true
-                        ? Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
-                        : Colors.transparent,
-                    )
+    Widget logsScreen() {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.logs),
+          centerTitle: false,
+          actions: [
+            if (!(Platform.isAndroid || Platform.isIOS)) IconButton(
+              onPressed: () => fetchLogs(inOffset: 0), 
+              icon: const Icon(Icons.refresh_rounded),
+              tooltip: AppLocalizations.of(context)!.refresh,
+            ),
+            logsProvider.loadStatus == 1 
+              ? IconButton(
+                  onPressed: openFilersModal, 
+                  icon: const Icon(Icons.filter_list_rounded),
+                  tooltip: AppLocalizations.of(context)!.filters,
+                )
+              : const SizedBox(),
+            IconButton(
+              tooltip: AppLocalizations.of(context)!.settings,
+              onPressed: () => {
+                if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+                  showDialog(
+                    context: context, 
+                    builder: (context) => LogsConfigModal(
+                      onConfirm: updateConfig,
+                      onClear: clearQueries,
+                      dialog: true,
+                    ),
+                    barrierDismissible: false
                   )
-                ),
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    if (logsProvider.appliedFilters.searchText != null) ...[
+                }
+                else {
+                  showModalBottomSheet(
+                    context: context, 
+                    builder: (context) => LogsConfigModal(
+                      onConfirm: updateConfig,
+                      onClear: clearQueries,
+                      dialog: false,
+                    ),
+                    backgroundColor: Colors.transparent,
+                    isScrollControlled: true
+                  )
+                }
+              }, 
+              icon: const Icon(Icons.settings)
+            ),
+            const SizedBox(width: 5),
+          ],
+          bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients != null
+            ? PreferredSize(
+                preferredSize: const Size(double.maxFinite, 50),
+                child: Container(
+                  height: 50,
+                  width: double.maxFinite,
+                  padding: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: showDivider == true
+                          ? Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
+                          : Colors.transparent,
+                      )
+                    )
+                  ),
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      if (logsProvider.appliedFilters.searchText != null) ...[
+                        const SizedBox(width: 15),
+                        Chip(
+                          avatar: const Icon(
+                            Icons.link_rounded,
+                          ),
+                          label: Row(
+                            children: [
+                              Text(
+                                logsProvider.appliedFilters.searchText!,
+                              ),
+                            ],
+                          ),
+                          deleteIcon: const Icon(
+                            Icons.clear,
+                            size: 18,
+                          ),
+                          onDeleted: () {
+                            logsProvider.setAppliedFilters(
+                              AppliedFiters(
+                                selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
+                                searchText: null,
+                                clients: logsProvider.appliedFilters.clients
+                              )
+                            );
+                            logsProvider.setSearchText(null);
+                            fetchLogs(
+                              inOffset: 0,
+                              searchText: ''
+                            );
+                          },
+                        ),
+                      ],
+                      if (logsProvider.appliedFilters.selectedResultStatus != 'all') ...[
+                        const SizedBox(width: 15),
+                        Chip(
+                          avatar: const Icon(
+                            Icons.shield_rounded,
+                          ),
+                          label: Row(
+                            children: [
+                              Text(
+                                translatedString[logsProvider.appliedFilters.selectedResultStatus]!,
+                              ),
+                            ],
+                          ),
+                          deleteIcon: const Icon(
+                            Icons.clear,
+                            size: 18,
+                          ),
+                          onDeleted: () {
+                            logsProvider.setAppliedFilters(
+                              AppliedFiters(
+                                selectedResultStatus: 'all', 
+                                searchText: logsProvider.appliedFilters.searchText,
+                                clients: logsProvider.appliedFilters.clients
+                              )
+                            );
+                            logsProvider.setSelectedResultStatus('all');
+                            fetchLogs(
+                              inOffset: 0,
+                              responseStatus: 'all'
+                            );
+                          },
+                        ),
+                      ],
+                      if (logsProvider.appliedFilters.clients != null) ...[
+                        const SizedBox(width: 15),
+                        Chip(
+                          avatar: const Icon(
+                            Icons.smartphone_rounded,
+                          ),
+                          label: Row(
+                            children: [
+                              Text(
+                                logsProvider.appliedFilters.clients!.length == 1
+                                  ? logsProvider.appliedFilters.clients![0]
+                                  : "${logsProvider.appliedFilters.clients!.length} ${AppLocalizations.of(context)!.clients}",
+                              ),
+                            ],
+                          ),
+                          deleteIcon: const Icon(
+                            Icons.clear,
+                            size: 18,
+                          ),
+                          onDeleted: () {
+                            logsProvider.setAppliedFilters(
+                              AppliedFiters(
+                                selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
+                                searchText: logsProvider.appliedFilters.searchText,
+                                clients: null
+                              )
+                            );
+                            logsProvider.setSelectedClients(null);
+                            fetchLogs(
+                              inOffset: 0,
+                              responseStatus: logsProvider.appliedFilters.selectedResultStatus
+                            );
+                          },
+                        ),
+                      ],
                       const SizedBox(width: 15),
-                      Chip(
-                        avatar: const Icon(
-                          Icons.link_rounded,
-                        ),
-                        label: Row(
-                          children: [
-                            Text(
-                              logsProvider.appliedFilters.searchText!,
-                            ),
-                          ],
-                        ),
-                        deleteIcon: const Icon(
-                          Icons.clear,
-                          size: 18,
-                        ),
-                        onDeleted: () {
-                          logsProvider.setAppliedFilters(
-                            AppliedFiters(
-                              selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
-                              searchText: null,
-                              clients: logsProvider.appliedFilters.clients
-                            )
-                          );
-                          logsProvider.setSearchText(null);
-                          fetchLogs(
-                            inOffset: 0,
-                            searchText: ''
-                          );
-                        },
-                      ),
                     ],
-                    if (logsProvider.appliedFilters.selectedResultStatus != 'all') ...[
-                      const SizedBox(width: 15),
-                      Chip(
-                        avatar: const Icon(
-                          Icons.shield_rounded,
-                        ),
-                        label: Row(
-                          children: [
-                            Text(
-                              translatedString[logsProvider.appliedFilters.selectedResultStatus]!,
-                            ),
-                          ],
-                        ),
-                        deleteIcon: const Icon(
-                          Icons.clear,
-                          size: 18,
-                        ),
-                        onDeleted: () {
-                          logsProvider.setAppliedFilters(
-                            AppliedFiters(
-                              selectedResultStatus: 'all', 
-                              searchText: logsProvider.appliedFilters.searchText,
-                              clients: logsProvider.appliedFilters.clients
-                            )
-                          );
-                          logsProvider.setSelectedResultStatus('all');
-                          fetchLogs(
-                            inOffset: 0,
-                            responseStatus: 'all'
-                          );
-                        },
-                      ),
-                    ],
-                    if (logsProvider.appliedFilters.clients != null) ...[
-                      const SizedBox(width: 15),
-                      Chip(
-                        avatar: const Icon(
-                          Icons.smartphone_rounded,
-                        ),
-                        label: Row(
-                          children: [
-                            Text(
-                              logsProvider.appliedFilters.clients!.length == 1
-                                ? logsProvider.appliedFilters.clients![0]
-                                : "${logsProvider.appliedFilters.clients!.length} ${AppLocalizations.of(context)!.clients}",
-                            ),
-                          ],
-                        ),
-                        deleteIcon: const Icon(
-                          Icons.clear,
-                          size: 18,
-                        ),
-                        onDeleted: () {
-                          logsProvider.setAppliedFilters(
-                            AppliedFiters(
-                              selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
-                              searchText: logsProvider.appliedFilters.searchText,
-                              clients: null
-                            )
-                          );
-                          logsProvider.setSelectedClients(null);
-                          fetchLogs(
-                            inOffset: 0,
-                            responseStatus: logsProvider.appliedFilters.selectedResultStatus
-                          );
-                        },
-                      ),
-                    ],
-                    const SizedBox(width: 15),
-                  ],
-                ),
+                  ),
+                )
               )
+          : null,
+        ),
+        body: generateBody()
+      );
+    }
+
+    if (width > 1100) {
+      return Material(
+        color: Colors.transparent,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: logsScreen()
+            ),
+            Expanded(
+              flex: 2,
+              child: selectedLog != null
+                ? LogDetailsScreen(
+                    log: selectedLog!,
+                    dialog: false,
+                  )
+                : const SizedBox()
             )
-        : null,
-      ),
-      body: generateBody()
-    );
+          ],
+        ),
+      );
+    }
+    else {
+      return logsScreen();
+    }
   }
 }

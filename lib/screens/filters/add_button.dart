@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,18 +17,22 @@ import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class FiltersFab extends StatelessWidget {
+class AddFiltersButton extends StatelessWidget {
   final String type;
+  final Widget Function(void Function()) widget;
 
-  const FiltersFab({
+  const AddFiltersButton({
     Key? key,
     required this.type,
+    required this.widget
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void confirmAddRule(String rule) async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -64,14 +70,27 @@ class FiltersFab extends StatelessWidget {
     }
 
     void openAddCustomRule() {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          fullscreenDialog: true,
+      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
           builder: (context) => AddCustomRule(
-            onConfirm: confirmAddRule
+            onConfirm: confirmAddRule,
+            dialog: true,
           ),
-        )
-      );
+          barrierDismissible: false
+        );
+      }
+      else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => AddCustomRule(
+              onConfirm: confirmAddRule,
+              dialog: false,
+            ),
+          )
+        );
+      }
     }
 
     void confirmAddList({required String name, required String url, required String type}) async {
@@ -154,22 +173,34 @@ class FiltersFab extends StatelessWidget {
     }
 
     void openAddWhitelistBlacklist() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (ctx) => AddListModal(
-          type: type,
-          onConfirm: confirmAddList,
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent
-      );
+      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
+          builder: (ctx) => AddListModal(
+            type: type,
+            onConfirm: confirmAddList,
+            dialog: true,
+          ),
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          builder: (ctx) => AddListModal(
+            type: type,
+            onConfirm: confirmAddList,
+            dialog: false,
+          ),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent
+        );
+      }
     }
 
-    return FloatingActionButton(
-      onPressed: type == 'blacklist' || type == 'whitelist'
+    return widget(
+      type == 'blacklist' || type == 'whitelist'
         ? () => openAddWhitelistBlacklist()
         : () => openAddCustomRule(),
-      child: const Icon(Icons.add),
     );
   }
 }

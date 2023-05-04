@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -71,36 +73,73 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    
+    final width = MediaQuery.of(context).size.width;
 
     void openAddCommentModal() {
-      showModalBottomSheet(
-        context: context, 
-        builder: (context) => CommentModal(
-          onConfirm: (value) {
-            dnsServers.add({
-              'comment': value
-            });
-          },
-        ),
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true,
-        isDismissible: true
-      );
+      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
+          builder: (context) => CommentModal(
+            onConfirm: (value) {
+              setState(() {
+                dnsServers.add({
+                  'comment': value
+                });
+              });
+            },
+            dialog: true,
+          ),
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) => CommentModal(
+            onConfirm: (value) {
+              setState(() {
+                dnsServers.add({
+                  'comment': value
+                });
+              });
+            },
+            dialog: false,
+          ),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          isDismissible: true
+        );
+      }
     }
 
     void openEditCommentModal(Map<String, dynamic> item, int position) {
-      showModalBottomSheet(
-        context: context, 
-        builder: (context) => CommentModal(
-          comment: item['comment'],
-          onConfirm: (value) {
-            setState(() => dnsServers[position] = { 'comment': value });
-          },
-        ),
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true,
-        isDismissible: true
-      );
+      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
+          builder: (context) => CommentModal(
+            comment: item['comment'],
+            onConfirm: (value) {
+              setState(() => dnsServers[position] = { 'comment': value });
+            },
+            dialog: true,
+          ),
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) => CommentModal(
+            comment: item['comment'],
+            onConfirm: (value) {
+              setState(() => dnsServers[position] = { 'comment': value });
+            },
+            dialog: false,
+          ),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          isDismissible: true
+        );
+      }
     }
 
     void saveData() async {
@@ -185,13 +224,12 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
           ),
           ...dnsServers.map((item) => Padding(
             padding: const EdgeInsets.only(
-              left: 16, right: 6, bottom: 20
+              left: 16, right: 6, bottom: 24
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (item['controller'] != null) SizedBox(
-                  width: MediaQuery.of(context).size.width-74,
+                if (item['controller'] != null) Expanded(
                   child: TextFormField(
                     controller: item['controller'],
                     onChanged: (_) => checkValidValues(),
@@ -206,6 +244,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                     )
                   ),
                 ),
+                const SizedBox(width: 8),
                 if (item['comment'] != null) Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,10 +271,12 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                   }, 
                   icon: const Icon(Icons.remove_circle_outline),
                   tooltip:  AppLocalizations.of(context)!.remove,
-                )
+                ),
+                const SizedBox(width: 4),
               ],
             ),
           )).toList(),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,

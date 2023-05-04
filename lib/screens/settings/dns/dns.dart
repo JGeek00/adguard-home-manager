@@ -1,6 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -76,6 +79,19 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
+    void navigate(Widget widget) {
+      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+        SplitView.of(context).push(widget);
+      }
+      else {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => widget
+        ));
+      }
+    }
+
     Widget generateBody() {
       switch (widget.serversProvider.dnsInfo.loadStatus) {
         case 0:
@@ -105,51 +121,51 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
               CustomListTile(
                 title: AppLocalizations.of(context)!.upstreamDns,
                 subtitle: AppLocalizations.of(context)!.upstreamDnsDescription,
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => UpstreamDnsScreen(
+                onTap: () => navigate(
+                  UpstreamDnsScreen(
                     serversProvider: serversProvider
                   )
-                )),
+                ),
                 icon: Icons.upload_rounded,
               ),
               CustomListTile(
                 title: AppLocalizations.of(context)!.bootstrapDns,
                 subtitle: AppLocalizations.of(context)!.bootstrapDnsDescription,
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => BootstrapDnsScreen(
+                onTap: () => navigate(
+                  BootstrapDnsScreen(
                     serversProvider: serversProvider
                   )
-                )),
+                ),
                 icon: Icons.dns_rounded,
               ),
               CustomListTile(
                 title: AppLocalizations.of(context)!.privateReverseDnsServers,
                 subtitle: AppLocalizations.of(context)!.privateReverseDnsDescription,
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => PrivateReverseDnsServersScreen(
+                onTap: () => navigate(
+                  PrivateReverseDnsServersScreen(
                     serversProvider: serversProvider
                   )
-                )),
+                ),
                 icon: Icons.person_rounded,
               ),
               CustomListTile(
                 title: AppLocalizations.of(context)!.dnsServerSettings,
                 subtitle: AppLocalizations.of(context)!.dnsServerSettingsDescription,
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => DnsServerSettingsScreen(
+                onTap: () => navigate(
+                  DnsServerSettingsScreen(
                     serversProvider: serversProvider
                   )
-                )),
+                ),
                 icon: Icons.settings,
               ),
               CustomListTile(
                 title: AppLocalizations.of(context)!.dnsCacheConfig,
                 subtitle: AppLocalizations.of(context)!.dnsCacheConfigDescription,
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => CacheConfigDnsScreen(
+                onTap: () => navigate(
+                  CacheConfigDnsScreen(
                     serversProvider: serversProvider
                   )
-                )),
+                ),
                 icon: Icons.storage_rounded,
               ),
             ],

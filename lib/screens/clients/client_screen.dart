@@ -19,6 +19,7 @@ class ClientScreen extends StatefulWidget {
   final String serverVersion;
   final void Function(Client) onConfirm;
   final void Function(Client)? onDelete;
+  final bool dialog;
 
   const ClientScreen({
     Key? key,
@@ -26,6 +27,7 @@ class ClientScreen extends StatefulWidget {
     required this.serverVersion,
     required this.onConfirm,
     this.onDelete,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -300,51 +302,13 @@ class _ClientScreenState extends State<ClientScreen> {
         ),
       );
     }
-    
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.close)
-        ),
-        title: Text(
-          widget.client != null 
-            ? AppLocalizations.of(context)!.client
-            : AppLocalizations.of(context)!.addClient
-        ),
-        actions: [
-          if (widget.client == null || (widget.client != null && editMode == true)) IconButton(
-            onPressed: validValues == true
-              ? () {
-                  createClient();
-                  Navigator.pop(context);
-                }
-              : null, 
-            icon: Icon(
-              widget.client != null && editMode == true
-                ? Icons.save_rounded
-                : Icons.check_rounded
-            ),
-            tooltip: widget.client != null && editMode == true
-              ? AppLocalizations.of(context)!.save
-              : AppLocalizations.of(context)!.confirm,
-          ),
-          if (widget.client != null && editMode == false) IconButton(
-            onPressed: () => setState(() => editMode = true), 
-            icon: const Icon(Icons.edit_rounded),
-            tooltip: AppLocalizations.of(context)!.edit,
-          ),
-          if (widget.client != null) IconButton(
-            onPressed: openDeleteClientScreen, 
-            icon: const Icon(Icons.delete_rounded),
-            tooltip: AppLocalizations.of(context)!.delete,
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
-      body: ListView(
+
+    Widget content(bool withPaddingTop) {
+      return ListView(
+        padding: const EdgeInsets.only(top: 0),
         children: [
-          const SizedBox(height: 24),
+          if (withPaddingTop == true) const SizedBox(height: 24),
+          if (withPaddingTop == false) const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: TextFormField(
@@ -693,10 +657,7 @@ class _ClientScreenState extends State<ClientScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: editMode == true
-                      ? MediaQuery.of(context).size.width - 108
-                      : MediaQuery.of(context).size.width - 40,
+                  Expanded(
                     child: TextFormField(
                       enabled: editMode,
                       controller: controller['controller'],
@@ -751,7 +712,125 @@ class _ClientScreenState extends State<ClientScreen> {
           ),
           const SizedBox(height: 20)
         ],
-      ),
-    );
+      );
+    }
+
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => Navigator.pop(context), 
+                          icon: const Icon(Icons.clear_rounded)
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          widget.client != null 
+                            ? AppLocalizations.of(context)!.client
+                            : AppLocalizations.of(context)!.addClient,
+                          style: const TextStyle(
+                            fontSize: 22
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        if (widget.client == null || (widget.client != null && editMode == true)) IconButton(
+                          onPressed: validValues == true
+                            ? () {
+                                createClient();
+                                Navigator.pop(context);
+                              }
+                            : null, 
+                          icon: Icon(
+                            widget.client != null && editMode == true
+                              ? Icons.save_rounded
+                              : Icons.check_rounded
+                          ),
+                          tooltip: widget.client != null && editMode == true
+                            ? AppLocalizations.of(context)!.save
+                            : AppLocalizations.of(context)!.confirm,
+                        ),
+                        if (widget.client != null && editMode == false) IconButton(
+                          onPressed: () => setState(() => editMode = true), 
+                          icon: const Icon(Icons.edit_rounded),
+                          tooltip: AppLocalizations.of(context)!.edit,
+                        ),
+                        if (widget.client != null) IconButton(
+                          onPressed: openDeleteClientScreen, 
+                          icon: const Icon(Icons.delete_rounded),
+                          tooltip: AppLocalizations.of(context)!.delete,
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              Flexible(
+                child: content(false)
+              )
+            ],
+          ),
+        ),
+      );
+    }
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.close)
+          ),
+          title: Text(
+            widget.client != null 
+              ? AppLocalizations.of(context)!.client
+              : AppLocalizations.of(context)!.addClient
+          ),
+          actions: [
+            if (widget.client == null || (widget.client != null && editMode == true)) IconButton(
+              onPressed: validValues == true
+                ? () {
+                    createClient();
+                    Navigator.pop(context);
+                  }
+                : null, 
+              icon: Icon(
+                widget.client != null && editMode == true
+                  ? Icons.save_rounded
+                  : Icons.check_rounded
+              ),
+              tooltip: widget.client != null && editMode == true
+                ? AppLocalizations.of(context)!.save
+                : AppLocalizations.of(context)!.confirm,
+            ),
+            if (widget.client != null && editMode == false) IconButton(
+              onPressed: () => setState(() => editMode = true), 
+              icon: const Icon(Icons.edit_rounded),
+              tooltip: AppLocalizations.of(context)!.edit,
+            ),
+            if (widget.client != null) IconButton(
+              onPressed: openDeleteClientScreen, 
+              icon: const Icon(Icons.delete_rounded),
+              tooltip: AppLocalizations.of(context)!.delete,
+            ),
+            const SizedBox(width: 10),
+          ],
+        ),
+        body: content(true)
+      );
+    }
   }
 }

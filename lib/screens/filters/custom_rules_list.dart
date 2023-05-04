@@ -2,33 +2,27 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/fab.dart';
-import 'package:adguard_home_manager/screens/filters/remove_custom_rule_modal.dart';
+import 'package:adguard_home_manager/screens/filters/add_button.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
-import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/models/filtering.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/classes/process_modal.dart';
 
 class CustomRulesList extends StatefulWidget {
   final LoadStatus loadStatus;
   final ScrollController scrollController;
   final List<String> data;
   final Future<void> Function() fetchData;
+  final void Function(String) onRemoveCustomRule;
 
   const CustomRulesList({
     Key? key,
     required this.loadStatus,
     required this.scrollController,
     required this.data,
-    required this.fetchData
+    required this.fetchData,
+    required this.onRemoveCustomRule
   }) : super(key: key);
 
   @override
@@ -61,52 +55,6 @@ class _CustomRulesListState extends State<CustomRulesList> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    void removeCustomRule(String rule) async {
-      ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.deletingRule);
-
-      final List<String> newRules = serversProvider.filtering.data!.userRules.where((r) => r != rule).toList();
-
-      final result = await setCustomRules(server: serversProvider.selectedServer!, rules: newRules);
-
-      processModal.close();
-
-      if (result['result'] == 'success') {
-        FilteringData filteringData = serversProvider.filtering.data!;
-        filteringData.userRules = newRules;
-        serversProvider.setFilteringData(filteringData);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.ruleRemovedSuccessfully, 
-          color: Colors.green
-        );
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.ruleNotRemoved, 
-          color: Colors.red
-        );
-      }
-    }
-
-    void openRemoveCustomRuleModal(String rule) {
-      showDialog(
-        context: context, 
-        builder: (context) => RemoveCustomRule(
-          onConfirm: () => removeCustomRule(rule),
-        )
-      );
-    }
-
     bool checkIfComment(String value) {
       final regex = RegExp(r'^(!|#).*$');
       if (regex.hasMatch(value)) {
@@ -184,7 +132,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
         ),
         subtitle: generateSubtitle(widget.data[index]),
         trailing: IconButton(
-          onPressed: () => openRemoveCustomRuleModal(widget.data[index]),
+          onPressed: () => widget.onRemoveCustomRule(widget.data[index]),
           icon: const Icon(Icons.delete)
         ),
       ), 
@@ -239,8 +187,12 @@ class _CustomRulesListState extends State<CustomRulesList> {
       ), 
       loadStatus: widget.loadStatus, 
       onRefresh: widget.fetchData,
-      fab: const FiltersFab(
+      fab: AddFiltersButton(
         type: 'custom_rule',
+        widget: (fn) => FloatingActionButton(
+          onPressed: fn,
+          child: const Icon(Icons.add),
+        ),
       ),
       fabVisible: isVisible,
     );

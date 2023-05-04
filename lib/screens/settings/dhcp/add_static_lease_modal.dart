@@ -5,10 +5,12 @@ import 'package:adguard_home_manager/models/dhcp.dart';
 
 class AddStaticLeaseModal extends StatefulWidget {
   final void Function(Lease) onConfirm;
+  final bool dialog;
 
   const AddStaticLeaseModal({
     Key? key,
     required this.onConfirm,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -65,45 +67,47 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: 510,
-        decoration: BoxDecoration(
-          color: Theme.of(context).dialogBackgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
-          )
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                physics: 550 < MediaQuery.of(context).size.height
-                  ? const NeverScrollableScrollPhysics() 
-                  : null,
+    Widget content() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 24),
-                    child: Icon(
-                      Icons.add,
-                      size: 24,
-                      color: Theme.of(context).listTileTheme.iconColor
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 24),
+                              child: Icon(
+                                Icons.add,
+                                size: 24,
+                                color: Theme.of(context).listTileTheme.iconColor
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              AppLocalizations.of(context)!.addStaticLease,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Theme.of(context).colorScheme.onSurface
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    AppLocalizations.of(context)!.addStaticLease,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: const EdgeInsets.only(
+                      left: 24, right: 24, bottom: 12 
+                    ),
                     child: TextFormField(
                       controller: macController,
                       onChanged: validateMac,
@@ -119,9 +123,8 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     child: TextFormField(
                       controller: ipController,
                       onChanged: validateIp,
@@ -137,9 +140,10 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: const EdgeInsets.only(
+                      left: 24, right: 24, top: 12
+                    ),
                     child: TextFormField(
                       controller: hostNameController,
                       onChanged: (value) {
@@ -166,44 +170,70 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context), 
-                    child: Text(AppLocalizations.of(context)!.cancel),
-                  ),
-                  const SizedBox(width: 20),
-                  TextButton(
-                    onPressed: validData == true
-                      ? () {
-                        Navigator.pop(context);
-                        widget.onConfirm(
-                          Lease(
-                            mac: macController.text, 
-                            hostname: hostNameController.text, 
-                            ip: ipController.text
-                          )
-                        );
-                      }
-                      : null,
-                    child: Text(
-                      AppLocalizations.of(context)!.confirm,
-                      style: TextStyle(
-                        color: validData == true
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.grey
-                      ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context), 
+                  child: Text(AppLocalizations.of(context)!.cancel),
+                ),
+                const SizedBox(width: 20),
+                TextButton(
+                  onPressed: validData == true
+                    ? () {
+                      Navigator.pop(context);
+                      widget.onConfirm(
+                        Lease(
+                          mac: macController.text, 
+                          hostname: hostNameController.text, 
+                          ip: ipController.text
+                        )
+                      );
+                    }
+                    : null,
+                  child: Text(
+                    AppLocalizations.of(context)!.confirm,
+                    style: TextStyle(
+                      color: validData == true
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey
                     ),
                   ),
-                ],
-              ),
-            )
-          ],
+                ),
+              ],
+            ),
+          )
+        ],
+      );
+    }
+
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 400
+          ),
+          child: content(),
         ),
-      ),
-    );
+      );
+    }
+    else {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).dialogBackgroundColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28)
+            )
+          ),
+          child: content()
+        ),
+      );
+    }
   }
 }

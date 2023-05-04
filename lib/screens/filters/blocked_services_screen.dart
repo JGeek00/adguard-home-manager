@@ -12,7 +12,12 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class BlockedServicesScreen extends StatelessWidget {
-  const BlockedServicesScreen({Key? key}) : super(key: key);
+  final bool dialog;
+
+  const BlockedServicesScreen({
+    Key? key,
+    required this.dialog
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,8 @@ class BlockedServicesScreen extends StatelessWidget {
 
     return BlockedServicesScreenWidget(
       serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider
+      appConfigProvider: appConfigProvider,
+      dialog: dialog,
     );
   }
 }
@@ -29,11 +35,13 @@ class BlockedServicesScreen extends StatelessWidget {
 class BlockedServicesScreenWidget extends StatefulWidget {
   final ServersProvider serversProvider;
   final AppConfigProvider appConfigProvider;
+  final bool dialog;
 
   const BlockedServicesScreenWidget({
     Key? key,
     required this.serversProvider,
     required this.appConfigProvider,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -209,24 +217,74 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.blockedServices),
-        actions: [
-          IconButton(
-            onPressed: updateBlockedServices, 
-            icon: const Icon(
-              Icons.save_rounded
-            ),
-            tooltip: AppLocalizations.of(context)!.save,
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 400
           ),
-          const SizedBox(width: 10)
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: loadBlockedServices,
-        child: body()
-      ),
-    );
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(         
+                          onPressed: () => Navigator.pop(context), 
+                          icon: const Icon(Icons.clear_rounded),
+                          tooltip: AppLocalizations.of(context)!.close,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.blockedServices,
+                          style: const TextStyle(
+                            fontSize: 22
+                          ),
+                        )
+                      ],
+                    ),
+                    IconButton(
+                      onPressed: updateBlockedServices, 
+                      icon: const Icon(
+                        Icons.save_rounded
+                      ),
+                      tooltip: AppLocalizations.of(context)!.save,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: body()
+              ),
+            ],
+          )
+        ),
+      );
+    }
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.blockedServices),
+          actions: [
+            IconButton(
+              onPressed: updateBlockedServices, 
+              icon: const Icon(
+                Icons.save_rounded
+              ),
+              tooltip: AppLocalizations.of(context)!.save,
+            ),
+            const SizedBox(width: 10)
+          ],
+        ),
+        body: RefreshIndicator(
+          onRefresh: loadBlockedServices,
+          child: body()
+        ),
+      );
+    }
   }
 }

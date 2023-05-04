@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -67,6 +69,8 @@ class _ClientsListState extends State<ClientsList> {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void confirmRemoveItem(String client, String type) async {
       Map<String, List<String>> body = {
@@ -209,6 +213,7 @@ class _ClientsListState extends State<ClientsList> {
     }
 
     return CustomTabContentList(
+      noSliver: !(Platform.isAndroid || Platform.isIOS) ? true : false,
       loadingGenerator: () => SizedBox(
         width: double.maxFinite,
         height: MediaQuery.of(context).size.height-171,
@@ -362,15 +367,28 @@ class _ClientsListState extends State<ClientsList> {
       refreshIndicatorOffset: 0,
       fab: FloatingActionButton(
         onPressed: () {
-          showModalBottomSheet(
-            context: context, 
-            builder: (context) => AddClientModal(
-              type: widget.type,
-              onConfirm: confirmAddItem
-            ),
-            backgroundColor: Colors.transparent,
-            isScrollControlled: true
-          );
+          if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+            showDialog(
+              context: context, 
+              builder: (context) => AddClientModal(
+                type: widget.type,
+                onConfirm: confirmAddItem,
+                dialog: true,
+              ),
+            );
+          }
+          else {
+            showModalBottomSheet(
+              context: context, 
+              builder: (context) => AddClientModal(
+                type: widget.type,
+                onConfirm: confirmAddItem,
+                dialog: false,
+              ),
+              backgroundColor: Colors.transparent,
+              isScrollControlled: true
+            );
+          }
         },
         child: const Icon(Icons.add),
       ),

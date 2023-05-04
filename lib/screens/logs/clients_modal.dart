@@ -8,10 +8,12 @@ import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class ClientsModal extends StatefulWidget {
   final List<String>? value;
+  final bool dialog;
 
   const ClientsModal({
     Key? key,
-    required this.value
+    required this.value,
+    required this.dialog
   }) : super(key: key);
 
   @override
@@ -94,44 +96,36 @@ class _ClientsModalState extends State<ClientsModal> {
       });
     }
 
-    return Container(
-      height: height >= (logsProvider.clients!.length*64) == true
-        ? logsProvider.clients!.length*64
-        : height-50,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28) 
-        ),
-        color: Theme.of(context).dialogBackgroundColor
-      ),
-      child: Column(
+    Widget content() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 24,
-              bottom: 16,
-            ),
-            child: Icon(
-              Icons.smartphone_rounded,
-              size: 24,
-              color: Theme.of(context).listTileTheme.iconColor
-            ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 24,
+                  bottom: 16,
+                ),
+                child: Icon(
+                  Icons.smartphone_rounded,
+                  size: 24,
+                  color: Theme.of(context).listTileTheme.iconColor
+                ),
+              ),
+              Text(
+                AppLocalizations.of(context)!.clients,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(context).colorScheme.onSurface
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
-          Text(
-            AppLocalizations.of(context)!.clients,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w400,
-              color: Theme.of(context).colorScheme.onSurface
-            ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
+          Flexible(
             child: ListView.builder(
-              physics: height >= (logsProvider.clients!.length*64) == true
-                ? const NeverScrollableScrollPhysics()
-                : null,
               itemCount: logsProvider.clients!.length,
               itemBuilder: (context, index) => listItem(
                 label: logsProvider.clients![index].ip, 
@@ -150,7 +144,7 @@ class _ClientsModalState extends State<ClientsModal> {
                   }
                 }
               )
-            ),
+            )
           ),
           Padding(
             padding: const EdgeInsets.all(24),
@@ -176,7 +170,35 @@ class _ClientsModalState extends State<ClientsModal> {
           ),
           if (Platform.isIOS) const SizedBox(height: 16)
         ],
-      ),
-    );
+      );
+    }
+
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500
+          ),
+          child: content()
+        ),
+      );
+    }
+    else {
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: height-50
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28) 
+            ),
+            color: Theme.of(context).dialogBackgroundColor
+          ),
+          child: content()
+        ),
+      );
+    }
   }
 }

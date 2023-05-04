@@ -182,8 +182,7 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width-74,
+                Expanded(
                   child: TextFormField(
                     controller: c['controller'],
                     onChanged: (value) => validateIp(c, value),
@@ -199,6 +198,7 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
                     )
                   ),
                 ),
+                const SizedBox(width: 8),
                 IconButton(
                   onPressed: () {
                     setState(() => bootstrapControllers = bootstrapControllers.where((con) => con != c).toList());

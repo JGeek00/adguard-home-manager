@@ -229,8 +229,7 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width-74,
+                  Expanded(
                     child: TextFormField(
                       controller: c['controller'],
                       onChanged: (value) => validateAddress(c, value),
@@ -246,6 +245,7 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
                       )
                     ),
                   ),
+                  const SizedBox(width: 8),
                   IconButton(
                     onPressed: () {
                       setState(() => reverseResolversControllers = reverseResolversControllers.where((con) => con != c).toList());

@@ -1,5 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
+import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +38,8 @@ class TopItems extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     bool? getIsBlocked() {
       if (type == 'topBlockedDomains') {
@@ -266,16 +272,32 @@ class TopItems extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => TopItemsScreen(
-                          type: type,
-                          title: label,
-                          isClient: clients,
-                          data: generateData(),
+                    onPressed: () => {
+                      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => TopItemsModal(
+                            type: type,
+                            title: label,
+                            isClient: clients,
+                            data: generateData(),
+                          )
                         )
-                      )
-                    ),
+                      }
+                      else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => TopItemsScreen(
+                              type: type,
+                              title: label,
+                              isClient: clients,
+                              data: generateData(),
+                            )
+                          )
+                        )
+                      }
+                    },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
