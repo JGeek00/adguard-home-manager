@@ -30,6 +30,8 @@
 <p>▶ See the clients list and create a custom configuration for a client.</p>
 <p>▶ Configure the allowed devices, DHCP, DNS or rewrites among others.</p>
 <p>▶ Material You interface with dynamic theming (only Android 12+).</p>
+<p>▶ Full desktop support with builds for macOS, Linux and Windows.</p>
+<p>▶ Responsive UI adapted for landscape displays.</p>
 
 ## Privacy policy
 AdGuard Home Manager does not collect any personal user data. All data stored into the application is kept on the user's device.
@@ -39,6 +41,48 @@ This is an unofficial application. The AdGuard Home team and the development of 
 
 ## Recommended configuration and lists
 On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a recommended configuration for AdGuard Home and some lists. Thanks to [JuanRodenas](https://github.com/JuanRodenas).
+
+## Generate production build
+<ul>
+  <li>
+    <b>macOS</b>
+    <ol>  
+      <li>flutter clean</li>
+      <li>flutter pub get</li>
+      <li>flutter build macos --release</li>
+      <li>Open macos/Runner.xcworkspace on Xcode</li>
+      <li>Make sure all the pods have the minimum deployment version at 10.14</li>
+      <li>Select Runner > Targets Runner</li>
+      <li>Make sure the Version and Build numbers are correct</li>
+      <li>Click on Product menu and on Archive</li>
+      <li>Select the first on the list and click on Distribute app, select Copy App and click on Next</li>
+    </ol>
+  </li>
+  <li>
+    <b>Linux</b>
+    <ol>
+      <li>flutter clean</li>
+      <li>flutter pub get</li>
+      <li>flutter build linux --release</li>
+      <li>Open debian.yaml file inside debian/ and update the version number</li>
+      <li>Run flutter_to_debian</li>
+      <li>The .deb package is at debian/packages</li>
+    </ol>
+  </li>
+  <li>
+    <b>Windows</b>
+    <ol>
+      <li>flutter clean</li>
+      <li>flutter pub get</li>
+      <li>flutter build windows</li>
+      <li>Open Inno Setup Compiler application and load the script</li>
+      <li>The script is located at windows/innosetup_installer_builder.iss</li>
+      <li>Update the version number and save the changes</li>
+      <li>Click on the Compile button</li>
+      <li>The installer will be generated at build/windows/aghm_installer.exe</li>
+    </ol>
+  </li>
+</ul>
 
 ## Third party libraries
 - [provider](https://pub.dev/packages/provider)
@@ -60,6 +104,14 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 - [bottom sheet](https://pub.dev/packages/bottom_sheet)
 - [percent indicator](https://pub.dev/packages/percent_indicator)
 - [store checker](https://pub.dev/packages/store_checker)
+- [flutter markdown](https://pub.dev/packages/flutter_markdown)
+- [markdown](https://pub.dev/packages/markdown)
+- [html](https://pub.dev/packages/html)
+- [flutter html](https://pub.dev/packages/flutter_html)
+- [sqlite3 flutter libs](https://pub.dev/packages/sqlite3_flutter_libs)
+- [sqflite common ffi](https://pub.dev/packages/sqflite_common_ffi)
+- [window size](https://github.com/google/flutter-desktop-embedding)
+- [flutter split view](https://github.com/JGeek00/flutter_split_view) (forked from [here](https://pub.dev/packages/flutter_split_view))
 
 <br>
 
