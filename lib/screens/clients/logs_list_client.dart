@@ -111,6 +111,8 @@ class _LogsListClientState extends State<LogsListClient> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     if (widget.ip != previousIp) {
       setState(() => loadStatus = 0);
       if (scrollController.hasClients) scrollController.animateTo(0, duration: const Duration(milliseconds: 1), curve: Curves.ease);
@@ -165,13 +167,25 @@ class _LogsListClientState extends State<LogsListClient> {
                     index: index,
                     length: logsData!.data.length,
                     useAlwaysNormalTile: true,
-                    onLogTap: (log) => showDialog(
-                      context: context, 
-                      builder: (context) => LogDetailsScreen(
-                        log: log, 
-                        dialog: true
-                      )
-                    )
+                    onLogTap: (log) => {
+                      if (width > 700) {
+                        showDialog(
+                          context: context, 
+                          builder: (context) => LogDetailsScreen(
+                            log: log, 
+                            dialog: true
+                          )
+                        )
+                      }
+                      else {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => LogDetailsScreen(
+                            log: log, 
+                            dialog: false
+                          )
+                        ))
+                      }
+                    }
                   );
                 }
               }
