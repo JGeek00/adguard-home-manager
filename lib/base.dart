@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
-import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:provider/provider.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +16,7 @@ import 'package:adguard_home_manager/widgets/navigation_rail.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/github_release.dart';
+import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/app_screen.dart';
 import 'package:adguard_home_manager/config/app_screens.dart';
@@ -80,22 +80,6 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
     return null;
   }
 
-  void download(String link, String version) async {
-    FlutterWebBrowser.openWebPage(
-      url: link,
-      customTabsOptions: const CustomTabsOptions(
-        instantAppsEnabled: true,
-        showTitle: true,
-        urlBarHidingEnabled: false,
-      ),
-      safariVCOptions: const SafariViewControllerOptions(
-        barCollapsingEnabled: true,
-        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-        modalPresentationCapturesStatusBarAppearance: true,
-      )
-    );
-  }
-
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -110,7 +94,7 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
           context: context, 
           builder: (context) => UpdateModal(
             gitHubRelease: result,
-            onDownload: download,
+            onDownload: (link, version) => openUrl(link),
           ),
         );
       }

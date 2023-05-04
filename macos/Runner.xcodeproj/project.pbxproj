@@ -431,6 +431,7 @@
 				);
 				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jgeek00.adguard-home-manager";
+				PRODUCT_COPYRIGHT = "Copyright © 2023 JGeek00. All rights reserved.";
 				PRODUCT_NAME = "AdGuard Home Manager";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -563,6 +564,7 @@
 				);
 				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jgeek00.adguard-home-manager";
+				PRODUCT_COPYRIGHT = "Copyright © 2023 JGeek00. All rights reserved.";
 				PRODUCT_NAME = "AdGuard Home Manager";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -589,6 +591,7 @@
 				);
 				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jgeek00.adguard-home-manager";
+				PRODUCT_COPYRIGHT = "Copyright © 2023 JGeek00. All rights reserved.";
 				PRODUCT_NAME = "AdGuard Home Manager";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

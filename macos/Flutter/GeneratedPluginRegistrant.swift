@@ -7,7 +7,7 @@ import Foundation
 
 import device_info_plus_macos
 import dynamic_color
-import package_info_plus_macos
+import package_info_plus
 import sqflite
 import sqlite3_flutter_libs
 import url_launcher_macos

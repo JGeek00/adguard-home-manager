@@ -38,10 +38,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_localizations:
     sdk: flutter   
-  intl: ^0.17.0
+  intl: any
   provider: ^6.0.3
   sqflite: ^2.2.5
-  package_info_plus: ^1.4.3+1
+  package_info_plus: ^3.1.2
   flutter_displaymode: ^0.4.0     
   dynamic_color: ^1.5.4
   animations: ^2.0.5
@@ -51,9 +51,8 @@ dependencies:
   fl_chart: ^0.55.2
   flutter_web_browser: ^0.17.1
   flutter_svg: ^1.1.5
-  bottom_sheet: ^3.1.2
   percent_indicator: ^4.2.2
-  store_checker: ^1.1.0
+  store_checker: ^1.2.0
   flutter_markdown: ^0.6.14
   markdown: ^7.0.2
   html: ^0.15.2

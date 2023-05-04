@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_web_browser/flutter_web_browser.dart';
 
 import 'package:adguard_home_manager/screens/servers/servers.dart';
 
+import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -26,22 +26,6 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
         );
       }));
     }
-
-    void openWebAdminPanel() {
-      FlutterWebBrowser.openWebPage(
-        url: "${server!.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
-        customTabsOptions: const CustomTabsOptions(
-          instantAppsEnabled: true,
-          showTitle: true,
-          urlBarHidingEnabled: false,
-        ),
-        safariVCOptions: const SafariViewControllerOptions(
-          barCollapsingEnabled: true,
-          dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-          modalPresentationCapturesStatusBarAppearance: true,
-        )
-      );
-    } 
 
     return AppBar(
       toolbarHeight: 70,
@@ -113,7 +97,7 @@ class HomeAppBar extends StatelessWidget with PreferredSizeWidget {
                   ),
                 ),
                 if (serversProvider.selectedServer != null && serversProvider.serverStatus.loadStatus == 1) PopupMenuItem(
-                  onTap: openWebAdminPanel,
+                  onTap: () => openUrl("${server!.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}"),
                   child: Row(
                     children: [
                       const Icon(Icons.web_rounded),
