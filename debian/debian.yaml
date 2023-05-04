@@ -1,5 +1,5 @@
 flutter_app: 
-  command: adguard_home_manager
+  command: AdGuardHomeManager
   arch: x64
   parent: /usr/local/lib
 

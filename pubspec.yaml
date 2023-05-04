@@ -22,6 +22,10 @@ version: 2.0.0+53
 environment:
   sdk: '>=2.18.1 <3.0.0'
 
+scripts:
+  build:
+    linux: "./linux/build-app.sh"
+
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
@@ -121,6 +125,7 @@ flutter:
     - assets/icon/icon-splash.png
     - assets/icon/icon-macos.png
     - assets/icon/icon-circle.png
+    - assets/icon/icon-circle-256.png
     - assets/icon/icon1024-white-center.png
     - assets/other/get_google_play.png
     - assets/resources/github.svg

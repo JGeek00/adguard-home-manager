@@ -60,14 +60,19 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
   </li>
   <li>
     <b>Linux</b>
-    <ol>
-      <li>flutter clean</li>
-      <li>flutter pub get</li>
-      <li>flutter build linux --release</li>
-      <li>Open debian.yaml file inside debian/ and update the version number</li>
-      <li>Run flutter_to_debian</li>
-      <li>The .deb package is at debian/packages</li>
-    </ol>
+    <ul>
+      <b>Prerequisites</b>
+      <ol>
+        <li>Install rps by running <code>dart pub global activate rps --version 0.7.0-dev.6</code></li>
+      </ol>
+      <b>Build</b>
+      <ol>
+        <li>Open debian.yaml file inside debian/ and update the version number</li>
+        <li>run <code>rps build linux</code></li>
+        <li>The .tar.gz is at build/linux/x64/release/bundle</li>
+        <li>The .deb package is at debian/packages</li>
+      </ol>
+    </ul>
   </li>
   <li>
     <b>Windows</b>
