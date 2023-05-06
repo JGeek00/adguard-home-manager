@@ -16,6 +16,7 @@ import 'package:adguard_home_manager/base.dart';
 import 'package:adguard_home_manager/classes/http_override.dart';
 import 'package:adguard_home_manager/services/db/database.dart';
 import 'package:adguard_home_manager/constants/colors.dart';
+import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/config/theme.dart';
@@ -138,6 +139,7 @@ class _MainState extends State<Main> {
           Locale('en', ''),
           Locale('es', '')
         ],
+        scaffoldMessengerKey: scaffoldMessengerKey,
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(
