@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:async/async.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
@@ -44,6 +45,8 @@ class _LogsListClientState extends State<LogsListClient> {
 
   bool showDivider = true;
 
+  CancelableOperation? cancelableRequest;
+
   Future fetchLogs({
     int? inOffset,
     bool? loadingMore,
@@ -56,34 +59,42 @@ class _LogsListClientState extends State<LogsListClient> {
       setState(() => isLoadingMore = true);
     }
 
-    final result = await getLogs(
-      server: widget.serversProvider.selectedServer!, 
-      count: logsQuantity, 
-      offset: offst,
-      search: '"${widget.ip}"'
+    if (cancelableRequest != null) cancelableRequest!.cancel(); 
+
+    cancelableRequest = CancelableOperation.fromFuture(
+      getLogs(
+        server: widget.serversProvider.selectedServer!, 
+        count: logsQuantity, 
+        offset: offst,
+        search: '"${widget.ip}"'
+      )
     );
 
-    if (loadingMore != null && loadingMore == true) {
-      setState(() => isLoadingMore = false);
-    }
+    final result = await cancelableRequest?.value;
 
-    if (mounted) {
-      if (result['result'] == 'success') {
-        setState(() => offset = inOffset != null ? inOffset+logsQuantity : offset+logsQuantity);
-        if (loadingMore != null && loadingMore == true && logsData != null) {
-          LogsData newLogsData = result['data'];
-          newLogsData.data = [...logsData!.data, ...result['data'].data];
-          setState(() => logsData = newLogsData);
+    if (result != null) {
+      if (loadingMore != null && loadingMore == true) {
+        setState(() => isLoadingMore = false);
+      }
+
+      if (mounted) {
+        if (result['result'] == 'success') {
+          setState(() => offset = inOffset != null ? inOffset+logsQuantity : offset+logsQuantity);
+          if (loadingMore != null && loadingMore == true && logsData != null) {
+            LogsData newLogsData = result['data'];
+            newLogsData.data = [...logsData!.data, ...result['data'].data];
+            setState(() => logsData = newLogsData);
+          }
+          else {
+            LogsData newLogsData = result['data'];
+            setState(() => logsData = newLogsData);
+          }
+          setState(() => loadStatus = 1);
         }
         else {
-          LogsData newLogsData = result['data'];
-          setState(() => logsData = newLogsData);
+          setState(() => loadStatus = 2);
+          widget.appConfigProvider.addLog(result['log']);
         }
-        setState(() => loadStatus = 1);
-      }
-      else {
-        setState(() => loadStatus = 2);
-        widget.appConfigProvider.addLog(result['log']);
       }
     }
   }

@@ -3,7 +3,9 @@ import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+import 'package:adguard_home_manager/widgets/options_modal.dart';
 
+import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
@@ -49,6 +51,27 @@ class ActiveClientTile extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(28),
               onTap: () => onTap(client),
+              onLongPress: () => showDialog(
+                context: context, 
+                builder: (context) => OptionsModal(
+                  options: [
+                    MenuOption(
+                      title: AppLocalizations.of(context)!.copyClipboard,
+                      icon: Icons.copy_rounded,
+                      action: () {
+                        copyToClipboard(
+                          context: context, 
+                          value: client.name != '' 
+                            ? client.name!
+                            : client.ip,
+                          successMessage: AppLocalizations.of(context)!.copiedClipboard,
+                        );
+                        Navigator.pop(context);
+                      },
+                    )
+                  ]
+                ),
+              ),
               child: Container(
                 width: double.maxFinite,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -116,6 +116,7 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 - [sqflite common ffi](https://pub.dev/packages/sqflite_common_ffi)
 - [window size](https://github.com/google/flutter-desktop-embedding)
 - [flutter split view](https://github.com/JGeek00/flutter_split_view) (forked from [here](https://pub.dev/packages/flutter_split_view))
+- [async](https://pub.dev/packages/async)
 
 <br>
 
