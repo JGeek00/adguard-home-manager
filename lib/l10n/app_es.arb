@@ -614,5 +614,8 @@
     "enableList": "Habilitar lista",
     "screens": "Pantallas",
     "copiedClipboard": "Copiado al portapapeles",
-    "seeDetails": "Ver los detalles"
+    "seeDetails": "Ver los detalles",
+    "listNotAvailable": "Lista no disponible",    
+    "copyListUrl": "Copiar URL de lista",
+    "listUrlCopied": "URL de la lista copiada al portapapeles"
 }

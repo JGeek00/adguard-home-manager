@@ -9,25 +9,23 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
 import 'package:adguard_home_manager/screens/filters/delete_list_modal.dart';
+import 'package:adguard_home_manager/screens/filters/list_functions.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/format_time.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 
 class ListDetailsScreen extends StatefulWidget {
-  final Filter list;
+  final int listId;
   final String type;
   final bool dialog;
 
   const ListDetailsScreen({
     Key? key,
-    required this.list,
+    required this.listId,
     required this.type,
     required this.dialog
   }) : super(key: key);
@@ -38,15 +36,10 @@ class ListDetailsScreen extends StatefulWidget {
 
 class _ListDetailsScreenState extends State<ListDetailsScreen> {
   final ScrollController scrollController = ScrollController();
-  String name = "";
-  bool enabled = true;
   bool fabVisible = true;
 
   @override
   void initState() {
-    name = widget.list.name;
-    enabled = widget.list.enabled;
-
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
         if (mounted && fabVisible == true) {
@@ -72,152 +65,15 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
 
     final width = MediaQuery.of(context).size.width;
 
-    void enableDisableList(Filter list, bool newStatus) async {
-      ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(
-        enabled == true
-          ? AppLocalizations.of(context)!.disablingList
-          : AppLocalizations.of(context)!.enablingList,
-      );
-      
-      final result = await updateFilterList(server: serversProvider.selectedServer!, data: {
-        "data": {
-          "enabled": newStatus,
-          "name": list.name,
-          "url": list.url
-        },
-        "url": list.url,
-        "whitelist": widget.type == 'whitelist' ? true : false
-      });
-
-      processModal.close();
-
-      if (result['result'] == 'success') {
-        final result2 = await getFiltering(server: serversProvider.selectedServer!);
-
-        if (result2['result'] == 'success') {
-          serversProvider.setFilteringData(result2['data']);
-          serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
-        }
-        else {
-          appConfigProvider.addLog(result2['log']);
-          serversProvider.setFilteringLoadStatus(LoadStatus.error, true);
-        }
-
-        setState(() => enabled = newStatus);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.listDataUpdated, 
-          color: Colors.green
-        );
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.listDataNotUpdated, 
-          color: Colors.red
-        );
-      }
-    }
-
-    void confirmEditList({required Filter list, required String type}) async {
-      ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.updatingListData);
-
-      final result1 = await updateFilterList(server: serversProvider.selectedServer!, data: {
-        "data": {
-          "enabled": list.enabled,
-          "name": list.name,
-          "url": list.url
-        },
-        "url": list.url,
-        "whitelist": type == 'whitelist' ? true : false
-      });
-
-      if (result1['result'] == 'success') {
-        final result2 = await getFiltering(server: serversProvider.selectedServer!);
-
-        if (result2['result'] == 'success') {
-          serversProvider.setFilteringData(result2['data']);
-          serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
-        }
-        else {
-          appConfigProvider.addLog(result2['log']);
-          serversProvider.setFilteringLoadStatus(LoadStatus.error, true);
-        }
-
-        processModal.close();
-
-        setState(() => name = list.name);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.listDataUpdated, 
-          color: Colors.green
-        );
-      }
-      else {
-        processModal.close();
-        appConfigProvider.addLog(result1['log']);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.listDataNotUpdated, 
-          color: Colors.red
-        );
-      }
-    }
-
-    void deleteList(Filter list, String type) async {
-      ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.deletingList);
-
-      final result1 = await deleteFilterList(server: serversProvider.selectedServer!, data: {
-        "url": list.url,
-        "whitelist": type == 'whitelist' ? true : false
-      });
-
-      if (result1['result'] == 'success') {
-        final result2 = await getFiltering(server: serversProvider.selectedServer!);
-
-        if (result2['result'] == 'success') {
-          serversProvider.setFilteringData(result2['data']);
-          serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
-        }
-        else {
-          appConfigProvider.addLog(result2['log']);
-          serversProvider.setFilteringLoadStatus(LoadStatus.loading, true);
-        }
-
-        processModal.close();
-
-        Navigator.pop(context); // Closes the screen
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.listDeleted, 
-          color: Colors.green
-        );
-      }
-      else {
-        processModal.close();
-        appConfigProvider.addLog(result1['log']);
-
-        showSnacbkar(
-          context: context, 
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.listNotDeleted, 
-          color: Colors.red
-        );
-      }
+    Filter? list;
+    try {
+      list = serversProvider.filtering.data != null
+        ? widget.type == 'whitelist'
+          ? serversProvider.filtering.data!.whitelistFilters.firstWhere((l) => l.id == widget.listId)
+          : serversProvider.filtering.data!.filters.firstWhere((l) => l.id == widget.listId)
+        : null;
+    } catch (e) {
+      // ------- //
     }
 
     List<Widget> content() {
@@ -226,11 +82,11 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
           icon: Icons.shield_rounded, 
           title: AppLocalizations.of(context)!.currentStatus, 
           subtitleWidget: Text(
-            enabled == true
+            list!.enabled == true
               ? AppLocalizations.of(context)!.enabled
               : AppLocalizations.of(context)!.disabled,
             style: TextStyle(
-              color: enabled == true
+              color: list.enabled == true
                 ? appConfigProvider.useThemeColorForStatus == true
                   ? Theme.of(context).colorScheme.primary
                   : Colors.green
@@ -250,7 +106,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
         CustomListTile(
           icon: Icons.badge_rounded, 
           title: AppLocalizations.of(context)!.name, 
-          subtitle: name,
+          subtitle: list.name,
           padding: widget.dialog == true
             ? const EdgeInsets.symmetric(
                 horizontal: 24,
@@ -261,7 +117,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
         CustomListTile(
           icon: Icons.link_rounded, 
           title: "URL", 
-          subtitle: widget.list.url,
+          subtitle: list.url,
           padding: widget.dialog == true
             ? const EdgeInsets.symmetric(
                 horizontal: 24,
@@ -272,7 +128,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
         CustomListTile(
           icon: Icons.list_rounded, 
           title: AppLocalizations.of(context)!.rules, 
-          subtitle: widget.list.rulesCount.toString(),
+          subtitle: list.rulesCount.toString(),
           padding: widget.dialog == true
             ? const EdgeInsets.symmetric(
                 horizontal: 24,
@@ -293,10 +149,10 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
               )
             : null,
         ),
-        if (widget.list.lastUpdated != null) CustomListTile(
+        if (list.lastUpdated != null) CustomListTile(
           icon: Icons.schedule_rounded, 
           title: AppLocalizations.of(context)!.latestUpdate, 
-          subtitle: convertTimestampLocalTimezone(widget.list.lastUpdated!, 'dd-MM-yyyy HH:mm'), 
+          subtitle: convertTimestampLocalTimezone(list.lastUpdated!, 'dd-MM-yyyy HH:mm'), 
           padding: widget.dialog == true
             ? const EdgeInsets.symmetric(
                 horizontal: 24,
@@ -316,9 +172,31 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
               showDialog(
                 context: context, 
                 builder: (ctx) => AddListModal(
-                  list: widget.list,
+                  list: list,
                   type: widget.type,
-                  onEdit: confirmEditList,
+                  onEdit: ({required Filter list, required String type}) async {
+                    final result = await editList(
+                      context: context, 
+                      serversProvider: serversProvider,
+                      appConfigProvider: appConfigProvider,
+                      list: list, 
+                      type: widget.type
+                    );
+                    if (result == true) {
+                      showSnacbkar(
+                        appConfigProvider: appConfigProvider,
+                        label: AppLocalizations.of(context)!.listDataUpdated, 
+                        color: Colors.green
+                      );
+                    }
+                    else {
+                      showSnacbkar(
+                        appConfigProvider: appConfigProvider,
+                        label: AppLocalizations.of(context)!.listDataNotUpdated, 
+                        color: Colors.red
+                      );
+                    }
+                  },
                   dialog: true,
                 ),
               )
@@ -327,9 +205,31 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
               showModalBottomSheet(
                 context: context, 
                 builder: (ctx) => AddListModal(
-                  list: widget.list,
+                  list: list,
                   type: widget.type,
-                  onEdit: confirmEditList,
+                  onEdit: ({required Filter list, required String type}) async {
+                    final result = await editList(
+                      context: context, 
+                      serversProvider: serversProvider,
+                      appConfigProvider: appConfigProvider,
+                      list: list, 
+                      type: widget.type
+                    );
+                    if (result == true) {
+                      showSnacbkar(
+                        appConfigProvider: appConfigProvider,
+                        label: AppLocalizations.of(context)!.listDataUpdated, 
+                        color: Colors.green
+                      );
+                    }
+                    else {
+                      showSnacbkar(
+                        appConfigProvider: appConfigProvider,
+                        label: AppLocalizations.of(context)!.listDataNotUpdated, 
+                        color: Colors.red
+                      );
+                    }
+                  },
                   dialog: false,
                 ),
                 isScrollControlled: true,
@@ -344,8 +244,31 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
           onPressed: () {
             showDialog(
               context: context, 
-              builder: (context) => DeleteListModal(
-                onConfirm: () => deleteList(widget.list, widget.type),
+              builder: (c) => DeleteListModal(
+                onConfirm: () async {
+                  final result = await deleteList(
+                    context: context, 
+                    serversProvider: serversProvider,
+                    appConfigProvider: appConfigProvider,
+                    list: list!, 
+                    type: widget.type,
+                  );
+                  if (result == true) {
+                    showSnacbkar(
+                      appConfigProvider: appConfigProvider,
+                      label: AppLocalizations.of(context)!.listDeleted, 
+                      color: Colors.green
+                    );
+                    Navigator.pop(context);
+                  }
+                  else {
+                    showSnacbkar(
+                      appConfigProvider: appConfigProvider,
+                      label: AppLocalizations.of(context)!.listNotDeleted, 
+                      color: Colors.red
+                    );
+                  }
+                }
               )
             );
           }, 
@@ -386,16 +309,38 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                         )
                       ],
                     ),
-                    Row(
+                    if (list != null) Row(
                       children: [
                         IconButton(
-                          onPressed: () => enableDisableList(widget.list, !enabled),
+                          onPressed: () async {
+                            final result = await enableDisableList(
+                              context: context, 
+                              serversProvider: serversProvider, 
+                              appConfigProvider: appConfigProvider, 
+                              list: list!, 
+                              listType: widget.type, 
+                            );
+                            if (result == true) {
+                              showSnacbkar(
+                                appConfigProvider: appConfigProvider,
+                                label: AppLocalizations.of(context)!.listDataUpdated, 
+                                color: Colors.green
+                              );
+                            }
+                            else {
+                              showSnacbkar(
+                                appConfigProvider: appConfigProvider,
+                                label: AppLocalizations.of(context)!.listDataNotUpdated, 
+                                color: Colors.red
+                              );
+                            }
+                          },
                           icon: Icon(
-                            enabled == true
+                            list.enabled == true
                               ? Icons.gpp_bad_rounded
                               : Icons.verified_user_rounded,
                           ),
-                          tooltip: enabled == true
+                          tooltip: list.enabled == true
                             ? AppLocalizations.of(context)!.disableList
                             : AppLocalizations.of(context)!.enableList,
                         ),
@@ -406,11 +351,20 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                 ),
               ),
               Flexible(
-                child: SingleChildScrollView(
-                  child: Wrap(
-                    children: content(),
-                  ),
-                )
+                child: list != null
+                  ?  SingleChildScrollView(
+                      child: Wrap(
+                        children: content(),
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                        AppLocalizations.of(context)!.listNotAvailable,
+                        style: const TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                    ),
               )
             ],
           ),
@@ -421,14 +375,22 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
       return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.listDetails),
-          actions: actions(),
+          actions: list != null ? actions() : null,
         ),
         body: Stack(
           children: [
-            ListView(
+            if (list != null) ListView(
               children: content(),
             ),
-            AnimatedPositioned(
+            if (list == null) Center(
+              child: Text(
+                AppLocalizations.of(context)!.listNotAvailable,
+                style: const TextStyle(
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            if (list != null) AnimatedPositioned(
               duration: const Duration(milliseconds: 100),
               curve: Curves.easeInOut,
               bottom: fabVisible ?
@@ -437,9 +399,31 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                 : -70,
               right: 20,
               child: FloatingActionButton(
-                onPressed: () => enableDisableList(widget.list, !enabled),
+                onPressed: () async {
+                  final result = await enableDisableList(
+                    context: context, 
+                    serversProvider: serversProvider, 
+                    appConfigProvider: appConfigProvider, 
+                    list: list!, 
+                    listType: widget.type, 
+                  );
+                  if (result == true) {
+                    showSnacbkar(
+                      appConfigProvider: appConfigProvider,
+                      label: AppLocalizations.of(context)!.listDataUpdated, 
+                      color: Colors.green
+                    );
+                  }
+                  else {
+                    showSnacbkar(
+                      appConfigProvider: appConfigProvider,
+                      label: AppLocalizations.of(context)!.listDataNotUpdated, 
+                      color: Colors.red
+                    );
+                  }
+                },
                 child: Icon(
-                  enabled == true
+                  list.enabled == true
                     ? Icons.gpp_bad_rounded
                     : Icons.verified_user_rounded,
                 ),

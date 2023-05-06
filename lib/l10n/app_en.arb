@@ -614,5 +614,8 @@
     "enableList": "Enable list",
     "screens": "Screens",
     "copiedClipboard": "Copied to clipboard",
-    "seeDetails": "See details"
+    "seeDetails": "See details",
+    "listNotAvailable": "List not available",
+    "copyListUrl": "Copy list URL",
+    "listUrlCopied": "List URL copied to the clipboard"
 }

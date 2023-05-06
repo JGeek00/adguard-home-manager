@@ -286,7 +286,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
         showDialog(
           context: context,
           builder: (context) => ListDetailsScreen(
-            list: filter, 
+            listId: filter.id, 
             type: type,
             dialog: true,
           ),
@@ -297,7 +297,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ListDetailsScreen(
-              list: filter, 
+              listId: filter.id, 
               type: type,
               dialog: false,
             )

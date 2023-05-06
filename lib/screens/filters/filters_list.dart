@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/add_button.dart';
+import 'package:adguard_home_manager/screens/filters/list_options_menu.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
@@ -87,22 +88,26 @@ class _FiltersListState extends State<FiltersList> {
         ),
       ), 
       itemsCount: widget.data.length, 
-      contentWidget: (index) => CustomListTile(
-        title: widget.data[index].name,
-        subtitle: "${intFormat(widget.data[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
-        trailing: Icon(
-          widget.data[index].enabled == true
-            ? Icons.check_circle_rounded
-            : Icons.cancel,
-          color: widget.data[index].enabled == true
-            ? appConfigProvider.useThemeColorForStatus == true
-              ? Theme.of(context).colorScheme.primary
-              : Colors.green
-            : appConfigProvider.useThemeColorForStatus == true
-              ? Colors.grey
-              : Colors.red
+      contentWidget: (index) => ListOptionsMenu(
+        list: widget.data[index],
+        listType: widget.type,
+        child: CustomListTile(
+          title: widget.data[index].name,
+          subtitle: "${intFormat(widget.data[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
+          trailing: Icon(
+            widget.data[index].enabled == true
+              ? Icons.check_circle_rounded
+              : Icons.cancel,
+            color: widget.data[index].enabled == true
+              ? appConfigProvider.useThemeColorForStatus == true
+                ? Theme.of(context).colorScheme.primary
+                : Colors.green
+              : appConfigProvider.useThemeColorForStatus == true
+                ? Colors.grey
+                : Colors.red
+          ),
+          onTap: () => widget.onOpenDetailsScreen(widget.data[index], widget.type),
         ),
-        onTap: () => widget.onOpenDetailsScreen(widget.data[index], widget.type),
       ), 
       noData: Container(
         width: double.maxFinite,

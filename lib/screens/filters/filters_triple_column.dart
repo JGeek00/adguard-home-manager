@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/add_button.dart';
+import 'package:adguard_home_manager/screens/filters/list_options_menu.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/options_modal.dart';
 
@@ -128,8 +131,9 @@ class FiltersTripleColumn extends StatelessWidget {
                             type: 'whitelist', 
                             widget: (fn) => IconButton(
                               onPressed: fn, 
-                              icon: const Icon(Icons.add_rounded)
-                            )
+                              icon: const Icon(Icons.add_rounded),
+                              tooltip: AppLocalizations.of(context)!.addWhitelist,
+                            ),
                           )
                         ],
                       ),
@@ -137,22 +141,26 @@ class FiltersTripleColumn extends StatelessWidget {
                     Expanded(
                       child: ListView.builder(
                         itemCount: serversProvider.filtering.data!.whitelistFilters.length,
-                        itemBuilder: (context, index) => CustomListTile(
-                          title: serversProvider.filtering.data!.whitelistFilters[index].name,
-                          subtitle: "${intFormat(serversProvider.filtering.data!.whitelistFilters[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
-                          trailing: Icon(
-                            serversProvider.filtering.data!.whitelistFilters[index].enabled == true
-                              ? Icons.check_circle_rounded
-                              : Icons.cancel,
-                            color: serversProvider.filtering.data!.whitelistFilters[index].enabled == true
-                              ? appConfigProvider.useThemeColorForStatus == true
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.green
-                              : appConfigProvider.useThemeColorForStatus == true
-                                ? Colors.grey
-                                : Colors.red
+                        itemBuilder: (context, index) => ListOptionsMenu(
+                          list: serversProvider.filtering.data!.whitelistFilters[index],
+                          listType: 'whitelist',
+                          child: CustomListTile(
+                            title: serversProvider.filtering.data!.whitelistFilters[index].name,
+                            subtitle: "${intFormat(serversProvider.filtering.data!.whitelistFilters[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
+                            trailing: Icon(
+                              serversProvider.filtering.data!.whitelistFilters[index].enabled == true
+                                ? Icons.check_circle_rounded
+                                : Icons.cancel,
+                              color: serversProvider.filtering.data!.whitelistFilters[index].enabled == true
+                                ? appConfigProvider.useThemeColorForStatus == true
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.green
+                                : appConfigProvider.useThemeColorForStatus == true
+                                  ? Colors.grey
+                                  : Colors.red
+                            ),
+                            onTap: () => onOpenDetailsModal(serversProvider.filtering.data!.whitelistFilters[index], 'whitelist'),
                           ),
-                          onTap: () => onOpenDetailsModal(serversProvider.filtering.data!.whitelistFilters[index], 'whitelist'),
                         ), 
                       ),
                     )
@@ -179,7 +187,8 @@ class FiltersTripleColumn extends StatelessWidget {
                             type: 'blacklist', 
                             widget: (fn) => IconButton(
                               onPressed: fn, 
-                              icon: const Icon(Icons.add_rounded)
+                              icon: const Icon(Icons.add_rounded),
+                              tooltip: AppLocalizations.of(context)!.addBlacklist,
                             )
                           )
                         ],
@@ -188,22 +197,26 @@ class FiltersTripleColumn extends StatelessWidget {
                     Expanded(
                       child: ListView.builder(
                         itemCount: serversProvider.filtering.data!.filters.length,
-                        itemBuilder: (context, index) => CustomListTile(
-                          title: serversProvider.filtering.data!.filters[index].name,
-                          subtitle: "${intFormat(serversProvider.filtering.data!.filters[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
-                          trailing: Icon(
-                            serversProvider.filtering.data!.filters[index].enabled == true
-                              ? Icons.check_circle_rounded
-                              : Icons.cancel,
-                            color: serversProvider.filtering.data!.filters[index].enabled == true
-                              ? appConfigProvider.useThemeColorForStatus == true
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.green
-                              : appConfigProvider.useThemeColorForStatus == true
-                                ? Colors.grey
-                                : Colors.red
+                        itemBuilder: (context, index) => ListOptionsMenu(
+                          list: serversProvider.filtering.data!.filters[index],
+                          listType: 'blacklist',
+                          child: CustomListTile(
+                            title: serversProvider.filtering.data!.filters[index].name,
+                            subtitle: "${intFormat(serversProvider.filtering.data!.filters[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
+                            trailing: Icon(
+                              serversProvider.filtering.data!.filters[index].enabled == true
+                                ? Icons.check_circle_rounded
+                                : Icons.cancel,
+                              color: serversProvider.filtering.data!.filters[index].enabled == true
+                                ? appConfigProvider.useThemeColorForStatus == true
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.green
+                                : appConfigProvider.useThemeColorForStatus == true
+                                  ? Colors.grey
+                                  : Colors.red
+                            ),
+                            onTap: () => onOpenDetailsModal(serversProvider.filtering.data!.filters[index], 'blacklist'),
                           ),
-                          onTap: () => onOpenDetailsModal(serversProvider.filtering.data!.filters[index], 'blacklist'),
                         ), 
                       ),
                     )
@@ -230,7 +243,8 @@ class FiltersTripleColumn extends StatelessWidget {
                             type: '', 
                             widget: (fn) => IconButton(
                               onPressed: fn, 
-                              icon: const Icon(Icons.add_rounded)
+                              icon: const Icon(Icons.add_rounded),
+                              tooltip: AppLocalizations.of(context)!.addCustomRule,
                             )
                           )
                         ],
