@@ -50,7 +50,6 @@ class ClientsFab extends StatelessWidget {
         serversProvider.setClientsData(clientsData);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
           color: Colors.green
@@ -60,7 +59,6 @@ class ClientsFab extends StatelessWidget {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotAdded, 
           color: Colors.red

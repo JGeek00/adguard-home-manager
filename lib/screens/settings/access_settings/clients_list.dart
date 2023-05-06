@@ -107,7 +107,6 @@ class _ClientsListState extends State<ClientsList> {
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
           color: Colors.red
@@ -117,7 +116,6 @@ class _ClientsListState extends State<ClientsList> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotRemoved, 
           color: Colors.red
@@ -160,7 +158,6 @@ class _ClientsListState extends State<ClientsList> {
       }
       else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
           color: Colors.red
@@ -170,7 +167,6 @@ class _ClientsListState extends State<ClientsList> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: type == 'allowed' || type == 'blocked'
             ? AppLocalizations.of(context)!.clientNotRemoved

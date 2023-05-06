@@ -6,7 +6,6 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/config/globals.dart';
 
 void showSnacbkar({
-  required BuildContext context, 
   required AppConfigProvider appConfigProvider,
   required String label, 
   required Color color,

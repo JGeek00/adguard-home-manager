@@ -51,7 +51,6 @@ class AddFiltersButton extends StatelessWidget {
         serversProvider.setFilteringData(filteringData);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleAddedSuccessfully, 
           color: Colors.green
@@ -61,7 +60,6 @@ class AddFiltersButton extends StatelessWidget {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleNotAdded, 
           color: Colors.red
@@ -120,7 +118,6 @@ class AddFiltersButton extends StatelessWidget {
           processModal.close();
 
           showSnacbkar(
-            context: context, 
             appConfigProvider: appConfigProvider,
             label: "${AppLocalizations.of(context)!.listAdded} $items.", 
             color: Colors.green
@@ -130,7 +127,6 @@ class AddFiltersButton extends StatelessWidget {
           processModal.close();
 
           showSnacbkar(
-            context: context, 
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.listNotAdded, 
             color: Colors.red
@@ -142,7 +138,6 @@ class AddFiltersButton extends StatelessWidget {
         appConfigProvider.addLog(result1['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listUrlInvalid, 
           color: Colors.red
@@ -153,7 +148,6 @@ class AddFiltersButton extends StatelessWidget {
         appConfigProvider.addLog(result1['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listAlreadyAdded, 
           color: Colors.red
@@ -164,7 +158,6 @@ class AddFiltersButton extends StatelessWidget {
         appConfigProvider.addLog(result1['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listNotAdded, 
           color: Colors.red

@@ -103,7 +103,6 @@ class _FiltersWidgetState extends State<FiltersWidget> {
             widget.serversProvider.setFilteringData(result2['data']);
 
             showSnacbkar(
-              context: context, 
               appConfigProvider: appConfigProvider,
               label: "${result['data']['updated']} ${AppLocalizations.of(context)!.listsUpdated}", 
               color: Colors.green
@@ -113,7 +112,6 @@ class _FiltersWidgetState extends State<FiltersWidget> {
             widget.appConfigProvider.addLog(result2['log']);
 
             showSnacbkar(
-              context: context, 
               appConfigProvider: appConfigProvider,
               label:  AppLocalizations.of(context)!.listsNotLoaded, 
               color: Colors.red
@@ -127,7 +125,6 @@ class _FiltersWidgetState extends State<FiltersWidget> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listsNotUpdated, 
           color: Colors.red
@@ -177,7 +174,6 @@ class _FiltersWidgetState extends State<FiltersWidget> {
         serversProvider.setFilteringProtectionStatus(!serversProvider.serverStatus.data!.filteringEnabled);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.filteringStatusUpdated, 
           color: Colors.green
@@ -185,7 +181,6 @@ class _FiltersWidgetState extends State<FiltersWidget> {
       }
       else {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.filteringStatusNotUpdated, 
           color: Colors.red
@@ -208,7 +203,6 @@ class _FiltersWidgetState extends State<FiltersWidget> {
         serversProvider.setFiltersUpdateFrequency(value);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.updateFrequencyChanged, 
           color: Colors.green
@@ -216,7 +210,6 @@ class _FiltersWidgetState extends State<FiltersWidget> {
       }
       else {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.updateFrequencyNotChanged, 
           color: Colors.red
@@ -262,8 +255,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
         filteringData.userRules = newRules;
         serversProvider.setFilteringData(filteringData);
 
-        showSnacbkar(
-          context: context, 
+        showSnacbkar( 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleRemovedSuccessfully, 
           color: Colors.green
@@ -273,7 +265,6 @@ class _FiltersWidgetState extends State<FiltersWidget> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleNotRemoved, 
           color: Colors.red

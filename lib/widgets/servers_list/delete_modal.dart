@@ -35,7 +35,6 @@ class DeleteModal extends StatelessWidget {
         }
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.connectionRemoved, 
           color: Colors.green
@@ -43,7 +42,6 @@ class DeleteModal extends StatelessWidget {
       }
       else {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.connectionCannotBeRemoved, 
           color: Colors.red

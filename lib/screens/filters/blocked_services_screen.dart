@@ -104,7 +104,6 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
         serversProvider.setBlockedServices(values);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.blockedServicesUpdated, 
           color: Colors.green
@@ -112,7 +111,6 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
       }
       else {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.blockedServicesNotUpdated, 
           color: Colors.red

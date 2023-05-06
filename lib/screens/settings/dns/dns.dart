@@ -205,7 +205,6 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
       final result = await clearDnsCache(context, serversProvider.selectedServer!);
       if (result == true) {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheCleared, 
           color: Colors.green
@@ -213,7 +212,6 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
       }
       else {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheNotCleared, 
           color: Colors.red

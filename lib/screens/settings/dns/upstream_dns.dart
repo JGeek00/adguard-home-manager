@@ -160,7 +160,6 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
         serversProvider.setDnsInfoData(data);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
@@ -170,7 +169,6 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
           color: Colors.red
@@ -180,7 +178,6 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 
           color: Colors.red

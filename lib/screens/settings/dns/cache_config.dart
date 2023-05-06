@@ -95,7 +95,6 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
         serversProvider.setDnsInfoData(data);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
@@ -105,7 +104,6 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
           color: Colors.red
@@ -115,7 +113,6 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 
           color: Colors.red
@@ -155,7 +152,6 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
       final result = await clearDnsCache(context, serversProvider.selectedServer!);
       if (result == true) {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheCleared, 
           color: Colors.green
@@ -163,7 +159,6 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
       }
       else {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheNotCleared, 
           color: Colors.red

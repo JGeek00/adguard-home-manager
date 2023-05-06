@@ -111,7 +111,6 @@ class _AddedListState extends State<AddedList> {
         serversProvider.setClientsData(clientsData);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientUpdatedSuccessfully, 
           color: Colors.green
@@ -121,7 +120,6 @@ class _AddedListState extends State<AddedList> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotUpdated, 
           color: Colors.red
@@ -147,7 +145,6 @@ class _AddedListState extends State<AddedList> {
         }
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientDeletedSuccessfully, 
           color: Colors.green
@@ -157,7 +154,6 @@ class _AddedListState extends State<AddedList> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotDeleted, 
           color: Colors.red

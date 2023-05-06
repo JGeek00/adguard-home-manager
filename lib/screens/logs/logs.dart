@@ -211,7 +211,6 @@ class _LogsWidgetState extends State<LogsWidget> {
 
       if (result['result'] == 'success') {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsConfigUpdated, 
           color: Colors.green
@@ -221,7 +220,6 @@ class _LogsWidgetState extends State<LogsWidget> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsConfigNotUpdated, 
           color: Colors.red
@@ -239,7 +237,6 @@ class _LogsWidgetState extends State<LogsWidget> {
 
       if (result['result'] == 'success') {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsCleared, 
           color: Colors.green
@@ -249,7 +246,6 @@ class _LogsWidgetState extends State<LogsWidget> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsNotCleared, 
           color: Colors.red

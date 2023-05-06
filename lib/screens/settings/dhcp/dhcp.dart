@@ -242,7 +242,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
 
       if (result['result'] == 'success') {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.settingsSaved, 
           color: Colors.green
@@ -252,7 +251,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.settingsNotSaved, 
           color: Colors.red
@@ -273,7 +271,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
           clearAll();
 
           showSnacbkar(
-            context: context, 
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.configRestored, 
             color: Colors.green
@@ -283,7 +280,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
           appConfigProvider.addLog(result['log']);
 
           showSnacbkar(
-            context: context, 
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.configNotRestored, 
             color: Colors.red
@@ -308,7 +304,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
           serversProvider.setDhcpData(data);
 
           showSnacbkar(
-            context: context, 
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.leasesRestored, 
             color: Colors.green
@@ -318,7 +313,6 @@ class _DhcpWidgetState extends State<DhcpWidget> {
           appConfigProvider.addLog(result['log']);
 
           showSnacbkar(
-            context: context, 
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.leasesNotRestored, 
             color: Colors.red

@@ -104,7 +104,6 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
         process.close();
         appConfigProvider.addLog(result['log']);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.cannotConnect, 
           color: Colors.red
@@ -116,7 +115,6 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
       final result = await serversProvider.setDefaultServer(server);
       if (result == null) {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.connectionDefaultSuccessfully, 
           color: Colors.green
@@ -131,7 +129,6 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
           )
         );
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.connectionDefaultFailed, 
           color: Colors.red

@@ -91,7 +91,6 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
         serversProvider.setRewriteRulesData(data);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleDeleted, 
           color: Colors.green
@@ -100,7 +99,6 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
       else {
         appConfigProvider.addLog(result['log']);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotDeleted, 
           color: Colors.red
@@ -125,7 +123,6 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
         serversProvider.setRewriteRulesData(data);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleAdded, 
           color: Colors.green
@@ -134,7 +131,6 @@ class _DnsRewritesWidgetState extends State<DnsRewritesWidget> {
       else {
         appConfigProvider.addLog(result['log']);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotAdded, 
           color: Colors.red

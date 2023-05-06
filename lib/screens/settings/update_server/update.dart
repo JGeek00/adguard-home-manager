@@ -43,7 +43,6 @@ class UpdateScreen extends StatelessWidget {
       if (result['result'] == 'success') {
         serversProvider.clearUpdateAvailable(serversProvider.selectedServer!, serversProvider.updateAvailable.data!.newVersion!);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.requestStartUpdateSuccessful,
           color: Colors.green,
@@ -52,7 +51,6 @@ class UpdateScreen extends StatelessWidget {
       }
       else {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.requestStartUpdateFailed,
           color: Colors.red,

@@ -130,7 +130,6 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
         serversProvider.setServerStatusData(data);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsUpdatedSuccessfully,
           color: Colors.green,
@@ -140,7 +139,6 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
       else {
         appConfigProvider.addLog(result['log']);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsNotSaved,
           color: Colors.red,

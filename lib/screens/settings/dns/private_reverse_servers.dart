@@ -120,7 +120,6 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
         serversProvider.setDnsInfoData(data);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
@@ -130,7 +129,6 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
           color: Colors.red
@@ -140,7 +138,6 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 
           color: Colors.red

@@ -52,7 +52,6 @@ class DhcpLeases extends StatelessWidget {
         serversProvider.setDhcpData(data);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseDeleted, 
           color: Colors.green
@@ -61,7 +60,6 @@ class DhcpLeases extends StatelessWidget {
       else {
         appConfigProvider.addLog(result['log']);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseNotDeleted, 
           color: Colors.red
@@ -87,7 +85,6 @@ class DhcpLeases extends StatelessWidget {
         serversProvider.setDhcpData(data);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseCreated, 
           color: Colors.green
@@ -96,7 +93,6 @@ class DhcpLeases extends StatelessWidget {
       else if (result['result'] == 'error' && result['message'] == 'already_exists' ) {
         appConfigProvider.addLog(result['log']);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseExists, 
           color: Colors.red
@@ -105,7 +101,6 @@ class DhcpLeases extends StatelessWidget {
       else if (result['result'] == 'error' && result['message'] == 'server_not_configured' ) {
         appConfigProvider.addLog(result['log']);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.serverNotConfigured, 
           color: Colors.red
@@ -114,7 +109,6 @@ class DhcpLeases extends StatelessWidget {
       else {
         appConfigProvider.addLog(result['log']);
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseNotCreated, 
           color: Colors.red

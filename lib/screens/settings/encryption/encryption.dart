@@ -258,7 +258,6 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
 
       if (result['result'] == 'success') {
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.encryptionConfigSaved, 
           color: Colors.green
@@ -268,7 +267,6 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
         appConfigProvider.addLog(result['log']);
 
         showSnacbkar(
-          context: context, 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.encryptionConfigNotSaved, 
           color: Colors.red
