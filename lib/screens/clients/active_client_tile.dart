@@ -25,6 +25,29 @@ class ActiveClientTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void openOptionsModal() {
+      showDialog(
+        context: context, 
+        builder: (context) => OptionsModal(
+          options: [
+            MenuOption(
+              title: AppLocalizations.of(context)!.copyClipboard,
+              icon: Icons.copy_rounded,
+              action: () {
+                copyToClipboard(
+                  context: context, 
+                  value: client.name != '' 
+                    ? client.name!
+                    : client.ip,
+                  successMessage: AppLocalizations.of(context)!.copiedClipboard,
+                );
+              },
+            )
+          ]
+        ),
+      );
+    }
+
     if (splitView == true) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -51,27 +74,10 @@ class ActiveClientTile extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(28),
               onTap: () => onTap(client),
-              onLongPress: () => showDialog(
-                context: context, 
-                builder: (context) => OptionsModal(
-                  options: [
-                    MenuOption(
-                      title: AppLocalizations.of(context)!.copyClipboard,
-                      icon: Icons.copy_rounded,
-                      action: () {
-                        copyToClipboard(
-                          context: context, 
-                          value: client.name != '' 
-                            ? client.name!
-                            : client.ip,
-                          successMessage: AppLocalizations.of(context)!.copiedClipboard,
-                        );
-                        Navigator.pop(context);
-                      },
-                    )
-                  ]
-                ),
-              ),
+              onLongPress: () {
+                Navigator.pop(context);
+                openOptionsModal();
+              },
               child: Container(
                 width: double.maxFinite,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -155,6 +161,7 @@ class ActiveClientTile extends StatelessWidget {
             ),
           ),
           onTap: () => onTap(client),
+          onLongPress: openOptionsModal,
         ),
       );
     }
