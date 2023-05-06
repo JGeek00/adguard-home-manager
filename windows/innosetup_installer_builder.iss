@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AdGuard Home Manager"
-#define MyAppVersion "2.0.0"
+#define MyAppVersion "2.1.0"
 #define MyAppPublisher "JGeek00"
 #define MyAppURL "https://github.com/JGeek00/adguard-home-manager"
 #define MyAppExeName "adguard_home_manager.exe"
