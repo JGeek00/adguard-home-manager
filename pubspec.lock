@@ -246,6 +246,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.1"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      sha256: d9283d92059a22e9834bc0a31336658ffba77089fb6f3cc36751f1fc7c6661a3
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.2"
   flutter_html:
     dependency: "direct main"
     description:
@@ -518,6 +526,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  sentry:
+    dependency: transitive
+    description:
+      name: sentry
+      sha256: "8f2ff67c168c640567093f9f80f6cdfa34c009b89fb81732e896b9e95c3b87e8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.5.1"
+  sentry_flutter:
+    dependency: "direct main"
+    description:
+      name: sentry_flutter
+      sha256: "4de19f8b353eac472609f6c42b2bb0dd38d5a128c3e4a6ac6c0a9574b85fde47"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.5.1"
   sky_engine:
     dependency: transitive
     description: flutter

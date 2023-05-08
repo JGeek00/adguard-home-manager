@@ -126,7 +126,6 @@ class _LogsListClientState extends State<LogsListClient> {
 
     if (widget.ip != previousIp) {
       setState(() => loadStatus = 0);
-      if (scrollController.hasClients) scrollController.animateTo(0, duration: const Duration(milliseconds: 1), curve: Curves.ease);
       fetchLogs(inOffset: 0);
       setState(() => previousIp = widget.ip);
     }

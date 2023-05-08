@@ -9,6 +9,13 @@ PODS:
   - FMDB/standard (2.7.5)
   - package_info_plus (0.0.1):
     - FlutterMacOS
+  - Sentry/HybridSDK (8.5.0):
+    - SentryPrivate (= 8.5.0)
+  - sentry_flutter (0.0.1):
+    - Flutter
+    - FlutterMacOS
+    - Sentry/HybridSDK (= 8.5.0)
+  - SentryPrivate (8.5.0)
   - sqflite (0.0.2):
     - FlutterMacOS
     - FMDB (>= 2.7.5)
@@ -37,6 +44,7 @@ DEPENDENCIES:
   - dynamic_color (from `Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
+  - sentry_flutter (from `Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/macos`)
   - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
@@ -45,6 +53,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - FMDB
+    - Sentry
+    - SentryPrivate
     - sqlite3
 
 EXTERNAL SOURCES:
@@ -56,6 +66,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
+  sentry_flutter:
+    :path: Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos
   sqflite:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite/macos
   sqlite3_flutter_libs:
@@ -71,6 +83,9 @@ SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
+  Sentry: 3be3f42e40e5a552935552e115744d5810a216d9
+  sentry_flutter: c75806c304706163b2c129394c4621a786ad84e9
+  SentryPrivate: 8c9463280e282527f938d1a5d1d60f8e10ff279b
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
   sqlite3: d31b2b69d59bd1b4ab30e5c92eb18fd8e82fa392
   sqlite3_flutter_libs: f20746e4a0245afbee4f20d9afc0072ebff7cc26

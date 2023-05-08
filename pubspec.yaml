@@ -70,6 +70,8 @@ dependencies:
   url_launcher: ^6.1.10
   contextmenu: ^3.0.0
   async: ^2.10.0
+  sentry_flutter: ^7.5.1
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -131,6 +133,7 @@ flutter:
     - assets/other/get_google_play.png
     - assets/resources/github.svg
     - assets/resources/google-play.svg
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

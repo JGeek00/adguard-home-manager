@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -34,6 +37,8 @@ void main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
+
+  await dotenv.load(fileName: '.env');
   
   AppConfigProvider appConfigProvider = AppConfigProvider();
   ServersProvider serversProvider = ServersProvider();
@@ -62,22 +67,56 @@ void main() async {
   PackageInfo appInfo = await PackageInfo.fromPlatform();
   appConfigProvider.setAppInfo(appInfo);
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: ((context) => serversProvider)
-        ),
-        ChangeNotifierProvider(
-          create: ((context) => appConfigProvider)
-        ),
-        ChangeNotifierProvider(
-          create: ((context) => logsProvider)
-        ),
-      ],
-      child: const Main(),
+  if (
+    (
+      kReleaseMode &&
+      (dotenv.env['SENTRY_DSN'] != null && dotenv.env['SENTRY_DSN'] != "")
+    ) || (
+      dotenv.env['ENABLE_SENTRY'] == "true" &&
+      (dotenv.env['SENTRY_DSN'] != null && dotenv.env['SENTRY_DSN'] != "")
     )
-  );
+  ) {
+    SentryFlutter.init(
+      (options) {
+        options.dsn = dotenv.env['SENTRY_DSN'];
+        options.sendDefaultPii = false;
+      },
+      appRunner: () => runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: ((context) => serversProvider)
+            ),
+            ChangeNotifierProvider(
+              create: ((context) => appConfigProvider)
+            ),
+            ChangeNotifierProvider(
+              create: ((context) => logsProvider)
+            ),
+          ],
+          child: const Main(),
+        )
+      )
+    );
+  }
+  else {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: ((context) => serversProvider)
+          ),
+          ChangeNotifierProvider(
+            create: ((context) => appConfigProvider)
+          ),
+          ChangeNotifierProvider(
+            create: ((context) => logsProvider)
+          ),
+        ],
+        child: const Main(),
+      )
+    );
+  }
 }
 
 class Main extends StatefulWidget {
