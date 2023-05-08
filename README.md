@@ -34,7 +34,7 @@
 <p>▶ Responsive UI adapted for landscape displays.</p>
 
 ## Privacy policy
-AdGuard Home Manager does not collect any personal user data. All data stored into the application is kept on the user's device.
+Check the privacy policy [here](https://github.com/JGeek00/adguard-home-manager/wiki/Privacy-policy).
 
 ## Disclaimer
 This is an unofficial application. The AdGuard Home team and the development of the AdGuard Home software is not related in any way with this application.
@@ -117,6 +117,8 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 - [window size](https://github.com/google/flutter-desktop-embedding)
 - [flutter split view](https://github.com/JGeek00/flutter_split_view) (forked from [here](https://pub.dev/packages/flutter_split_view))
 - [async](https://pub.dev/packages/async)
+- [sentry flutter](https://pub.dev/packages/sentry_flutter)
+- [flutter dotenv](https://pub.dev/packages/flutter_dotenv)
 
 <br>
 
