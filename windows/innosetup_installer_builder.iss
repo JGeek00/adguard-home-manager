@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AdGuard Home Manager"
-#define MyAppVersion "2.1.0"
+#define MyAppVersion "2.1.1"
 #define MyAppPublisher "JGeek00"
 #define MyAppURL "https://github.com/JGeek00/adguard-home-manager"
 #define MyAppExeName "adguard_home_manager.exe"
@@ -40,6 +40,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "C:\Users\Juan\adguard_home_manager\build\windows\runner\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Juan\adguard_home_manager\build\windows\runner\Release\dynamic_color_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Juan\adguard_home_manager\build\windows\runner\Release\flutter_windows.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Juan\adguard_home_manager\build\windows\runner\Release\sentry_flutter_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Juan\adguard_home_manager\build\windows\runner\Release\sqlite3.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Juan\adguard_home_manager\build\windows\runner\Release\sqlite3_flutter_libs_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Juan\adguard_home_manager\build\windows\runner\Release\url_launcher_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
