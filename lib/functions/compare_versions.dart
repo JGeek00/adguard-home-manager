@@ -1,3 +1,5 @@
+import 'package:sentry_flutter/sentry_flutter.dart';
+
 bool compareVersions({
   required String currentVersion, 
   required String newVersion
@@ -19,6 +21,7 @@ bool compareVersions({
       return false;
     }
   } catch (e) {
+    Sentry.captureException(e);
     return false;
   }
 }
@@ -50,6 +53,7 @@ bool compareBetaVersions({
       return false;
     }
   } catch (e) {
+    Sentry.captureException(e);
     return false;
   }
 }
@@ -116,6 +120,7 @@ bool serverVersionIsAhead({
       }
     }
   } catch (e) {
+    Sentry.captureException(e);
     return false;
   }
 }
