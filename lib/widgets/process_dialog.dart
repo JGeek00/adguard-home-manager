@@ -24,10 +24,12 @@ class ProcessDialog extends StatelessWidget {
             children: [
               const CircularProgressIndicator(),
               const SizedBox(width: 40),
-              Text(
-                message,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface
+              Expanded(
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface
+                  ),
                 ),
               )
             ],

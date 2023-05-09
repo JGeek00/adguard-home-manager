@@ -53,8 +53,7 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
     animationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
-    )
-    ..addListener(() => setState(() => {}));
+    );
     animation = Tween(
       begin: 0.0,
       end: 0.5,

@@ -3,9 +3,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:flutter/services.dart';
 
@@ -111,6 +114,10 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
     List<AppScreen> screens = serversProvider.selectedServer != null
       ? screensServerConnected 
       : screensSelectServer;
+
+    if (kDebugMode && dotenv.env['ENABLE_SENTRY'] == "true") {
+      Sentry.captureMessage("Debug mode");
+    }
 
     return CustomMenuBar(
       child: AnnotatedRegion<SystemUiOverlayStyle>(

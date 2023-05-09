@@ -21,7 +21,11 @@ bool compareVersions({
       return false;
     }
   } catch (e) {
-    Sentry.captureException(e);
+    Sentry.captureException(e, hint: Hint.withMap({
+      "fn": "compareVersions",
+      "currentVersion": currentVersion,
+      "newVersion": newVersion,
+    }));
     return false;
   }
 }
@@ -53,7 +57,11 @@ bool compareBetaVersions({
       return false;
     }
   } catch (e) {
-    Sentry.captureException(e);
+    Sentry.captureException(e, hint: Hint.withMap({
+      "fn": "compareBetaVersions",
+      "currentVersion": currentVersion,
+      "newVersion": newVersion,
+    }));
     return false;
   }
 }
@@ -120,7 +128,12 @@ bool serverVersionIsAhead({
       }
     }
   } catch (e) {
-    Sentry.captureException(e);
+    Sentry.captureException(e, hint: Hint.withMap({
+      "fn": "serverVersionIsAhead",
+      "currentVersion": currentVersion,
+      "referenceVersion": referenceVersion,
+      "referenceVersionBeta": referenceVersionBeta ?? ""
+    }));
     return false;
   }
 }
