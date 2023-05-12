@@ -21,11 +21,14 @@ bool compareVersions({
       return false;
     }
   } catch (e) {
-    Sentry.captureException(e, hint: Hint.withMap({
-      "fn": "compareVersions",
-      "currentVersion": currentVersion,
-      "newVersion": newVersion,
-    }));
+    Sentry.captureException(e);
+    Sentry.captureMessage("compareVersions error", params: [
+      {
+        "fn": "compareVersions",
+        "currentVersion": currentVersion,
+        "newVersion": newVersion,
+      }.toString()
+    ]);
     return false;
   }
 }
@@ -57,11 +60,14 @@ bool compareBetaVersions({
       return false;
     }
   } catch (e) {
-    Sentry.captureException(e, hint: Hint.withMap({
-      "fn": "compareBetaVersions",
-      "currentVersion": currentVersion,
-      "newVersion": newVersion,
-    }));
+    Sentry.captureException(e);
+    Sentry.captureMessage("compareBetaVersions error", params: [
+      {
+        "fn": "compareBetaVersions",
+        "currentVersion": currentVersion,
+        "newVersion": newVersion,
+      }.toString()
+    ]);
     return false;
   }
 }
@@ -128,12 +134,15 @@ bool serverVersionIsAhead({
       }
     }
   } catch (e) {
-    Sentry.captureException(e, hint: Hint.withMap({
-      "fn": "serverVersionIsAhead",
-      "currentVersion": currentVersion,
-      "referenceVersion": referenceVersion,
-      "referenceVersionBeta": referenceVersionBeta ?? ""
-    }));
+    Sentry.captureException(e);
+    Sentry.captureMessage("serverVersionIsAhead error", params: [
+      {
+        "fn": "serverVersionIsAhead",
+        "currentVersion": currentVersion,
+        "referenceVersion": referenceVersion,
+        "referenceVersionBeta": referenceVersionBeta ?? ""
+      }.toString()
+    ]);
     return false;
   }
 }

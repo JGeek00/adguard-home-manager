@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -270,11 +271,10 @@ class _HomeState extends State<Home> {
           }
           else {
             appConfigProvider.addLog(result['log']);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
-                backgroundColor: Colors.red,
-              )
+            showSnacbkar(
+              appConfigProvider: appConfigProvider, 
+              label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
+              color: Colors.red
             );
           }
         },

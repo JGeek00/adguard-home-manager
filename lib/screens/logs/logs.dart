@@ -439,6 +439,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                       onConfirm: updateConfig,
                       onClear: clearQueries,
                       dialog: true,
+                      serverVersion: serversProvider.serverStatus.data!.serverVersion,
                     ),
                     barrierDismissible: false
                   )
@@ -450,6 +451,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                       onConfirm: updateConfig,
                       onClear: clearQueries,
                       dialog: false,
+                      serverVersion: serversProvider.serverStatus.data!.serverVersion,
                     ),
                     backgroundColor: Colors.transparent,
                     isScrollControlled: true

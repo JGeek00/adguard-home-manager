@@ -297,7 +297,7 @@ class LogDetailsScreen extends StatelessWidget {
         appBar: AppBar(
           title:  Text(AppLocalizations.of(context)!.logDetails),
           actions: [
-            IconButton(
+            if (serversProvider.filteringStatus != null) IconButton(
               onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
               icon: Icon(
                 getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true

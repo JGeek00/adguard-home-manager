@@ -175,7 +175,7 @@ class LogTile extends StatelessWidget {
                                       )
                                     ],
                                   ),
-                                  if (appConfigProvider.showNameTimeLogs == true && log.clientInfo!.name != '') ...[
+                                  if (appConfigProvider.showNameTimeLogs == true && log.clientInfo != null && log.clientInfo!.name != '') ...[
                                     const SizedBox(height: 10),
                                     Row(
                                       children: [
@@ -350,7 +350,7 @@ class LogTile extends StatelessWidget {
                               )
                             ],
                           ),
-                          if (appConfigProvider.showNameTimeLogs == true && log.clientInfo!.name != '') ...[
+                          if (appConfigProvider.showNameTimeLogs == true && log.clientInfo != null && log.clientInfo!.name != '') ...[
                             const SizedBox(height: 10),
                             Row(
                               children: [

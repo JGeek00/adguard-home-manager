@@ -239,8 +239,6 @@ class _AddServerModalState extends State<AddServerModal> {
         ? await loginHA(serverObj)
         : await login(serverObj);
 
-      setState(() => isConnecting = false);
-
       if (result['result'] == 'success') {
         if (serverObj.user != null && serverObj.password != null) {
           serverObj.authToken = encodeBase64UserPass(serverObj.user!, serverObj.password!);
@@ -260,6 +258,7 @@ class _AddServerModalState extends State<AddServerModal> {
           Navigator.pop(context);
         }
         else {
+          setState(() => isConnecting = false);
           appConfigProvider.addLog(
             AppLog(
               type: 'save_connection_db', 
@@ -276,6 +275,7 @@ class _AddServerModalState extends State<AddServerModal> {
         }
       }
       else if (result['result'] == 'invalid_username_password') {
+        setState(() => isConnecting = false);
         appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -285,6 +285,7 @@ class _AddServerModalState extends State<AddServerModal> {
         );
       }
       else if (result['result'] == 'many_attempts') {
+        setState(() => isConnecting = false);
         appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -294,6 +295,7 @@ class _AddServerModalState extends State<AddServerModal> {
         );
       }
       else if (result['result'] == 'no_connection') {
+        setState(() => isConnecting = false);
         appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -303,6 +305,7 @@ class _AddServerModalState extends State<AddServerModal> {
         );
       }
       else if (result['result'] == 'ssl_error') {
+        setState(() => isConnecting = false);
         appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -312,6 +315,7 @@ class _AddServerModalState extends State<AddServerModal> {
         );
       }
       else if (result['result'] == 'server_error') {
+        setState(() => isConnecting = false);
         appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -321,6 +325,7 @@ class _AddServerModalState extends State<AddServerModal> {
         );
       }
       else {
+        setState(() => isConnecting = false);
         appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

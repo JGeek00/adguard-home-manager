@@ -865,7 +865,9 @@ Future getFiltering({
         'result': 'success',
         'data': FilteringData.fromJson({
           ...jsonDecode(result[0]['body']),
-          "blocked_services": jsonDecode(result[1]['body']),
+          "blocked_services": result[1]['body'] != null 
+            ? jsonDecode(result[1]['body'])
+            : []
         })
       };
     }

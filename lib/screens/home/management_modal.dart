@@ -135,7 +135,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
       );
       if (result != null) {
         if (result != false) {
-          appConfigProvider.addLog(result['log']);
+          appConfigProvider.addLog(result);
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

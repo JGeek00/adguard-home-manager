@@ -240,6 +240,7 @@ class _AddedListState extends State<AddedList> {
         onLongPress: openOptionsModal,
         onEdit: openClientModal,
         splitView: widget.splitView,
+        serverVersion: serversProvider.serverStatus.data!.serverVersion,
       ),
       noData: SizedBox(
         width: double.maxFinite,

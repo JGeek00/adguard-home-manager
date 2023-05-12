@@ -18,6 +18,7 @@ class AddedClientTile extends StatelessWidget {
   final void Function(Client) onEdit;
   final Client? selectedClient;
   final bool? splitView;
+  final String serverVersion;
 
   const AddedClientTile({
     Key? key,
@@ -26,12 +27,12 @@ class AddedClientTile extends StatelessWidget {
     required this.onLongPress,
     required this.onEdit,
     this.selectedClient,
-    required this.splitView
+    required this.splitView,
+    required this.serverVersion
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     if (splitView == true) {
@@ -138,7 +139,7 @@ class AddedClientTile extends StatelessWidget {
                                       Icons.search_rounded,
                                       size: 19,
                                       color: serverVersionIsAhead(
-                                        currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+                                        currentVersion: serverVersion, 
                                         referenceVersion: 'v0.107.28',
                                         referenceVersionBeta: 'v0.108.0-b.33'
                                       ) == true 
@@ -253,7 +254,7 @@ class AddedClientTile extends StatelessWidget {
                     Icons.search_rounded,
                     size: 19,
                     color: serverVersionIsAhead(
-                      currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+                      currentVersion: serverVersion, 
                       referenceVersion: 'v0.107.28',
                       referenceVersionBeta: 'v0.108.0-b.33'
                     ) == true 

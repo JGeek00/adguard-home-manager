@@ -137,11 +137,10 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
           }
           else {
             appConfigProvider.addLog(result['log']);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppLocalizations.of(context)!.serverStatusNotRefreshed),
-                backgroundColor: Colors.red,
-              )
+            showSnacbkar(
+              appConfigProvider: appConfigProvider, 
+              label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
+              color: Colors.red
             );
           }
         },

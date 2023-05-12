@@ -116,7 +116,9 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
       : screensSelectServer;
 
     if (kDebugMode && dotenv.env['ENABLE_SENTRY'] == "true") {
-      Sentry.captureMessage("Debug mode");
+      Sentry.captureException("Debug mode", stackTrace: {
+        "aaa": "aaa"
+      });
     }
 
     return CustomMenuBar(

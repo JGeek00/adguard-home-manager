@@ -51,7 +51,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
   @override
   void initState() {
     for (var item in widget.serversProvider.dnsInfo.data!.upstreamDns) {
-      if (item[0] == '#') {
+      if (item == '#') {
         dnsServers.add({
           'comment': item
         });

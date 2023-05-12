@@ -13,12 +13,14 @@ class LogsConfigModal extends StatelessWidget {
   final void Function(Map<String, dynamic>) onConfirm;
   final void Function() onClear;
   final bool dialog;
+  final String serverVersion;
 
   const LogsConfigModal({
     Key? key,
     required this.onConfirm,
     required this.onClear,
-    required this.dialog
+    required this.dialog,
+    required this.serverVersion
   }) : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class LogsConfigModal extends StatelessWidget {
       onConfirm: onConfirm,
       onClear: onClear,
       dialog: dialog,
+      serverVersion: serverVersion,
     );
   }
 }
@@ -44,6 +47,7 @@ class LogsConfigModalWidget extends StatefulWidget {
   final void Function(Map<String, dynamic>) onConfirm;
   final void Function() onClear;
   final bool dialog;
+  final String serverVersion;
 
   const LogsConfigModalWidget({
     Key? key,
@@ -52,7 +56,8 @@ class LogsConfigModalWidget extends StatefulWidget {
     required this.context,
     required this.onConfirm,
     required this.onClear,
-    required this.dialog
+    required this.dialog,
+    required this.serverVersion
   }) : super(key: key);
 
   @override
@@ -70,7 +75,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
 
   void loadData() async {
     final result = serverVersionIsAhead(
-      currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
+      currentVersion: widget.serverVersion, 
       referenceVersion: 'v0.107.28',
       referenceVersionBeta: 'v0.108.0-b.33'
     ) == true 
@@ -95,7 +100,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
   @override
   void initState() {
     retentionItems = serverVersionIsAhead(
-      currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
+      currentVersion: widget.serverVersion, 
       referenceVersion: 'v0.107.28',
       referenceVersionBeta: 'v0.108.0-b.33'
     ) == true ? [
