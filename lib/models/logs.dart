@@ -73,7 +73,7 @@ class Log {
 
   factory Log.fromJson(Map<String, dynamic> json) => Log(
     answerDnssec: json["answer_dnssec"],
-    cached: json["cached"],
+    cached: json["cached"] ?? false,
     client: json["client"],
     clientInfo: json["client_info"] != null ? ClientInfo.fromJson(json["client_info"]) : null,
     clientProto: json["client_proto"],
