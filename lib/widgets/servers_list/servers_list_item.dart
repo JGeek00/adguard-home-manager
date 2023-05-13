@@ -5,6 +5,7 @@ import 'package:expandable/expandable.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/version_warning_modal.dart';
 import 'package:adguard_home_manager/widgets/add_server_modal.dart';
 import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
 
@@ -93,6 +94,13 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
             builder: (context) => AddServerModal(
               server: server,
               window: true,
+              onUnsupportedVersion: (version) => showDialog(
+                context: context, 
+                builder: (ctx) => VersionWarningModal(
+                  version: version 
+                ),
+                barrierDismissible: false
+              ),
             ),
           )
         }
@@ -102,6 +110,13 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
             builder: (BuildContext context) => AddServerModal(
               server: server,
               window: false,
+              onUnsupportedVersion: (version) => showDialog(
+                context: context, 
+                builder: (ctx) => VersionWarningModal(
+                  version: version 
+                ),
+                barrierDismissible: false
+              ),
             )
           ))
         }

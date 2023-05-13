@@ -5,65 +5,60 @@ bool compareVersions({
   required String newVersion
 }) {
   try {
-    final currentSplit = currentVersion.split('.').map((e) => int.parse(e)).toList();
-    final newSplit = newVersion.split('.').map((e) => int.parse(e)).toList();
+    if (currentVersion.contains('a')) {   // alpha
+      return true;
+    }
+    else if (currentVersion.contains('b')) {    // beta
+      final current = currentVersion.replaceAll('v', '');
+      final newV = currentVersion.replaceAll('v', '');
 
-    if (newSplit[0] > currentSplit[0]) {
-      return true;
+      final currentSplit = current.split('-')[0].split('.').map((e) => int.parse(e)).toList();
+      final newSplit = newV.split('-')[0].split('.').map((e) => int.parse(e)).toList();
+
+      final currentBeta = int.parse(current.split('-')[1].replaceAll('b.', ''));
+      final newBeta = int.parse(newV.split('-')[1].replaceAll('b.', ''));
+      
+      if (newSplit[0] > currentSplit[0]) {
+        return true;
+      }
+      else if (newSplit[1] > currentSplit[1]) {
+        return true;
+      }
+      else if (newSplit[2] > currentSplit[2]) {
+        return true;
+      }
+      else if (newBeta > currentBeta) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
-    else if (newSplit[1] > currentSplit[1]) {
-      return true;
-    }
-    else if (newSplit[2] > currentSplit[2]) {
-      return true;
-    }   
-    else {
-      return false;
+    else {    // stable
+      final current = currentVersion.replaceAll('v', '');
+      final newV = currentVersion.replaceAll('v', '');
+      
+      final currentSplit = current.split('.').map((e) => int.parse(e)).toList();
+      final newSplit = newV.split('.').map((e) => int.parse(e)).toList();
+
+      if (newSplit[0] > currentSplit[0]) {
+        return true;
+      }
+      else if (newSplit[1] > currentSplit[1]) {
+        return true;
+      }
+      else if (newSplit[2] > currentSplit[2]) {
+        return true;
+      }   
+      else {
+        return false;
+      }
     }
   } catch (e) {
     Sentry.captureException(e);
     Sentry.captureMessage("compareVersions error", params: [
       {
         "fn": "compareVersions",
-        "currentVersion": currentVersion,
-        "newVersion": newVersion,
-      }.toString()
-    ]);
-    return false;
-  }
-}
-
-bool compareBetaVersions({
-  required String currentVersion, 
-  required String newVersion
-}) {
-  try {
-    final currentSplit = currentVersion.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-    final newSplit = newVersion.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-
-    final currentBeta = int.parse(currentVersion.split('-')[1].replaceAll('b.', ''));
-    final newBeta = int.parse(newVersion.split('-')[1].replaceAll('b.', ''));
-    
-    if (newSplit[0] > currentSplit[0]) {
-      return true;
-    }
-    else if (newSplit[1] > currentSplit[1]) {
-      return true;
-    }
-    else if (newSplit[2] > currentSplit[2]) {
-      return true;
-    }
-    else if (newBeta > currentBeta) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  } catch (e) {
-    Sentry.captureException(e);
-    Sentry.captureMessage("compareBetaVersions error", params: [
-      {
-        "fn": "compareBetaVersions",
         "currentVersion": currentVersion,
         "newVersion": newVersion,
       }.toString()
@@ -82,7 +77,10 @@ bool serverVersionIsAhead({
     final reference = referenceVersion.replaceAll('v', '');
     final referenceBeta = referenceVersionBeta?.replaceAll('v', '');
 
-    if (current.contains('b')) {
+    if (currentVersion.contains('a')) {   // alpha
+      return true;
+    }
+    else if (current.contains('b')) {   // beta
       if (referenceBeta != null) {
         final currentSplit = current.split('-')[0].split('.').map((e) => int.parse(e)).toList();
         final newSplit = referenceBeta.split('-')[0].split('.').map((e) => int.parse(e)).toList();
@@ -113,7 +111,7 @@ bool serverVersionIsAhead({
         return false;
       }
     }
-    else {
+    else {    // stable
       final currentSplit = current.split('.').map((e) => int.parse(e)).toList();
       final newSplit = reference.split('.').map((e) => int.parse(e)).toList();
 

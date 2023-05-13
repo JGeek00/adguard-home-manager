@@ -535,15 +535,10 @@ class ServersProvider with ChangeNotifier {
         data.changelog = gitHubResult['body'];
       }
       data.updateAvailable = data.newVersion != null 
-        ?  data.newVersion!.contains('b')
-          ? compareBetaVersions(
-              currentVersion: data.currentVersion.replaceAll('v', ''),
-              newVersion: data.newVersion!.replaceAll('v', ''),
-            )
-          : compareVersions(
-              currentVersion: data.currentVersion.replaceAll('v', ''),
-              newVersion: data.newVersion!.replaceAll('v', ''),
-            )
+        ? compareVersions(
+            currentVersion: data.currentVersion,
+            newVersion: data.newVersion!,
+          )
         : false;
       setUpdateAvailableData(data);
       setUpdateAvailableLoadStatus(LoadStatus.loaded, true);

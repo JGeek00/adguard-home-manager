@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'package:adguard_home_manager/widgets/version_warning_modal.dart';
 import 'package:adguard_home_manager/widgets/servers_list/servers_list.dart';
 import 'package:adguard_home_manager/widgets/add_server_modal.dart';
 
@@ -72,16 +73,30 @@ class _ServersState extends State<Servers> {
           showDialog(
             context: context, 
             barrierDismissible: false,
-            builder: (context) => const AddServerModal(
+            builder: (context) => AddServerModal(
               window: true,
+              onUnsupportedVersion: (version) => showDialog(
+                context: context, 
+                builder: (ctx) => VersionWarningModal(
+                  version: version 
+                ),
+                barrierDismissible: false
+              ),
             ),
           )
         }
         else {
           Navigator.push(context, MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (BuildContext context) => const AddServerModal(
+            builder: (BuildContext context) => AddServerModal(
               window: false,
+              onUnsupportedVersion: (version) => showDialog(
+                context: context, 
+                builder: (ctx) => VersionWarningModal(
+                  version: version 
+                ),
+                barrierDismissible: false
+              ),
             )
           ))
         }

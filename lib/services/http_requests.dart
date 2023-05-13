@@ -263,6 +263,40 @@ Future loginHA(Server server) async {
   }
 }
 
+Future getServerVersion(Server server) async {
+  final result = await apiRequest(
+    server: server,
+    method: 'get',
+    urlPath: '/status', 
+    type: 'get_server_version'
+  );
+
+  if (result['hasResponse'] == true) {
+    if (result['statusCode'] == 200 && result['body'] != null) {
+      print( result['body']['version']);
+      return {
+        'result': 'success',
+        'data': result['body']['version']
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_server_version', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: result['statusCode'].toString(),
+          resBody: result['body']
+        )
+      };
+    }
+  }
+  else {
+    return result;
+  }
+}
+
 Future getServerStatus(Server server) async {
   final result = await Future.wait([
     apiRequest(server: server, method: 'get', urlPath: '/stats', type: 'server_status'),

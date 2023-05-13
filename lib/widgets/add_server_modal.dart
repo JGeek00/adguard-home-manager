@@ -18,11 +18,13 @@ enum ConnectionType { http, https}
 class AddServerModal extends StatefulWidget {
   final Server? server;
   final bool window;
+  final void Function(String version) onUnsupportedVersion;
 
   const AddServerModal({
     Key? key,
     this.server,
-    required this.window
+    required this.window,
+    required this.onUnsupportedVersion
   }) : super(key: key);
 
   @override
@@ -256,16 +258,25 @@ class _AddServerModalState extends State<AddServerModal> {
         final serverCreated = await serversProvider.createServer(serverObj);
         if (serverCreated == null) {
           serversProvider.setServerStatusLoad(0);
+          
           final serverStatus = await getServerStatus(serverObj);
+
           if (serverStatus['result'] == 'success') {
             serversProvider.setServerStatusData(serverStatus['data']);
             serversProvider.setServerStatusLoad(1);
+            if (serverStatus['data'].serverVersion.contains('a') || serverStatus['data'].serverVersion.contains('b')) {
+              Navigator.pop(context);
+              widget.onUnsupportedVersion(serverStatus['data'].serverVersion);
+            }
+            else {
+              Navigator.pop(context);
+            }
           }
           else {
             appConfigProvider.addLog(serverStatus['log']);
             serversProvider.setServerStatusLoad(2);
+            Navigator.pop(context);
           }
-          Navigator.pop(context);
         }
         else {
           setState(() => isConnecting = false);
@@ -364,8 +375,19 @@ class _AddServerModalState extends State<AddServerModal> {
           serverObj.authToken = encodeBase64UserPass(serverObj.user!, serverObj.password!);
         }
         final serverSaved = await serversProvider.editServer(serverObj);
+
         if (serverSaved == null) {
-          Navigator.pop(context);
+          final version = await getServerVersion(serverObj);;
+          if (
+            version['result'] == 'success' && 
+            (version['data'].contains('a') || version['data'].contains('b'))  // alpha or beta
+          ) {
+            Navigator.pop(context);
+            widget.onUnsupportedVersion(version);
+          }
+          else {
+            Navigator.pop(context);
+          }
         }
         else {
           appConfigProvider.addLog(
