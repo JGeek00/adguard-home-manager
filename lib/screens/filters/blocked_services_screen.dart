@@ -121,7 +121,8 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
     Widget body() {
       switch (serversProvider.blockedServicesList.loadStatus) {
         case 0:
-          return SizedBox(
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             width: double.maxFinite,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -186,7 +187,8 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
           );
 
         case 2:
-          return SizedBox(
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             width: double.maxFinite,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
