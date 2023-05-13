@@ -23,7 +23,7 @@
     "invalidUsernamePassword": "Usuario o contraseña no válidos.",
     "tooManyAttempts": "Demasiados intentos. Prueba de nuevo más tarde.",
     "cantReachServer": "No se puede alcanzar el servidor. Comprueba los datos de conexión.",
-    "sslError": "Error de SSL",
+    "sslError": "Error de SSL. Ve a Ajustes > Ajustes avanzados y activa No comprobar SSL.",
     "unknownError": "Error desconocido",
     "connectionNotCreated": "No se pudo crear la conexión",
     "connecting": "Conectando...",

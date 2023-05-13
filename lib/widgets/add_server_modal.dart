@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/base64.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -218,6 +219,15 @@ class _AddServerModalState extends State<AddServerModal> {
 
     final mediaQuery = MediaQuery.of(context);
 
+    void cancelConnecting() {
+      if (mounted) {
+        setState(() => isConnecting = false);
+      }
+      else {
+        isConnecting = false;
+      }
+    }
+
     void connect() async {
       Server serverObj = Server(
         id: uuid.v4(),
@@ -266,72 +276,65 @@ class _AddServerModalState extends State<AddServerModal> {
               message: serverCreated.toString()
             )
           );
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.connectionNotCreated),
-              backgroundColor: Colors.red,
-            )
+          showSnacbkar(
+            appConfigProvider: appConfigProvider, 
+            label: AppLocalizations.of(context)!.connectionNotCreated, 
+            color: Colors.red
           );
         }
       }
       else if (result['result'] == 'invalid_username_password') {
-        setState(() => isConnecting = false);
+        cancelConnecting();
         appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.invalidUsernamePassword),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.invalidUsernamePassword, 
+          color: Colors.red
         );
       }
       else if (result['result'] == 'many_attempts') {
-        setState(() => isConnecting = false);
+        cancelConnecting();
         appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.tooManyAttempts),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.tooManyAttempts, 
+          color: Colors.red
         );
       }
       else if (result['result'] == 'no_connection') {
-        setState(() => isConnecting = false);
+        cancelConnecting();
         appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.cantReachServer),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.cantReachServer, 
+          color: Colors.red
         );
       }
       else if (result['result'] == 'ssl_error') {
-        setState(() => isConnecting = false);
+        cancelConnecting();
         appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.sslError),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.sslError, 
+          color: Colors.red
         );
       }
       else if (result['result'] == 'server_error') {
-        setState(() => isConnecting = false);
+        cancelConnecting();
         appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.serverError),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.serverError, 
+          color: Colors.red
         );
       }
       else {
-        setState(() => isConnecting = false);
+        cancelConnecting();
         appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.unknownError),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.unknownError, 
+          color: Colors.red
         );
       }
     }
