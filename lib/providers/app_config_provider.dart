@@ -192,7 +192,7 @@ class AppConfigProvider with ChangeNotifier {
   Future<bool> setHideZeroValues(bool status) async {
     final updated = await updateConfigQuery(
       db: _dbInstance!,
-      column: 'overrideSslCheck',
+      column: 'hideZeroValues',
       value: status == true ? 1 : 0
     );
     if (updated == true) {
