@@ -155,24 +155,26 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       if (privateKeyOption == 0) "private_key_path": privateKeyPathController.text,
     });
 
-    if (result['result'] == 'success') {
-      setState(() {
-        if (result['data']['warning_validation'] != null && result['data']['warning_validation'] != '') {
-          certKeyValidApi = 2;
-          validDataError = result['data']['warning_validation'];
-        }
-        else {
-          certKeyValidApi = 1;
-          validDataError = null;
-        }
-        certKeyValid = result['data'];
-      });
-    }
-    else {
-      if (result['log'].resBody != null) {
-        setState(() => validDataError = result['log'].resBody);
+    if (mounted) {
+      if (result['result'] == 'success') {
+        setState(() {
+          if (result['data']['warning_validation'] != null && result['data']['warning_validation'] != '') {
+            certKeyValidApi = 2;
+            validDataError = result['data']['warning_validation'];
+          }
+          else {
+            certKeyValidApi = 1;
+            validDataError = null;
+          }
+          certKeyValid = result['data'];
+        });
       }
-      setState(() => certKeyValidApi = 2);
+      else {
+        if (result['log'].resBody != null) {
+          setState(() => validDataError = result['log'].resBody);
+        }
+        setState(() => certKeyValidApi = 2);
+      }
     }
   }
 
