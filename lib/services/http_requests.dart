@@ -273,7 +273,6 @@ Future getServerVersion(Server server) async {
 
   if (result['hasResponse'] == true) {
     if (result['statusCode'] == 200 && result['body'] != null) {
-      print( result['body']['version']);
       return {
         'result': 'success',
         'data': result['body']['version']
