@@ -39,7 +39,7 @@ class Log {
   final bool cached;
   final String client;
   final ClientInfo? clientInfo;
-  final String clientProto;
+  final String? clientProto;
   final String elapsedMs;
   final Question question;
   final String reason;

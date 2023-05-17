@@ -27,7 +27,7 @@ class EncryptionData {
   final bool validPair;
   final bool enabled;
   final String? serverName;
-  final bool forceHttps;
+  final bool? forceHttps;
   final int? portHttps;
   final int? portDnsOverTls;
   final int? portDnsOverQuic;
@@ -81,7 +81,7 @@ class EncryptionData {
     validPair: json["valid_pair"],
     enabled: json["enabled"],
     serverName: json["server_name"],
-    forceHttps: json["force_https"],
+    forceHttps: json["force_https"] ?? false,
     portHttps: json["port_https"],
     portDnsOverTls: json["port_dns_over_tls"],
     portDnsOverQuic: json["port_dns_over_quic"],
