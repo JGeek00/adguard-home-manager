@@ -18,6 +18,7 @@ import 'package:adguard_home_manager/widgets/update_modal.dart';
 import 'package:adguard_home_manager/widgets/navigation_rail.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -40,36 +41,23 @@ class Base extends StatefulWidget {
 class _BaseState extends State<Base> with WidgetsBindingObserver {
   int selectedScreen = 0;
 
-  bool updateExists(String appVersion, String gitHubVersion) {
-    final List<int> appVersionSplit = List<int>.from(appVersion.split('.').map((e) => int.parse(e)));
-    final List<int> gitHubVersionSplit = List<int>.from(gitHubVersion.split('.').map((e) => int.parse(e)));
 
-    if (gitHubVersionSplit[0] > appVersionSplit[0]) {
-      return true;
-    }
-    else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
-      return true;
-    }
-    else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
 
   Future<GitHubRelease?> checkInstallationSource() async {
     final result = await checkAppUpdatesGitHub();
     if (result['result'] == 'success') {
-      final update = updateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName);
+      final update = gitHubUpdateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName);
       if (update == true) {
+        widget.appConfigProvider.setAppUpdatesAvailable(result['body']);
         if (Platform.isAndroid) {
-          Source installationSource = await StoreChecker.getSource;
-          if (installationSource == Source.IS_INSTALLED_FROM_PLAY_STORE) {
-            return null;
+          if (
+            widget.appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE || 
+            widget.appConfigProvider.installationSource == Source.UNKNOWN
+          ) {
+            return result['body'];
           }
           else {
-            return result['body'];
+            return null;
           }
         }
         else if (Platform.isIOS) {

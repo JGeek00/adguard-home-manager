@@ -144,3 +144,21 @@ bool serverVersionIsAhead({
     return false;
   }
 }
+
+bool gitHubUpdateExists(String appVersion, String gitHubVersion) {
+  final List<int> appVersionSplit = List<int>.from(appVersion.split('.').map((e) => int.parse(e)));
+  final List<int> gitHubVersionSplit = List<int>.from(gitHubVersion.split('.').map((e) => int.parse(e)));
+
+  if (gitHubVersionSplit[0] > appVersionSplit[0]) {
+    return true;
+  }
+  else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
+    return true;
+  }
+  else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}

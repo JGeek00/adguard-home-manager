@@ -10,6 +10,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:store_checker/store_checker.dart';
 import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -59,6 +60,9 @@ void main() async {
   if (dbData['appConfig']['overrideSslCheck'] == 1) {
     HttpOverrides.global = MyHttpOverrides();
   }
+
+  Source installationSource = await StoreChecker.getSource;
+  appConfigProvider.setInstallationSource(installationSource);
 
   serversProvider.setDbInstance(dbData['dbInstance']);
   appConfigProvider.saveFromDb(dbData['dbInstance'], dbData['appConfig']);

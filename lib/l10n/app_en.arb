@@ -620,5 +620,7 @@
     "listUrlCopied": "List URL copied to the clipboard",
     "unsupportedVersion": "Unsupported version",
     "unsupprtedVersionMessage": "The support for your server version {version} is not guaranteed. This application may have some issues working with that server version.\n\nAdGuard Home Manager is designed to work with the stable releases of the AdGuard Home server. It may work with alpha and beta releases, but the compatibility is not guaranteed and the app may have some issues working with that versions.",
-    "iUnderstand": "I understand"
+    "iUnderstand": "I understand",
+    "appUpdates": "Application updates",
+    "usingLatestVersion": "You are using the latest version"
 }

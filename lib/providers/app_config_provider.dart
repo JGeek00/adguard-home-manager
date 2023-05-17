@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:store_checker/store_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqlite_api.dart';
 
+import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/services/db/queries.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -38,6 +40,10 @@ class AppConfigProvider with ChangeNotifier {
   int _showNameTimeLogs = 0;
 
   String? _doNotRememberVersion;
+
+  GitHubRelease? _appUpdatesAvailable;
+
+  Source _installationSource = Source.UNKNOWN;
 
   PackageInfo? get getAppInfo {
     return _appInfo;
@@ -125,6 +131,14 @@ class AppConfigProvider with ChangeNotifier {
     return _selectedSettingsScreen;
   }
 
+  GitHubRelease? get appUpdatesAvailable {
+    return _appUpdatesAvailable;
+  }
+
+  Source get installationSource {
+    return _installationSource;
+  }
+
   void setDbInstance(Database db) {
     _dbInstance = db;
   }
@@ -171,6 +185,16 @@ class AppConfigProvider with ChangeNotifier {
     if (notify == true) {
       notifyListeners();
     }
+  }
+
+  void setAppUpdatesAvailable(GitHubRelease value) {
+    _appUpdatesAvailable = value;
+    notifyListeners();
+  }
+
+  void setInstallationSource(Source value) {
+    _installationSource = value;
+    notifyListeners();
   }
 
   Future<bool> setOverrideSslCheck(bool status) async {
