@@ -61,8 +61,10 @@ void main() async {
     HttpOverrides.global = MyHttpOverrides();
   }
 
-  Source installationSource = await StoreChecker.getSource;
-  appConfigProvider.setInstallationSource(installationSource);
+  if (Platform.isAndroid || Platform.isIOS) {
+    Source installationSource = await StoreChecker.getSource;
+    appConfigProvider.setInstallationSource(installationSource);
+  }
 
   serversProvider.setDbInstance(dbData['dbInstance']);
   appConfigProvider.saveFromDb(dbData['dbInstance'], dbData['appConfig']);

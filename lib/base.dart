@@ -41,8 +41,6 @@ class Base extends StatefulWidget {
 class _BaseState extends State<Base> with WidgetsBindingObserver {
   int selectedScreen = 0;
 
-
-
   Future<GitHubRelease?> checkInstallationSource() async {
     final result = await checkAppUpdatesGitHub();
     if (result['result'] == 'success') {
