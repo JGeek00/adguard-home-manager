@@ -191,7 +191,7 @@ class UpdateScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Html(
               data: html.parse(md.markdownToHtml(serversProvider.updateAvailable.data!.changelog!)).outerHtml,
-              onLinkTap: (url, context, attributes, element) => url != null ? openUrl(url) : null,
+              onLinkTap: (url, context, attributes) => url != null ? openUrl(url) : null,
             )
           )
         ],
