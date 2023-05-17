@@ -5,7 +5,7 @@ flutter_app:
 
 control:
   Package: AdGuardHomeManager
-  Version: 2.1.3
+  Version: 2.2.0
   Architecture: amd64
   Essential: no
   Priority: optional
