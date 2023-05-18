@@ -114,160 +114,170 @@ class SettingsWidget extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings),
-        centerTitle: false,
-      ),
-      body: ListView(
-        children: [
-          if (serversProvider.selectedServer != null && serversProvider.serverStatus.data != null) ...[
-            SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
-            if (serverVersionIsAhead(
-              currentVersion: serversProvider.serverStatus.data!.serverVersion, 
-              referenceVersion: 'v0.107.28',
-              referenceVersionBeta: 'v0.108.0-b.33'
-            ) == true) settingsTile(
-              icon: Icons.search_rounded,
-              title: AppLocalizations.of(context)!.safeSearch,
-              subtitle: AppLocalizations.of(context)!.safeSearchSettings,
-              thisItem: 0,
-              screenToNavigate: const SafeSearchSettingsScreen(),
-            ),
-            settingsTile(
-              icon: Icons.lock_rounded,
-              title: AppLocalizations.of(context)!.accessSettings,
-              subtitle: AppLocalizations.of(context)!.accessSettingsDescription,
-              thisItem: 1,
-              screenToNavigate: const AccessSettings(),
-            ),
-            settingsTile(
-              icon: Icons.install_desktop_rounded,
-              title: AppLocalizations.of(context)!.dhcpSettings,
-              subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
-              thisItem: 2,
-              screenToNavigate: const Dhcp(),
-            ),
-            settingsTile(
-              icon: Icons.dns_rounded,
-              title: AppLocalizations.of(context)!.dnsSettings,
-              subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
-              thisItem: 3,
-              screenToNavigate: const DnsSettings(),
-            ),
-            settingsTile(
-              icon: Icons.security_rounded,
-              title: AppLocalizations.of(context)!.encryptionSettings,
-              subtitle: AppLocalizations.of(context)!.encryptionSettingsDescription,
-              thisItem: 4,
-              screenToNavigate: const EncryptionSettings(),
-            ),
-            settingsTile(
-              icon: Icons.route_rounded,
-              title: AppLocalizations.of(context)!.dnsRewrites,
-              subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
-              thisItem: 5,
-              screenToNavigate: const DnsRewrites(),
-            ),
-            if (serversProvider.updateAvailable.data != null) settingsTile(
-              icon: Icons.system_update_rounded,
-              title: AppLocalizations.of(context)!.updates,
-              subtitle: AppLocalizations.of(context)!.updatesDescription,
-              trailing: serversProvider.updateAvailable.data != null &&
-                serversProvider.updateAvailable.data!.updateAvailable != null &&
-                serversProvider.updateAvailable.data!.updateAvailable == true
-                  ? Container(
-                      width: 10,
-                      height: 10,
-                      margin: const EdgeInsets.only(right: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.red
-                      ),
-                    )
-                  : null,
-              thisItem: 6,
-              screenToNavigate: const UpdateScreen(),
-            ),
-            settingsTile(
-              icon: Icons.info_rounded,
-              title: AppLocalizations.of(context)!.serverInformation,
-              subtitle: AppLocalizations.of(context)!.serverInformationDescription,
-              thisItem: 7,
-              screenToNavigate: const ServerInformation(),
-            ),
-          ],
-          SectionLabel(label: AppLocalizations.of(context)!.appSettings),
-          settingsTile(
-            icon: Icons.palette_rounded,
-            title: AppLocalizations.of(context)!.customization, 
-            subtitle: AppLocalizations.of(context)!.customizationDescription,
-            thisItem: 8,
-            screenToNavigate: const Customization(),
-          ),
-          settingsTile(
-            icon: Icons.storage_rounded,
-            title: AppLocalizations.of(context)!.servers,
-            subtitle: serversProvider.selectedServer != null
-              ? serversProvider.serverStatus.data != null
-                ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
-                : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
-              : AppLocalizations.of(context)!.noServerSelected,
-            thisItem: 9,
-            screenToNavigate: const Servers(),
-          ),
-          settingsTile(
-            icon: Icons.settings,
-            title: AppLocalizations.of(context)!.generalSettings,
-            subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
-            thisItem: 10,
-            screenToNavigate: const GeneralSettings(),
-          ),
-          settingsTile(
-            icon: Icons.build_outlined,
-            title: AppLocalizations.of(context)!.advancedSettings,
-            subtitle: AppLocalizations.of(context)!.advancedSetupDescription,
-            thisItem: 11,
-            screenToNavigate: const AdvancedSettings(),
-          ),
-          SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
-          CustomListTile(
-            title: AppLocalizations.of(context)!.appVersion, 
-            subtitle: appConfigProvider.getAppInfo!.version,
-          ),
-          CustomListTile(
-            title: AppLocalizations.of(context)!.createdBy, 
-            subtitle: Strings.createdBy,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                if (Platform.isAndroid) IconButton(
-                  onPressed: () => openUrl(Urls.playStore), 
-                  icon: SvgPicture.asset(
-                    'assets/resources/google-play.svg',
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    width: 30,
-                    height: 30,
-                  ),
-                  tooltip: AppLocalizations.of(context)!.visitGooglePlay,
-                ),
-                IconButton(
-                  onPressed: () => openUrl(Urls.gitHub), 
-                  icon: SvgPicture.asset(
-                    'assets/resources/github.svg',
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    width: 30,
-                    height: 30,
-                  ),
-                  tooltip: AppLocalizations.of(context)!.gitHub,
-                ),
-              ],
-            ),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar.large(
+              pinned: true,
+              floating: true,
+              centerTitle: false,
+              forceElevated: innerBoxIsScrolled,
+              title: Text(AppLocalizations.of(context)!.settings),
+            )
           )
-        ],
-      ),
+        ], 
+        body: ListView(
+          children: [
+            if (serversProvider.selectedServer != null && serversProvider.serverStatus.data != null) ...[
+              SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
+              if (serverVersionIsAhead(
+                currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+                referenceVersion: 'v0.107.28',
+                referenceVersionBeta: 'v0.108.0-b.33'
+              ) == true) settingsTile(
+                icon: Icons.search_rounded,
+                title: AppLocalizations.of(context)!.safeSearch,
+                subtitle: AppLocalizations.of(context)!.safeSearchSettings,
+                thisItem: 0,
+                screenToNavigate: const SafeSearchSettingsScreen(),
+              ),
+              settingsTile(
+                icon: Icons.lock_rounded,
+                title: AppLocalizations.of(context)!.accessSettings,
+                subtitle: AppLocalizations.of(context)!.accessSettingsDescription,
+                thisItem: 1,
+                screenToNavigate: const AccessSettings(),
+              ),
+              settingsTile(
+                icon: Icons.install_desktop_rounded,
+                title: AppLocalizations.of(context)!.dhcpSettings,
+                subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
+                thisItem: 2,
+                screenToNavigate: const Dhcp(),
+              ),
+              settingsTile(
+                icon: Icons.dns_rounded,
+                title: AppLocalizations.of(context)!.dnsSettings,
+                subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
+                thisItem: 3,
+                screenToNavigate: const DnsSettings(),
+              ),
+              settingsTile(
+                icon: Icons.security_rounded,
+                title: AppLocalizations.of(context)!.encryptionSettings,
+                subtitle: AppLocalizations.of(context)!.encryptionSettingsDescription,
+                thisItem: 4,
+                screenToNavigate: const EncryptionSettings(),
+              ),
+              settingsTile(
+                icon: Icons.route_rounded,
+                title: AppLocalizations.of(context)!.dnsRewrites,
+                subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
+                thisItem: 5,
+                screenToNavigate: const DnsRewrites(),
+              ),
+              if (serversProvider.updateAvailable.data != null) settingsTile(
+                icon: Icons.system_update_rounded,
+                title: AppLocalizations.of(context)!.updates,
+                subtitle: AppLocalizations.of(context)!.updatesDescription,
+                trailing: serversProvider.updateAvailable.data != null &&
+                  serversProvider.updateAvailable.data!.updateAvailable != null &&
+                  serversProvider.updateAvailable.data!.updateAvailable == true
+                    ? Container(
+                        width: 10,
+                        height: 10,
+                        margin: const EdgeInsets.only(right: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.red
+                        ),
+                      )
+                    : null,
+                thisItem: 6,
+                screenToNavigate: const UpdateScreen(),
+              ),
+              settingsTile(
+                icon: Icons.info_rounded,
+                title: AppLocalizations.of(context)!.serverInformation,
+                subtitle: AppLocalizations.of(context)!.serverInformationDescription,
+                thisItem: 7,
+                screenToNavigate: const ServerInformation(),
+              ),
+            ],
+            SectionLabel(label: AppLocalizations.of(context)!.appSettings),
+            settingsTile(
+              icon: Icons.palette_rounded,
+              title: AppLocalizations.of(context)!.customization, 
+              subtitle: AppLocalizations.of(context)!.customizationDescription,
+              thisItem: 8,
+              screenToNavigate: const Customization(),
+            ),
+            settingsTile(
+              icon: Icons.storage_rounded,
+              title: AppLocalizations.of(context)!.servers,
+              subtitle: serversProvider.selectedServer != null
+                ? serversProvider.serverStatus.data != null
+                  ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
+                  : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
+                : AppLocalizations.of(context)!.noServerSelected,
+              thisItem: 9,
+              screenToNavigate: const Servers(),
+            ),
+            settingsTile(
+              icon: Icons.settings,
+              title: AppLocalizations.of(context)!.generalSettings,
+              subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
+              thisItem: 10,
+              screenToNavigate: const GeneralSettings(),
+            ),
+            settingsTile(
+              icon: Icons.build_outlined,
+              title: AppLocalizations.of(context)!.advancedSettings,
+              subtitle: AppLocalizations.of(context)!.advancedSetupDescription,
+              thisItem: 11,
+              screenToNavigate: const AdvancedSettings(),
+            ),
+            SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
+            CustomListTile(
+              title: AppLocalizations.of(context)!.appVersion, 
+              subtitle: appConfigProvider.getAppInfo!.version,
+            ),
+            CustomListTile(
+              title: AppLocalizations.of(context)!.createdBy, 
+              subtitle: Strings.createdBy,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (Platform.isAndroid) IconButton(
+                    onPressed: () => openUrl(Urls.playStore), 
+                    icon: SvgPicture.asset(
+                      'assets/resources/google-play.svg',
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      width: 30,
+                      height: 30,
+                    ),
+                    tooltip: AppLocalizations.of(context)!.visitGooglePlay,
+                  ),
+                  IconButton(
+                    onPressed: () => openUrl(Urls.gitHub), 
+                    icon: SvgPicture.asset(
+                      'assets/resources/github.svg',
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      width: 30,
+                      height: 30,
+                    ),
+                    tooltip: AppLocalizations.of(context)!.gitHub,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      )
     );
   }
 }

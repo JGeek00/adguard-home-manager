@@ -126,60 +126,83 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.generalSettings),
-        centerTitle: false,
-      ),
-      body: ListView(
-        children: [
-          CustomListTile(
-            icon: Icons.exposure_zero_rounded,
-            title: AppLocalizations.of(context)!.hideZeroValues,
-            subtitle: AppLocalizations.of(context)!.hideZeroValuesDescription,
-            trailing: Switch(
-              value: appConfigProvider.hideZeroValues, 
-              onChanged: updateHideZeroValues,
-            ),
-            onTap: () => updateHideZeroValues(!appConfigProvider.hideZeroValues),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 16,
-              right: 10
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar(
+              pinned: true,
+              floating: true,
+              centerTitle: false,
+              forceElevated: innerBoxIsScrolled,
+              title: Text(AppLocalizations.of(context)!.generalSettings),
             )
-          ),
-          CustomListTile(
-            icon: Icons.more,
-            title: AppLocalizations.of(context)!.nameTimeLogs,
-            subtitle: AppLocalizations.of(context)!.nameTimeLogsDescription,
-            trailing: Switch(
-              value: appConfigProvider.showNameTimeLogs, 
-              onChanged: updateShowNameTimeLogs,
-            ),
-            onTap: () => updateShowNameTimeLogs(!appConfigProvider.showNameTimeLogs),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 16,
-              right: 10
-            )
-          ),
-          if (
-            !(Platform.isAndroid || Platform.isIOS) || 
-            (Platform.isAndroid && (
-              appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE) ||
-              appConfigProvider.installationSource == Source.UNKNOWN
-            )
-          ) CustomListTile(
-            icon: Icons.system_update_rounded,
-            title: AppLocalizations.of(context)!.appUpdates,
-            subtitle: appConfigProvider.appUpdatesAvailable != null
-              ? AppLocalizations.of(context)!.updateAvailable
-              : AppLocalizations.of(context)!.usingLatestVersion,
-            trailing: generateAppUpdateStatus()
           )
-        ],
-      ),
+        ], 
+        body: SafeArea(
+          top: false,
+          bottom: false,
+          child: Builder(
+            builder: (context) => CustomScrollView(
+              slivers: [
+                SliverOverlapInjector(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                ),
+                SliverList.list(
+                  children: [
+                    CustomListTile(
+                      icon: Icons.exposure_zero_rounded,
+                      title: AppLocalizations.of(context)!.hideZeroValues,
+                      subtitle: AppLocalizations.of(context)!.hideZeroValuesDescription,
+                      trailing: Switch(
+                        value: appConfigProvider.hideZeroValues, 
+                        onChanged: updateHideZeroValues,
+                      ),
+                      onTap: () => updateHideZeroValues(!appConfigProvider.hideZeroValues),
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                        left: 16,
+                        right: 10
+                      )
+                    ),
+                    CustomListTile(
+                      icon: Icons.more,
+                      title: AppLocalizations.of(context)!.nameTimeLogs,
+                      subtitle: AppLocalizations.of(context)!.nameTimeLogsDescription,
+                      trailing: Switch(
+                        value: appConfigProvider.showNameTimeLogs, 
+                        onChanged: updateShowNameTimeLogs,
+                      ),
+                      onTap: () => updateShowNameTimeLogs(!appConfigProvider.showNameTimeLogs),
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                        left: 16,
+                        right: 10
+                      )
+                    ),
+                    if (
+                      !(Platform.isAndroid || Platform.isIOS) || 
+                      (Platform.isAndroid && (
+                        appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE) ||
+                        appConfigProvider.installationSource == Source.UNKNOWN
+                      )
+                    ) CustomListTile(
+                      icon: Icons.system_update_rounded,
+                      title: AppLocalizations.of(context)!.appUpdates,
+                      subtitle: appConfigProvider.appUpdatesAvailable != null
+                        ? AppLocalizations.of(context)!.updateAvailable
+                        : AppLocalizations.of(context)!.usingLatestVersion,
+                      trailing: generateAppUpdateStatus()
+                    )
+                  ],
+                )
+              ],
+            ),
+          )
+        )
+      )
     );  
   }
 }

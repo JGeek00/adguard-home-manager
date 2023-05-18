@@ -42,53 +42,76 @@ class AdvancedSettings extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.advancedSettings),
-        centerTitle: false,
-      ),
-      body: ListView(
-        children: [
-          CustomListTile(
-            icon: Icons.lock,
-            title: AppLocalizations.of(context)!.dontCheckCertificate,
-            subtitle: AppLocalizations.of(context)!.dontCheckCertificateDescription,
-            trailing: Switch(
-              value: appConfigProvider.overrideSslCheck, 
-              onChanged: updateSslCheck,
-            ),
-            onTap: () => updateSslCheck(!appConfigProvider.overrideSslCheck),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 20,
-              right: 10
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar(
+              pinned: true,
+              floating: true,
+              centerTitle: false,
+              forceElevated: innerBoxIsScrolled,
+              title: Text(AppLocalizations.of(context)!.generalSettings),
             )
-          ),
-          CustomListTile(
-            icon: Icons.list_rounded,
-            title: AppLocalizations.of(context)!.logs,
-            subtitle: AppLocalizations.of(context)!.checkAppLogs,
-            onTap: () => {
-              if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
-                SplitView.of(context).push(const AppLogs())
-              }
-              else {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AppLogs()
-                  )
+          )
+        ], 
+        body: SafeArea(
+          top: false,
+          bottom: false,
+          child: Builder(
+            builder: (context) => CustomScrollView(
+              slivers: [
+                SliverOverlapInjector(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                ),
+                SliverList.list(
+                  children: [
+                    CustomListTile(
+                      icon: Icons.lock,
+                      title: AppLocalizations.of(context)!.dontCheckCertificate,
+                      subtitle: AppLocalizations.of(context)!.dontCheckCertificateDescription,
+                      trailing: Switch(
+                        value: appConfigProvider.overrideSslCheck, 
+                        onChanged: updateSslCheck,
+                      ),
+                      onTap: () => updateSslCheck(!appConfigProvider.overrideSslCheck),
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                        left: 20,
+                        right: 10
+                      )
+                    ),
+                    CustomListTile(
+                      icon: Icons.list_rounded,
+                      title: AppLocalizations.of(context)!.logs,
+                      subtitle: AppLocalizations.of(context)!.checkAppLogs,
+                      onTap: () => {
+                        if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                          SplitView.of(context).push(const AppLogs())
+                        }
+                        else {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const AppLogs()
+                            )
+                          )
+                        }
+                      },
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                        left: 20,
+                        right: 10
+                      )
+                    ),
+                  ],
                 )
-              }
-            },
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 20,
-              right: 10
-            )
-          ),
-        ],
-      ),
-    );
+              ],
+            ),
+          )
+        )
+      )
+    );  
   }
 }
