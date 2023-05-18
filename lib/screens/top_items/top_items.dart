@@ -14,7 +14,6 @@ import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
-import 'package:adguard_home_manager/functions/block_unblock_domain.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';

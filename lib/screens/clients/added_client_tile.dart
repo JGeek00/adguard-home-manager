@@ -8,7 +8,6 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class AddedClientTile extends StatelessWidget {

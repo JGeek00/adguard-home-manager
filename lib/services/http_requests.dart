@@ -14,7 +14,6 @@ import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
-import 'package:adguard_home_manager/models/safe_search.dart';
 import 'package:adguard_home_manager/models/server_info.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
