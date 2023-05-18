@@ -42,13 +42,13 @@ dependencies:
   provider: ^6.0.3
   sqflite: ^2.2.5
   package_info_plus: ^3.1.2
-  flutter_displaymode: ^0.4.0     
-  dynamic_color: ^1.5.4
+  flutter_displaymode: ^0.6.0 
+  dynamic_color: ^1.6.5
   animations: ^2.0.5
   device_info_plus: ^4.1.2
   uuid: ^3.0.6
   expandable: ^5.0.1
-  fl_chart: ^0.55.2
+  fl_chart: ^0.62.0
   flutter_web_browser: ^0.17.1
   flutter_svg: ^1.1.5
   percent_indicator: ^4.2.2
@@ -70,7 +70,7 @@ dependencies:
   url_launcher: ^6.1.10
   contextmenu: ^3.0.0
   async: ^2.10.0
-  sentry_flutter: ^7.5.1
+  sentry_flutter: ^7.5.2
   flutter_dotenv: ^5.0.2
 
 dev_dependencies:
