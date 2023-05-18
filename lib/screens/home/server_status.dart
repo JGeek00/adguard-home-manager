@@ -18,9 +18,7 @@ class ServerStatus extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     
     return Container(
-      padding: width > 700
-        ? const EdgeInsets.only(left: 20, right: 20, bottom: 20)
-        : const EdgeInsets.all(20),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: Column(
         children: [
           Text(
@@ -31,9 +29,8 @@ class ServerStatus extends StatelessWidget {
               color: Theme.of(context).colorScheme.onSurface
             ),
           ),
-          const SizedBox(height: 20),
           SizedBox(
-            height: width > 700 ? 70 : 140,
+            height: width > 700 ? 90 : 170,
             child: GridView(
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

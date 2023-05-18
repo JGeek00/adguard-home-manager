@@ -55,6 +55,7 @@ class HomeAppBar extends StatelessWidget {
           : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
       ),
       title: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (serversProvider.selectedServer != null) ...[
