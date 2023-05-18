@@ -83,7 +83,6 @@ class _HomeState extends State<Home> {
 
         case 1:
           return ListView(
-            controller: scrollController,
             children: [
               ServerStatus(serverStatus: serversProvider.serverStatus.data!),
               Padding(
@@ -261,31 +260,48 @@ class _HomeState extends State<Home> {
     }
 
     return Scaffold(
-      appBar: const HomeAppBar(),
-      body: RefreshIndicator(
-        color: Theme.of(context).colorScheme.primary,
-        onRefresh: () async {
-          final result = await getServerStatus(serversProvider.selectedServer!);
-          if (result['result'] == 'success') {
-            serversProvider.setServerStatusData(result['data']);
-          }
-          else {
-            appConfigProvider.addLog(result['log']);
-            showSnacbkar(
-              appConfigProvider: appConfigProvider, 
-              label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
-              color: Colors.red
-            );
-          }
-        },
-        child: status()
+      body: Stack(
+        children: [
+          NestedScrollView(
+            controller: scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: HomeAppBar(innerBoxScrolled: innerBoxIsScrolled,)
+              )
+            ], 
+            body: RefreshIndicator(
+              color: Theme.of(context).colorScheme.primary,
+              onRefresh: () async {
+                final result = await getServerStatus(serversProvider.selectedServer!);
+                if (result['result'] == 'success') {
+                  serversProvider.setServerStatusData(result['data']);
+                }
+                else {
+                  appConfigProvider.addLog(result['log']);
+                  showSnacbkar(
+                    appConfigProvider: appConfigProvider, 
+                    label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
+                    color: Colors.red
+                  );
+                }
+              },
+              child: status()
+            ),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut,
+            bottom: isVisible == true ?
+              appConfigProvider.showingSnackbar
+                ? 70 
+                : 20
+              : -70,
+            right: 20,
+            child: const HomeFab() 
+          ),
+        ],
       ),
-      floatingActionButton: appConfigProvider.showingSnackbar
-        ? null
-        : isVisible 
-          ? const HomeFab() 
-          : null
-        
     );
   }
 }
