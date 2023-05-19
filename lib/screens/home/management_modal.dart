@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -137,11 +138,10 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
         if (result != false) {
           appConfigProvider.addLog(result);
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.invalidUsernamePassword),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.invalidUsernamePassword, 
+          color: Colors.red
         );
       }
     }

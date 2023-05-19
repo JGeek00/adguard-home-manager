@@ -187,25 +187,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       tlsPortController.text != '' &&
       tlsPortError == null &&
       dnsOverQuicPortController.text != '' &&
-      dnsOverQuicPortError == null &&
-      ((
-        certificateOption == 0 && 
-        certificatePathController.text != '' && 
-        certificatePathError == null
-      ) || (
-        certificateOption == 1 && 
-        certificateContentController.text != '' &&
-        certificateContentError == null
-      )) && 
-      ((
-        privateKeyOption == 0 && 
-        privateKeyPathController.text != '' &&
-        privateKeyPathError == null
-      ) || (
-        privateKeyOption == 1 &&
-        pastePrivateKeyController.text != '' &&
-        pastePrivateKeyError == null
-      ))
+      dnsOverQuicPortError == null 
     ) {
       setState(() => localValidationValid = true);
       return true;
@@ -246,9 +228,9 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
         "enabled": enabled,
         "server_name": domainNameController.text,
         "force_https": redirectHttps,
-        "port_https": int.parse(httpsPortController.text),
-        "port_dns_over_tls": int.parse(tlsPortController.text),
-        "port_dns_over_quic": int.parse(dnsOverQuicPortController.text),
+        "port_https": int.tryParse(httpsPortController.text),
+        "port_dns_over_tls": int.tryParse(tlsPortController.text),
+        "port_dns_over_quic": int.tryParse(dnsOverQuicPortController.text),
         "certificate_chain": encodeBase64(certificateContentController.text),
         "private_key": encodeBase64(pastePrivateKeyController.text),
         "private_key_saved": usePreviouslySavedKey,
@@ -672,7 +654,9 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
             tooltip: generateStatusString(context, localValidationValid, certKeyValidApi)
           ),
           IconButton(
-            onPressed: saveData, 
+            onPressed: localValidationValid ?
+              () => saveData()
+              : null, 
             icon: const Icon(Icons.save),
             tooltip: AppLocalizations.of(context)!.save,
           ),

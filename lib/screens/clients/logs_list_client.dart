@@ -73,7 +73,7 @@ class _LogsListClientState extends State<LogsListClient> {
     final result = await cancelableRequest?.value;
 
     if (result != null) {
-      if (loadingMore != null && loadingMore == true) {
+      if (loadingMore != null && loadingMore == true && mounted) {
         setState(() => isLoadingMore = false);
       }
 
