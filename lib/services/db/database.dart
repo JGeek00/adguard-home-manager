@@ -75,6 +75,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
     await db.execute("ALTER TABLE appConfig RENAME COLUMN showNameTimeLogs TO showTimeLogs");
     await db.execute("ALTER TABLE appConfig ADD COLUMN showIpLogs NUMERIC");
     await db.execute("ALTER TABLE appConfig ADD COLUMN combinedChart NUMERIC");
+    await db.execute("UPDATE appConfig SET showIpLogs = 0, combinedChart = 0");
 
     await db.transaction((txn) async{
       await txn.rawQuery(

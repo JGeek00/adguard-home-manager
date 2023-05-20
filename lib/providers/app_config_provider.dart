@@ -371,6 +371,7 @@ class AppConfigProvider with ChangeNotifier {
     _useThemeColorForStatus = dbData['useThemeColorForStatus'] != null ? convertFromIntToBool(dbData['useThemeColorForStatus'])! : false;
     _showTimeLogs = dbData['showTimeLogs'];
     _doNotRememberVersion = dbData['doNotRememberVersion'];
+    _showIpLogs = dbData['showIpLogs'];
     _combinedChartHome = dbData['combinedChart'];
 
     _dbInstance = dbInstance;
