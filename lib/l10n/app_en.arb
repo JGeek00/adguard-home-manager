@@ -280,7 +280,7 @@
     "accessSettingsDescription": "Configure access rules for the server",
     "loadingClients": "Loading clients...",
     "clientsNotLoaded": "Clients couldn't be loaded.",
-    "noAllowedClients": "No hay clientes permitidos",
+    "noAllowedClients": "No allowed clients",
     "allowedClientsDescription": "If this list has entries, AdGuard Home will accept requests only from these clients.",
     "blockedClientsDescription": "If this list has entries, AdGuard Home will drop requests from these clients. This field is ignored if there are entries in Allowed clients.",
     "disallowedDomainsDescription": "AdGuard Home drops DNS queries matching these domains, and these queries don't even appear in the query log.",
@@ -625,5 +625,8 @@
     "usingLatestVersion": "You are using the latest version",
     "ipLogs": "IP on logs",
     "ipLogsDescription": "Show always IP address on logs instead of client name",
-    "application": "Application"
+    "application": "Application",
+    "combinedChart": "Combined chart",
+    "combinedChartDescription": "Combine all charts into one",
+    "statistics": "Statistics"
 }

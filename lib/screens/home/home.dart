@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/server_status.dart';
+import 'package:adguard_home_manager/screens/home/combined_chart.dart';
 import 'package:adguard_home_manager/screens/home/appbar.dart';
 import 'package:adguard_home_manager/screens/home/fab.dart';
 import 'package:adguard_home_manager/screens/home/top_items.dart';
@@ -110,15 +111,15 @@ class _HomeState extends State<Home> {
       return [
         ServerStatus(serverStatus: serversProvider.serverStatus.data!),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Divider(
             thickness: 1,
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
               
-        Wrap(
+        if (appConfigProvider.combinedChartHome == false) Wrap(
           children: [
             FractionallySizedBox(
               widthFactor: width > 700 ? 0.5 : 1,
@@ -159,9 +160,13 @@ class _HomeState extends State<Home> {
                 secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.orange,
               ),
-            ),
-                            
+            ),             
           ],
+        ),
+
+        if (appConfigProvider.combinedChartHome == true) const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: CombinedHomeChart(),
         ),
                
         if (width <= 700) ...[
@@ -171,14 +176,14 @@ class _HomeState extends State<Home> {
             type: 'topQueriedDomains',
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Divider(
               thickness: 1,
               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
             ),
           ),
                 
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
             
           TopItems(
             label: AppLocalizations.of(context)!.topBlockedDomains, 
@@ -186,13 +191,13 @@ class _HomeState extends State<Home> {
             type: 'topBlockedDomains',
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Divider(
               thickness: 1,
               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
                
           TopItems(
             label: AppLocalizations.of(context)!.topClients, 

@@ -156,6 +156,28 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         right: 10
                       )
                     ),
+                    CustomListTile(
+                      icon: Icons.show_chart_rounded,
+                      title: AppLocalizations.of(context)!.combinedChart,
+                      subtitle: AppLocalizations.of(context)!.combinedChartDescription,
+                      trailing: Switch(
+                        value: appConfigProvider.combinedChartHome, 
+                        onChanged: (value) => updateSettings(
+                          newStatus: value, 
+                          function: appConfigProvider.setCombinedChartHome
+                        ),
+                      ),
+                      onTap: () => updateSettings(
+                        newStatus: !appConfigProvider.combinedChartHome, 
+                        function: appConfigProvider.setCombinedChartHome
+                      ),
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                        left: 16,
+                        right: 10
+                      )
+                    ),
                     SectionLabel(label: AppLocalizations.of(context)!.logs),
                     CustomListTile(
                       icon: Icons.timer_rounded,

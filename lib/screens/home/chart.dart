@@ -37,7 +37,7 @@ class HomeChart extends StatelessWidget {
       return Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 Padding(
@@ -115,13 +115,13 @@ class HomeChart extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Divider(
               thickness: 1,
               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
         ],
       );
     }

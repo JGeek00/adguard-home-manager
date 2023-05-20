@@ -18,19 +18,24 @@ class ServerStatus extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     
     return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Column(
         children: [
-          Text(
-            AppLocalizations.of(context)!.serverStatus,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface
+          Padding(
+            padding: width > 700
+              ? const EdgeInsets.all(16)
+              : const EdgeInsets.all(0),
+            child: Text(
+              AppLocalizations.of(context)!.serverStatus,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.onSurface
+              ),
             ),
           ),
           SizedBox(
-            height: width > 700 ? 90 : 170,
+            height: width > 700 ? 70 : 170,
             child: GridView(
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

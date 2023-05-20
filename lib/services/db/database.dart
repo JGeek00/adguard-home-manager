@@ -74,6 +74,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
   Future upgradeDbToV8(Database db) async {
     await db.execute("ALTER TABLE appConfig RENAME COLUMN showNameTimeLogs TO showTimeLogs");
     await db.execute("ALTER TABLE appConfig ADD COLUMN showIpLogs NUMERIC");
+    await db.execute("ALTER TABLE appConfig ADD COLUMN combinedChart NUMERIC");
 
     await db.transaction((txn) async{
       await txn.rawQuery(
@@ -87,8 +88,8 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
     version: 8,
     onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE servers (id TEXT PRIMARY KEY, name TEXT, connectionMethod TEXT, domain TEXT, path TEXT, port INTEGER, user TEXT, password TEXT, defaultServer INTEGER, authToken TEXT, runningOnHa INTEGER)");
-      await db.execute("CREATE TABLE appConfig (theme NUMERIC, overrideSslCheck NUMERIC, hideZeroValues NUMERIC, useDynamicColor NUMERIC, staticColor NUMERIC, useThemeColorForStatus NUMERIC, showTimeLogs NUMERIC, showIpLogs, doNotRememberVersion TEXT)");
-      await db.execute("INSERT INTO appConfig (theme, overrideSslCheck, hideZeroValues, useDynamicColor, staticColor, useThemeColorForStatus, showTimeLogs, showIpLogs) VALUES (0, 0, 0, ${acceptsDynamicTheme == true ? 1 : 0}, 0, 0, 0, 0)");
+      await db.execute("CREATE TABLE appConfig (theme NUMERIC, overrideSslCheck NUMERIC, hideZeroValues NUMERIC, useDynamicColor NUMERIC, staticColor NUMERIC, useThemeColorForStatus NUMERIC, showTimeLogs NUMERIC, showIpLogs NUMERIC, combinedChart NUMERIC, doNotRememberVersion TEXT)");
+      await db.execute("INSERT INTO appConfig (theme, overrideSslCheck, hideZeroValues, useDynamicColor, staticColor, useThemeColorForStatus, showTimeLogs, showIpLogs, combinedChart) VALUES (0, 0, 0, ${acceptsDynamicTheme == true ? 1 : 0}, 0, 0, 0, 0, 0)");
     },
     onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion == 1) {

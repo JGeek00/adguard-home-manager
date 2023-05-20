@@ -41,6 +41,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _showIpLogs = 0;
 
+  int _combinedChartHome = 0;
+
   String? _doNotRememberVersion;
 
   GitHubRelease? _appUpdatesAvailable;
@@ -127,6 +129,10 @@ class AppConfigProvider with ChangeNotifier {
 
   bool get showIpLogs {
     return _showIpLogs == 1 ? true : false;
+  }
+
+  bool get combinedChartHome {
+    return _combinedChartHome == 1 ? true : false;
   }
 
   String? get doNotRememberVersion {
@@ -315,6 +321,22 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setCombinedChartHome(bool value) async {
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'combinedChart',
+      value: value == true ? 1 : 0
+    );
+    if (updated == true) {
+      _combinedChartHome = value == true ? 1 : 0;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   Future<bool> setStaticColor(int value) async {
     final updated = await updateConfigQuery(
       db: _dbInstance!,
@@ -349,6 +371,7 @@ class AppConfigProvider with ChangeNotifier {
     _useThemeColorForStatus = dbData['useThemeColorForStatus'] != null ? convertFromIntToBool(dbData['useThemeColorForStatus'])! : false;
     _showTimeLogs = dbData['showTimeLogs'];
     _doNotRememberVersion = dbData['doNotRememberVersion'];
+    _combinedChartHome = dbData['combinedChart'];
 
     _dbInstance = dbInstance;
     notifyListeners();
