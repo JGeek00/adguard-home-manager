@@ -330,7 +330,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                         ),
                       );
                     }
-                    else {
+                    else if (logsProvider.logsData!.data[index].question.name != null) {
                       return LogTile(
                         log: logsProvider.logsData!.data[index],
                         index: index,
@@ -348,6 +348,9 @@ class _LogsWidgetState extends State<LogsWidget> {
                           setState(() => selectedLog = log);
                         }
                       );
+                    }
+                    else {
+                      return null;
                     }
                   }
                 )

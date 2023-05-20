@@ -37,7 +37,9 @@ class AppConfigProvider with ChangeNotifier {
 
   int _hideZeroValues = 0;
 
-  int _showNameTimeLogs = 0;
+  int _showTimeLogs = 0;
+
+  int _showIpLogs = 0;
 
   String? _doNotRememberVersion;
 
@@ -119,8 +121,12 @@ class AppConfigProvider with ChangeNotifier {
     return _useThemeColorForStatus;
   }
 
-  bool get showNameTimeLogs {
-    return _showNameTimeLogs == 1 ? true : false;
+  bool get showTimeLogs {
+    return _showTimeLogs == 1 ? true : false;
+  }
+
+  bool get showIpLogs {
+    return _showIpLogs == 1 ? true : false;
   }
 
   String? get doNotRememberVersion {
@@ -229,14 +235,30 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> setShowNameTimeLogs(bool status) async {
+  Future<bool> setshowTimeLogs(bool status) async {
     final updated = await updateConfigQuery(
       db: _dbInstance!,
-      column: 'showNameTimeLogs',
+      column: 'showTimeLogs',
       value: status == true ? 1 : 0
     );
     if (updated == true) {
-      _showNameTimeLogs = status == true ? 1 : 0;
+      _showTimeLogs = status == true ? 1 : 0;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  Future<bool> setShowIpLogs(bool status) async {
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'showIpLogs',
+      value: status == true ? 1 : 0
+    );
+    if (updated == true) {
+      _showIpLogs = status == true ? 1 : 0;
       notifyListeners();
       return true;
     }
@@ -325,7 +347,7 @@ class AppConfigProvider with ChangeNotifier {
     _useDynamicColor = convertFromIntToBool(dbData['useDynamicColor'])!;
     _staticColor = dbData['staticColor'];
     _useThemeColorForStatus = dbData['useThemeColorForStatus'] != null ? convertFromIntToBool(dbData['useThemeColorForStatus'])! : false;
-    _showNameTimeLogs = dbData['showNameTimeLogs'];
+    _showTimeLogs = dbData['showTimeLogs'];
     _doNotRememberVersion = dbData['doNotRememberVersion'];
 
     _dbInstance = dbInstance;

@@ -558,8 +558,8 @@
     "validPrivateKey": "Clave privada válida",
     "expirationDate": "Fecha de expiración",
     "keysNotMatch": "Certificado o clave inválido: tls: la clave privada no corresponde con la clave pública",
-    "nameTimeLogs": "Nombre y tiempo en logs",
-    "nameTimeLogsDescription": "Mostrar el nombre del cliente y el tiempo de procesamiento en la lista de logs",
+    "timeLogs": "Tiempo en logs",
+    "timeLogsDescription": "Mostrar el tiempo de procesamiento en la lista de logs",
     "hostNames": "Nombres de host",
     "keyType": "Tipo de clave",
     "updateAvailable": "Actualización disponible",
@@ -622,5 +622,8 @@
     "unsupprtedVersionMessage": "El soporte para la versión del servidor {version} no está garantizada. Esta aplicación puede tener problemas al trabajar con esa versión del servidor.\n\nAdGuard Home Manager está diseñado para trabajar con las versiones estables del servidor AdGuard Home. Puede funcionar con versiones alpha y beta, pero la compatibilidad no está asegurada y la aplicación puede tener problemas para trabajar con esas versiones.",
     "iUnderstand": "Lo entiendo",
     "appUpdates": "Actualizaciones de la app",
-    "usingLatestVersion": "Estás usando la última versión"
+    "usingLatestVersion": "Estás usando la última versión",
+    "ipLogs": "IP en registros",
+    "ipLogsDescription": "Mostrar siempre dirección IP en vez del nombre del cliente",
+    "application": "Aplicación"
 }

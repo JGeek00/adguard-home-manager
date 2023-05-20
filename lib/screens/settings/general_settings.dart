@@ -2,6 +2,8 @@
 
 import 'dart:io';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_checker/store_checker.dart';
@@ -31,42 +33,23 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    Future updateHideZeroValues(bool newStatus) async {
-      final result = await appConfigProvider.setHideZeroValues(newStatus);
+    Future updateSettings({
+      required bool newStatus,
+      required Future Function(bool) function
+    }) async {
+      final result = await function(newStatus);
       if (result == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.settingsUpdatedSuccessfully),
-            backgroundColor: Colors.green,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.settingsUpdatedSuccessfully, 
+          color: Colors.green
         );
       }
       else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.cannotUpdateSettings),
-            backgroundColor: Colors.red,
-          )
-        );
-      }
-    }
-
-    Future updateShowNameTimeLogs(bool newStatus) async {
-      final result = await appConfigProvider.setShowNameTimeLogs(newStatus);
-      if (result == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.settingsUpdatedSuccessfully),
-            backgroundColor: Colors.green,
-          )
-        );
-      }
-      else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.cannotUpdateSettings),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.cannotUpdateSettings, 
+          color: Colors.red
         );
       }
     }
@@ -150,15 +133,45 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 ),
                 SliverList.list(
                   children: [
+                    SectionLabel(label: AppLocalizations.of(context)!.home),
                     CustomListTile(
                       icon: Icons.exposure_zero_rounded,
                       title: AppLocalizations.of(context)!.hideZeroValues,
                       subtitle: AppLocalizations.of(context)!.hideZeroValuesDescription,
                       trailing: Switch(
                         value: appConfigProvider.hideZeroValues, 
-                        onChanged: updateHideZeroValues,
+                        onChanged: (value) => updateSettings(
+                          newStatus: value, 
+                          function: appConfigProvider.setHideZeroValues
+                        ),
                       ),
-                      onTap: () => updateHideZeroValues(!appConfigProvider.hideZeroValues),
+                      onTap: () => updateSettings(
+                        newStatus: !appConfigProvider.hideZeroValues, 
+                        function: appConfigProvider.setHideZeroValues
+                      ),
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                        left: 16,
+                        right: 10
+                      )
+                    ),
+                    SectionLabel(label: AppLocalizations.of(context)!.logs),
+                    CustomListTile(
+                      icon: Icons.timer_rounded,
+                      title: AppLocalizations.of(context)!.timeLogs,
+                      subtitle: AppLocalizations.of(context)!.timeLogsDescription,
+                      trailing: Switch(
+                        value: appConfigProvider.showTimeLogs, 
+                        onChanged: (value) => updateSettings(
+                          newStatus: value, 
+                          function: appConfigProvider.setshowTimeLogs
+                        ),
+                      ),
+                      onTap: () => updateSettings(
+                        newStatus: !appConfigProvider.showTimeLogs, 
+                        function: appConfigProvider.setshowTimeLogs
+                      ),
                       padding: const EdgeInsets.only(
                         top: 10,
                         bottom: 10,
@@ -168,13 +181,19 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     ),
                     CustomListTile(
                       icon: Icons.more,
-                      title: AppLocalizations.of(context)!.nameTimeLogs,
-                      subtitle: AppLocalizations.of(context)!.nameTimeLogsDescription,
+                      title: AppLocalizations.of(context)!.ipLogs,
+                      subtitle: AppLocalizations.of(context)!.ipLogsDescription,
                       trailing: Switch(
-                        value: appConfigProvider.showNameTimeLogs, 
-                        onChanged: updateShowNameTimeLogs,
+                        value: appConfigProvider.showIpLogs, 
+                        onChanged: (value) => updateSettings(
+                          newStatus: value, 
+                          function: appConfigProvider.setShowIpLogs
+                        ),
                       ),
-                      onTap: () => updateShowNameTimeLogs(!appConfigProvider.showNameTimeLogs),
+                      onTap: () => updateSettings(
+                        newStatus: !appConfigProvider.showIpLogs, 
+                        function: appConfigProvider.setShowIpLogs
+                      ),
                       padding: const EdgeInsets.only(
                         top: 10,
                         bottom: 10,
@@ -188,14 +207,17 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE) ||
                         appConfigProvider.installationSource == Source.UNKNOWN
                       )
-                    ) CustomListTile(
-                      icon: Icons.system_update_rounded,
-                      title: AppLocalizations.of(context)!.appUpdates,
-                      subtitle: appConfigProvider.appUpdatesAvailable != null
-                        ? AppLocalizations.of(context)!.updateAvailable
-                        : AppLocalizations.of(context)!.usingLatestVersion,
-                      trailing: generateAppUpdateStatus()
-                    )
+                    ) ...[
+                      SectionLabel(label: AppLocalizations.of(context)!.application),
+                      CustomListTile(
+                        icon: Icons.system_update_rounded,
+                        title: AppLocalizations.of(context)!.appUpdates,
+                        subtitle: appConfigProvider.appUpdatesAvailable != null
+                          ? AppLocalizations.of(context)!.updateAvailable
+                          : AppLocalizations.of(context)!.usingLatestVersion,
+                        trailing: generateAppUpdateStatus()
+                      )
+                    ]
                   ],
                 )
               ],
