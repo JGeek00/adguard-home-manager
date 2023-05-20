@@ -102,7 +102,7 @@ class LogTile extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                log.question.name,
+                                log.question.name ?? "N/A",
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
@@ -276,7 +276,7 @@ class LogTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        log.question.name,
+                        log.question.name ?? "N/A",
                         style: TextStyle(
                           fontSize: 16,
                           height: 1.5,

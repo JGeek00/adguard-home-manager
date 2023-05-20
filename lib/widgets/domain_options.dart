@@ -19,7 +19,7 @@ import 'package:adguard_home_manager/models/menu_option.dart';
 class DomainOptions extends StatelessWidget {
   final bool isBlocked;
   final bool? isClient;
-  final String item;
+  final String? item;
   final Widget child;
   final void Function() onTap;
   final BorderRadius? borderRadius;
@@ -110,17 +110,17 @@ class DomainOptions extends StatelessWidget {
         if (isClient != true && isBlocked == true) MenuOption(
           title: AppLocalizations.of(context)!.unblock, 
           icon: Icons.check,
-          action: () => blockUnblock(item, 'unblock')
+          action: () => blockUnblock(item!, 'unblock')
         ),
         if (isClient != true && isBlocked == false) MenuOption(
           title: AppLocalizations.of(context)!.block, 
           icon: Icons.block,
-          action: () => blockUnblock(item, 'block')
+          action: () => blockUnblock(item!, 'block')
         ),
         MenuOption(
           title: AppLocalizations.of(context)!.copyClipboard, 
           icon: Icons.copy,
-          action: () => copyDomainClipboard(item)
+          action: () => copyDomainClipboard(item!)
         ),
       ];
     }
@@ -134,25 +134,30 @@ class DomainOptions extends StatelessWidget {
       );
     }
 
-    return Material(
-      color: Colors.transparent,
-      borderRadius: borderRadius,
-      child: ContextMenuArea(
-        builder: (context) => generateOptions().map((opt) => CustomListTile(
-          title: opt.title,
-          icon: opt.icon,
-          onTap: () {
-            opt.action();
-            Navigator.pop(context);
-          },
-        )).toList(),
-        child: InkWell(
-          onTap: onTap,
-          onLongPress: () => openOptionsModal(),
-          borderRadius: borderRadius,
-          child: child,
+    if (item != null) {
+      return Material(
+        color: Colors.transparent,
+        borderRadius: borderRadius,
+        child: ContextMenuArea(
+          builder: (context) => generateOptions().map((opt) => CustomListTile(
+            title: opt.title,
+            icon: opt.icon,
+            onTap: () {
+              opt.action();
+              Navigator.pop(context);
+            },
+          )).toList(),
+          child: InkWell(
+            onTap: onTap,
+            onLongPress: openOptionsModal,
+            borderRadius: borderRadius,
+            child: child,
+          ),
         ),
-      ),
-    );
+      );
+    }
+    else {
+      return child;
+    }
   }
 }

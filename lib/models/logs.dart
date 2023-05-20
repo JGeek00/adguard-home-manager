@@ -172,7 +172,7 @@ class Whois {
 
 class Question {
   final String questionClass;
-  final String name;
+  final String? name;
   final String type;
 
   Question({
