@@ -274,7 +274,7 @@ Future getServerVersion(Server server) async {
     if (result['statusCode'] == 200 && result['body'] != null) {
       return {
         'result': 'success',
-        'data': result['body']['version']
+        'data': jsonDecode(result['body'])['version']
       };
     }
     else {

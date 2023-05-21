@@ -43,7 +43,7 @@ Future<dynamic> editServerQuery(Database db, Server server) async {
           'port': server.port,
           'user': server.user,
           'password': server.password,
-          'defaultServer': server.defaultServer,
+          'defaultServer': convertFromBoolToInt(server.defaultServer),
           'authToken': server.authToken,
           'runningOnHa': convertFromBoolToInt(server.runningOnHa)
         },

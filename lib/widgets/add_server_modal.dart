@@ -377,7 +377,7 @@ class _AddServerModalState extends State<AddServerModal> {
         final serverSaved = await serversProvider.editServer(serverObj);
 
         if (serverSaved == null) {
-          final version = await getServerVersion(serverObj);;
+          final version = await getServerVersion(serverObj);
           if (
             version['result'] == 'success' && 
             (version['data'].contains('a') || version['data'].contains('b'))  // alpha or beta
