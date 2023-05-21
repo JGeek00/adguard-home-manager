@@ -207,9 +207,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           if (
             !(Platform.isAndroid || Platform.isIOS) || 
             (Platform.isAndroid && (
-              appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE) ||
+              appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE ||
+              appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
               appConfigProvider.installationSource == Source.UNKNOWN
-            )
+            ))
           ) ...[
             SectionLabel(label: AppLocalizations.of(context)!.application),
             CustomListTile(

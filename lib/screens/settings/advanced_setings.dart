@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/app_logs/app_logs.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class AdvancedSettings extends StatelessWidget {
@@ -20,97 +21,80 @@ class AdvancedSettings extends StatelessWidget {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
-    
-    Future updateSslCheck(bool newStatus) async {
-      final result = await appConfigProvider.setOverrideSslCheck(newStatus);
+
+    Future updateSettings({
+      required bool newStatus,
+      required Future Function(bool) function
+    }) async {
+      final result = await function(newStatus);
       if (result == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.restartAppTakeEffect),
-            backgroundColor: Colors.green,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.settingsUpdatedSuccessfully, 
+          color: Colors.green
         );
       }
       else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.cannotUpdateSettings),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.cannotUpdateSettings, 
+          color: Colors.red
         );
       }
     }
 
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverOverlapAbsorber(
-            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            sliver: SliverAppBar(
-              pinned: true,
-              floating: true,
-              centerTitle: false,
-              forceElevated: innerBoxIsScrolled,
-              title: Text(AppLocalizations.of(context)!.generalSettings),
-            )
-          )
-        ], 
-        body: SafeArea(
-          top: false,
-          bottom: false,
-          child: Builder(
-            builder: (context) => CustomScrollView(
-              slivers: [
-                SliverOverlapInjector(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                ),
-                SliverList.list(
-                  children: [
-                    CustomListTile(
-                      icon: Icons.lock,
-                      title: AppLocalizations.of(context)!.dontCheckCertificate,
-                      subtitle: AppLocalizations.of(context)!.dontCheckCertificateDescription,
-                      trailing: Switch(
-                        value: appConfigProvider.overrideSslCheck, 
-                        onChanged: updateSslCheck,
-                      ),
-                      onTap: () => updateSslCheck(!appConfigProvider.overrideSslCheck),
-                      padding: const EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
-                        left: 20,
-                        right: 10
-                      )
-                    ),
-                    CustomListTile(
-                      icon: Icons.list_rounded,
-                      title: AppLocalizations.of(context)!.logs,
-                      subtitle: AppLocalizations.of(context)!.checkAppLogs,
-                      onTap: () => {
-                        if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
-                          SplitView.of(context).push(const AppLogs())
-                        }
-                        else {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const AppLogs()
-                            )
-                          )
-                        }
-                      },
-                      padding: const EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
-                        left: 20,
-                        right: 10
-                      )
-                    ),
-                  ],
-                )
-              ],
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.advancedSettings),
+      ),
+      body: ListView(
+        children: [
+          CustomListTile(
+            icon: Icons.lock,
+            title: AppLocalizations.of(context)!.dontCheckCertificate,
+            subtitle: AppLocalizations.of(context)!.dontCheckCertificateDescription,
+            trailing: Switch(
+              value: appConfigProvider.overrideSslCheck, 
+              onChanged: (value) => updateSettings(
+                newStatus: value,
+                function: appConfigProvider.setOverrideSslCheck
+              ),
             ),
-          )
-        )
+            onTap: () => updateSettings(
+              newStatus: !appConfigProvider.overrideSslCheck,
+              function: appConfigProvider.setOverrideSslCheck
+            ),
+            padding: const EdgeInsets.only(
+              top: 10,
+              bottom: 10,
+              left: 20,
+              right: 10
+            )
+          ),
+          CustomListTile(
+            icon: Icons.list_rounded,
+            title: AppLocalizations.of(context)!.logs,
+            subtitle: AppLocalizations.of(context)!.checkAppLogs,
+            onTap: () => {
+              if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                SplitView.of(context).push(const AppLogs())
+              }
+              else {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AppLogs()
+                  )
+                )
+              }
+            },
+            padding: const EdgeInsets.only(
+              top: 10,
+              bottom: 10,
+              left: 20,
+              right: 10
+            )
+          ),
+        ],
       )
     );  
   }

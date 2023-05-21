@@ -49,7 +49,8 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
         widget.appConfigProvider.setAppUpdatesAvailable(result['body']);
         if (Platform.isAndroid) {
           if (
-            widget.appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE || 
+            widget.appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE ||
+            widget.appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
             widget.appConfigProvider.installationSource == Source.UNKNOWN
           ) {
             return result['body'];
