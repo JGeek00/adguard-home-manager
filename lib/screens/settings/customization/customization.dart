@@ -111,7 +111,7 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
             label: AppLocalizations.of(context)!.color,
             padding: const EdgeInsets.only(top: 45, left: 16, right: 16, bottom: 5),
           ),
-          if (appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31) CustomSwitchListTile(
+          if (appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31) CustomSwitchListTile(
             value: dynamicColor, 
             onChanged: (value) {
               setState(() => dynamicColor = value);
@@ -119,7 +119,7 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
             }, 
             title: AppLocalizations.of(context)!.useDynamicTheme, 
           ),
-          if (!(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31)) const SizedBox(height: 20),
+          if (!(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31)) const SizedBox(height: 20),
           if (dynamicColor == false) ...[
             SizedBox(
               width: MediaQuery.of(context).size.width,

@@ -41,11 +41,11 @@ dependencies:
   intl: any
   provider: ^6.0.3
   sqflite: ^2.2.5
-  package_info_plus: ^3.1.2
+  package_info_plus: ^4.0.1
   flutter_displaymode: ^0.6.0 
   dynamic_color: ^1.6.5
   animations: ^2.0.5
-  device_info_plus: ^4.1.2
+  device_info_plus: ^9.0.1
   uuid: ^3.0.6
   expandable: ^5.0.1
   fl_chart: ^0.62.0

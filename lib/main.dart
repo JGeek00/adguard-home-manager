@@ -55,7 +55,7 @@ void main() async {
     appConfigProvider.setIosInfo(iosInfo);
   }
 
-  final dbData = await loadDb(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31);
+  final dbData = await loadDb(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31);
 
   if (dbData['appConfig']['overrideSslCheck'] == 1) {
     HttpOverrides.global = MyHttpOverrides();
@@ -162,12 +162,12 @@ class _MainState extends State<Main> {
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) => MaterialApp(
         title: 'AdGuard Home Manager',
-        theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31
+        theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
             ? appConfigProvider.useDynamicColor == true
               ? lightTheme(lightDynamic)
               : lightThemeOldVersions(colors[appConfigProvider.staticColor])
             : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
-          darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt! >= 31
+          darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
             ? appConfigProvider.useDynamicColor == true
               ? darkTheme(darkDynamic)
               : darkThemeOldVersions(colors[appConfigProvider.staticColor])
