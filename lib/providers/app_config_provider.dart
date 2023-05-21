@@ -363,16 +363,16 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   void saveFromDb(Database dbInstance, Map<String, dynamic> dbData) {
-    _selectedTheme = dbData['theme'];
-    _overrideSslCheck = dbData['overrideSslCheck'];
+    _selectedTheme = dbData['theme'] ?? 0;
+    _overrideSslCheck = dbData['overrideSslCheck'] ?? 0;
     _hideZeroValues = dbData['hideZeroValues'];
     _useDynamicColor = convertFromIntToBool(dbData['useDynamicColor'])!;
-    _staticColor = dbData['staticColor'];
+    _staticColor = dbData['staticColor'] ?? 0;
     _useThemeColorForStatus = dbData['useThemeColorForStatus'] != null ? convertFromIntToBool(dbData['useThemeColorForStatus'])! : false;
-    _showTimeLogs = dbData['showTimeLogs'];
+    _showTimeLogs = dbData['showTimeLogs'] ?? 0;
     _doNotRememberVersion = dbData['doNotRememberVersion'];
-    _showIpLogs = dbData['showIpLogs'];
-    _combinedChartHome = dbData['combinedChart'];
+    _showIpLogs = dbData['showIpLogs'] ?? 0;
+    _combinedChartHome = dbData['combinedChart'] ?? 0;
 
     _dbInstance = dbInstance;
     notifyListeners();

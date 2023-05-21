@@ -4,6 +4,12 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
   List<Map<String, Object?>>? servers;
   List<Map<String, Object?>>? appConfig;
 
+  Future rebuildAppConfig(Database db) async {
+    await db.execute("DROP TABLE appConfig");
+    await db.execute("CREATE TABLE appConfig (theme NUMERIC, overrideSslCheck NUMERIC, hideZeroValues NUMERIC, useDynamicColor NUMERIC, staticColor NUMERIC, useThemeColorForStatus NUMERIC, showTimeLogs NUMERIC, showIpLogs NUMERIC, combinedChart NUMERIC, doNotRememberVersion TEXT)");
+    await db.execute("INSERT INTO appConfig (theme, overrideSslCheck, hideZeroValues, useDynamicColor, staticColor, useThemeColorForStatus, showTimeLogs, showIpLogs, combinedChart) VALUES (0, 0, 0, ${acceptsDynamicTheme == true ? 1 : 0}, 0, 0, 0, 0, 0)");
+  }
+
   Future upgradeDbToV2(Database db) async {
     await db.execute("ALTER TABLE appConfig ADD COLUMN overrideSslCheck NUMERIC");
     await db.execute("UPDATE appConfig SET overrideSslCheck = 0");
@@ -72,16 +78,28 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
   }
 
   Future upgradeDbToV8(Database db) async {
-    await db.execute("ALTER TABLE appConfig RENAME COLUMN showNameTimeLogs TO showTimeLogs");
-    await db.execute("ALTER TABLE appConfig ADD COLUMN showIpLogs NUMERIC");
-    await db.execute("ALTER TABLE appConfig ADD COLUMN combinedChart NUMERIC");
-    await db.execute("UPDATE appConfig SET showIpLogs = 0, combinedChart = 0");
-
-    await db.transaction((txn) async{
-      await txn.rawQuery(
+    try {
+      final data = await db.rawQuery(
         'SELECT * FROM appConfig',
       );
-    });
+      await rebuildAppConfig(db);
+      await db.update(
+        'appConfig', 
+        {
+          'theme': data[0]['theme'],
+          'overrideSslCheck': data[0]['overrideSslCheck'],
+          'hideZeroValues': data[0]['hideZeroValues'],
+          'useDynamicColor': data[0]['useDynamicColor'],
+          'staticColor': data[0]['staticColor'],
+          'useThemeColorForStatus': data[0]['useThemeColorForStatus'],
+          'showTimeLogs': data[0]['showNameTimeLogs'],
+          'showIpLogs': data[0]['showIpLogs'],
+          'combinedChart': data[0]['combinedChart'],
+        }
+      );
+    } catch (e) {
+      await rebuildAppConfig(db);
+    }
   }
 
   Database db = await openDatabase(
