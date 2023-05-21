@@ -149,7 +149,7 @@ class CombinedHomeChart extends StatelessWidget {
         );
       }
 
-      if (width > 900) {
+      if (width > 700) {
         return Column(
           children: [
             Text(
@@ -213,7 +213,12 @@ class CombinedHomeChart extends StatelessWidget {
                   )
                 ),
               ],
-            )
+            ),
+            Divider(
+              thickness: 1,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+            ),
+            const SizedBox(height: 16)
           ],
         );
       }

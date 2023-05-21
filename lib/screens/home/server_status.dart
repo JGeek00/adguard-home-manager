@@ -21,22 +21,19 @@ class ServerStatus extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Column(
         children: [
-          Padding(
-            padding: width > 700
-              ? const EdgeInsets.all(16)
-              : const EdgeInsets.all(0),
-            child: Text(
-              AppLocalizations.of(context)!.serverStatus,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface
-              ),
+          Text(
+            AppLocalizations.of(context)!.serverStatus,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.onSurface
             ),
           ),
+          const SizedBox(height: 16),
           SizedBox(
-            height: width > 700 ? 70 : 170,
+            height: width > 700 ? 66 : 146,
             child: GridView(
+              padding: const EdgeInsets.all(0),
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: width > 700 ? 4 : 2,

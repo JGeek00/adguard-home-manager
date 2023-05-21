@@ -208,7 +208,6 @@ class _HomeState extends State<Home> {
         ],
         if (width > 700) Column(
           children: [
-            const SizedBox(height: 16),
             Wrap(
               alignment: WrapAlignment.center,
               children: [
@@ -259,68 +258,71 @@ class _HomeState extends State<Home> {
     }
 
     return Scaffold(
-      body: Stack(
-        children: [
-          NestedScrollView(
-            controller: scrollController,
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: HomeAppBar(innerBoxScrolled: innerBoxIsScrolled,)
+      body: SafeArea(
+        top: false,
+        child: Stack(
+          children: [
+            NestedScrollView(
+              controller: scrollController,
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: HomeAppBar(innerBoxScrolled: innerBoxIsScrolled,)
+                )
+              ], 
+              body: SafeArea(
+                top: false,
+                bottom: false,
+                child: Builder(
+                  builder: (context) => RefreshIndicator(
+                    color: Theme.of(context).colorScheme.primary,
+                    onRefresh: () async {
+                      final result = await getServerStatus(serversProvider.selectedServer!);
+                      if (result['result'] == 'success') {
+                        serversProvider.setServerStatusData(result['data']);
+                      }
+                      else {
+                        appConfigProvider.addLog(result['log']);
+                        showSnacbkar(
+                          appConfigProvider: appConfigProvider, 
+                          label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
+                          color: Colors.red
+                        );
+                      }
+                    },
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverOverlapInjector(
+                          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                        ),
+                        if (serversProvider.serverStatus.loadStatus == 0) SliverFillRemaining(
+                          child: loading(),
+                        ),
+                        if (serversProvider.serverStatus.loadStatus == 1) SliverList.list(
+                          children: listItems()
+                        ),
+                        if (serversProvider.serverStatus.loadStatus == 2) SliverFillRemaining(
+                          child: loadError(),
+                        ),
+                      ],
+                    )
+                  ),
+                )
               )
-            ], 
-            body: SafeArea(
-              top: false,
-              bottom: false,
-              child: Builder(
-                builder: (context) => RefreshIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                  onRefresh: () async {
-                    final result = await getServerStatus(serversProvider.selectedServer!);
-                    if (result['result'] == 'success') {
-                      serversProvider.setServerStatusData(result['data']);
-                    }
-                    else {
-                      appConfigProvider.addLog(result['log']);
-                      showSnacbkar(
-                        appConfigProvider: appConfigProvider, 
-                        label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
-                        color: Colors.red
-                      );
-                    }
-                  },
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverOverlapInjector(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                      ),
-                      if (serversProvider.serverStatus.loadStatus == 0) SliverFillRemaining(
-                        child: loading(),
-                      ),
-                      if (serversProvider.serverStatus.loadStatus == 1) SliverList.list(
-                        children: listItems()
-                      ),
-                      if (serversProvider.serverStatus.loadStatus == 2) SliverFillRemaining(
-                        child: loadError(),
-                      ),
-                    ],
-                  )
-                ),
-              )
-            )
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeInOut,
-            bottom: isVisible == true ?
-              appConfigProvider.showingSnackbar
-                ? 70 
-                : 20
-              : -70,
-            right: 20,
-            child: const HomeFab() 
-          ),
-        ],
+            ),
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              bottom: isVisible == true ?
+                appConfigProvider.showingSnackbar
+                  ? 70 
+                  : 20
+                : -70,
+              right: 20,
+              child: const HomeFab() 
+            ),
+          ],
+        ),
       ),
     );
   }
