@@ -294,35 +294,25 @@ class LogDetailsScreen extends StatelessWidget {
     }
     else {
       return Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar(
-                pinned: true,
-                floating: true,
-                centerTitle: false,
-                forceElevated: innerBoxIsScrolled,
-                title:  Text(AppLocalizations.of(context)!.logDetails),
-                actions: [
-                  if (serversProvider.filteringStatus != null) IconButton(
-                    onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
-                    icon: Icon(
-                      getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                        ? Icons.check_circle_rounded
-                        : Icons.block
-                    ),
-                    tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                      ? AppLocalizations.of(context)!.unblockDomain
-                      : AppLocalizations.of(context)!.blockDomain,
-                  ),
-                  const SizedBox(width: 10)
-                ],
+        appBar: AppBar(
+          centerTitle: false,
+          title:  Text(AppLocalizations.of(context)!.logDetails),
+          actions: [
+            if (serversProvider.filteringStatus != null) IconButton(
+              onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
+              icon: Icon(
+                getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                  ? Icons.check_circle_rounded
+                  : Icons.block
               ),
-            )
+              tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                ? AppLocalizations.of(context)!.unblockDomain
+                : AppLocalizations.of(context)!.blockDomain,
+            ),
+            const SizedBox(width: 10)
           ],
-          body: content(),
         ),
+        body: content(),
       );
     }
   }
