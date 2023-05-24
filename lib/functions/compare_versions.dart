@@ -4,6 +4,7 @@ bool compareVersions({
   required String currentVersion, 
   required String newVersion
 }) {
+  if (currentVersion == "") return false;
   try {
     if (currentVersion.contains('a')) {   // alpha
       return true;
@@ -72,6 +73,7 @@ bool serverVersionIsAhead({
   required String referenceVersion, 
   String? referenceVersionBeta
 }) {
+  if (currentVersion == "") return false;
   try {
     final current = currentVersion.replaceAll('v', '');
     final reference = referenceVersion.replaceAll('v', '');
