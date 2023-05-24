@@ -7,54 +7,37 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/settings/access_settings/clients_list.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class AccessSettings extends StatelessWidget {
+class AccessSettings extends StatefulWidget {
   const AccessSettings({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return AccessSettingsWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider,
-    );
-  }
+  State<AccessSettings> createState() => _AccessSettingsState();
 }
 
-class AccessSettingsWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-
-  const AccessSettingsWidget({
-    Key? key,
-    required this.serversProvider,
-    required this.appConfigProvider,
-  }) : super(key: key);
-
-  @override
-  State<AccessSettingsWidget> createState() => _AccessSettingsWidgetState();
-}
-
-class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with TickerProviderStateMixin {
+class _AccessSettingsState extends State<AccessSettings> with TickerProviderStateMixin {
   final ScrollController scrollController = ScrollController();
   late TabController tabController;
 
   Future fetchClients() async {
-    widget.serversProvider.setClientsLoadStatus(LoadStatus.loading, false);
-    final result = await getClients(widget.serversProvider.selectedServer!);
+    final clientsProvider = Provider.of<ClientsProvider>(context, listen: false);
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+
+    clientsProvider.setClientsLoadStatus(LoadStatus.loading, false);
+    final result = await getClients(serversProvider.selectedServer!);
     if (mounted) {
       if (result['result'] == 'success') {
-        widget.serversProvider.setClientsData(result['data']);
-        widget.serversProvider.setClientsLoadStatus(LoadStatus.loaded, true);
+        clientsProvider.setClientsData(result['data']);
+        clientsProvider.setClientsLoadStatus(LoadStatus.loaded, true);
       }
       else {
-        widget.appConfigProvider.addLog(result['log']);
-        widget.serversProvider.setClientsLoadStatus(LoadStatus.error, true);
+        appConfigProvider.addLog(result['log']);
+        clientsProvider.setClientsLoadStatus(LoadStatus.error, true);
       }
     }
   }
@@ -74,6 +57,7 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
 
     Widget body() {
       return TabBarView(
@@ -82,25 +66,25 @@ class _AccessSettingsWidgetState extends State<AccessSettingsWidget> with Ticker
           ClientsList(
             type: 'allowed',
             scrollController: scrollController, 
-            loadStatus: serversProvider.clients.loadStatus, 
-            data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.clients.data!.clientsAllowedBlocked!.allowedClients : [], 
+            loadStatus: clientsProvider.loadStatus, 
+            data: clientsProvider.loadStatus == LoadStatus.loaded
+              ? clientsProvider.clients!.clientsAllowedBlocked!.allowedClients : [], 
             fetchClients: fetchClients
           ),
           ClientsList(
             type: 'disallowed',
             scrollController: scrollController, 
-            loadStatus: serversProvider.clients.loadStatus, 
-            data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.clients.data!.clientsAllowedBlocked!.disallowedClients : [], 
+            loadStatus: clientsProvider.loadStatus, 
+            data: clientsProvider.loadStatus == LoadStatus.loaded
+              ? clientsProvider.clients!.clientsAllowedBlocked!.disallowedClients : [], 
             fetchClients: fetchClients
           ),
           ClientsList(
             type: 'domains',
             scrollController: scrollController, 
-            loadStatus: serversProvider.clients.loadStatus, 
-            data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.clients.data!.clientsAllowedBlocked!.blockedHosts : [], 
+            loadStatus: clientsProvider.loadStatus, 
+            data: clientsProvider.loadStatus == LoadStatus.loaded
+              ? clientsProvider.clients!.clientsAllowedBlocked!.blockedHosts : [], 
             fetchClients: fetchClients
           ),
         ]

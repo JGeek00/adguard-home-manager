@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/clients/client_screen.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/functions/maps_fns.dart';
@@ -26,6 +27,7 @@ class ClientsFab extends StatelessWidget {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
@@ -47,9 +49,9 @@ class ClientsFab extends StatelessWidget {
       processModal.close();
 
       if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
+        Clients clientsData = clientsProvider.clients!;
         clientsData.clients.add(client);
-        serversProvider.setClientsData(clientsData);
+        clientsProvider.setClientsData(clientsData);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,

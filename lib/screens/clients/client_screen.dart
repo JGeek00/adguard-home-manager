@@ -11,6 +11,7 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/safe_search.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -132,6 +133,7 @@ class _ClientScreenState extends State<ClientScreen> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
 
     void createClient() {
@@ -202,7 +204,7 @@ class _ClientScreenState extends State<ClientScreen> {
         context: context, 
         builder: (context) => TagsModal(
           selectedTags: selectedTags,
-          tags: serversProvider.clients.data!.supportedTags,
+          tags: clientsProvider.clients!.supportedTags,
           onConfirm: (selected) => setState(() => selectedTags = selected),
         )
       );

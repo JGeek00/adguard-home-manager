@@ -19,6 +19,7 @@ import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/maps_fns.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -79,6 +80,7 @@ class _AddedListState extends State<AddedList> {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -101,7 +103,7 @@ class _AddedListState extends State<AddedList> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
+        Clients clientsData = clientsProvider.clients!;
         clientsData.clients = clientsData.clients.map((e) {
           if (e.name == client.name) {
             return client;
@@ -110,7 +112,7 @@ class _AddedListState extends State<AddedList> {
             return e;
           }
         }).toList();
-        serversProvider.setClientsData(clientsData);
+        clientsProvider.setClientsData(clientsData);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,
@@ -138,9 +140,9 @@ class _AddedListState extends State<AddedList> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
+        Clients clientsData = clientsProvider.clients!;
         clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
-        serversProvider.setClientsData(clientsData);
+        clientsProvider.setClientsData(clientsData);
 
         if (widget.splitView == true) {
           SplitView.of(context).popUntil(0);

@@ -19,36 +19,19 @@ import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class SearchClients extends StatelessWidget {
+class SearchClients extends StatefulWidget {
   const SearchClients({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-
-    return SearchClientsWidget(
-      serversProvider: serversProvider,
-    );
-  }
+  State<SearchClients> createState() => _SearchClientsState();
 }
 
-class SearchClientsWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const SearchClientsWidget({
-    Key? key,
-    required this.serversProvider,
-  }) : super(key: key);
-
-  @override
-  State<SearchClientsWidget> createState() => _SearchClientsWidgetState();
-}
-
-class _SearchClientsWidgetState extends State<SearchClientsWidget> {
+class _SearchClientsState extends State<SearchClients> {
   late ScrollController scrollController;
 
   final TextEditingController searchController = TextEditingController();
@@ -87,11 +70,13 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
 
   @override
   void initState() {
+    final clientsProvider =  Provider.of<ClientsProvider>(context, listen: false);
+      
     scrollController = ScrollController()..addListener(scrollListener);
 
     setState(() {
-      clients = widget.serversProvider.clients.data!.clients;
-      autoClients = widget.serversProvider.clients.data!.autoClientsData;
+      clients = clientsProvider.clients!.clients;
+      autoClients = clientsProvider.clients!.autoClients;
     });
 
     super.initState();
@@ -101,6 +86,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
   Widget build(BuildContext context) {    
     final serversProvider = Provider.of<ServersProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -114,9 +100,9 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
+        Clients clientsData = clientsProvider.clients!;
         clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
-        serversProvider.setClientsData(clientsData);
+        clientsProvider.setClientsData(clientsData);
         setState(() {
           clients = clientsData.clients;
         });
@@ -151,7 +137,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
+        Clients clientsData = clientsProvider.clients!;
         clientsData.clients = clientsData.clients.map((e) {
           if (e.name == client.name) {
             return client;
@@ -160,7 +146,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
             return e;
           }
         }).toList();
-        serversProvider.setClientsData(clientsData);
+        clientsProvider.setClientsData(clientsData);
 
         setState(() {
           clients = clientsData.clients;

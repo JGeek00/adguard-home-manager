@@ -16,6 +16,7 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
@@ -69,14 +70,15 @@ class _ClientsListState extends State<ClientsList> {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
     void confirmRemoveItem(String client, String type) async {
       Map<String, List<String>> body = {
-        "allowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.allowedClients ?? [],
-        "disallowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.disallowedClients ?? [],
-        "blocked_hosts": serversProvider.clients.data!.clientsAllowedBlocked?.blockedHosts ?? [],
+        "allowed_clients": clientsProvider.clients!.clientsAllowedBlocked?.allowedClients ?? [],
+        "disallowed_clients": clientsProvider.clients!.clientsAllowedBlocked?.disallowedClients ?? [],
+        "blocked_hosts": clientsProvider.clients!.clientsAllowedBlocked?.blockedHosts ?? [],
       };
 
       if (type == 'allowed') {
@@ -97,7 +99,7 @@ class _ClientsListState extends State<ClientsList> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        serversProvider.setAllowedDisallowedClientsBlockedDomains(
+        clientsProvider.setAllowedDisallowedClientsBlockedDomains(
           ClientsAllowedBlocked(
             allowedClients: body['allowed_clients'] ?? [], 
             disallowedClients: body['disallowed_clients'] ?? [], 
@@ -125,9 +127,9 @@ class _ClientsListState extends State<ClientsList> {
 
     void confirmAddItem(String item, String type) async {
       Map<String, List<String>> body = {
-        "allowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.allowedClients ?? [],
-        "disallowed_clients": serversProvider.clients.data!.clientsAllowedBlocked?.disallowedClients ?? [],
-        "blocked_hosts": serversProvider.clients.data!.clientsAllowedBlocked?.blockedHosts ?? [],
+        "allowed_clients": clientsProvider.clients!.clientsAllowedBlocked?.allowedClients ?? [],
+        "disallowed_clients": clientsProvider.clients!.clientsAllowedBlocked?.disallowedClients ?? [],
+        "blocked_hosts": clientsProvider.clients!.clientsAllowedBlocked?.blockedHosts ?? [],
       };
 
       if (type == 'allowed') {
@@ -148,7 +150,7 @@ class _ClientsListState extends State<ClientsList> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        serversProvider.setAllowedDisallowedClientsBlockedDomains(
+        clientsProvider.setAllowedDisallowedClientsBlockedDomains(
           ClientsAllowedBlocked(
             allowedClients: body['allowed_clients'] ?? [], 
             disallowedClients: body['disallowed_clients'] ?? [], 

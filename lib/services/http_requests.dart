@@ -591,7 +591,7 @@ Future getClients(Server server) async {
 
   if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
     if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
-      final clients = ClientsData.fromJson(jsonDecode(result[0]['body']));
+      final clients = Clients.fromJson(jsonDecode(result[0]['body']));
       clients.clientsAllowedBlocked = ClientsAllowedBlocked.fromJson(jsonDecode(result[1]['body']));
       return {
         'result': 'success',

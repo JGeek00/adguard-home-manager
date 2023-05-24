@@ -11,53 +11,21 @@ import 'package:adguard_home_manager/screens/clients/logs_list_client.dart';
 import 'package:adguard_home_manager/screens/clients/clients_desktop_view.dart';
 import 'package:adguard_home_manager/screens/clients/added_list.dart';
 
-import 'package:adguard_home_manager/models/app_log.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class Clients extends StatelessWidget {
+class Clients extends StatefulWidget {
   const Clients({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return ClientsWidget(
-      server: serversProvider.selectedServer!,
-      setLoadingStatus: serversProvider.setClientsLoadStatus,
-      setClientsData: serversProvider.setClientsData,
-      setSelectedClientsTab: appConfigProvider.setSelectedClientsTab,
-      addLog: appConfigProvider.addLog,
-    );
-  }
+  State<Clients> createState() => _ClientsState();
 }
 
-class ClientsWidget extends StatefulWidget {
-  final Server server;
-  final void Function(LoadStatus, bool) setLoadingStatus;
-  final void Function(ClientsData) setClientsData;
-  final void Function(int) setSelectedClientsTab;
-  final void Function(AppLog) addLog;
-
-  const ClientsWidget({
-    Key? key,
-    required this.server,
-    required this.setLoadingStatus,
-    required this.setClientsData,
-    required this.setSelectedClientsTab,
-    required this.addLog,
-  }) : super(key: key);
-
-  @override
-  State<ClientsWidget> createState() => _ClientsWidgetState();
-}
-
-class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateMixin {
+class _ClientsState extends State<Clients> with TickerProviderStateMixin {
   late TabController tabController;
   final ScrollController scrollController = ScrollController();
 
@@ -65,16 +33,20 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   final TextEditingController searchController = TextEditingController();
 
   Future fetchClients() async {
-    widget.setLoadingStatus(LoadStatus.loading, false);
-    final result = await getClients(widget.server);
+    final clientsProvider = Provider.of<ClientsProvider>(context, listen: false);
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+
+    clientsProvider.setClientsLoadStatus(LoadStatus.loading, false);
+    final result = await getClients(serversProvider.selectedServer!);
     if (mounted) {
       if (result['result'] == 'success') {
-        widget.setClientsData(result['data']);
-        widget.setLoadingStatus(LoadStatus.loaded, true);
+        clientsProvider.setClientsData(result['data']);
+        clientsProvider.setClientsLoadStatus(LoadStatus.loaded, true);
       }
       else {
-        widget.addLog(result['log']);
-        widget.setLoadingStatus(LoadStatus.error, true);
+        appConfigProvider.addLog(result['log']);
+        clientsProvider.setClientsLoadStatus(LoadStatus.error, true);
       }
     }
   }
@@ -88,7 +60,9 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
       length: 2,
       vsync: this,
     );
-    tabController.addListener(() => widget.setSelectedClientsTab(tabController.index));
+    tabController.addListener(
+      () => Provider.of<AppConfigProvider>(context, listen: false).setSelectedClientsTab(tabController.index)
+    );
   }
 
   List<AutoClient> generateClientsList(List<AutoClient> clients, List<String> ips) {
@@ -98,6 +72,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     
     final width = MediaQuery.of(context).size.width;
@@ -137,9 +112,9 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
         children: [
           ClientsList(
             scrollController: scrollController,
-            loadStatus: serversProvider.clients.loadStatus,
-            data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.filteredActiveClients : [],
+            loadStatus: clientsProvider.loadStatus,
+            data: clientsProvider.loadStatus == LoadStatus.loaded
+              ? clientsProvider.filteredActiveClients : [],
             fetchClients: fetchClients,
             onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
               builder: (context) => LogsListClient(
@@ -153,9 +128,9 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
           ),
           AddedList(
             scrollController: scrollController,
-            loadStatus: serversProvider.clients.loadStatus,
-            data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.filteredAddedClients : [], 
+            loadStatus: clientsProvider.loadStatus,
+            data: clientsProvider.loadStatus == LoadStatus.loaded
+              ? clientsProvider.filteredAddedClients : [], 
             fetchClients: fetchClients,
             onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
               builder: (context) => LogsListClient(
@@ -203,7 +178,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
               title: Text(AppLocalizations.of(context)!.clients),
               centerTitle: false,
               actions: [
-                if (serversProvider.clients.loadStatus == LoadStatus.loaded) ...[
+                if (clientsProvider.loadStatus == LoadStatus.loaded) ...[
                   IconButton(
                     onPressed: () => {
                       Navigator.push(context, MaterialPageRoute(
@@ -240,7 +215,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                                 setState(() {
                                   searchMode = false;
                                   searchController.text = "";
-                                  serversProvider.setSearchTermClients(null);
+                                  clientsProvider.setSearchTermClients(null);
                                 });
                               }, 
                               icon: const Icon(Icons.arrow_back_rounded)
@@ -249,13 +224,13 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                             Expanded(
                               child: TextField(
                                 controller: searchController,
-                                onChanged: (value) => serversProvider.setSearchTermClients(value),
+                                onChanged: (value) => clientsProvider.setSearchTermClients(value),
                                 decoration: InputDecoration(
                                   suffixIcon: IconButton(
                                     onPressed: () {
                                       setState(() {
                                         searchController.text = "";
-                                        serversProvider.setSearchTermClients(null);
+                                        clientsProvider.setSearchTermClients(null);
                                       });
                                     },
                                     icon: const Icon(Icons.clear_rounded)
@@ -281,7 +256,7 @@ class _ClientsWidgetState extends State<ClientsWidget> with TickerProviderStateM
                     centerTitle: false,
                     forceElevated: innerBoxIsScrolled,
                     actions: [
-                      if (serversProvider.clients.loadStatus == LoadStatus.loaded && searchMode == false) ...[
+                      if (clientsProvider.loadStatus == LoadStatus.loaded && searchMode == false) ...[
                         IconButton(
                           onPressed: () => setState(() => searchMode = true), 
                           icon: const Icon(Icons.search),

@@ -10,6 +10,7 @@ import 'package:adguard_home_manager/screens/clients/added_list.dart';
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -55,6 +56,7 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     PreferredSizeWidget tabBar() {
@@ -92,9 +94,9 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
         children: [
           ClientsList(
             scrollController: scrollController,
-            loadStatus: serversProvider.clients.loadStatus,
-            data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.filteredActiveClients : [],
+            loadStatus: clientsProvider.loadStatus,
+            data: clientsProvider.loadStatus == LoadStatus.loaded
+              ? clientsProvider.filteredActiveClients : [],
             fetchClients: widget.fetchClients,
             onClientSelected: (client) => setState(() {
               selectedAddedClient = null;
@@ -114,9 +116,9 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
           ),
           AddedList(
             scrollController: scrollController,
-            loadStatus: serversProvider.clients.loadStatus,
-            data: serversProvider.clients.loadStatus == LoadStatus.loaded
-              ? serversProvider.filteredAddedClients : [], 
+            loadStatus: clientsProvider.loadStatus,
+            data: clientsProvider.loadStatus == LoadStatus.loaded
+              ? clientsProvider.filteredAddedClients : [], 
             fetchClients: widget.fetchClients,
             onClientSelected: (client) => setState(() {
               selectedActiveClient = null;
@@ -146,7 +148,7 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
                 setState(() {
                   searchMode = false;
                   searchController.text = "";
-                  serversProvider.setSearchTermClients(null);
+                  clientsProvider.setSearchTermClients(null);
                 });
               }, 
               icon: const Icon(Icons.arrow_back_rounded)
@@ -155,13 +157,13 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
             Expanded(
               child: TextField(
                 controller: searchController,
-                onChanged: (value) => serversProvider.setSearchTermClients(value),
+                onChanged: (value) => clientsProvider.setSearchTermClients(value),
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
                         searchController.text = "";
-                        serversProvider.setSearchTermClients(null);
+                        clientsProvider.setSearchTermClients(null);
                       });
                     },
                     icon: const Icon(Icons.clear_rounded)
@@ -195,7 +197,7 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
             title: title(),
             centerTitle: false,
             actions: [
-              if (serversProvider.clients.loadStatus == LoadStatus.loaded && searchMode == false) ...[
+              if (clientsProvider.loadStatus == LoadStatus.loaded && searchMode == false) ...[
                 IconButton(
                   onPressed: () => setState(() => searchMode = true), 
                   icon: const Icon(Icons.search),
@@ -226,7 +228,7 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
                   centerTitle: false,
                   forceElevated: innerBoxIsScrolled,
                   actions: [
-                    if (serversProvider.clients.loadStatus == LoadStatus.loaded && searchMode == false) ...[
+                    if (clientsProvider.loadStatus == LoadStatus.loaded && searchMode == false) ...[
                       IconButton(
                         onPressed: () => setState(() => searchMode = true), 
                         icon: const Icon(Icons.search),
