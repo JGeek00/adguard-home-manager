@@ -18,11 +18,6 @@ class ServersProvider with ChangeNotifier {
   List<Server> _serversList = [];
   Server? _selectedServer;
 
-  final DhcpModel _dhcp = DhcpModel(
-    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
-    data: null
-  );
-
   final RewriteRules _rewriteRules = RewriteRules(
     loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
     data: null
@@ -44,10 +39,6 @@ class ServersProvider with ChangeNotifier {
 
   Server? get selectedServer {
     return _selectedServer;
-  }
-
-  DhcpModel get dhcp {
-    return _dhcp;
   }
 
   RewriteRules get rewriteRules {
@@ -74,18 +65,6 @@ class ServersProvider with ChangeNotifier {
   void setSelectedServer(Server server) {
     _selectedServer = server;
     notifyListeners();
-  }
-
-  void setDhcpData(DhcpData data) {
-    _dhcp.data = data;
-    notifyListeners();
-  }
-
-  void setDhcpLoadStatus(int status, bool notify) {
-    _dhcp.loadStatus = status;
-    if (notify == true) {
-      notifyListeners();
-    }
   }
   
   void setRewriteRulesData(List<RewriteRulesData> data) {

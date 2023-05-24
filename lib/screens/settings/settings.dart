@@ -156,7 +156,7 @@ class SettingsWidget extends StatelessWidget {
                 title: AppLocalizations.of(context)!.dhcpSettings,
                 subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
                 thisItem: 2,
-                screenToNavigate: const Dhcp(),
+                screenToNavigate: const DhcpScreen(),
               ),
               settingsTile(
                 icon: Icons.dns_rounded,

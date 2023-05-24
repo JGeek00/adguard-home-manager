@@ -13,42 +13,22 @@ import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_leases.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/select_interface_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class Dhcp extends StatelessWidget {
-  const Dhcp({Key? key}) : super(key: key);
+class DhcpScreen extends StatefulWidget {
+  const DhcpScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return DhcpWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider
-    );
-  }
+  State<DhcpScreen> createState() => _DhcpScreenState();
 }
 
-class DhcpWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-
-  const DhcpWidget({
-    Key? key,
-    required this.serversProvider,
-    required this.appConfigProvider
-  }) : super(key: key);
-
-  @override
-  State<DhcpWidget> createState() => _DhcpWidgetState();
-}
-
-class _DhcpWidgetState extends State<DhcpWidget> {
+class _DhcpScreenState extends State<DhcpScreen> {
   NetworkInterface? selectedInterface;
 
   bool enabled = false;
@@ -74,17 +54,20 @@ class _DhcpWidgetState extends State<DhcpWidget> {
   bool dataValid = false;
 
   void loadDhcpStatus() async {
-    widget.serversProvider.setDhcpLoadStatus(0, false);
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    final dhcpProvider = Provider.of<DhcpProvider>(context, listen: false);
 
-    final result = await getDhcpData(server: widget.serversProvider.selectedServer!);
+    dhcpProvider.setDhcpLoadStatus(LoadStatus.loading, false);
+
+    final result = await getDhcpData(server: serversProvider.selectedServer!);
 
     if (mounted) {
       if (result['result'] == 'success') {
-        widget.serversProvider.setDhcpLoadStatus(1, true);
-        widget.serversProvider.setDhcpData(result['data']);
+        dhcpProvider.setDhcpData(result['data']);
+        dhcpProvider.setDhcpLoadStatus(LoadStatus.loaded, true);
         setState(() {
           if (result['data'].dhcpStatus.interfaceName != '') {
-            selectedInterface = result['data'].networkInterfaces.firstWhere((interface) => interface.name == result['data'].dhcpStatus.interfaceName);
+            selectedInterface = result['data'].networkInterfaces.firstWhere((iface) => iface.name == result['data'].dhcpStatus.interfaceName);
 
             enabled = result['data'].dhcpStatus.enabled;
             ipv4StartRangeController.text = result['data'].dhcpStatus.v4.rangeStart;
@@ -97,7 +80,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
         });
       }
       else {
-        widget.serversProvider.setDhcpLoadStatus(2, true);
+        dhcpProvider.setDhcpLoadStatus(LoadStatus.error, true);
       }
     }
     checkDataValid();
@@ -213,6 +196,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final dhcpProvider = Provider.of<DhcpProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -298,10 +282,10 @@ class _DhcpWidgetState extends State<DhcpWidget> {
         processModal.close();
 
         if (result['result'] == 'success') {
-          DhcpData data = serversProvider.dhcp.data!;
+          DhcpModel data = dhcpProvider.dhcp!;
           data.dhcpStatus.staticLeases = [];
           data.dhcpStatus.leases = [];
-          serversProvider.setDhcpData(data);
+          dhcpProvider.setDhcpData(data);
 
           showSnacbkar(
             appConfigProvider: appConfigProvider,
@@ -356,7 +340,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
           showDialog(
             context: context, 
             builder: (context) => SelectInterfaceModal(
-              interfaces: serversProvider.dhcp.data!.networkInterfaces, 
+              interfaces: dhcpProvider.dhcp!.networkInterfaces, 
               onSelect: (interface) => setState(() {
                 clearAll();
                 selectedInterface = interface;
@@ -369,7 +353,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
           showModalBottomSheet(
             context: context, 
             builder: (context) => SelectInterfaceModal(
-              interfaces: serversProvider.dhcp.data!.networkInterfaces, 
+              interfaces: dhcpProvider.dhcp!.networkInterfaces, 
               onSelect: (i) => setState(() {
                 clearAll();
                 selectedInterface = i;
@@ -383,8 +367,8 @@ class _DhcpWidgetState extends State<DhcpWidget> {
     }
 
     Widget generateBody() {
-      switch (serversProvider.dhcp.loadStatus) {
-        case 0:
+      switch (dhcpProvider.loadStatus) {
+        case LoadStatus.loading:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -404,7 +388,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
             ),
           );
         
-        case 1:
+        case LoadStatus.loaded:
           if (selectedInterface != null) {
             return SingleChildScrollView(
               child: Wrap(
@@ -683,7 +667,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => DhcpLeases(
-                            items: serversProvider.dhcp.data!.dhcpStatus.leases,
+                            items: dhcpProvider.dhcp!.dhcpStatus.leases,
                             staticLeases: false,
                           )
                         ));
@@ -716,7 +700,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => DhcpLeases(
-                            items: serversProvider.dhcp.data!.dhcpStatus.staticLeases,
+                            items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
                             staticLeases: true,
                           )
                         ));
@@ -751,7 +735,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                           if (!(Platform.isAndroid || Platform.isIOS)) {
                             SplitView.of(context).push(
                               DhcpLeases(
-                                items: serversProvider.dhcp.data!.dhcpStatus.leases,
+                                items: dhcpProvider.dhcp!.dhcpStatus.leases,
                                 staticLeases: false,
                               )
                             );
@@ -759,7 +743,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                           else {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) => DhcpLeases(
-                                items: serversProvider.dhcp.data!.dhcpStatus.leases,
+                                items: dhcpProvider.dhcp!.dhcpStatus.leases,
                                 staticLeases: false,
                               )
                             ));
@@ -778,7 +762,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                           if (!(Platform.isAndroid || Platform.isIOS)) {
                             SplitView.of(context).push(
                               DhcpLeases(
-                                items: serversProvider.dhcp.data!.dhcpStatus.staticLeases,
+                                items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
                                 staticLeases: true,
                               )
                             );
@@ -786,7 +770,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
                           else {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) => DhcpLeases(
-                                items: serversProvider.dhcp.data!.dhcpStatus.staticLeases,
+                                items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
                                 staticLeases: true,
                               )
                             ));
@@ -840,7 +824,7 @@ class _DhcpWidgetState extends State<DhcpWidget> {
             );
           }
           
-        case 2:
+        case LoadStatus.error:
           return SizedBox(
             width: double.maxFinite,
             child: Column(

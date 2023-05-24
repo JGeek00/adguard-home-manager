@@ -1289,7 +1289,7 @@ Future getDhcpData({
 
       return {
         'result': 'success',
-        'data': DhcpData(
+        'data': DhcpModel(
           networkInterfaces: interfaces, 
           dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
         )

@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/delete_static_lease_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/add_static_lease_modal.dart';
 
+import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -30,6 +31,7 @@ class DhcpLeases extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final dhcpProvider = Provider.of<DhcpProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -47,9 +49,9 @@ class DhcpLeases extends StatelessWidget {
       processModal.close();
 
       if (result['result'] == 'success') {
-        DhcpData data = serversProvider.dhcp.data!;
+        DhcpModel data = dhcpProvider.dhcp!;
         data.dhcpStatus.staticLeases = data.dhcpStatus.staticLeases.where((l) => l.mac != lease.mac).toList();
-        serversProvider.setDhcpData(data);
+        dhcpProvider.setDhcpData(data);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,
@@ -80,9 +82,9 @@ class DhcpLeases extends StatelessWidget {
       processModal.close();
 
       if (result['result'] == 'success') {
-        DhcpData data = serversProvider.dhcp.data!;
+        DhcpModel data = dhcpProvider.dhcp!;
         data.dhcpStatus.staticLeases.add(lease);
-        serversProvider.setDhcpData(data);
+        dhcpProvider.setDhcpData(data);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,

@@ -21,6 +21,7 @@ import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/filters_provider.dart';
+import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/colors.dart';
@@ -29,7 +30,6 @@ import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/config/theme.dart';
 import 'package:adguard_home_manager/classes/http_override.dart';
 import 'package:adguard_home_manager/services/db/database.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +50,7 @@ void main() async {
   StatusProvider statusProvider = StatusProvider();
   ClientsProvider clientsProvider = ClientsProvider();
   FilteringProvider filtersProvider = FilteringProvider();
+  DhcpProvider dhcpProvider = DhcpProvider();
   LogsProvider logsProvider = LogsProvider();
 
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -98,6 +99,9 @@ void main() async {
           create: ((context) => serversProvider)
         ),
         ChangeNotifierProvider(
+          create: ((context) => appConfigProvider)
+        ),
+        ChangeNotifierProvider(
           create: ((context) => statusProvider)
         ),
         ChangeNotifierProvider(
@@ -110,7 +114,7 @@ void main() async {
           create: ((context) => filtersProvider)
         ),
         ChangeNotifierProvider(
-          create: ((context) => appConfigProvider)
+          create: ((context) => dhcpProvider)
         ),
         ChangeNotifierProxyProvider<StatusProvider, FilteringProvider>(
           create: (context) => filtersProvider, 
@@ -181,15 +185,15 @@ class _MainState extends State<Main> {
       builder: (lightDynamic, darkDynamic) => MaterialApp(
         title: 'AdGuard Home Manager',
         theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
-            ? appConfigProvider.useDynamicColor == true
-              ? lightTheme(lightDynamic)
-              : lightThemeOldVersions(colors[appConfigProvider.staticColor])
-            : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
-          darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
-            ? appConfigProvider.useDynamicColor == true
-              ? darkTheme(darkDynamic)
-              : darkThemeOldVersions(colors[appConfigProvider.staticColor])
-            : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
+          ? appConfigProvider.useDynamicColor == true
+            ? lightTheme(lightDynamic)
+            : lightThemeOldVersions(colors[appConfigProvider.staticColor])
+          : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
+        darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
+          ? appConfigProvider.useDynamicColor == true
+            ? darkTheme(darkDynamic)
+            : darkThemeOldVersions(colors[appConfigProvider.staticColor])
+          : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
         themeMode: appConfigProvider.selectedTheme,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
