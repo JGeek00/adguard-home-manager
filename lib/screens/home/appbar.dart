@@ -4,6 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/servers/servers.dart';
 
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -20,6 +22,7 @@ class HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final Server? server =  serversProvider.selectedServer;
@@ -38,14 +41,14 @@ class HomeAppBar extends StatelessWidget {
       centerTitle: false,
       forceElevated: innerBoxScrolled,
       leading: Icon(
-        serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
-          ? serversProvider.serverStatus.data!.generalEnabled == true 
+        serversProvider.selectedServer != null && statusProvider.serverStatus != null
+          ? statusProvider.serverStatus!.generalEnabled == true 
             ? Icons.gpp_good_rounded
             : Icons.gpp_bad_rounded
           : Icons.shield,
         size: 30,
-        color: serversProvider.selectedServer != null && serversProvider.serverStatus.data != null
-          ? serversProvider.serverStatus.data!.generalEnabled == true 
+        color: serversProvider.selectedServer != null && statusProvider.serverStatus != null
+          ? statusProvider.serverStatus!.generalEnabled == true 
             ? appConfigProvider.useThemeColorForStatus
               ? Theme.of(context).colorScheme.primary
               : Colors.green
@@ -95,7 +98,7 @@ class HomeAppBar extends StatelessWidget {
                 ],
               ),
             ),
-            if (serversProvider.selectedServer != null && serversProvider.serverStatus.loadStatus == 1) PopupMenuItem(
+            if (serversProvider.selectedServer != null && statusProvider.loadStatus == LoadStatus.loaded) PopupMenuItem(
               onTap: () => openUrl("${server!.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}"),
               child: Row(
                 children: [

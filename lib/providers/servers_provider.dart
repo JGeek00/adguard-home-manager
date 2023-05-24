@@ -9,26 +9,29 @@ import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/services/db/queries.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 
 class ServersProvider with ChangeNotifier {
+  StatusProvider? _statusProvider;
+
+  update(StatusProvider? statusProvider) {
+    if (statusProvider != null) {
+      _statusProvider = statusProvider;
+    }
+  }
+
   Database? _dbInstance;
 
   List<Server> _serversList = [];
   Server? _selectedServer;
-  final ServerStatus _serverStatus = ServerStatus(
-    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
-    data: null
-  ); // serverStatus != null means server is connected
-  List<String> _protectionsManagementProcess = []; // protections that are currenty being enabled or disabled
+  String? _serverVersion;
 
   final Clients _clients = Clients(
     loadStatus: LoadStatus.loading,
@@ -76,14 +79,6 @@ class ServersProvider with ChangeNotifier {
 
   Server? get selectedServer {
     return _selectedServer;
-  }
-
-  ServerStatus get serverStatus {
-    return _serverStatus;
-  }
-
-  List<String> get protectionsManagementProcess {
-    return _protectionsManagementProcess;
   }
 
   Clients get clients {
@@ -141,16 +136,6 @@ class ServersProvider with ChangeNotifier {
 
   void setSelectedServer(Server server) {
     _selectedServer = server;
-    notifyListeners();
-  }
-
-  void setServerStatusData(ServerStatusData data) {
-    _serverStatus.data = data;
-    notifyListeners();
-  }
-
-  void setServerStatusLoad(int status) {
-    _serverStatus.loadStatus = status;
     notifyListeners();
   }
 
@@ -226,7 +211,7 @@ class ServersProvider with ChangeNotifier {
   }
 
   void setFilteringProtectionStatus(bool status) {
-    _serverStatus.data!.filteringEnabled = status;
+    _statusProvider!.setFilteringStatus(status);
     _filtering.data!.enabled = status;
     notifyListeners();
   }
@@ -382,149 +367,6 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> updateBlocking({
-    required Server server,
-    required String block, 
-    required bool newStatus,
-    int? time
-  }) async {
-    switch (block) {
-      case 'general':
-        _protectionsManagementProcess.add('general');
-        notifyListeners();
-
-        final result = await updateGeneralProtection(
-          server: server, 
-          enable: newStatus,
-          time: time
-        );
-
-        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
-
-        if (result['result'] == 'success') {
-          _serverStatus.data!.generalEnabled = newStatus;
-          if (time != null) {
-            _serverStatus.data!.timeGeneralDisabled = time;
-            _serverStatus.data!.disabledUntil = generateTimeDeadline(time);
-          }
-          else {
-            _serverStatus.data!.timeGeneralDisabled = 0;
-            _serverStatus.data!.disabledUntil = null;
-          }
-          notifyListeners();
-          return null;
-        }
-        else {
-          notifyListeners();
-          return result['log'];
-        }
-
-      case 'general_legacy':
-        _protectionsManagementProcess.add('general');
-        notifyListeners();
-
-        final result = await updateGeneralProtectionLegacy(server, newStatus);
-
-        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
-
-        if (result['result'] == 'success') {
-          _serverStatus.data!.generalEnabled = newStatus;
-          notifyListeners();
-          return null;
-        }
-        else {
-          notifyListeners();
-          return result['log'];
-        }
-
-
-      case 'filtering':
-        _protectionsManagementProcess.add('filtering');
-        notifyListeners();
-
-        final result = await updateFiltering(
-          server: server, 
-          enable: newStatus,
-        );
-
-        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'filtering').toList();
-
-        if (result['result'] == 'success') {
-          _serverStatus.data!.filteringEnabled = newStatus;
-          notifyListeners();
-          return null;
-        }
-        else {
-          
-          notifyListeners();
-          return result['log'];
-        }
-
-      case 'safeSearch':
-        _protectionsManagementProcess.add('safeSearch');
-        notifyListeners();
-
-        final result = serverVersionIsAhead(
-          currentVersion: serverStatus.data!.serverVersion, 
-          referenceVersion: 'v0.107.28',
-          referenceVersionBeta: 'v0.108.0-b.33'
-        ) == true
-          ? await updateSafeSearchSettings(server: server, body: { 'enabled': newStatus })
-          : await updateSafeSearchLegacy(server, newStatus);
-
-        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'safeSearch').toList();
-
-        if (result['result'] == 'success') {
-          _serverStatus.data!.safeSearchEnabled = newStatus;
-          notifyListeners();
-          return null;
-        }
-        else {
-          notifyListeners();
-          return result['log'];
-        }
-
-      case 'safeBrowsing':
-        _protectionsManagementProcess.add('safeBrowsing');
-        notifyListeners();
-
-        final result = await updateSafeBrowsing(server, newStatus);
-
-        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'safeBrowsing').toList();
-
-        if (result['result'] == 'success') {
-          _serverStatus.data!.safeBrowsingEnabled = newStatus;
-          notifyListeners();
-          return null;
-        }
-        else {
-          notifyListeners();
-          return result['log'];
-        }
-
-      case 'parentalControl':
-        _protectionsManagementProcess.add('parentalControl');
-        notifyListeners();
-
-        final result = await updateParentalControl(server, newStatus);
-
-        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'parentalControl').toList();
-
-        if (result['result'] == 'success') {
-          _serverStatus.data!.parentalControlEnabled = newStatus;
-          notifyListeners();
-          return null;
-        }
-        else {
-          notifyListeners();
-          return result['log'];
-        }
-
-      default:
-        return false;
-    }
-  }
-
   void checkServerUpdatesAvailable(Server server) async {
     setUpdateAvailableLoadStatus(LoadStatus.loading, true);
     final result = await checkServerUpdates(server: server);
@@ -556,8 +398,26 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  void saveFromDb(List<Map<String, dynamic>>? data) async {
+  Future<Map<String, dynamic>> initializateServer(Server server) async {
+    _selectedServer = server;
+    final serverStatus = await getServerStatus(server);
+    if (serverStatus['result'] == 'success') {
+      checkServerUpdatesAvailable(server); // Do not await
+      return {
+        "success": true,
+        "serverData": serverStatus['data']
+      };
+    }
+    else {
+      return {
+        "success": false
+      };
+    } 
+  }
+
+  Future<Map<String, dynamic>?> saveFromDb(List<Map<String, dynamic>>? data) async {
     if (data != null) {
+      Server? defaultServer;
       for (var server in data) {
         final Server serverObj = Server(
           id: server['id'],
@@ -574,20 +434,23 @@ class ServersProvider with ChangeNotifier {
         );
         _serversList.add(serverObj);
         if (convertFromIntToBool(server['defaultServer']) == true) {
-          _selectedServer = serverObj;
-          _serverStatus.loadStatus = 0;
-          final serverStatus = await getServerStatus(serverObj);
-          if (serverStatus['result'] == 'success') {
-            _serverStatus.data = serverStatus['data'];
-            _serverStatus.loadStatus = 1;
-            checkServerUpdatesAvailable(serverObj); // Do not await
-          }
-          else {
-            _serverStatus.loadStatus = 2;
-          }
+          defaultServer = serverObj;
         }
       }
+
+      notifyListeners();
+
+      if (defaultServer != null) {
+        final result =  await initializateServer(defaultServer);
+        return result;
+      }
+      else {
+        return null;
+      }
     }
-    notifyListeners();
+    else {
+      notifyListeners();
+      return null;
+    }
   }
 }

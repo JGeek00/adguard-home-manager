@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/widgets/options_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -37,6 +38,7 @@ class TopItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
@@ -61,7 +63,7 @@ class TopItems extends StatelessWidget {
       final rules = await getFilteringRules(server: serversProvider.selectedServer!);
 
       if (rules['result'] == 'success') {
-        FilteringStatus oldStatus = serversProvider.serverStatus.data!.filteringStatus;
+        FilteringStatus oldStatus = statusProvider.serverStatus!.filteringStatus;
 
         List<String> newRules = rules['data'].userRules.where((d) => !d.contains(domain)).toList();
         if (newStatus == 'block') {
@@ -70,7 +72,7 @@ class TopItems extends StatelessWidget {
         else if (newStatus == 'unblock') {
           newRules.add("@@||$domain^");
         }
-        FilteringStatus newObj = serversProvider.serverStatus.data!.filteringStatus;
+        FilteringStatus newObj = statusProvider.serverStatus!.filteringStatus;
         newObj.userRules = newRules;
         serversProvider.setFilteringStatus(newObj);
 
@@ -154,7 +156,7 @@ class TopItems extends StatelessWidget {
       String? name;
       if (clients != null && clients == true) {
         try {
-          name = serversProvider.serverStatus.data!.clients.firstWhere((c) => c.ids.contains(item.keys.toList()[0])).name;
+          name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(item.keys.toList()[0])).name;
         } catch (e) {
           // ---- //
         }
@@ -241,13 +243,13 @@ class TopItems extends StatelessWidget {
     List<Map<String, dynamic>> generateData() {
       switch (type) {
         case 'topQueriedDomains':
-          return serversProvider.serverStatus.data!.stats.topQueriedDomains;
+          return statusProvider.serverStatus!.stats.topQueriedDomains;
           
         case 'topBlockedDomains':
-          return serversProvider.serverStatus.data!.stats.topBlockedDomains;
+          return statusProvider.serverStatus!.stats.topBlockedDomains;
 
         case 'topClients':
-          return serversProvider.serverStatus.data!.stats.topClients;
+          return statusProvider.serverStatus!.stats.topClients;
 
         default:
           return [];

@@ -7,6 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -19,10 +21,12 @@ class SafeSearchSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProviuder = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     return SafeSearchSettingsScreenWidget(
       serversProvider: serversProvider,
+      statusProvider: statusProviuder,
       appConfigProvider: appConfigProvider,
     );
   }
@@ -30,11 +34,13 @@ class SafeSearchSettingsScreen extends StatelessWidget {
 
 class SafeSearchSettingsScreenWidget extends StatefulWidget {
   final ServersProvider serversProvider;
+  final StatusProvider statusProvider;
   final AppConfigProvider appConfigProvider;
     
   const SafeSearchSettingsScreenWidget({
     Key? key,
     required this.serversProvider,
+    required this.statusProvider,
     required this.appConfigProvider
   }) : super(key: key);
 
@@ -56,8 +62,10 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
       final result = await getServerStatus(widget.serversProvider.selectedServer!);
       if (mounted) {
         if (result['result'] == 'success') {
-          widget.serversProvider.setServerStatusData(result['data']);
-          widget.serversProvider.setServerStatusLoad(1);
+          widget.statusProvider.setServerStatusData(
+            data: result['data']
+          );
+          widget.statusProvider.setServerStatusLoad(LoadStatus.loaded);
           setState(() {
             generalEnabled = result['data'].safeSearchEnabled;
             bingEnabled = result['data'].safeSeachBing;
@@ -70,7 +78,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
         }
         else {
           widget.appConfigProvider.addLog(result['log']);
-          widget.serversProvider.setServerStatusLoad(2);
+          widget.statusProvider.setServerStatusLoad(LoadStatus.error);
         }
       }
     }
@@ -78,17 +86,17 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
 
   @override
   void initState() {
-    if (widget.serversProvider.serverStatus.loadStatus == 0) {
+    if (widget.statusProvider.loadStatus == LoadStatus.loading) {
       requestSafeSearchSettings();
     }
-    else if (widget.serversProvider.serverStatus.loadStatus == 1) {
-      generalEnabled = widget.serversProvider.serverStatus.data!.safeSearchEnabled;
-      bingEnabled = widget.serversProvider.serverStatus.data!.safeSeachBing!;
-      duckduckgoEnabled = widget.serversProvider.serverStatus.data!.safeSearchDuckduckgo!;
-      googleEnabled = widget.serversProvider.serverStatus.data!.safeSearchGoogle!;
-      pixabayEnabled = widget.serversProvider.serverStatus.data!.safeSearchPixabay!;
-      yandexEnabled = widget.serversProvider.serverStatus.data!.safeSearchYandex!;
-      youtubeEnabled = widget.serversProvider.serverStatus.data!.safeSearchYoutube!;
+    else if (widget.statusProvider.loadStatus == LoadStatus.loaded) {
+      generalEnabled = widget.statusProvider.serverStatus!.safeSearchEnabled;
+      bingEnabled = widget.statusProvider.serverStatus!.safeSeachBing!;
+      duckduckgoEnabled = widget.statusProvider.serverStatus!.safeSearchDuckduckgo!;
+      googleEnabled = widget.statusProvider.serverStatus!.safeSearchGoogle!;
+      pixabayEnabled = widget.statusProvider.serverStatus!.safeSearchPixabay!;
+      yandexEnabled = widget.statusProvider.serverStatus!.safeSearchYandex!;
+      youtubeEnabled = widget.statusProvider.serverStatus!.safeSearchYoutube!;
     }
     super.initState();
   }
@@ -96,6 +104,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void saveConfig() async {
@@ -118,7 +127,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
       processModal.close();
 
       if (result['result'] == 'success') {
-        ServerStatusData data = serversProvider.serverStatus.data!;
+        ServerStatus data = statusProvider.serverStatus!;
         data.safeSearchEnabled = generalEnabled;
         data.safeSeachBing = bingEnabled;
         data.safeSearchDuckduckgo = duckduckgoEnabled;
@@ -127,7 +136,9 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
         data.safeSearchYandex = yandexEnabled;
         data.safeSearchYoutube = youtubeEnabled;
 
-        serversProvider.setServerStatusData(data);
+        statusProvider.setServerStatusData(
+          data: data
+        );
 
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
@@ -148,8 +159,8 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
     }
 
     Widget body() {
-      switch (serversProvider.serverStatus.loadStatus) {
-        case 0:
+      switch (statusProvider.loadStatus) {
+        case LoadStatus.loading:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -170,7 +181,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
             ),
           );
           
-        case 1: 
+        case LoadStatus.loaded: 
           return RefreshIndicator(
             onRefresh: requestSafeSearchSettings,
             child: ListView(
@@ -274,7 +285,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
             ),
           );
 
-        case 2:
+        case LoadStatus.error:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -311,7 +322,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
         centerTitle: false,
         actions: [
           IconButton(
-            onPressed: serversProvider.serverStatus.loadStatus == 1
+            onPressed: statusProvider.loadStatus == LoadStatus.loaded
               ? () => saveConfig()
               : null, 
             icon: const Icon(Icons.save_rounded),

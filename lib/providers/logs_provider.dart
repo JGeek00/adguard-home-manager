@@ -1,10 +1,19 @@
-import 'package:adguard_home_manager/models/clients.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/logs.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class LogsProvider with ChangeNotifier {
+  ServersProvider? _serversProvider;
+
+  update(ServersProvider? serversProvider) {
+    if (serversProvider != null) {
+      _serversProvider = serversProvider;
+    }
+  }
+
   int _loadStatus = 0;
   LogsData? _logsData;
   List<AutoClient>? _clients;

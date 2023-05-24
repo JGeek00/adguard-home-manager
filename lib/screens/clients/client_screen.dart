@@ -11,6 +11,7 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/safe_search.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
@@ -131,6 +132,7 @@ class _ClientScreenState extends State<ClientScreen> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
 
     void createClient() {
       final Client client = Client(
@@ -506,7 +508,7 @@ class _ClientScreenState extends State<ClientScreen> {
           ),
           if (
             serverVersionIsAhead(
-              currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+              currentVersion: statusProvider.serverStatus!.serverVersion, 
               referenceVersion: 'v0.107.28',
               referenceVersionBeta: 'v0.108.0-b.33'
             ) == true
@@ -531,7 +533,7 @@ class _ClientScreenState extends State<ClientScreen> {
           ),
           if (
             serverVersionIsAhead(
-              currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+              currentVersion: statusProvider.serverStatus!.serverVersion, 
               referenceVersion: 'v0.107.28',
               referenceVersionBeta: 'v0.108.0-b.33'
             ) == false

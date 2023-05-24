@@ -5,10 +5,10 @@ import 'package:adguard_home_manager/screens/home/status_box.dart';
 
 import 'package:adguard_home_manager/models/server_status.dart';
 
-class ServerStatus extends StatelessWidget {
-  final ServerStatusData serverStatus;
+class ServerStatusWidget extends StatelessWidget {
+  final ServerStatus serverStatus;
 
-  const ServerStatus({
+  const ServerStatusWidget({
     Key? key,
     required this.serverStatus,
   }) : super(key: key);

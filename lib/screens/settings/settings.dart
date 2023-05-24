@@ -27,6 +27,7 @@ import 'package:adguard_home_manager/constants/strings.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -67,8 +68,9 @@ class SettingsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
@@ -129,10 +131,10 @@ class SettingsWidget extends StatelessWidget {
         ], 
         body: ListView(
           children: [
-            if (serversProvider.selectedServer != null && serversProvider.serverStatus.data != null) ...[
+            if (serversProvider.selectedServer != null && statusProvider.serverStatus != null) ...[
               SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
               if (serverVersionIsAhead(
-                currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+                currentVersion: statusProvider.serverStatus!.serverVersion, 
                 referenceVersion: 'v0.107.28',
                 referenceVersionBeta: 'v0.108.0-b.33'
               ) == true) settingsTile(
@@ -217,7 +219,7 @@ class SettingsWidget extends StatelessWidget {
               icon: Icons.storage_rounded,
               title: AppLocalizations.of(context)!.servers,
               subtitle: serversProvider.selectedServer != null
-                ? serversProvider.serverStatus.data != null
+                ? statusProvider.serverStatus != null
                   ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
                   : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
                 : AppLocalizations.of(context)!.noServerSelected,

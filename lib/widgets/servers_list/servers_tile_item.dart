@@ -10,6 +10,8 @@ import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -36,6 +38,7 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -101,16 +104,18 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
       if (result['result'] == 'success') {
         serversProvider.setSelectedServer(server);
 
-        serversProvider.setServerStatusLoad(0);
+        statusProvider.setServerStatusLoad(LoadStatus.loading);
         final serverStatus = await getServerStatus(server);
         if (serverStatus['result'] == 'success') {
-          serversProvider.setServerStatusData(serverStatus['data']);
+          statusProvider.setServerStatusData(
+            data: serverStatus['data']
+          );
           serversProvider.checkServerUpdatesAvailable(server);
-          serversProvider.setServerStatusLoad(1);
+          statusProvider.setServerStatusLoad(LoadStatus.loaded);
         }
         else {
           appConfigProvider.addLog(serverStatus['log']);
-          serversProvider.setServerStatusLoad(2);
+          statusProvider.setServerStatusLoad(LoadStatus.error);
         }
 
         process.close();
@@ -159,7 +164,7 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
             Icon(
               Icons.storage_rounded,
               color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-                ? serversProvider.serverStatus.data != null
+                ? statusProvider.serverStatus != null
                   ? Colors.green
                   : Colors.orange
                 : null,
@@ -192,7 +197,7 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
         return Icon(
           Icons.storage_rounded,
           color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-            ? serversProvider.serverStatus.data != null
+            ? statusProvider.serverStatus != null
               ? Colors.green
               : Colors.orange
             : null,
@@ -305,13 +310,13 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
               ),
               SizedBox(
                 child: serversProvider.selectedServer != null && 
-                  serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && serversProvider.serverStatus.data != null && 
+                  serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null && 
                   serversProvider.selectedServer?.id == server.id
                     ? Container(
                       margin: const EdgeInsets.only(right: 12),
                       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       decoration: BoxDecoration(
-                        color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && serversProvider.serverStatus.data != null
+                        color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
                           ? Colors.green
                           : Colors.orange,
                         borderRadius: BorderRadius.circular(30)
@@ -319,14 +324,14 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
                       child: Row(
                         children: [
                           Icon(
-                            serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && serversProvider.serverStatus.data != null
+                            serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
                               ? Icons.check
                               : Icons.warning,
                             color: Colors.white,
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && serversProvider.serverStatus.data != null
+                            serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
                               ? AppLocalizations.of(context)!.connected
                               : AppLocalizations.of(context)!.selectedDisconnected,
                             style: const TextStyle(

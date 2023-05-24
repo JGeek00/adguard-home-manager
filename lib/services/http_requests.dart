@@ -335,7 +335,7 @@ Future getServerStatus(Server server) async {
       };
       return {
         'result': 'success',
-        'data': ServerStatusData.fromJson(mappedData)
+        'data': ServerStatus.fromJson(mappedData)
       };
     }
     else {

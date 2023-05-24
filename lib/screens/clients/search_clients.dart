@@ -11,6 +11,7 @@ import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/client_screen.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 
+import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -19,7 +20,7 @@ import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/widgets/section_label.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class SearchClients extends StatelessWidget {
@@ -99,6 +100,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
   @override
   Widget build(BuildContext context) {    
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -189,7 +191,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
           context: context, 
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmEditClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             onDelete: deleteClient,
             client: client,
             dialog: true,
@@ -201,7 +203,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
           fullscreenDialog: true,
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmEditClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             onDelete: deleteClient,
             client: client,
             dialog: false,
@@ -356,7 +358,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                               Icons.search_rounded,
                               size: 19,
                               color: serverVersionIsAhead(
-                                currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+                                currentVersion: statusProvider.serverStatus!.serverVersion, 
                                 referenceVersion: 'v0.107.28',
                                 referenceVersionBeta: 'v0.108.0-b.33'
                               ) == true 

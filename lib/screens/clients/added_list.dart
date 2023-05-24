@@ -18,6 +18,7 @@ import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/maps_fns.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -77,6 +78,7 @@ class _AddedListState extends State<AddedList> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -88,7 +90,7 @@ class _AddedListState extends State<AddedList> {
       final result = await postUpdateClient(server: serversProvider.selectedServer!, data: {
         'name': client.name,
         'data':  serverVersionIsAhead(
-          currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+          currentVersion: statusProvider.serverStatus!.serverVersion, 
           referenceVersion: 'v0.107.28',
           referenceVersionBeta: 'v0.108.0-b.33'
         ) == false
@@ -168,7 +170,7 @@ class _AddedListState extends State<AddedList> {
           context: context, 
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmEditClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             onDelete: deleteClient,
             client: client,
             dialog: true,
@@ -180,7 +182,7 @@ class _AddedListState extends State<AddedList> {
           fullscreenDialog: true,
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmEditClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             onDelete: deleteClient,
             client: client,
             dialog: false,
@@ -240,7 +242,7 @@ class _AddedListState extends State<AddedList> {
         onLongPress: openOptionsModal,
         onEdit: openClientModal,
         splitView: widget.splitView,
-        serverVersion: serversProvider.serverStatus.data!.serverVersion,
+        serverVersion: statusProvider.serverStatus!.serverVersion,
       ),
       noData: SizedBox(
         width: double.maxFinite,

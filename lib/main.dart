@@ -17,14 +17,18 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/base.dart';
 
-import 'package:adguard_home_manager/classes/http_override.dart';
-import 'package:adguard_home_manager/services/db/database.dart';
-import 'package:adguard_home_manager/constants/colors.dart';
-import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/config/theme.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
+import 'package:adguard_home_manager/providers/filters_provider.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/constants/colors.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/config/globals.dart';
+import 'package:adguard_home_manager/config/theme.dart';
+import 'package:adguard_home_manager/classes/http_override.dart';
+import 'package:adguard_home_manager/services/db/database.dart';
 
 
 void main() async {
@@ -43,6 +47,9 @@ void main() async {
   
   AppConfigProvider appConfigProvider = AppConfigProvider();
   ServersProvider serversProvider = ServersProvider();
+  StatusProvider statusProvider = StatusProvider();
+  ClientsProvider clientsProvider = ClientsProvider();
+  FiltersProvider filtersProvider = FiltersProvider();
   LogsProvider logsProvider = LogsProvider();
 
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -68,10 +75,67 @@ void main() async {
 
   serversProvider.setDbInstance(dbData['dbInstance']);
   appConfigProvider.saveFromDb(dbData['dbInstance'], dbData['appConfig']);
-  serversProvider.saveFromDb(dbData['servers']);
+  final result = await serversProvider.saveFromDb(dbData['servers']);
+  if (result != null) {
+    if (result['success'] == true) {
+      statusProvider.setServerStatusData(
+        data: result['serverData'],
+      );
+      statusProvider.setServerStatusLoad(LoadStatus.loaded);
+    }
+    else {
+      statusProvider.setServerStatusLoad(LoadStatus.error);
+    }
+  }
 
   PackageInfo appInfo = await PackageInfo.fromPlatform();
   appConfigProvider.setAppInfo(appInfo);
+
+  void startApp() => runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: ((context) => serversProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => statusProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => clientsProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => logsProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => filtersProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => appConfigProvider)
+        ),
+        ChangeNotifierProxyProvider<StatusProvider, ServersProvider>(
+          create: (context) => serversProvider, 
+          update: (context, status, servers) => servers!..update(status),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, StatusProvider>(
+          create: (context) => statusProvider, 
+          update: (context, servers, status) => status!..update(servers),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, ClientsProvider>(
+          create: (context) => clientsProvider, 
+          update: (context, servers, clients) => clients!..update(servers),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, LogsProvider>(
+          create: (context) => logsProvider, 
+          update: (context, servers, logs) => logs!..update(servers),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, FiltersProvider>(
+          create: (context) => filtersProvider, 
+          update: (context, servers, filters) => filters!..update(servers),
+        ),
+      ],
+      child: const Main(),
+    )
+  );
 
   if (
     (
@@ -87,41 +151,11 @@ void main() async {
         options.dsn = dotenv.env['SENTRY_DSN'];
         options.sendDefaultPii = false;
       },
-      appRunner: () => runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              create: ((context) => serversProvider)
-            ),
-            ChangeNotifierProvider(
-              create: ((context) => appConfigProvider)
-            ),
-            ChangeNotifierProvider(
-              create: ((context) => logsProvider)
-            ),
-          ],
-          child: const Main(),
-        )
-      )
+      appRunner: () => startApp()
     );
   }
   else {
-    runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: ((context) => serversProvider)
-          ),
-          ChangeNotifierProvider(
-            create: ((context) => appConfigProvider)
-          ),
-          ChangeNotifierProvider(
-            create: ((context) => logsProvider)
-          ),
-        ],
-        child: const Main(),
-      )
-    );
+    startApp();
   }
 }
 

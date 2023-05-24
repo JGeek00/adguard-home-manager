@@ -7,6 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/base64.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -217,6 +219,7 @@ class _AddServerModalState extends State<AddServerModal> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
     final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
 
     final mediaQuery = MediaQuery.of(context);
@@ -257,13 +260,15 @@ class _AddServerModalState extends State<AddServerModal> {
         }
         final serverCreated = await serversProvider.createServer(serverObj);
         if (serverCreated == null) {
-          serversProvider.setServerStatusLoad(0);
+          statusProvider.setServerStatusLoad(LoadStatus.loading);
           
           final serverStatus = await getServerStatus(serverObj);
 
           if (serverStatus['result'] == 'success') {
-            serversProvider.setServerStatusData(serverStatus['data']);
-            serversProvider.setServerStatusLoad(1);
+            statusProvider.setServerStatusData(
+              data: serverStatus['data']
+            );
+            statusProvider.setServerStatusLoad(LoadStatus.loaded);
             if (serverStatus['data'].serverVersion.contains('a') || serverStatus['data'].serverVersion.contains('b')) {
               Navigator.pop(context);
               widget.onUnsupportedVersion(serverStatus['data'].serverVersion);
@@ -274,7 +279,7 @@ class _AddServerModalState extends State<AddServerModal> {
           }
           else {
             appConfigProvider.addLog(serverStatus['log']);
-            serversProvider.setServerStatusLoad(2);
+            statusProvider.setServerStatusLoad(LoadStatus.error);
             Navigator.pop(context);
           }
         }

@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/combined_line_chart.dart';
 
 import 'package:adguard_home_manager/functions/number_format.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class CombinedChartData {
@@ -51,56 +51,56 @@ class CombinedHomeChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
-    if (serversProvider.serverStatus.data != null) {
+    if (statusProvider.serverStatus != null) {
       final data = CombinedChartData(
         totalQueries: CombinedChartItem(
           label: AppLocalizations.of(context)!.dnsQueries, 
           color: Colors.blue, 
-          data: serversProvider.serverStatus.data!.stats.dnsQueries
+          data: statusProvider.serverStatus!.stats.dnsQueries
         ),
         blockedFilters: appConfigProvider.hideZeroValues == true
-          ? removeZero(serversProvider.serverStatus.data!.stats.blockedFiltering) != null
+          ? removeZero(statusProvider.serverStatus!.stats.blockedFiltering) != null
             ? CombinedChartItem(
                 label: AppLocalizations.of(context)!.blockedFilters, 
                 color: Colors.red,
-                data: serversProvider.serverStatus.data!.stats.blockedFiltering
+                data: statusProvider.serverStatus!.stats.blockedFiltering
               ) 
             : null
           : CombinedChartItem(
               label: AppLocalizations.of(context)!.blockedFilters, 
               color: Colors.red,
-              data: serversProvider.serverStatus.data!.stats.blockedFiltering
+              data: statusProvider.serverStatus!.stats.blockedFiltering
             ) ,
         replacedSafeBrowsing: appConfigProvider.hideZeroValues == true
-          ? removeZero(serversProvider.serverStatus.data!.stats.replacedSafebrowsing) != null
+          ? removeZero(statusProvider.serverStatus!.stats.replacedSafebrowsing) != null
             ? CombinedChartItem(
                 label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
                 color: Colors.green,
-                data: serversProvider.serverStatus.data!.stats.replacedSafebrowsing
+                data: statusProvider.serverStatus!.stats.replacedSafebrowsing
               ) 
             : null
           : CombinedChartItem(
               label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
               color: Colors.green,
-              data: serversProvider.serverStatus.data!.stats.replacedSafebrowsing
+              data: statusProvider.serverStatus!.stats.replacedSafebrowsing
             ) ,
         replacedParental: appConfigProvider.hideZeroValues == true
-          ?  removeZero(serversProvider.serverStatus.data!.stats.replacedParental) != null
+          ?  removeZero(statusProvider.serverStatus!.stats.replacedParental) != null
             ? CombinedChartItem(
                 label: AppLocalizations.of(context)!.blockedAdultWebsites, 
                 color: Colors.orange,
-                data: serversProvider.serverStatus.data!.stats.replacedParental
+                data: statusProvider.serverStatus!.stats.replacedParental
               ) 
             : null
           : CombinedChartItem(
               label: AppLocalizations.of(context)!.blockedAdultWebsites, 
               color: Colors.orange,
-              data: serversProvider.serverStatus.data!.stats.replacedParental
+              data: statusProvider.serverStatus!.stats.replacedParental
             ) ,
       );
 
@@ -184,29 +184,29 @@ class CombinedHomeChart extends StatelessWidget {
                         legend(
                           label: data.totalQueries.label, 
                           color: data.totalQueries.color, 
-                          primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numDnsQueries, Platform.localeName), 
-                          secondaryValue: "${doubleFormat(serversProvider.serverStatus.data!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
+                          primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
+                          secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
                         ),
                         const SizedBox(height: 16),
                         if (data.blockedFilters != null) legend(
                           label: data.blockedFilters!.label, 
                           color: data.blockedFilters!.color, 
-                          primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numBlockedFiltering, Platform.localeName), 
-                          secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                          primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
+                          secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                         ),
                         const SizedBox(height: 16),
                         if (data.replacedSafeBrowsing != null) legend(
                           label: data.replacedSafeBrowsing!.label, 
                           color: data.replacedSafeBrowsing!.color, 
-                          primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing, Platform.localeName), 
-                          secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                          primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
+                          secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                         ),
                         const SizedBox(height: 16),
                         if (data.replacedParental != null) legend(
                           label: data.replacedParental!.label, 
                           color: data.replacedParental!.color, 
-                          primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedParental, Platform.localeName), 
-                          secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                          primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
+                          secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedParental/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                         ),
                       ],
                     ),
@@ -247,29 +247,29 @@ class CombinedHomeChart extends StatelessWidget {
                 legend(
                   label: data.totalQueries.label, 
                   color: data.totalQueries.color, 
-                  primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numDnsQueries, Platform.localeName), 
-                  secondaryValue: "${doubleFormat(serversProvider.serverStatus.data!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
+                  primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
+                  secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
                 ),
                 const SizedBox(height: 16),
                 if (data.blockedFilters != null) legend(
                   label: data.blockedFilters!.label, 
                   color: data.blockedFilters!.color, 
-                  primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numBlockedFiltering, Platform.localeName), 
-                  secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                  primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
+                  secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 ),
                 const SizedBox(height: 16),
                 if (data.replacedSafeBrowsing != null) legend(
                   label: data.replacedSafeBrowsing!.label, 
                   color: data.replacedSafeBrowsing!.color, 
-                  primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing, Platform.localeName), 
-                  secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                  primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
+                  secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 ),
                 const SizedBox(height: 16),
                 if (data.replacedParental != null) legend(
                   label: data.replacedParental!.label, 
                   color: data.replacedParental!.color, 
-                  primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedParental, Platform.localeName), 
-                  secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                  primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
+                  secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedParental/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 ),
                 const SizedBox(height: 16),
               ],

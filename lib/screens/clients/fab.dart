@@ -14,6 +14,7 @@ import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/functions/maps_fns.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -24,6 +25,7 @@ class ClientsFab extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
@@ -34,7 +36,7 @@ class ClientsFab extends StatelessWidget {
       final result = await postAddClient(
         server: serversProvider.selectedServer!, 
         data: serverVersionIsAhead(
-          currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+          currentVersion: statusProvider.serverStatus!.serverVersion, 
           referenceVersion: 'v0.107.28',
           referenceVersionBeta: 'v0.108.0-b.33'
         ) == false
@@ -73,7 +75,7 @@ class ClientsFab extends StatelessWidget {
           context: context, 
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmAddClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             dialog: true,
           )
         );
@@ -83,7 +85,7 @@ class ClientsFab extends StatelessWidget {
           fullscreenDialog: true,
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmAddClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             dialog: false,
           )
         ));

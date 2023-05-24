@@ -15,6 +15,7 @@ import 'package:adguard_home_manager/screens/filters/blocked_services_screen.dar
 import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
@@ -83,6 +84,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -158,20 +160,20 @@ class _FiltersWidgetState extends State<FiltersWidget> {
     void enableDisableFiltering() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(
-        serversProvider.serverStatus.data!.filteringEnabled == true
+        statusProvider.serverStatus!.filteringEnabled == true
           ? AppLocalizations.of(context)!.disableFiltering
           : AppLocalizations.of(context)!.enableFiltering
       );
 
       final result = await updateFiltering(
         server: serversProvider.selectedServer!, 
-        enable: !serversProvider.serverStatus.data!.filteringEnabled
+        enable: !statusProvider.serverStatus!.filteringEnabled
       );
 
       processModal.close();
 
       if (result['result'] == 'success') {
-        serversProvider.setFilteringProtectionStatus(!serversProvider.serverStatus.data!.filteringEnabled);
+        serversProvider.setFilteringProtectionStatus(!statusProvider.serverStatus!.filteringEnabled);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,
