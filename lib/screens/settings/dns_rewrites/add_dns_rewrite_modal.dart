@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 
 class AddDnsRewriteModal extends StatefulWidget {
-  final void Function(RewriteRulesData) onConfirm;
+  final void Function(RewriteRules) onConfirm;
   final bool dialog;
 
   const AddDnsRewriteModal({
@@ -143,7 +143,7 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                     ? () {
                       Navigator.pop(context);
                       widget.onConfirm(
-                        RewriteRulesData(
+                        RewriteRules(
                           domain: domainController.text, 
                           answer: answerController.text
                         )

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/server.dart';
@@ -17,11 +16,6 @@ class ServersProvider with ChangeNotifier {
 
   List<Server> _serversList = [];
   Server? _selectedServer;
-
-  final RewriteRules _rewriteRules = RewriteRules(
-    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
-    data: null
-  );
 
   final DnsInfo _dnsInfo = DnsInfo(
     loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
@@ -39,10 +33,6 @@ class ServersProvider with ChangeNotifier {
 
   Server? get selectedServer {
     return _selectedServer;
-  }
-
-  RewriteRules get rewriteRules {
-    return _rewriteRules;
   }
 
   DnsInfo get dnsInfo {
@@ -66,19 +56,7 @@ class ServersProvider with ChangeNotifier {
     _selectedServer = server;
     notifyListeners();
   }
-  
-  void setRewriteRulesData(List<RewriteRulesData> data) {
-    _rewriteRules.data = data;
-    notifyListeners();
-  }
 
-  void setRewriteRulesLoadStatus(int status, bool notify) {
-    _rewriteRules.loadStatus = status;
-    if (notify == true) {
-      notifyListeners();
-    }
-  }
-  
   void setDnsInfoData(DnsInfoData data) {
     _dnsInfo.data = data;
     notifyListeners();

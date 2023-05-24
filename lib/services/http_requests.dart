@@ -1528,8 +1528,8 @@ Future getDnsRewriteRules({
 
   if (result['hasResponse'] == true) {
     if (result['statusCode'] == 200) {
-      final List<RewriteRulesData> data = List<RewriteRulesData>.from(
-        jsonDecode(result['body']).map((item) => RewriteRulesData.fromJson(item))
+      final List<RewriteRules> data = List<RewriteRules>.from(
+        jsonDecode(result['body']).map((item) => RewriteRules.fromJson(item))
       );
 
       return {

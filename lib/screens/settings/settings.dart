@@ -177,7 +177,7 @@ class SettingsWidget extends StatelessWidget {
                 title: AppLocalizations.of(context)!.dnsRewrites,
                 subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
                 thisItem: 5,
-                screenToNavigate: const DnsRewrites(),
+                screenToNavigate: const DnsRewritesScreen(),
               ),
               if (serversProvider.updateAvailable.data != null) settingsTile(
                 icon: Icons.system_update_rounded,

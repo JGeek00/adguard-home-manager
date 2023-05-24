@@ -21,6 +21,7 @@ import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/filters_provider.dart';
+import 'package:adguard_home_manager/providers/rewrute_rules_provider.dart';
 import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -45,13 +46,14 @@ void main() async {
 
   await dotenv.load(fileName: '.env');
   
-  AppConfigProvider appConfigProvider = AppConfigProvider();
-  ServersProvider serversProvider = ServersProvider();
-  StatusProvider statusProvider = StatusProvider();
-  ClientsProvider clientsProvider = ClientsProvider();
-  FilteringProvider filtersProvider = FilteringProvider();
-  DhcpProvider dhcpProvider = DhcpProvider();
-  LogsProvider logsProvider = LogsProvider();
+  final AppConfigProvider appConfigProvider = AppConfigProvider();
+  final ServersProvider serversProvider = ServersProvider();
+  final StatusProvider statusProvider = StatusProvider();
+  final ClientsProvider clientsProvider = ClientsProvider();
+  final FilteringProvider filtersProvider = FilteringProvider();
+  final DhcpProvider dhcpProvider = DhcpProvider();
+  final RewriteRulesProvider rewriteRulesProvider = RewriteRulesProvider();
+  final LogsProvider logsProvider = LogsProvider();
 
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   if (Platform.isAndroid) {
@@ -115,6 +117,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: ((context) => dhcpProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => rewriteRulesProvider)
         ),
         ChangeNotifierProxyProvider<StatusProvider, FilteringProvider>(
           create: (context) => filtersProvider, 
