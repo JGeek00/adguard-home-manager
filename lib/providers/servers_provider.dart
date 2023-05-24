@@ -5,10 +5,7 @@ import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
-import 'package:adguard_home_manager/models/filtering_status.dart';
-import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/blocked_services.dart';
-import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -62,18 +59,12 @@ class ServersProvider with ChangeNotifier {
     data: null,
   );
 
-  FilteringStatus? _filteringStatus;
-
   List<Server> get serversList {
     return _serversList;
   }
 
   Server? get selectedServer {
     return _selectedServer;
-  }
-
-  FilteringStatus? get filteringStatus {
-    return _filteringStatus;
   }
 
   Filtering get filtering {
@@ -114,11 +105,6 @@ class ServersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setFilteringStatus(FilteringStatus status) {
-    _filteringStatus = status;
-    notifyListeners();
-  }
-
   void setFilteringData(FilteringData data) {
     _filtering.data = data;
     notifyListeners();
@@ -132,7 +118,7 @@ class ServersProvider with ChangeNotifier {
   }
 
   void setFilteringProtectionStatus(bool status) {
-    _statusProvider!.setFilteringStatus(status);
+    _statusProvider!.setFilteringEnabledStatus(status);
     _filtering.data!.enabled = status;
     notifyListeners();
   }

@@ -59,7 +59,7 @@ class DomainOptions extends StatelessWidget {
         }
         FilteringStatus newObj = statusProvider.serverStatus!.filteringStatus;
         newObj.userRules = newRules;
-        serversProvider.setFilteringStatus(newObj);
+        statusProvider.setFilteringStatus(newObj);
 
         final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
         
@@ -75,7 +75,7 @@ class DomainOptions extends StatelessWidget {
         }
         else {
           appConfigProvider.addLog(result['log']);
-          serversProvider.setFilteringStatus(oldStatus);
+          statusProvider.setFilteringStatus(oldStatus);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),

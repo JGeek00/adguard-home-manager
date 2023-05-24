@@ -10,6 +10,7 @@ import 'package:adguard_home_manager/screens/logs/log_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
@@ -31,11 +32,12 @@ class LogDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
 
     Filter? getList(int id) {
       try {
-        return serversProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
-          return serversProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
+        return statusProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
+          return statusProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
         });
       } catch (_) {
         return null;
@@ -60,7 +62,7 @@ class LogDetailsScreen extends StatelessWidget {
       final rules = await getFilteringRules(server: serversProvider.selectedServer!);
 
       if (rules['result'] == 'success') {
-        FilteringStatus oldStatus = serversProvider.filteringStatus!;
+        FilteringStatus oldStatus = statusProvider.filteringStatus!;
 
         List<String> newRules = rules['data'].userRules.where((domain) => !domain.contains(log.question.name)).toList();
         if (newStatus == 'block') {
@@ -69,9 +71,9 @@ class LogDetailsScreen extends StatelessWidget {
         else if (newStatus == 'unblock') {
           newRules.add("@@||${log.question.name}^");
         }
-        FilteringStatus newObj = serversProvider.filteringStatus!;
+        FilteringStatus newObj = statusProvider.filteringStatus!;
         newObj.userRules = newRules;
-        serversProvider.setFilteringStatus(newObj);
+        statusProvider.setFilteringStatus(newObj);
 
         final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
         
@@ -87,7 +89,7 @@ class LogDetailsScreen extends StatelessWidget {
         }
         else {
           appConfigProvider.addLog(result['log']);
-          serversProvider.setFilteringStatus(oldStatus);
+          statusProvider.setFilteringStatus(oldStatus);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
@@ -298,7 +300,7 @@ class LogDetailsScreen extends StatelessWidget {
           centerTitle: false,
           title:  Text(AppLocalizations.of(context)!.logDetails),
           actions: [
-            if (serversProvider.filteringStatus != null) IconButton(
+            if (statusProvider.filteringStatus != null) IconButton(
               onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
               icon: Icon(
                 getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true

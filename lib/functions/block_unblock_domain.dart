@@ -32,7 +32,7 @@ Future<Map<String, dynamic>> blockUnblock(BuildContext context, String domain, S
     }
     FilteringStatus newObj = statusProvider.serverStatus!.filteringStatus;
     newObj.userRules = newRules;
-    serversProvider.setFilteringStatus(newObj);
+    statusProvider.setFilteringStatus(newObj);
 
     final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
         
@@ -46,7 +46,7 @@ Future<Map<String, dynamic>> blockUnblock(BuildContext context, String domain, S
     }
     else {
       appConfigProvider.addLog(result['log']);
-      serversProvider.setFilteringStatus(oldStatus);
+      statusProvider.setFilteringStatus(oldStatus);
       return {
         'success': false,
         'message': AppLocalizations.of(context)!.userFilteringRulesNotUpdated

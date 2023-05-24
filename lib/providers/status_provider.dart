@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/models/server_status.dart';
@@ -18,8 +19,12 @@ class StatusProvider with ChangeNotifier {
   }
 
   LoadStatus _loadStatus = LoadStatus.loading;
+
   ServerStatus? _serverStatus; // serverStatus != null means server is connected
+  
   List<String> _protectionsManagementProcess = []; // protections that are currenty being enabled or disabled
+
+  FilteringStatus? _filteringStatus;
 
   LoadStatus get loadStatus {
     return _loadStatus;
@@ -33,6 +38,10 @@ class StatusProvider with ChangeNotifier {
     return _protectionsManagementProcess;
   }
 
+  FilteringStatus? get filteringStatus {
+    return _filteringStatus;
+  }
+
   void setServerStatusData({
     required ServerStatus data,
   }) {
@@ -42,6 +51,11 @@ class StatusProvider with ChangeNotifier {
 
   void setServerStatusLoad(LoadStatus status) {
     _loadStatus = status;
+    notifyListeners();
+  }
+
+  void setFilteringStatus(FilteringStatus status) {
+    _filteringStatus = status;
     notifyListeners();
   }
 
@@ -188,7 +202,7 @@ class StatusProvider with ChangeNotifier {
     }
   }
 
-  void setFilteringStatus(bool status) {
+  void setFilteringEnabledStatus(bool status) {
     _serverStatus!.filteringEnabled = status;
   }
 }

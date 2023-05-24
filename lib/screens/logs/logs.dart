@@ -22,46 +22,14 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class Logs extends StatelessWidget {
+class Logs extends StatefulWidget {
   const Logs({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    final logsProvider = Provider.of<LogsProvider>(context);
-
-    return LogsWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider,
-      logsProvider: logsProvider,
-      selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus,
-      searchText: logsProvider.appliedFilters.searchText,
-    );
-  }
+  State<Logs> createState() => _LogsState();
 }
 
-class LogsWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-  final LogsProvider logsProvider;
-  final String selectedResultStatus;
-  final String? searchText;
-
-  const LogsWidget({
-    Key? key,
-    required this.serversProvider,
-    required this.appConfigProvider,
-    required this.logsProvider,
-    required this.selectedResultStatus,
-    required this.searchText,
-  }) : super(key: key);
-
-  @override
-  State<LogsWidget> createState() => _LogsWidgetState();
-}
-
-class _LogsWidgetState extends State<LogsWidget> {
+class _LogsState extends State<Logs> {
   late ScrollController scrollController;
   
   bool isLoadingMore = false;
@@ -76,20 +44,24 @@ class _LogsWidgetState extends State<LogsWidget> {
     String? responseStatus,
     String? searchText,
   }) async {
-    int offst = inOffset ?? widget.logsProvider.offset;
+    final logsProvider = Provider.of<LogsProvider>(context, listen: false);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
 
-    String resStatus = responseStatus ?? widget.selectedResultStatus;
-    String? search = searchText ?? widget.searchText;
+    int offst = inOffset ?? logsProvider.offset;
+
+    String resStatus = responseStatus ?? logsProvider.selectedResultStatus;
+    String? search = searchText ?? logsProvider.searchText;
 
     if (loadingMore != null && loadingMore == true) {
       setState(() => isLoadingMore = true);
     }
 
     final result = await getLogs(
-      server: widget.serversProvider.selectedServer!, 
-      count: widget.logsProvider.logsQuantity, 
+      server: serversProvider.selectedServer!, 
+      count: logsProvider.logsQuantity, 
       offset: offst,
-      olderThan: widget.logsProvider.logsOlderThan,
+      olderThan: logsProvider.logsOlderThan,
       responseStatus: resStatus,
       search: search
     );
@@ -100,43 +72,47 @@ class _LogsWidgetState extends State<LogsWidget> {
 
     if (mounted) {
       if (result['result'] == 'success') {
-        widget.logsProvider.setOffset(inOffset != null ? inOffset+widget.logsProvider.logsQuantity : widget.logsProvider.offset+widget.logsProvider.logsQuantity);
-        if (loadingMore != null && loadingMore == true && widget.logsProvider.logsData != null) {
+        logsProvider.setOffset(inOffset != null ? inOffset+logsProvider.logsQuantity : logsProvider.offset+logsProvider.logsQuantity);
+        if (loadingMore != null && loadingMore == true && logsProvider.logsData != null) {
           LogsData newLogsData = result['data'];
-          newLogsData.data = [...widget.logsProvider.logsData!.data, ...result['data'].data];
-          if (widget.logsProvider.appliedFilters.clients != null) {
+          newLogsData.data = [...logsProvider.logsData!.data, ...result['data'].data];
+          if (logsProvider.appliedFilters.clients != null) {
             newLogsData.data = newLogsData.data.where(
-              (item) => widget.logsProvider.appliedFilters.clients!.contains(item.client)
+              (item) => logsProvider.appliedFilters.clients!.contains(item.client)
             ).toList();
           }
-          widget.logsProvider.setLogsData(newLogsData);
+          logsProvider.setLogsData(newLogsData);
         }
         else {
           LogsData newLogsData = result['data'];
-          if (widget.logsProvider.appliedFilters.clients != null) {
+          if (logsProvider.appliedFilters.clients != null) {
             newLogsData.data = newLogsData.data.where(
-              (item) => widget.logsProvider.appliedFilters.clients!.contains(item.client)
+              (item) => logsProvider.appliedFilters.clients!.contains(item.client)
             ).toList();
           }
-          widget.logsProvider.setLogsData(newLogsData);
+          logsProvider.setLogsData(newLogsData);
         }
-        widget.logsProvider.setLoadStatus(1);
+        logsProvider.setLoadStatus(1);
       }
       else {
-        widget.logsProvider.setLoadStatus(2);
-        widget.appConfigProvider.addLog(result['log']);
+        logsProvider.setLoadStatus(2);
+        appConfigProvider.addLog(result['log']);
       }
     }
   }
 
   void fetchFilteringRules() async {
-    final result = await getFilteringRules(server: widget.serversProvider.selectedServer!);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
+
+    final result = await getFilteringRules(server: serversProvider.selectedServer!);
     if (mounted) {
       if (result['result'] == 'success') {
-        widget.serversProvider.setFilteringStatus(result['data']);
+        statusProvider.setFilteringStatus(result['data']);
       }
       else {
-        widget.appConfigProvider.addLog(result['log']);
+        appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),
@@ -148,15 +124,19 @@ class _LogsWidgetState extends State<LogsWidget> {
   }
 
   Future fetchClients() async {
-    final result = await getClients(widget.serversProvider.selectedServer!);
+    final logsProvider = Provider.of<LogsProvider>(context, listen: false);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+
+    final result = await getClients(serversProvider.selectedServer!);
     if (mounted) {
       if (result['result'] == 'success') {
-        widget.logsProvider.setClientsLoadStatus(1);
-        widget.logsProvider.setClients(result['data'].autoClientsData);
+        logsProvider.setClientsLoadStatus(1);
+        logsProvider.setClients(result['data'].autoClients);
       }
       else {
-        widget.logsProvider.setClientsLoadStatus(2);
-        widget.appConfigProvider.addLog(result['log']);
+        logsProvider.setClientsLoadStatus(2);
+        appConfigProvider.addLog(result['log']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),
