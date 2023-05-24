@@ -20,8 +20,9 @@ import 'package:adguard_home_manager/base.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
-import 'package:adguard_home_manager/providers/filters_provider.dart';
-import 'package:adguard_home_manager/providers/rewrute_rules_provider.dart';
+import 'package:adguard_home_manager/providers/dns_provider.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
+import 'package:adguard_home_manager/providers/rewrite_rules_provider.dart';
 import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -53,6 +54,7 @@ void main() async {
   final FilteringProvider filtersProvider = FilteringProvider();
   final DhcpProvider dhcpProvider = DhcpProvider();
   final RewriteRulesProvider rewriteRulesProvider = RewriteRulesProvider();
+  final DnsProvider dnsProvider = DnsProvider();
   final LogsProvider logsProvider = LogsProvider();
 
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -120,6 +122,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: ((context) => rewriteRulesProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => dnsProvider)
         ),
         ChangeNotifierProxyProvider<StatusProvider, FilteringProvider>(
           create: (context) => filtersProvider, 

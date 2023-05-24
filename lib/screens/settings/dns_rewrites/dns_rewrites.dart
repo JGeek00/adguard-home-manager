@@ -13,7 +13,7 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/providers/rewrute_rules_provider.dart';
+import 'package:adguard_home_manager/providers/rewrite_rules_provider.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';

@@ -13,7 +13,7 @@ import 'package:adguard_home_manager/screens/filters/list_functions.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/format_time.dart';
-import 'package:adguard_home_manager/providers/filters_provider.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';

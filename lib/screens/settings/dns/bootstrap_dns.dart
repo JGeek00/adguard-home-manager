@@ -6,18 +6,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 
 class BootstrapDnsScreen extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const BootstrapDnsScreen({
-    Key? key,
-    required this.serversProvider,
-  }) : super(key: key);
+  const BootstrapDnsScreen({Key? key}) : super(key: key);
 
   @override
   State<BootstrapDnsScreen> createState() => _BootstrapDnsScreenState();
@@ -54,7 +50,9 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
 
   @override
   void initState() {
-    for (var item in widget.serversProvider.dnsInfo.data!.bootstrapDns) {
+    final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
+
+    for (var item in dnsProvider.dnsInfo!.bootstrapDns) {
       final controller = TextEditingController();
       controller.text = item;
       bootstrapControllers.add({
@@ -69,6 +67,7 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void saveData() async {
@@ -82,9 +81,9 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        DnsInfoData data = serversProvider.dnsInfo.data!;
+        DnsInfo data = dnsProvider.dnsInfo!;
         data.bootstrapDns = List<String>.from(bootstrapControllers.map((e) => e['controller'].text));
-        serversProvider.setDnsInfoData(data);
+        dnsProvider.setDnsInfoData(data);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,

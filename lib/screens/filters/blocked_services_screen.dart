@@ -8,7 +8,7 @@ import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/providers/filters_provider.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';

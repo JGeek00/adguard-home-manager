@@ -17,7 +17,7 @@ import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/providers/filters_provider.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/constants/enums.dart';

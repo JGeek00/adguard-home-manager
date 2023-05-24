@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
@@ -14,12 +15,7 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 
 class PrivateReverseDnsServersScreen extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const PrivateReverseDnsServersScreen({
-    Key? key,
-    required this.serversProvider,
-  }) : super(key: key);
+  const PrivateReverseDnsServersScreen({Key? key}) : super(key: key);
 
   @override
   State<PrivateReverseDnsServersScreen> createState() => _PrivateReverseDnsServersScreenState();
@@ -69,10 +65,12 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
 
   @override
   void initState() {
-    for (var item in widget.serversProvider.dnsInfo.data!.defaultLocalPtrUpstreams) {
+    final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
+
+    for (var item in dnsProvider.dnsInfo!.defaultLocalPtrUpstreams) {
       defaultReverseResolvers.add(item);
     }
-    for (var item in widget.serversProvider.dnsInfo.data!.localPtrUpstreams) {
+    for (var item in dnsProvider.dnsInfo!.localPtrUpstreams) {
       final controller = TextEditingController();
       controller.text = item;
       reverseResolversControllers = [{
@@ -80,11 +78,11 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
         'error': null
       }];
     }
-    if (widget.serversProvider.dnsInfo.data!.localPtrUpstreams.isNotEmpty) {
+    if (dnsProvider.dnsInfo!.localPtrUpstreams.isNotEmpty) {
       editReverseResolvers = true;
     }
-    usePrivateReverseDnsResolvers = widget.serversProvider.dnsInfo.data!.usePrivatePtrResolvers;
-    enableReverseResolve = widget.serversProvider.dnsInfo.data!.resolveClients;
+    usePrivateReverseDnsResolvers = dnsProvider.dnsInfo!.usePrivatePtrResolvers;
+    enableReverseResolve = dnsProvider.dnsInfo!.resolveClients;
     validValues = true;
     super.initState();
   }
@@ -92,6 +90,7 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void saveData() async {
@@ -111,13 +110,13 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
       processModal.close();
 
       if (result['result'] == 'success') {
-        DnsInfoData data = serversProvider.dnsInfo.data!;
+        DnsInfo data = dnsProvider.dnsInfo!;
         if (editReverseResolvers == true) {
           data.localPtrUpstreams = List<String>.from(reverseResolversControllers.map((e) => e['controller'].text));
         }
         data.usePrivatePtrResolvers = usePrivateReverseDnsResolvers;
         data.resolveClients = enableReverseResolve;
-        serversProvider.setDnsInfoData(data);
+        dnsProvider.setDnsInfoData(data);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,

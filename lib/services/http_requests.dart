@@ -1808,7 +1808,7 @@ Future getDnsInfo({
     if (result['statusCode'] == 200) {
       return {
         'result': 'success' ,
-        'data': DnsInfoData.fromJson(jsonDecode(result['body']))
+        'data': DnsInfo.fromJson(jsonDecode(result['body']))
       };
     }
     else {

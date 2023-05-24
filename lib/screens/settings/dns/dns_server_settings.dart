@@ -10,18 +10,14 @@ import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
+import 'package:adguard_home_manager/providers/dns_provider.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 
 class DnsServerSettingsScreen extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const DnsServerSettingsScreen({
-    Key? key,
-    required this.serversProvider
-  }) : super(key: key);
+  const DnsServerSettingsScreen({Key? key}) : super(key: key);
 
   @override
   State<DnsServerSettingsScreen> createState() => _DnsServerSettingsScreenState();
@@ -89,13 +85,15 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
 
   @override
   void initState() {
-    limitRequestsController.text = widget.serversProvider.dnsInfo.data!.ratelimit.toString();
-    enableEdns = widget.serversProvider.dnsInfo.data!.ednsCsEnabled;
-    enableDnssec = widget.serversProvider.dnsInfo.data!.dnssecEnabled;
-    disableIpv6Resolving = widget.serversProvider.dnsInfo.data!.disableIpv6;
-    blockingMode = widget.serversProvider.dnsInfo.data!.blockingMode;
-    ipv4controller.text = widget.serversProvider.dnsInfo.data!.blockingIpv4;
-    ipv6controller.text = widget.serversProvider.dnsInfo.data!.blockingIpv6;
+    final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
+
+    limitRequestsController.text = dnsProvider.dnsInfo!.ratelimit.toString();
+    enableEdns = dnsProvider.dnsInfo!.ednsCsEnabled;
+    enableDnssec = dnsProvider.dnsInfo!.dnssecEnabled;
+    disableIpv6Resolving = dnsProvider.dnsInfo!.disableIpv6;
+    blockingMode = dnsProvider.dnsInfo!.blockingMode;
+    ipv4controller.text = dnsProvider.dnsInfo!.blockingIpv4;
+    ipv6controller.text = dnsProvider.dnsInfo!.blockingIpv6;
     isDataValid = true;
     super.initState();
   }
@@ -103,6 +101,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void saveData() async {
@@ -120,7 +119,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        DnsInfoData data = serversProvider.dnsInfo.data!;
+        DnsInfo data = dnsProvider.dnsInfo!;
         data.ratelimit = int.parse(limitRequestsController.text);
         data.ednsCsEnabled = enableEdns;
         data.dnssecEnabled = enableDnssec;
@@ -128,7 +127,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
         data.blockingMode = blockingMode;
         data.blockingIpv4 = ipv4controller.text;
         data.blockingIpv6 = ipv6controller.text;
-        serversProvider.setDnsInfoData(data);
+        dnsProvider.setDnsInfoData(data);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:adguard_home_manager/models/dns_info.dart';
-import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -17,11 +16,6 @@ class ServersProvider with ChangeNotifier {
   List<Server> _serversList = [];
   Server? _selectedServer;
 
-  final DnsInfo _dnsInfo = DnsInfo(
-    loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
-    data: null
-  );
-
   final UpdateAvailable _updateAvailable = UpdateAvailable(
     loadStatus: LoadStatus.loading,
     data: null,
@@ -33,10 +27,6 @@ class ServersProvider with ChangeNotifier {
 
   Server? get selectedServer {
     return _selectedServer;
-  }
-
-  DnsInfo get dnsInfo {
-    return _dnsInfo;
   }
 
   UpdateAvailable get updateAvailable {
@@ -55,18 +45,6 @@ class ServersProvider with ChangeNotifier {
   void setSelectedServer(Server server) {
     _selectedServer = server;
     notifyListeners();
-  }
-
-  void setDnsInfoData(DnsInfoData data) {
-    _dnsInfo.data = data;
-    notifyListeners();
-  }
-
-  void setDnsInfoLoadStatus(int status, bool notify) {
-    _dnsInfo.loadStatus = status;
-    if (notify == true) {
-      notifyListeners();
-    }
   }
 
   void setUpdateAvailableLoadStatus(LoadStatus status, bool notify) {
