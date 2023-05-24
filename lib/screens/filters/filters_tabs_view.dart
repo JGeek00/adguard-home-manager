@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
 import 'package:adguard_home_manager/screens/filters/filters_list.dart';
 
+import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -49,6 +50,7 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
 
     return DefaultTabController(
       length: 3,
@@ -110,28 +112,28 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
           controller: tabController,
           children: [
             FiltersList(
-              loadStatus: serversProvider.filtering.loadStatus,
+              loadStatus: filteringProvider.loadStatus,
               scrollController: scrollController,
               type: 'whitelist',
-              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
-                ? serversProvider.filtering.data!.whitelistFilters : [],
+              data: filteringProvider.loadStatus == LoadStatus.loaded
+                ? filteringProvider.filtering!.whitelistFilters : [],
               fetchData: widget.fetchFilters,
               onOpenDetailsScreen: widget.onOpenDetailsModal,
             ),
             FiltersList(
-              loadStatus: serversProvider.filtering.loadStatus,
+              loadStatus: filteringProvider.loadStatus,
               scrollController: scrollController,
               type: 'blacklist',
-              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
-                ? serversProvider.filtering.data!.filters : [],
+              data: filteringProvider.loadStatus == LoadStatus.loaded
+                ? filteringProvider.filtering!.filters : [],
               fetchData: widget.fetchFilters,
               onOpenDetailsScreen: widget.onOpenDetailsModal,
             ),
             CustomRulesList(
-              loadStatus: serversProvider.filtering.loadStatus,
+              loadStatus: filteringProvider.loadStatus,
               scrollController: scrollController,
-              data: serversProvider.filtering.loadStatus == LoadStatus.loaded
-                ? serversProvider.filtering.data!.userRules : [],
+              data: filteringProvider.loadStatus == LoadStatus.loaded
+                ? filteringProvider.filtering!.userRules : [],
               fetchData: widget.fetchFilters,
               onRemoveCustomRule: widget.onRemoveCustomRule,
             ),

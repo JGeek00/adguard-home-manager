@@ -1,8 +1,7 @@
-import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/models/server_status.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/time_server_disabled.dart';
@@ -10,20 +9,9 @@ import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 
 class StatusProvider with ChangeNotifier {
-  ServersProvider? _serversProvider;
-
-  update(ServersProvider? serversProvider) {
-    if (serversProvider != null) {
-      _serversProvider = serversProvider;
-    }
-  }
-
   LoadStatus _loadStatus = LoadStatus.loading;
-
   ServerStatus? _serverStatus; // serverStatus != null means server is connected
-  
   List<String> _protectionsManagementProcess = []; // protections that are currenty being enabled or disabled
-
   FilteringStatus? _filteringStatus;
 
   LoadStatus get loadStatus {

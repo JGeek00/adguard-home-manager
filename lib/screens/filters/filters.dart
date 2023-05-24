@@ -17,6 +17,7 @@ import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -24,49 +25,31 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class Filters extends StatelessWidget {
+class Filters extends StatefulWidget {
   const Filters({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return FiltersWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider
-    );
-  }
+  State<Filters> createState() => _FiltersState();
 }
 
-class FiltersWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-
-  const FiltersWidget({
-    Key? key,
-    required this.serversProvider,
-    required this.appConfigProvider
-  }) : super(key: key);
-
-  @override
-  State<FiltersWidget> createState() => _FiltersWidgetState();
-}
-
-class _FiltersWidgetState extends State<FiltersWidget> {
+class _FiltersState extends State<Filters> {
   Future fetchFilters() async {
-    widget.serversProvider.setFilteringLoadStatus(LoadStatus.loading, false);
+    final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
 
-    final result = await getFiltering(server: widget.serversProvider.selectedServer!);
+    filteringProvider.setFilteringLoadStatus(LoadStatus.loading, false);
+
+    final result = await getFiltering(server: serversProvider.selectedServer!);
 
     if (mounted) {
       if (result['result'] == 'success') {
-        widget.serversProvider.setFilteringData(result['data']);
-        widget.serversProvider.setFilteringLoadStatus(LoadStatus.loaded, false);
+        filteringProvider.setFilteringData(result['data']);
+        filteringProvider.setFilteringLoadStatus(LoadStatus.loaded, false);
       }
       else {
-        widget.appConfigProvider.addLog(result['log']);
-        widget.serversProvider.setFilteringLoadStatus(LoadStatus.error, false);
+        appConfigProvider.addLog(result['log']);
+        filteringProvider.setFilteringLoadStatus(LoadStatus.error, false);
       }
     }
   }
@@ -84,6 +67,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -96,13 +80,13 @@ class _FiltersWidgetState extends State<FiltersWidget> {
       final result = await updateLists(server: serversProvider.selectedServer!);
 
       if (result['result'] == 'success') {
-        final result2 = await getFiltering(server: widget.serversProvider.selectedServer!);
+        final result2 = await getFiltering(server: serversProvider.selectedServer!);
 
         processModal.close();
 
         if (mounted) {
           if (result2['result'] == 'success') {
-            widget.serversProvider.setFilteringData(result2['data']);
+            filteringProvider.setFilteringData(result2['data']);
 
             showSnacbkar(
               appConfigProvider: appConfigProvider,
@@ -111,7 +95,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
             );
           }
           else {
-            widget.appConfigProvider.addLog(result2['log']);
+            appConfigProvider.addLog(result2['log']);
 
             showSnacbkar(
               appConfigProvider: appConfigProvider,
@@ -173,7 +157,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
       processModal.close();
 
       if (result['result'] == 'success') {
-        serversProvider.setFilteringProtectionStatus(!statusProvider.serverStatus!.filteringEnabled);
+        filteringProvider.setFilteringProtectionStatus(!statusProvider.serverStatus!.filteringEnabled);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,
@@ -195,14 +179,14 @@ class _FiltersWidgetState extends State<FiltersWidget> {
       processModal.open(AppLocalizations.of(context)!.changingUpdateFrequency);
 
       final result = await requestChangeUpdateFrequency(server: serversProvider.selectedServer!, data: {
-        "enabled": serversProvider.filtering.data!.enabled,
+        "enabled": filteringProvider.filtering!.enabled,
         "interval": value
       });
 
       processModal.close();
 
       if (result['result'] == 'success') {
-        serversProvider.setFiltersUpdateFrequency(value);
+        filteringProvider.setFiltersUpdateFrequency(value);
 
         showSnacbkar(
           appConfigProvider: appConfigProvider,
@@ -246,16 +230,16 @@ class _FiltersWidgetState extends State<FiltersWidget> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.deletingRule);
 
-      final List<String> newRules = serversProvider.filtering.data!.userRules.where((r) => r != rule).toList();
+      final List<String> newRules = filteringProvider.filtering!.userRules.where((r) => r != rule).toList();
 
       final result = await setCustomRules(server: serversProvider.selectedServer!, rules: newRules);
 
       processModal.close();
 
       if (result['result'] == 'success') {
-        FilteringData filteringData = serversProvider.filtering.data!;
+        Filtering filteringData = filteringProvider.filtering!;
         filteringData.userRules = newRules;
-        serversProvider.setFilteringData(filteringData);
+        filteringProvider.setFilteringData(filteringData);
 
         showSnacbkar( 
           appConfigProvider: appConfigProvider,
@@ -309,11 +293,11 @@ class _FiltersWidgetState extends State<FiltersWidget> {
     }
 
     List<Widget> actions() {
-      if (serversProvider.filtering.loadStatus == LoadStatus.loaded) {
+      if (filteringProvider.loadStatus == LoadStatus.loaded) {
         return [
           IconButton(
             onPressed: enableDisableFiltering, 
-            tooltip: serversProvider.filtering.data!.enabled == true
+            tooltip: filteringProvider.filtering!.enabled == true
               ? AppLocalizations.of(context)!.disableFiltering
               : AppLocalizations.of(context)!.enableFiltering,
             icon: Stack(
@@ -330,11 +314,11 @@ class _FiltersWidgetState extends State<FiltersWidget> {
                           color: Colors.white
                         ),
                         child: Icon(
-                          serversProvider.filtering.data!.enabled == true
+                          filteringProvider.filtering!.enabled == true
                             ? Icons.check_circle_rounded
                             : Icons.cancel,
                           size: 12,
-                          color: serversProvider.filtering.data!.enabled == true
+                          color: filteringProvider.filtering!.enabled == true
                             ? appConfigProvider.useThemeColorForStatus == true
                               ? Theme.of(context).colorScheme.primary
                               : Colors.green
@@ -355,7 +339,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
                 showDialog(
                   context: context, 
                   builder: (context) => UpdateIntervalListsModal(
-                    interval: serversProvider.filtering.data!.interval,
+                    interval: filteringProvider.filtering!.interval,
                     onChange: setUpdateFrequency,
                     dialog: true,
                   ),
@@ -365,7 +349,7 @@ class _FiltersWidgetState extends State<FiltersWidget> {
                 showModalBottomSheet(
                   context: context, 
                   builder: (context) => UpdateIntervalListsModal(
-                    interval: serversProvider.filtering.data!.interval,
+                    interval: filteringProvider.filtering!.interval,
                     onChange: setUpdateFrequency,
                     dialog: false,
                   ),

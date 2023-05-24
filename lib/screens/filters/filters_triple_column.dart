@@ -15,6 +15,7 @@ import 'package:adguard_home_manager/widgets/options_modal.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
+import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -37,6 +38,7 @@ class FiltersTripleColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     bool checkIfComment(String value) {
@@ -84,7 +86,7 @@ class FiltersTripleColumn extends StatelessWidget {
     }
 
     Widget content() {
-      switch (serversProvider.filtering.loadStatus) {
+      switch (filteringProvider.loadStatus) {
         case LoadStatus.loading:
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -140,18 +142,18 @@ class FiltersTripleColumn extends StatelessWidget {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: serversProvider.filtering.data!.whitelistFilters.length,
+                        itemCount: filteringProvider.filtering!.whitelistFilters.length,
                         itemBuilder: (context, index) => ListOptionsMenu(
-                          list: serversProvider.filtering.data!.whitelistFilters[index],
+                          list: filteringProvider.filtering!.whitelistFilters[index],
                           listType: 'whitelist',
                           child: CustomListTile(
-                            title: serversProvider.filtering.data!.whitelistFilters[index].name,
-                            subtitle: "${intFormat(serversProvider.filtering.data!.whitelistFilters[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
+                            title: filteringProvider.filtering!.whitelistFilters[index].name,
+                            subtitle: "${intFormat(filteringProvider.filtering!.whitelistFilters[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
                             trailing: Icon(
-                              serversProvider.filtering.data!.whitelistFilters[index].enabled == true
+                              filteringProvider.filtering!.whitelistFilters[index].enabled == true
                                 ? Icons.check_circle_rounded
                                 : Icons.cancel,
-                              color: serversProvider.filtering.data!.whitelistFilters[index].enabled == true
+                              color: filteringProvider.filtering!.whitelistFilters[index].enabled == true
                                 ? appConfigProvider.useThemeColorForStatus == true
                                   ? Theme.of(context).colorScheme.primary
                                   : Colors.green
@@ -159,7 +161,7 @@ class FiltersTripleColumn extends StatelessWidget {
                                   ? Colors.grey
                                   : Colors.red
                             ),
-                            onTap: () => onOpenDetailsModal(serversProvider.filtering.data!.whitelistFilters[index], 'whitelist'),
+                            onTap: () => onOpenDetailsModal(filteringProvider.filtering!.whitelistFilters[index], 'whitelist'),
                           ),
                         ), 
                       ),
@@ -196,18 +198,18 @@ class FiltersTripleColumn extends StatelessWidget {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: serversProvider.filtering.data!.filters.length,
+                        itemCount: filteringProvider.filtering!.filters.length,
                         itemBuilder: (context, index) => ListOptionsMenu(
-                          list: serversProvider.filtering.data!.filters[index],
+                          list: filteringProvider.filtering!.filters[index],
                           listType: 'blacklist',
                           child: CustomListTile(
-                            title: serversProvider.filtering.data!.filters[index].name,
-                            subtitle: "${intFormat(serversProvider.filtering.data!.filters[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
+                            title: filteringProvider.filtering!.filters[index].name,
+                            subtitle: "${intFormat(filteringProvider.filtering!.filters[index].rulesCount, Platform.localeName)} ${AppLocalizations.of(context)!.enabledRules}",
                             trailing: Icon(
-                              serversProvider.filtering.data!.filters[index].enabled == true
+                              filteringProvider.filtering!.filters[index].enabled == true
                                 ? Icons.check_circle_rounded
                                 : Icons.cancel,
-                              color: serversProvider.filtering.data!.filters[index].enabled == true
+                              color: filteringProvider.filtering!.filters[index].enabled == true
                                 ? appConfigProvider.useThemeColorForStatus == true
                                   ? Theme.of(context).colorScheme.primary
                                   : Colors.green
@@ -215,7 +217,7 @@ class FiltersTripleColumn extends StatelessWidget {
                                   ? Colors.grey
                                   : Colors.red
                             ),
-                            onTap: () => onOpenDetailsModal(serversProvider.filtering.data!.filters[index], 'blacklist'),
+                            onTap: () => onOpenDetailsModal(filteringProvider.filtering!.filters[index], 'blacklist'),
                           ),
                         ), 
                       ),
@@ -252,7 +254,7 @@ class FiltersTripleColumn extends StatelessWidget {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: serversProvider.filtering.data!.userRules.length,
+                        itemCount: filteringProvider.filtering!.userRules.length,
                         itemBuilder: (context, index) => ContextMenuArea(
                           builder: (context) => [
                             CustomListTile(
@@ -261,7 +263,7 @@ class FiltersTripleColumn extends StatelessWidget {
                               onTap: () {
                                 copyToClipboard(
                                   context: context, 
-                                  value: serversProvider.filtering.data!.userRules[index],
+                                  value: filteringProvider.filtering!.userRules[index],
                                   successMessage: AppLocalizations.of(context)!.copiedClipboard,
                                 );
                                 Navigator.pop(context);
@@ -278,17 +280,17 @@ class FiltersTripleColumn extends StatelessWidget {
                                     icon: Icons.copy_rounded,
                                     action: () => copyToClipboard(
                                       context: context, 
-                                      value: serversProvider.filtering.data!.userRules[index],
+                                      value: filteringProvider.filtering!.userRules[index],
                                       successMessage: AppLocalizations.of(context)!.copiedClipboard,
                                     )
                                   )
                                 ]
                               )
                             ),
-                            title: serversProvider.filtering.data!.userRules[index],
-                            subtitleWidget: generateSubtitle(serversProvider.filtering.data!.userRules[index]),
+                            title: filteringProvider.filtering!.userRules[index],
+                            subtitleWidget: generateSubtitle(filteringProvider.filtering!.userRules[index]),
                             trailing: IconButton(
-                              onPressed: () => onRemoveCustomRule(serversProvider.filtering.data!.userRules[index]),
+                              onPressed: () => onRemoveCustomRule(filteringProvider.filtering!.userRules[index]),
                               icon: const Icon(Icons.delete)
                             ),
                           ),

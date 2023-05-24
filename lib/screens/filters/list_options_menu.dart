@@ -14,7 +14,6 @@ import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class ListOptionsMenu extends StatelessWidget {
   final Filter list;
@@ -30,14 +29,11 @@ class ListOptionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void enableDisable() async {
       final result = await enableDisableList(
         context: context, 
-        serversProvider: serversProvider, 
-        appConfigProvider: appConfigProvider, 
         list: list, 
         listType: listType, 
       );

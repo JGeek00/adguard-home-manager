@@ -2,18 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 
 class ClientsProvider with ChangeNotifier {
-  ServersProvider? _serversProvider;
-
-  update(ServersProvider? serversProvider) {
-    if (serversProvider != null) {
-      _serversProvider = serversProvider;
-    }
-  }
-
   LoadStatus _loadStatus = LoadStatus.loading;
   Clients? _clients;
   String? _searchTermClients;

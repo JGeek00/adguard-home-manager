@@ -49,7 +49,7 @@ void main() async {
   ServersProvider serversProvider = ServersProvider();
   StatusProvider statusProvider = StatusProvider();
   ClientsProvider clientsProvider = ClientsProvider();
-  FiltersProvider filtersProvider = FiltersProvider();
+  FilteringProvider filtersProvider = FilteringProvider();
   LogsProvider logsProvider = LogsProvider();
 
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -112,25 +112,9 @@ void main() async {
         ChangeNotifierProvider(
           create: ((context) => appConfigProvider)
         ),
-        ChangeNotifierProxyProvider<StatusProvider, ServersProvider>(
-          create: (context) => serversProvider, 
-          update: (context, status, servers) => servers!..update(status),
-        ),
-        ChangeNotifierProxyProvider<ServersProvider, StatusProvider>(
-          create: (context) => statusProvider, 
-          update: (context, servers, status) => status!..update(servers),
-        ),
-        ChangeNotifierProxyProvider<ServersProvider, ClientsProvider>(
-          create: (context) => clientsProvider, 
-          update: (context, servers, clients) => clients!..update(servers),
-        ),
-        ChangeNotifierProxyProvider<ServersProvider, LogsProvider>(
-          create: (context) => logsProvider, 
-          update: (context, servers, logs) => logs!..update(servers),
-        ),
-        ChangeNotifierProxyProvider<ServersProvider, FiltersProvider>(
+        ChangeNotifierProxyProvider<StatusProvider, FilteringProvider>(
           create: (context) => filtersProvider, 
-          update: (context, servers, filters) => filters!..update(servers),
+          update: (context, status, filtering) => filtering!..updateStatus(status),
         ),
       ],
       child: const Main(),

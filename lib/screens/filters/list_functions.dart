@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -12,11 +14,13 @@ import 'package:adguard_home_manager/services/http_requests.dart';
 
 Future<bool> enableDisableList({
   required BuildContext context, 
-  required ServersProvider serversProvider, 
-  required AppConfigProvider appConfigProvider, 
   required Filter list, 
   required String listType, 
 }) async {
+  final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+  final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+  final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
+
   ProcessModal processModal = ProcessModal(context: context);
   processModal.open(
     list.enabled == true
@@ -40,12 +44,12 @@ Future<bool> enableDisableList({
     final result2 = await getFiltering(server: serversProvider.selectedServer!);
 
     if (result2['result'] == 'success') {
-      serversProvider.setFilteringData(result2['data']);
-      serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
+      filteringProvider.setFilteringData(result2['data']);
+      filteringProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
     }
     else {
       appConfigProvider.addLog(result2['log']);
-      serversProvider.setFilteringLoadStatus(LoadStatus.error, true);
+      filteringProvider.setFilteringLoadStatus(LoadStatus.error, true);
     }
     
     return true;
@@ -59,11 +63,13 @@ Future<bool> enableDisableList({
 
 Future<bool> editList({
   required BuildContext context,
-  required ServersProvider serversProvider,
-  required AppConfigProvider appConfigProvider,
   required Filter list,
   required String type
 }) async {
+  final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+  final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+  final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
+
   ProcessModal processModal = ProcessModal(context: context);
   processModal.open(AppLocalizations.of(context)!.updatingListData);
       
@@ -81,12 +87,12 @@ Future<bool> editList({
     final result2 = await getFiltering(server: serversProvider.selectedServer!);
         
     if (result2['result'] == 'success') {
-      serversProvider.setFilteringData(result2['data']);
-      serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
+      filteringProvider.setFilteringData(result2['data']);
+      filteringProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
     }
     else {
       appConfigProvider.addLog(result2['log']);
-      serversProvider.setFilteringLoadStatus(LoadStatus.error, true);
+      filteringProvider.setFilteringLoadStatus(LoadStatus.error, true);
     }
         
     processModal.close();
@@ -103,11 +109,13 @@ Future<bool> editList({
 
 Future<bool> deleteList({
   required BuildContext context, 
-  required ServersProvider serversProvider,
-  required AppConfigProvider appConfigProvider,
   required Filter list,
   required String type
 }) async {
+  final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+  final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+  final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
+
   ProcessModal processModal = ProcessModal(context: context);
   processModal.open(AppLocalizations.of(context)!.deletingList);
       
@@ -120,12 +128,12 @@ Future<bool> deleteList({
     final result2 = await getFiltering(server: serversProvider.selectedServer!);
          
     if (result2['result'] == 'success') {
-      serversProvider.setFilteringData(result2['data']);
-      serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
+      filteringProvider.setFilteringData(result2['data']);
+      filteringProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
     }
     else {
       appConfigProvider.addLog(result2['log']);
-      serversProvider.setFilteringLoadStatus(LoadStatus.loading, true);
+      filteringProvider.setFilteringLoadStatus(LoadStatus.loading, true);
     } 
            
     processModal.close();

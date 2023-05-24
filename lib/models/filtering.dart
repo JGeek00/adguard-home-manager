@@ -1,22 +1,4 @@
-import 'dart:convert';
-
-import 'package:adguard_home_manager/constants/enums.dart';
-
-FilteringData filteringFromJson(String str) => FilteringData.fromJson(json.decode(str));
-
-String filteringToJson(FilteringData data) => json.encode(data.toJson());
-
 class Filtering {
-  LoadStatus loadStatus = LoadStatus.loading;
-  FilteringData? data;
-
-  Filtering({
-    required this.loadStatus,
-    this.data
-  });
-}
-
-class FilteringData {
   final List<Filter> filters;
   final List<Filter> whitelistFilters;
   List<String> userRules;
@@ -24,7 +6,7 @@ class FilteringData {
   int interval;
   bool enabled;
 
-  FilteringData({
+  Filtering({
     required this.filters,
     required this.whitelistFilters,
     required this.userRules,
@@ -33,7 +15,7 @@ class FilteringData {
     required this.enabled,
   });
 
-  factory FilteringData.fromJson(Map<String, dynamic> json) => FilteringData(
+  factory Filtering.fromJson(Map<String, dynamic> json) => Filtering(
     filters: json["filters"] != null ? List<Filter>.from(json["filters"].map((x) => Filter.fromJson(x))) : [],
     whitelistFilters: json["whitelist_filters"] != null ? List<Filter>.from(json["whitelist_filters"].map((x) => Filter.fromJson(x))) : [],
     userRules: json["user_rules"] != null ? List<String>.from(json["user_rules"].map((x) => x)).where((i) => i != '').toList() : [],

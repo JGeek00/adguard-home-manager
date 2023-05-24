@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 
-class ServicesModal extends StatelessWidget {
+class ServicesModal extends StatefulWidget {
   final List<String> blockedServices;
   final void Function(List<String>) onConfirm;
 
@@ -17,55 +19,33 @@ class ServicesModal extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return ServicesModalWidget(
-      blockedServices: blockedServices, 
-      onConfirm: onConfirm,
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider,
-    );
-  }
+  State<ServicesModal> createState() => _ServicesModalStateWidget();
 }
 
-class ServicesModalWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-  final List<String> blockedServices;
-  final void Function(List<String>) onConfirm;
-
-  const ServicesModalWidget({
-    Key? key,
-    required this.blockedServices,
-    required this.onConfirm,
-    required this.serversProvider,
-    required this.appConfigProvider
-  }) : super(key: key);
-
-  @override
-  State<ServicesModalWidget> createState() => _ServicesModalStateWidget();
-}
-
-class _ServicesModalStateWidget extends State<ServicesModalWidget> {
+class _ServicesModalStateWidget extends State<ServicesModal> {
   List<String> blockedServices = [];
 
   Future loadBlockedServices() async {
-    final result = await getBlockedServices(server: widget.serversProvider.selectedServer!);
+    final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+
+    final result = await getBlockedServices(server: serversProvider.selectedServer!);
     if (result['result'] == 'success') {
-      widget.serversProvider.setBlockedServicesListLoadStatus(1, true);
-      widget.serversProvider.setBlockedServiceListData(result['data']);
+      filteringProvider.setBlockedServicesListLoadStatus(LoadStatus.loaded, true);
+      filteringProvider.setBlockedServiceListData(result['data']);
     }
     else {
-      widget.serversProvider.setBlockedServicesListLoadStatus(2, true);
-      widget.appConfigProvider.addLog(result['log']);
+      filteringProvider.setBlockedServicesListLoadStatus(LoadStatus.error, true);
+      appConfigProvider.addLog(result['log']);
     }
   }
 
   @override
   void initState() {
-    if (widget.serversProvider.blockedServicesList.loadStatus != 1) {
+    final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
+
+    if (filteringProvider.blockedServicesLoadStatus != LoadStatus.loaded) {
       loadBlockedServices();
     }
 
@@ -89,10 +69,11 @@ class _ServicesModalStateWidget extends State<ServicesModalWidget> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
 
     Widget content() {
-      switch (serversProvider.blockedServicesList.loadStatus) {
-        case 0:
+      switch (filteringProvider.blockedServicesLoadStatus) {
+        case LoadStatus.loading:
           return Padding(
             padding: const EdgeInsets.all(24),
             child: SizedBox(
@@ -116,34 +97,34 @@ class _ServicesModalStateWidget extends State<ServicesModalWidget> {
             ),
           );
 
-        case 1:
+        case LoadStatus.loaded:
           return SizedBox(
             width: double.minPositive,
             height: MediaQuery.of(context).size.height*0.5,
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: serversProvider.blockedServicesList.services!.length,
+              itemCount: filteringProvider.blockedServices!.services.length,
               itemBuilder: (context, index) => CheckboxListTile(
                 title: Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    serversProvider.blockedServicesList.services![index].name,
+                    filteringProvider.blockedServices!.services[index].name,
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
                 ),
-                value: blockedServices.contains(serversProvider.blockedServicesList.services![index].id), 
+                value: blockedServices.contains(filteringProvider.blockedServices!.services[index].id), 
                 checkboxShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5)
                 ),
-                onChanged: (value) => checkUncheckService(value!, serversProvider.blockedServicesList.services![index].id)
+                onChanged: (value) => checkUncheckService(value!, filteringProvider.blockedServices!.services[index].id)
               )
             ),
           );
 
-        case 2:
+        case LoadStatus.error:
           return Padding(
             padding: const EdgeInsets.all(24),
             child: SizedBox(

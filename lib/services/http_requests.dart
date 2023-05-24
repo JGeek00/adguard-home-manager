@@ -895,7 +895,7 @@ Future getFiltering({
     if (result[0]['statusCode'] == 200 && result[0]['statusCode'] == 200) {
       return {
         'result': 'success',
-        'data': FilteringData.fromJson({
+        'data': Filtering.fromJson({
           ...jsonDecode(result[0]['body']),
           "blocked_services": result[1]['body'] != null 
             ? jsonDecode(result[1]['body'])

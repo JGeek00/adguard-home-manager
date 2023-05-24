@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
-import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -13,26 +11,12 @@ import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/services/db/queries.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/providers/status_provider.dart';
 
 class ServersProvider with ChangeNotifier {
-  StatusProvider? _statusProvider;
-
-  update(StatusProvider? statusProvider) {
-    if (statusProvider != null) {
-      _statusProvider = statusProvider;
-    }
-  }
-
   Database? _dbInstance;
 
   List<Server> _serversList = [];
   Server? _selectedServer;
-
-  final Filtering _filtering = Filtering(
-    loadStatus: LoadStatus.loading,
-    data: null
-  );
 
   final DhcpModel _dhcp = DhcpModel(
     loadStatus: 0, // 0 = loading, 1 = loaded, 2 = error
@@ -49,11 +33,6 @@ class ServersProvider with ChangeNotifier {
     data: null
   );
 
-  final BlockedServices _blockedServicesList = BlockedServices(
-    loadStatus: 0,
-    services: null
-  );
-
   final UpdateAvailable _updateAvailable = UpdateAvailable(
     loadStatus: LoadStatus.loading,
     data: null,
@@ -67,10 +46,6 @@ class ServersProvider with ChangeNotifier {
     return _selectedServer;
   }
 
-  Filtering get filtering {
-    return _filtering;
-  }
-
   DhcpModel get dhcp {
     return _dhcp;
   }
@@ -81,10 +56,6 @@ class ServersProvider with ChangeNotifier {
 
   DnsInfo get dnsInfo {
     return _dnsInfo;
-  }
-
-  BlockedServices get blockedServicesList {
-    return _blockedServicesList;
   }
 
   UpdateAvailable get updateAvailable {
@@ -102,34 +73,6 @@ class ServersProvider with ChangeNotifier {
 
   void setSelectedServer(Server server) {
     _selectedServer = server;
-    notifyListeners();
-  }
-
-  void setFilteringData(FilteringData data) {
-    _filtering.data = data;
-    notifyListeners();
-  }
-
-  void setFilteringLoadStatus(LoadStatus loadStatus, bool notify) {
-    _filtering.loadStatus = loadStatus;
-    if (notify == true) {
-      notifyListeners();
-    }
-  }
-
-  void setFilteringProtectionStatus(bool status) {
-    _statusProvider!.setFilteringEnabledStatus(status);
-    _filtering.data!.enabled = status;
-    notifyListeners();
-  }
-
-  void setFiltersUpdateFrequency(int frequency) {
-    _filtering.data!.interval = frequency;
-    notifyListeners();
-  }
-
-  void setBlockedServices(List<String> blockedServices) {
-    _filtering.data!.blockedServices = blockedServices;
     notifyListeners();
   }
 
@@ -164,18 +107,6 @@ class ServersProvider with ChangeNotifier {
 
   void setDnsInfoLoadStatus(int status, bool notify) {
     _dnsInfo.loadStatus = status;
-    if (notify == true) {
-      notifyListeners();
-    }
-  }
-
-  void setBlockedServiceListData(List<BlockedService> data) {
-    _blockedServicesList.services = data;
-    notifyListeners();
-  }
-
-  void setBlockedServicesListLoadStatus(int status, bool notify) {
-    _blockedServicesList.loadStatus = status;
     if (notify == true) {
       notifyListeners();
     }

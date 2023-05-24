@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/screens/filters/list_functions.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/format_time.dart';
+import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -61,16 +62,17 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
     Filter? list;
     try {
-      list = serversProvider.filtering.data != null
+      list = filteringProvider.filtering != null
         ? widget.type == 'whitelist'
-          ? serversProvider.filtering.data!.whitelistFilters.firstWhere((l) => l.id == widget.listId)
-          : serversProvider.filtering.data!.filters.firstWhere((l) => l.id == widget.listId)
+          ? filteringProvider.filtering!.whitelistFilters.firstWhere((l) => l.id == widget.listId)
+          : filteringProvider.filtering!.filters.firstWhere((l) => l.id == widget.listId)
         : null;
     } catch (e) {
       // ------- //
@@ -177,8 +179,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                   onEdit: ({required Filter list, required String type}) async {
                     final result = await editList(
                       context: context, 
-                      serversProvider: serversProvider,
-                      appConfigProvider: appConfigProvider,
                       list: list, 
                       type: widget.type
                     );
@@ -210,8 +210,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                   onEdit: ({required Filter list, required String type}) async {
                     final result = await editList(
                       context: context, 
-                      serversProvider: serversProvider,
-                      appConfigProvider: appConfigProvider,
                       list: list, 
                       type: widget.type
                     );
@@ -248,8 +246,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                 onConfirm: () async {
                   final result = await deleteList(
                     context: context, 
-                    serversProvider: serversProvider,
-                    appConfigProvider: appConfigProvider,
                     list: list!, 
                     type: widget.type,
                   );
@@ -315,8 +311,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                           onPressed: () async {
                             final result = await enableDisableList(
                               context: context, 
-                              serversProvider: serversProvider, 
-                              appConfigProvider: appConfigProvider, 
                               list: list!, 
                               listType: widget.type, 
                             );
@@ -402,8 +396,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                 onPressed: () async {
                   final result = await enableDisableList(
                     context: context, 
-                    serversProvider: serversProvider, 
-                    appConfigProvider: appConfigProvider, 
                     list: list!, 
                     listType: widget.type, 
                   );
