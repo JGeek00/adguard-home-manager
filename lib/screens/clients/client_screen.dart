@@ -13,7 +13,6 @@ import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/safe_search.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientScreen extends StatefulWidget {
@@ -132,7 +131,6 @@ class _ClientScreenState extends State<ClientScreen> {
     
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final clientsProvider = Provider.of<ClientsProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
 

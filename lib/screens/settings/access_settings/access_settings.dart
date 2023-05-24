@@ -56,7 +56,6 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final clientsProvider = Provider.of<ClientsProvider>(context);
 
     Widget body() {
