@@ -16,7 +16,6 @@ import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 
 class ListDetailsScreen extends StatefulWidget {
@@ -61,7 +60,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 

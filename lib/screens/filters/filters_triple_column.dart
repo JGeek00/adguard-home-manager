@@ -19,7 +19,6 @@ import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class FiltersTripleColumn extends StatelessWidget {
   final void Function(String) onRemoveCustomRule;
@@ -37,20 +36,9 @@ class FiltersTripleColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    bool checkIfComment(String value) {
-      final regex = RegExp(r'^(!|#).*$');
-      if (regex.hasMatch(value)) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-
+    
     Widget? generateSubtitle(String rule) {
       final allowRegex = RegExp(r'^@@.*$');
       final blockRegex = RegExp(r'^\|\|.*$');

@@ -128,13 +128,13 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
 
         case LoadStatus.loaded:
           return ListView.builder(
-            itemCount: filteringProvider.blockedServices!.services!.length,
+            itemCount: filteringProvider.blockedServices!.services.length,
             itemBuilder: (context, index) => Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => updateValues(
-                  values.contains(filteringProvider.blockedServices!.services![index].id), 
-                  filteringProvider.blockedServices!.services![index]
+                  values.contains(filteringProvider.blockedServices!.services[index].id), 
+                  filteringProvider.blockedServices!.services[index]
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -147,17 +147,17 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        filteringProvider.blockedServices!.services![index].name,
+                        filteringProvider.blockedServices!.services[index].name,
                         style: TextStyle(
                           fontSize: 16,
                           color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                       Checkbox(
-                        value: values.contains(filteringProvider.blockedServices!.services![index].id), 
+                        value: values.contains(filteringProvider.blockedServices!.services[index].id), 
                         onChanged: (value) => updateValues(
                           value!, 
-                          filteringProvider.blockedServices!.services![index]
+                          filteringProvider.blockedServices!.services[index]
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)

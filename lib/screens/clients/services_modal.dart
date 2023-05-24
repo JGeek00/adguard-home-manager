@@ -68,7 +68,6 @@ class _ServicesModalStateWidget extends State<ServicesModal> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final filteringProvider = Provider.of<FilteringProvider>(context);
 
     Widget content() {

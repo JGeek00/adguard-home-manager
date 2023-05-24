@@ -9,7 +9,6 @@ import 'package:adguard_home_manager/providers/filters_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class FiltersTabsView extends StatefulWidget {
   final AppConfigProvider appConfigProvider;
@@ -49,7 +48,6 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final filteringProvider = Provider.of<FilteringProvider>(context);
 
     return DefaultTabController(
