@@ -1,20 +1,9 @@
 import 'dart:convert';
-
 class DhcpModel {
-  int loadStatus = 0;
-  DhcpData? data;
-
-  DhcpModel({
-    required this.loadStatus,
-    this.data,
-  });
-}
-
-class DhcpData {
   List<NetworkInterface> networkInterfaces;
   DhcpStatus dhcpStatus;
 
-  DhcpData({
+  DhcpModel({
     required this.networkInterfaces,
     required this.dhcpStatus,
   });

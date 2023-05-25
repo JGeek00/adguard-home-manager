@@ -9,13 +9,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/filters/add_custom_rule.dart';
 import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
 
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/models/filtering.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class AddFiltersButton extends StatelessWidget {
   final String type;
@@ -29,7 +26,7 @@ class AddFiltersButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -38,18 +35,11 @@ class AddFiltersButton extends StatelessWidget {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingRule);
 
-      final List<String> newRules = serversProvider.filtering.data!.userRules;
-      newRules.add(rule);
-
-      final result = await setCustomRules(server: serversProvider.selectedServer!, rules: newRules);
+      final result = await filteringProvider.addCustomRule(rule);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        FilteringData filteringData = serversProvider.filtering.data!;
-        filteringData.userRules = newRules;
-        serversProvider.setFilteringData(filteringData);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleAddedSuccessfully, 
@@ -57,8 +47,6 @@ class AddFiltersButton extends StatelessWidget {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleNotAdded, 
@@ -95,58 +83,25 @@ class AddFiltersButton extends StatelessWidget {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingList);
 
-      final result1 = await addFilteringList(server: serversProvider.selectedServer!, data: {
-        'name': name,
-        'url': url,
-        'whitelist': type == 'whitelist' ? true : false
-      });
+      final result = await filteringProvider.addList(name: name, url: url, type: type);
 
-      if (result1['result'] == 'success') {
-        if (result1['data'].toString().contains("OK")) {
-          final result2 = await getFiltering(server: serversProvider.selectedServer!);
-          final items = result1['data'].toString().split(' ')[1];
+      processModal.close();
 
-          if (result2['result'] == 'success') {
-            serversProvider.setFilteringData(result2['data']);
-            serversProvider.setFilteringLoadStatus(LoadStatus.loaded, true);
-          }
-          else {
-            appConfigProvider.addLog(result2['log']);
-            serversProvider.setFilteringLoadStatus(LoadStatus.error, true);
-          }
-
-          processModal.close();
-
-          showSnacbkar(
-            appConfigProvider: appConfigProvider,
-            label: "${AppLocalizations.of(context)!.listAdded} $items.", 
-            color: Colors.green
-          );
-        }
-        else {
-          processModal.close();
-
-          showSnacbkar(
-            appConfigProvider: appConfigProvider,
-            label: AppLocalizations.of(context)!.listNotAdded, 
-            color: Colors.red
-          );
-        }
+      if (result['success'] == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: "${AppLocalizations.of(context)!.listAdded} ${result['data']}.", 
+          color: Colors.green
+        );
       }
-      else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains("Couldn't fetch filter from url")) {
-        processModal.close();
-        appConfigProvider.addLog(result1['log']);
-
+      else if (result['success'] == false && result['error'] == 'invalid_url') {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listUrlInvalid, 
           color: Colors.red
         );
       }
-      else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains('Filter URL already added')) {
-        processModal.close();
-        appConfigProvider.addLog(result1['log']);
-
+      else if (result['success'] == false && result['error'] == 'url_exists') {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listAlreadyAdded, 
@@ -154,9 +109,6 @@ class AddFiltersButton extends StatelessWidget {
         );
       }
       else {
-        processModal.close();
-        appConfigProvider.addLog(result1['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listNotAdded, 

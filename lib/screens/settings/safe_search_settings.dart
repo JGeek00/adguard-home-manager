@@ -7,42 +7,19 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/models/server_status.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class SafeSearchSettingsScreen extends StatelessWidget {
+class SafeSearchSettingsScreen extends StatefulWidget {    
   const SafeSearchSettingsScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return SafeSearchSettingsScreenWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider,
-    );
-  }
+  State<SafeSearchSettingsScreen> createState() => _SafeSearchSettingsScreenState();
 }
 
-class SafeSearchSettingsScreenWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-    
-  const SafeSearchSettingsScreenWidget({
-    Key? key,
-    required this.serversProvider,
-    required this.appConfigProvider
-  }) : super(key: key);
-
-  @override
-  State<SafeSearchSettingsScreenWidget> createState() => _SafeSearchSettingsScreenWidgetState();
-}
-
-class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScreenWidget> {
+class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
   bool generalEnabled = false;
   bool bingEnabled = false;
   bool duckduckgoEnabled = false;
@@ -50,85 +27,66 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
   bool pixabayEnabled = false;
   bool yandexEnabled = false;
   bool youtubeEnabled = false;
-
+  
   Future requestSafeSearchSettings() async {
-    if (mounted) {
-      final result = await getServerStatus(widget.serversProvider.selectedServer!);
-      if (mounted) {
-        if (result['result'] == 'success') {
-          widget.serversProvider.setServerStatusData(result['data']);
-          widget.serversProvider.setServerStatusLoad(1);
-          setState(() {
-            generalEnabled = result['data'].safeSearchEnabled;
-            bingEnabled = result['data'].safeSeachBing;
-            duckduckgoEnabled = result['data'].safeSearchDuckduckgo;
-            googleEnabled = result['data'].safeSearchGoogle;
-            pixabayEnabled = result['data'].safeSearchPixabay;
-            yandexEnabled = result['data'].safeSearchYandex;
-            youtubeEnabled = result['data'].safeSearchYoutube;
-          });
-        }
-        else {
-          widget.appConfigProvider.addLog(result['log']);
-          widget.serversProvider.setServerStatusLoad(2);
-        }
+    final result = await Provider.of<StatusProvider>(context, listen: false).getServerStatus();
+    if (mounted && result == true) {
+      final statusProvider = Provider.of<StatusProvider>(context, listen: false);
+      if (statusProvider.serverStatus != null) {
+        setState(() {
+          generalEnabled = statusProvider.serverStatus!.safeSearchEnabled;
+          bingEnabled = statusProvider.serverStatus!.safeSeachBing ?? false;
+          duckduckgoEnabled = statusProvider.serverStatus!.safeSearchDuckduckgo ?? false;
+          googleEnabled = statusProvider.serverStatus!.safeSearchGoogle ?? false;
+          pixabayEnabled = statusProvider.serverStatus!.safeSearchPixabay ?? false;
+          yandexEnabled = statusProvider.serverStatus!.safeSearchYandex ?? false;
+          youtubeEnabled = statusProvider.serverStatus!.safeSearchYoutube ?? false;
+        });
       }
     }
   }
 
   @override
   void initState() {
-    if (widget.serversProvider.serverStatus.loadStatus == 0) {
+    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
+
+    if (statusProvider.loadStatus == LoadStatus.loading) {
       requestSafeSearchSettings();
     }
-    else if (widget.serversProvider.serverStatus.loadStatus == 1) {
-      generalEnabled = widget.serversProvider.serverStatus.data!.safeSearchEnabled;
-      bingEnabled = widget.serversProvider.serverStatus.data!.safeSeachBing!;
-      duckduckgoEnabled = widget.serversProvider.serverStatus.data!.safeSearchDuckduckgo!;
-      googleEnabled = widget.serversProvider.serverStatus.data!.safeSearchGoogle!;
-      pixabayEnabled = widget.serversProvider.serverStatus.data!.safeSearchPixabay!;
-      yandexEnabled = widget.serversProvider.serverStatus.data!.safeSearchYandex!;
-      youtubeEnabled = widget.serversProvider.serverStatus.data!.safeSearchYoutube!;
+    else if (statusProvider.loadStatus == LoadStatus.loaded) {
+      generalEnabled = statusProvider.serverStatus!.safeSearchEnabled;
+      bingEnabled = statusProvider.serverStatus!.safeSeachBing!;
+      duckduckgoEnabled = statusProvider.serverStatus!.safeSearchDuckduckgo!;
+      googleEnabled = statusProvider.serverStatus!.safeSearchGoogle!;
+      pixabayEnabled = statusProvider.serverStatus!.safeSearchPixabay!;
+      yandexEnabled = statusProvider.serverStatus!.safeSearchYandex!;
+      youtubeEnabled = statusProvider.serverStatus!.safeSearchYoutube!;
     }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void saveConfig() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingSettings);
 
-      final result = await updateSafeSearchSettings(
-        server: serversProvider.selectedServer!, 
-        body: {
-          "enabled": generalEnabled,
-          "bing": bingEnabled,
-          "duckduckgo": duckduckgoEnabled,
-          "google": googleEnabled,
-          "pixabay": pixabayEnabled,
-          "yandex": yandexEnabled,
-          "youtube": youtubeEnabled
-        }
-      );
+      final result = await statusProvider.updateSafeSearchConfig({
+        "enabled": generalEnabled,
+        "bing": bingEnabled,
+        "duckduckgo": duckduckgoEnabled,
+        "google": googleEnabled,
+        "pixabay": pixabayEnabled,
+        "yandex": yandexEnabled,
+        "youtube": youtubeEnabled
+      });
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        ServerStatusData data = serversProvider.serverStatus.data!;
-        data.safeSearchEnabled = generalEnabled;
-        data.safeSeachBing = bingEnabled;
-        data.safeSearchDuckduckgo = duckduckgoEnabled;
-        data.safeSearchGoogle = googleEnabled;
-        data.safeSearchPixabay = pixabayEnabled;
-        data.safeSearchYandex = yandexEnabled;
-        data.safeSearchYoutube = youtubeEnabled;
-
-        serversProvider.setServerStatusData(data);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsUpdatedSuccessfully,
@@ -137,7 +95,6 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsNotSaved,
@@ -148,8 +105,8 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
     }
 
     Widget body() {
-      switch (serversProvider.serverStatus.loadStatus) {
-        case 0:
+      switch (statusProvider.loadStatus) {
+        case LoadStatus.loading:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -170,7 +127,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
             ),
           );
           
-        case 1: 
+        case LoadStatus.loaded: 
           return RefreshIndicator(
             onRefresh: requestSafeSearchSettings,
             child: ListView(
@@ -274,7 +231,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
             ),
           );
 
-        case 2:
+        case LoadStatus.error:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -311,7 +268,7 @@ class _SafeSearchSettingsScreenWidgetState extends State<SafeSearchSettingsScree
         centerTitle: false,
         actions: [
           IconButton(
-            onPressed: serversProvider.serverStatus.loadStatus == 1
+            onPressed: statusProvider.loadStatus == LoadStatus.loaded
               ? () => saveConfig()
               : null, 
             icon: const Icon(Icons.save_rounded),

@@ -9,11 +9,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/options_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/models/filtering_status.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 
 class DomainOptions extends StatelessWidget {
@@ -36,59 +35,33 @@ class DomainOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void blockUnblock(String domain, String newStatus) async {
       final ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingUserFilters);
 
-      final rules = await getFilteringRules(server: serversProvider.selectedServer!);
+      final rules = await statusProvider.blockUnblockDomain(
+        domain: domain,
+        newStatus: newStatus
+      );
 
-      if (rules['result'] == 'success') {
-        FilteringStatus oldStatus = serversProvider.serverStatus.data!.filteringStatus;
+      processModal.close();
 
-        List<String> newRules = rules['data'].userRules.where((d) => !d.contains(domain)).toList();
-        if (newStatus == 'block') {
-          newRules.add("||$domain^");
-        }
-        else if (newStatus == 'unblock') {
-          newRules.add("@@||$domain^");
-        }
-        FilteringStatus newObj = serversProvider.serverStatus.data!.filteringStatus;
-        newObj.userRules = newRules;
-        serversProvider.setFilteringStatus(newObj);
-
-        final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
-        
-        processModal.close();
-        
-        if (result['result'] == 'success') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
-              backgroundColor: Colors.green,
-            )
-          );
-        }
-        else {
-          appConfigProvider.addLog(result['log']);
-          serversProvider.setFilteringStatus(oldStatus);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
-              backgroundColor: Colors.red,
-            )
-          );
-        }
+      if (rules == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.userFilteringRulesUpdated, 
+          color: Colors.green
+        );
       }
       else {
-        appConfigProvider.addLog(rules['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.userFilteringRulesNotUpdated, 
+          color: Colors.red
+          
         );
       }
     }

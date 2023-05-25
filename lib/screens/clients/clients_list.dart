@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/active_client_tile.dart';
 
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/constants/enums.dart';
 
 class ClientsList extends StatelessWidget {
   final ScrollController scrollController;
-  final LoadStatus loadStatus;
   final List<AutoClient> data;
-  final Future Function() fetchClients;
   final void Function(AutoClient) onClientSelected;
   final AutoClient? selectedClient;
   final bool splitView;
@@ -21,9 +20,7 @@ class ClientsList extends StatelessWidget {
   const ClientsList({
     Key? key,
     required this.scrollController,
-    required this.loadStatus,
     required this.data,
-    required this.fetchClients,
     required this.onClientSelected,
     this.selectedClient,
     required this.splitView,
@@ -32,6 +29,8 @@ class ClientsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final clientsProvider = Provider.of<ClientsProvider>(context);
+
     return CustomTabContentList(
       listPadding: splitView == true 
         ? const EdgeInsets.only(top: 8)
@@ -79,7 +78,7 @@ class ClientsList extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             TextButton.icon(
-              onPressed: fetchClients, 
+              onPressed: () => clientsProvider.fetchClients(updateLoading: false),
               icon: const Icon(Icons.refresh_rounded), 
               label: Text(AppLocalizations.of(context)!.refresh)
             )
@@ -110,8 +109,8 @@ class ClientsList extends StatelessWidget {
           ],
         ),
       ), 
-      loadStatus: loadStatus, 
-      onRefresh: fetchClients
+      loadStatus: clientsProvider.loadStatus, 
+      onRefresh: () => clientsProvider.fetchClients(updateLoading: false),
     );
   }
 }

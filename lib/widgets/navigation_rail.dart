@@ -46,8 +46,14 @@ class SideNavigationRail extends StatelessWidget {
       }
     }
 
+    if ((serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1) {
+      appConfigProvider.setSelectedScreen(0);
+    }
+
     return NavigationRail(
-      selectedIndex: appConfigProvider.selectedScreen,
+      selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
+        ? 0
+        : appConfigProvider.selectedScreen,
       destinations: screens.map((screen) => NavigationRailDestination(
         icon: Icon(
           screen.icon,

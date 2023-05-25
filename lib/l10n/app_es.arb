@@ -628,5 +628,7 @@
     "application": "Aplicación",
     "combinedChart": "Gráfico combinado",
     "combinedChartDescription": "Combina todos los gráficos en uno solo",
-    "statistics": "Estadísticas"
+    "statistics": "Estadísticas",
+    "errorLoadFilters": "Error al cargar los filtros.",
+    "clientRemovedSuccessfully": "Cliente eliminado correctamente."
 }

@@ -17,20 +17,16 @@ import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/functions/maps_fns.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class AddedList extends StatefulWidget {
   final ScrollController scrollController;
-  final LoadStatus loadStatus;
   final List<Client> data;
-  final Future Function() fetchClients;
   final void Function(Client) onClientSelected;
   final Client? selectedClient;
   final bool splitView;
@@ -38,9 +34,7 @@ class AddedList extends StatefulWidget {
   const AddedList({
     Key? key,
     required this.scrollController,
-    required this.loadStatus,
     required this.data,
-    required this.fetchClients,
     required this.onClientSelected,
     this.selectedClient,
     required this.splitView
@@ -76,7 +70,8 @@ class _AddedListState extends State<AddedList> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -85,31 +80,11 @@ class _AddedListState extends State<AddedList> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
-      final result = await postUpdateClient(server: serversProvider.selectedServer!, data: {
-        'name': client.name,
-        'data':  serverVersionIsAhead(
-          currentVersion: serversProvider.serverStatus.data!.serverVersion, 
-          referenceVersion: 'v0.107.28',
-          referenceVersionBeta: 'v0.108.0-b.33'
-        ) == false
-          ? removePropFromMap(client.toJson(), 'safesearch_enabled')
-          : removePropFromMap(client.toJson(), 'safe_search')
-      });
+      final result = await clientsProvider.editClient(client);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
-        clientsData.clients = clientsData.clients.map((e) {
-          if (e.name == client.name) {
-            return client;
-          }
-          else {
-            return e;
-          }
-        }).toList();
-        serversProvider.setClientsData(clientsData);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientUpdatedSuccessfully, 
@@ -117,8 +92,6 @@ class _AddedListState extends State<AddedList> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotUpdated, 
@@ -131,19 +104,14 @@ class _AddedListState extends State<AddedList> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.removingClient);
       
-      final result = await postDeleteClient(server: serversProvider.selectedServer!, name: client.name);
+      final result = await clientsProvider.deleteClient(client);
     
       processModal.close();
 
-      if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
-        clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
-        serversProvider.setClientsData(clientsData);
-
+      if (result == true) {
         if (widget.splitView == true) {
           SplitView.of(context).popUntil(0);
         }
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientDeletedSuccessfully, 
@@ -151,15 +119,13 @@ class _AddedListState extends State<AddedList> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotDeleted, 
           color: Colors.red
         );
       }
-    }
+    }  
 
     void openClientModal(Client client) {
       if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
@@ -168,7 +134,7 @@ class _AddedListState extends State<AddedList> {
           context: context, 
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmEditClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             onDelete: deleteClient,
             client: client,
             dialog: true,
@@ -180,7 +146,7 @@ class _AddedListState extends State<AddedList> {
           fullscreenDialog: true,
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmEditClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             onDelete: deleteClient,
             client: client,
             dialog: false,
@@ -240,7 +206,7 @@ class _AddedListState extends State<AddedList> {
         onLongPress: openOptionsModal,
         onEdit: openClientModal,
         splitView: widget.splitView,
-        serverVersion: serversProvider.serverStatus.data!.serverVersion,
+        serverVersion: statusProvider.serverStatus!.serverVersion,
       ),
       noData: SizedBox(
         width: double.maxFinite,
@@ -260,7 +226,7 @@ class _AddedListState extends State<AddedList> {
             ),
             const SizedBox(height: 30),
             TextButton.icon(
-              onPressed: widget.fetchClients, 
+              onPressed: () => clientsProvider.fetchClients(updateLoading: true),
               icon: const Icon(Icons.refresh_rounded), 
               label: Text(AppLocalizations.of(context)!.refresh),
             )
@@ -290,8 +256,10 @@ class _AddedListState extends State<AddedList> {
           ],
         ),
       ), 
-      loadStatus: widget.loadStatus, 
-      onRefresh: widget.fetchClients,
+      loadStatus: statusProvider.loadStatus == LoadStatus.loading || clientsProvider.loadStatus == LoadStatus.loading
+        ? LoadStatus.loading
+        : clientsProvider.loadStatus, 
+      onRefresh: () => clientsProvider.fetchClients(updateLoading: false),
       fab: const ClientsFab(),
       fabVisible: isVisible,
     );

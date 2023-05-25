@@ -10,10 +10,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
-import 'package:adguard_home_manager/functions/time_server_disabled.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
+import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class ManagementModal extends StatefulWidget {
   final bool dialog;
@@ -31,10 +30,6 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
   late AnimationController animationController;
   late Animation<double> animation;
   final ExpandableController expandableController = ExpandableController();
-
-  DateTime? currentDeadline;
-  Timer? countdown;
-  int start = 0;
 
   @override
   void initState() {
@@ -66,70 +61,21 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
 
   @override
   void dispose() {
-    if (countdown != null) countdown!.cancel();
     animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    void startTimer(DateTime deadline) {
-      setState(() {
-        currentDeadline = deadline;
-        start = deadline.difference(DateTime.now()).inSeconds+1;
-      });
-
-      const oneSec = Duration(seconds: 1);
-      countdown = Timer.periodic(
-        oneSec,
-        (Timer timer) async {
-          if (start == 0) {
-            setState(() {
-              timer.cancel();
-            });
-            final result = await getServerStatus(serversProvider.selectedServer!);
-            if (result['result'] == 'success') {
-              serversProvider.setServerStatusData(result['data']);
-            }
-          } else {
-            setState(() {
-              start = start - 1;
-            });
-          }
-        },
-      );
-    }
-
-    if (
-      serversProvider.serverStatus.data != null && 
-      serversProvider.serverStatus.data!.disabledUntil != null && 
-      serversProvider.serverStatus.data!.disabledUntil != currentDeadline
-    ) {
-      startTimer(serversProvider.serverStatus.data!.disabledUntil!);
-    }
-
-    if (
-      serversProvider.serverStatus.data != null && 
-      serversProvider.serverStatus.data!.generalEnabled == true
-    ) {
-      setState(() {
-        start = 0;
-        currentDeadline = null;
-        if (countdown != null) countdown!.cancel();
-        countdown = null;
-      });
-    }
 
     void updateBlocking({
       required bool value, 
       required String filter,
       int? time
     }) async {
-      final result = await serversProvider.updateBlocking(
-        server: serversProvider.selectedServer!,
+      final result = await statusProvider.updateBlocking(
         block: filter, 
         newStatus: value,
         time: time
@@ -164,7 +110,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 26,
-                      color: serversProvider.serverStatus.data!.generalEnabled == true
+                      color: statusProvider.serverStatus!.generalEnabled == true
                         ? Theme.of(context).colorScheme.onSurfaceVariant
                         : Colors.grey,
                     ),
@@ -180,10 +126,10 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                         fontSize: 18,
                       ),
                     ),
-                    if (serversProvider.serverStatus.data!.timeGeneralDisabled > 0) ...[
+                    if (statusProvider.serverStatus!.timeGeneralDisabled > 0) ...[
                       const SizedBox(height: 2),
-                      if (currentDeadline != null) Text(
-                        "${AppLocalizations.of(context)!.remainingTime}: ${generateRemainingTimeString(currentDeadline!.difference(DateTime.now()))}"
+                      if (statusProvider.currentDeadline != null) Text(
+                        "${AppLocalizations.of(context)!.remainingTime}: ${formatRemainingSeconds(statusProvider.remainingTime)}"
                       )
                     ]
                   ],
@@ -191,8 +137,8 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
               ],
             ),
             Switch(
-              value: serversProvider.serverStatus.data!.generalEnabled, 
-              onChanged: serversProvider.protectionsManagementProcess.contains('general') == false
+              value: statusProvider.serverStatus!.generalEnabled, 
+              onChanged: statusProvider.protectionsManagementProcess.contains('general') == false
                 ? (value) {
                   if (value == false && expandableController.expanded == true && legacyMode == false) {
                     expandableController.toggle();
@@ -216,35 +162,35 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
             children: [
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.seconds(30)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
+                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
                   ? () => disableWithCountdown(29000)
                   : null,
               ),
               const SizedBox(width: 8),
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.minute(1)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
+                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
                   ? () => disableWithCountdown(59000)
                   : null,
               ),
               const SizedBox(width: 8),
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.minutes(10)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
+                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
                   ? () => disableWithCountdown(599000)
                   : null,
               ),
               const SizedBox(width: 8),
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.hour(1)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
+                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
                   ? () => disableWithCountdown(3599000)
                   : null,
               ),
               const SizedBox(width: 8),
               ActionChip(
                 label: Text(AppLocalizations.of(context)!.hours(24)),
-                onPressed: serversProvider.protectionsManagementProcess.contains('general') == false && serversProvider.serverStatus.data!.generalEnabled == true
+                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
                   ? () => disableWithCountdown(86399000)
                   : null,
               ),
@@ -256,7 +202,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: serverVersionIsAhead(
-          currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+          currentVersion: statusProvider.serverStatus!.serverVersion, 
           referenceVersion: 'v0.107.28',
           referenceVersionBeta: 'v0.108.0-b.33'
         ) == true
@@ -266,7 +212,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(28),
                 child: InkWell(
-                  onTap: serversProvider.serverStatus.data!.generalEnabled == true && !serversProvider.protectionsManagementProcess.contains('general')
+                  onTap: statusProvider.serverStatus!.generalEnabled == true && !statusProvider.protectionsManagementProcess.contains('general')
                     ? () => expandableController.toggle()
                     : null,
                   borderRadius: BorderRadius.circular(28),
@@ -301,9 +247,9 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(28),
               child: InkWell(
-                onTap: serversProvider.protectionsManagementProcess.contains('general') == false
+                onTap: statusProvider.protectionsManagementProcess.contains('general') == false
                   ? () => updateBlocking(
-                    value: !serversProvider.serverStatus.data!.generalEnabled, 
+                    value: !statusProvider.serverStatus!.generalEnabled, 
                     filter: 'general_legacy'
                   ) : null,
                 borderRadius: BorderRadius.circular(28),
@@ -408,30 +354,30 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
         smallSwitch(
           AppLocalizations.of(context)!.ruleFiltering,
           Icons.filter_list_rounded,
-          serversProvider.serverStatus.data!.filteringEnabled, 
+          statusProvider.serverStatus!.filteringEnabled, 
           (value) => updateBlocking(value: value, filter: 'filtering'),
-          serversProvider.protectionsManagementProcess.contains('filtering')
+          statusProvider.protectionsManagementProcess.contains('filtering')
         ),
         smallSwitch(
           AppLocalizations.of(context)!.safeBrowsing,
           Icons.vpn_lock_rounded,
-          serversProvider.serverStatus.data!.safeBrowsingEnabled, 
+          statusProvider.serverStatus!.safeBrowsingEnabled, 
           (value) => updateBlocking(value: value, filter: 'safeBrowsing'),
-          serversProvider.protectionsManagementProcess.contains('safeBrowsing')
+          statusProvider.protectionsManagementProcess.contains('safeBrowsing')
         ),
         smallSwitch(
           AppLocalizations.of(context)!.parentalFiltering,
           Icons.block,
-          serversProvider.serverStatus.data!.parentalControlEnabled, 
+          statusProvider.serverStatus!.parentalControlEnabled, 
           (value) => updateBlocking(value: value, filter: 'parentalControl'),
-          serversProvider.protectionsManagementProcess.contains('parentalControl')
+          statusProvider.protectionsManagementProcess.contains('parentalControl')
         ),
         smallSwitch(
           AppLocalizations.of(context)!.safeSearch,
           Icons.search_rounded,
-          serversProvider.serverStatus.data!.safeSearchEnabled, 
+          statusProvider.serverStatus!.safeSearchEnabled, 
           (value) => updateBlocking(value: value, filter: 'safeSearch'),
-          serversProvider.protectionsManagementProcess.contains('safeSearch')
+          statusProvider.protectionsManagementProcess.contains('safeSearch')
         ),
       ];
     }

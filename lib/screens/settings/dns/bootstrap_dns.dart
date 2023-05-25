@@ -4,20 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class BootstrapDnsScreen extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const BootstrapDnsScreen({
-    Key? key,
-    required this.serversProvider,
-  }) : super(key: key);
+  const BootstrapDnsScreen({Key? key}) : super(key: key);
 
   @override
   State<BootstrapDnsScreen> createState() => _BootstrapDnsScreenState();
@@ -54,7 +47,9 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
 
   @override
   void initState() {
-    for (var item in widget.serversProvider.dnsInfo.data!.bootstrapDns) {
+    final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
+
+    for (var item in dnsProvider.dnsInfo!.bootstrapDns) {
       final controller = TextEditingController();
       controller.text = item;
       bootstrapControllers.add({
@@ -68,33 +63,27 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
-      final result = await setDnsConfig(server: serversProvider.selectedServer!, data: {
+      final result = await dnsProvider.saveBootstrapDnsConfig({
         "bootstrap_dns": bootstrapControllers.map((e) => e['controller'].text).toList(),
       });
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        DnsInfoData data = serversProvider.dnsInfo.data!;
-        data.bootstrapDns = List<String>.from(bootstrapControllers.map((e) => e['controller'].text));
-        serversProvider.setDnsInfoData(data);
-
+      if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
-      else if (result['log'] != null && result['log'].statusCode == '400') {
-        appConfigProvider.addLog(result['log']);
-
+      else if (result['success'] == false && result['error'] == 400) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
@@ -102,8 +91,6 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 

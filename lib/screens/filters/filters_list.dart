@@ -14,6 +14,8 @@ import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 
@@ -21,7 +23,6 @@ class FiltersList extends StatefulWidget {
   final LoadStatus loadStatus;
   final ScrollController scrollController;
   final List<Filter> data;
-  final Future<void> Function() fetchData;
   final String type;
   final void Function(Filter, String) onOpenDetailsScreen;
 
@@ -30,7 +31,6 @@ class FiltersList extends StatefulWidget {
     required this.loadStatus,
     required this.scrollController,
     required this.data,
-    required this.fetchData,
     required this.type,
     required this.onOpenDetailsScreen
   }) : super(key: key);
@@ -65,6 +65,7 @@ class _FiltersListState extends State<FiltersList> {
 
   @override
   Widget build(BuildContext context) {
+    final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     return CustomTabContentList(
@@ -129,7 +130,16 @@ class _FiltersListState extends State<FiltersList> {
             ),
             const SizedBox(height: 30),
             TextButton.icon(
-              onPressed: widget.fetchData, 
+              onPressed: () async {
+                final result = await filteringProvider.fetchFilters();
+                if (result == false) {
+                  showSnacbkar(
+                    appConfigProvider: appConfigProvider,
+                    label: AppLocalizations.of(context)!.errorLoadFilters, 
+                    color: Colors.red
+                  );
+                }
+              }, 
               icon: const Icon(Icons.refresh_rounded), 
               label: Text(AppLocalizations.of(context)!.refresh),
             )
@@ -160,7 +170,16 @@ class _FiltersListState extends State<FiltersList> {
         ),
       ), 
       loadStatus: widget.loadStatus, 
-      onRefresh: widget.fetchData,
+      onRefresh: () async {
+        final result = await filteringProvider.fetchFilters();
+        if (result == false) {
+          showSnacbkar(
+            appConfigProvider: appConfigProvider,
+            label: AppLocalizations.of(context)!.errorLoadFilters, 
+            color: Colors.red
+          );
+        }
+      }, 
       fab: AddFiltersButton(
         type: widget.type,
         widget: (fn) => FloatingActionButton(

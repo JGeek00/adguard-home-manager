@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class CheckHostModal extends StatefulWidget {
@@ -57,11 +56,11 @@ class _CheckHostModalState extends State<CheckHostModal> {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void checkHost() async {
+      setState(() => resultWidget = checking());
+
+      final result = await serversProvider.apiClient!.checkHostFiltered(host: domainController.text);
+
       if (mounted) {
-        setState(() => resultWidget = checking());
-
-        final result = await checkHostFiltered(server: serversProvider.selectedServer!, host: domainController.text);
-
         if (result['result'] == 'success') {
           final status = getFilteredStatus(context, appConfigProvider, result['data']['reason'], true);
           if (mounted) {
@@ -98,26 +97,24 @@ class _CheckHostModalState extends State<CheckHostModal> {
           }
         }
         else {
-          if (mounted) {
-            setState(() => resultWidget = Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.cancel,
-                  size: 18,
+          setState(() => resultWidget = Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.cancel,
+                size: 18,
+                color: Colors.red,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                AppLocalizations.of(context)!.check,
+                style: const TextStyle(
                   color: Colors.red,
+                  fontWeight: FontWeight.w500
                 ),
-                const SizedBox(width: 10),
-                Text(
-                  AppLocalizations.of(context)!.check,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w500
-                  ),
-                )
-              ],
-            ));
-          }
+              )
+            ],
+          ));
         }
       }
     }

@@ -10,11 +10,8 @@ import 'package:adguard_home_manager/screens/logs/clients_modal.dart';
 import 'package:adguard_home_manager/screens/logs/filter_status_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
-import 'package:adguard_home_manager/models/logs.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class LogsFiltersModal extends StatelessWidget {
@@ -62,8 +59,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
   @override
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
@@ -77,38 +73,6 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       "blocked_parental": AppLocalizations.of(context)!.blockedParentalRow, 
       "safe_search": AppLocalizations.of(context)!.blockedSafeSearchRow, 
     };
-
-    void resetFilters() async {
-      setState(() {
-        searchController.text = '';
-      });
-
-      logsProvider.setLoadStatus(0);
-
-      logsProvider.resetFilters();
-
-      final result = await getLogs(
-        server: serversProvider.selectedServer!, 
-        count: logsProvider.logsQuantity
-      );
-
-      logsProvider.setAppliedFilters(
-        AppliedFiters(
-          selectedResultStatus: 'all', 
-          searchText: null,
-          clients: null
-        )
-      );
-
-      if (result['result'] == 'success') {
-        logsProvider.setLogsData(result['data']);
-        logsProvider.setLoadStatus(1);
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-        logsProvider.setLoadStatus(2);
-      }
-    }
 
     void openSelectFilterStatus() {
       if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
@@ -155,45 +119,6 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
           isScrollControlled: true,
           backgroundColor: Colors.transparent
         );
-      }
-    }
-
-    void filterLogs() async {
-      Navigator.pop(context);
-
-      logsProvider.setLoadStatus(0);
-
-      logsProvider.setOffset(0);
-
-      final result = await getLogs(
-        server: serversProvider.selectedServer!, 
-        count: logsProvider.logsQuantity,
-        olderThan: logsProvider.logsOlderThan,
-        responseStatus: logsProvider.selectedResultStatus,
-        search: logsProvider.searchText,
-      );
-
-      logsProvider.setAppliedFilters(
-        AppliedFiters(
-          selectedResultStatus: logsProvider.selectedResultStatus,
-          searchText: logsProvider.searchText,
-          clients: logsProvider.selectedClients
-        )
-      );
-
-      if (result['result'] == 'success') {
-        LogsData newLogsData = result['data'];
-        if (widget.logsProvider.appliedFilters.clients != null) {
-          newLogsData.data = newLogsData.data.where(
-            (item) => widget.logsProvider.appliedFilters.clients!.contains(item.client)
-          ).toList();
-        }
-        logsProvider.setLogsData(newLogsData);
-        logsProvider.setLoadStatus(1);
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-        logsProvider.setLoadStatus(2);
       }
     }
 
@@ -273,13 +198,13 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                     subtitle: logsProvider.selectedClients != null
                       ? "${logsProvider.selectedClients!.length} ${AppLocalizations.of(context)!.clientsSelected}"
                       : AppLocalizations.of(context)!.all,
-                    onTap: logsProvider.clientsLoadStatus == 1 
+                    onTap: clientsProvider.loadStatus == LoadStatus.loaded 
                       ? openSelectClients
                       : null,
-                    disabled: logsProvider.clientsLoadStatus != 1 ,
+                    disabled: clientsProvider.loadStatus != LoadStatus.loaded,
                     icon: Icons.smartphone_rounded,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    trailing: logsProvider.clientsLoadStatus == 0 
+                    trailing: clientsProvider.loadStatus == LoadStatus.loading
                       ? const SizedBox(
                         width: 20,
                         height: 20,
@@ -287,7 +212,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                           strokeWidth: 2,
                         ),
                       )
-                      : logsProvider.clientsLoadStatus == 2 
+                      : clientsProvider.loadStatus == LoadStatus.error
                         ? const Icon(
                             Icons.error_rounded,
                             color: Colors.red,
@@ -311,11 +236,17 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: resetFilters, 
+                  onPressed: () {
+                    searchController.text = "";
+                    logsProvider.requestResetFilters();
+                  }, 
                   child: Text(AppLocalizations.of(context)!.resetFilters)
                 ),
                 TextButton(
-                  onPressed: () => filterLogs(),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    logsProvider.filterLogs();
+                  },
                   child: Text(AppLocalizations.of(context)!.apply)
                 ),
               ],

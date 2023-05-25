@@ -13,8 +13,8 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class TopItemsModal extends StatefulWidget {
   final String type;
@@ -55,7 +55,7 @@ class _TopItemsModalState extends State<TopItemsModal> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
@@ -122,7 +122,7 @@ class _TopItemsModalState extends State<TopItemsModal> {
                   String? name;
                   if (widget.isClient != null && widget.isClient == true) {
                     try {
-                      name = serversProvider.serverStatus.data!.clients.firstWhere((c) => c.ids.contains(screenData[index].keys.toList()[0])).name;
+                      name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(screenData[index].keys.toList()[0])).name;
                     } catch (e) {
                       // ---- //
                     }

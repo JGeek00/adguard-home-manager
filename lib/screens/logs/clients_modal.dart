@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class ClientsModal extends StatefulWidget {
@@ -32,6 +33,7 @@ class _ClientsModalState extends State<ClientsModal> {
   @override
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
 
     final height = MediaQuery.of(context).size.height;
 
@@ -86,7 +88,7 @@ class _ClientsModalState extends State<ClientsModal> {
 
     void selectAll() {
       setState(() {
-        selectedClients = logsProvider.clients!.map((item) => item.ip).toList();
+        selectedClients = clientsProvider.clients!.autoClients.map((item) => item.ip).toList();
       });
     }
 
@@ -126,20 +128,20 @@ class _ClientsModalState extends State<ClientsModal> {
           ),
           Flexible(
             child: ListView.builder(
-              itemCount: logsProvider.clients!.length,
+              itemCount: clientsProvider.clients!.autoClients.length,
               itemBuilder: (context, index) => listItem(
-                label: logsProvider.clients![index].ip, 
+                label: clientsProvider.clients!.autoClients[index].ip, 
                 onChanged: () {
-                  if (selectedClients.contains(logsProvider.clients![index].ip)) {
+                  if (selectedClients.contains(clientsProvider.clients!.autoClients[index].ip)) {
                     setState(() {
                       selectedClients = selectedClients.where(
-                        (item) => item != logsProvider.clients![index].ip
+                        (item) => item != clientsProvider.clients!.autoClients[index].ip
                       ).toList();
                     });
                   }
                   else {
                     setState(() {
-                      selectedClients.add(logsProvider.clients![index].ip);
+                      selectedClients.add(clientsProvider.clients!.autoClients[index].ip);
                     });
                   }
                 }
@@ -152,11 +154,11 @@ class _ClientsModalState extends State<ClientsModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: selectedClients.length == logsProvider.clients!.length
+                  onPressed: selectedClients.length == clientsProvider.clients!.autoClients.length
                     ? () => unselectAll()
                     : () => selectAll(), 
                   child: Text(
-                    selectedClients.length == logsProvider.clients!.length
+                    selectedClients.length == clientsProvider.clients!.autoClients.length
                       ? AppLocalizations.of(context)!.unselectAll
                       : AppLocalizations.of(context)!.selectAll
                   )

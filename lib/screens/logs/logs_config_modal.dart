@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -74,13 +73,15 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
   int loadStatus = 0;
 
   void loadData() async {
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+
     final result = serverVersionIsAhead(
       currentVersion: widget.serverVersion, 
       referenceVersion: 'v0.107.28',
       referenceVersionBeta: 'v0.108.0-b.33'
     ) == true 
-      ? await getQueryLogInfo(server: widget.serversProvider.selectedServer!)
-      : await getQueryLogInfoLegacy(server: widget.serversProvider.selectedServer!);
+      ? await serversProvider.apiClient!.getQueryLogInfo()
+      : await serversProvider.apiClient!.getQueryLogInfoLegacy();
 
     if (mounted) {
       if (result['result'] == 'success') {

@@ -10,20 +10,13 @@ import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/screens/settings/dns/comment_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_radio_list_tile.dart';
 
-import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class UpstreamDnsScreen extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const UpstreamDnsScreen({
-    Key? key,
-    required this.serversProvider,
-  }) : super(key: key);
+  const UpstreamDnsScreen({Key? key}) : super(key: key);
 
   @override
   State<UpstreamDnsScreen> createState() => _UpstreamDnsScreenState();
@@ -50,7 +43,9 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
 
   @override
   void initState() {
-    for (var item in widget.serversProvider.dnsInfo.data!.upstreamDns) {
+    final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
+
+    for (var item in dnsProvider.dnsInfo!.upstreamDns) {
       if (item == '#') {
         dnsServers.add({
           'comment': item
@@ -64,14 +59,14 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
         });
       }
     }
-    upstreamMode = widget.serversProvider.dnsInfo.data!.upstreamMode;
+    upstreamMode = dnsProvider.dnsInfo!.upstreamMode;
     validValues = true;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     
     final width = MediaQuery.of(context).size.width;
@@ -146,28 +141,21 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
-      final result = await setDnsConfig(server: serversProvider.selectedServer!, data: {
+      final result = await dnsProvider.saveUpstreamDnsConfig({
         "upstream_dns": dnsServers.map((e) => e['controller'] != null ? e['controller'].text : e['comment']).toList(),
         "upstream_mode": upstreamMode
       });
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        DnsInfoData data = serversProvider.dnsInfo.data!;
-        data.upstreamDns = List<String>.from(dnsServers.map((e) => e['controller'] != null ? e['controller'].text : e['comment']));
-        data.upstreamMode = upstreamMode;
-        serversProvider.setDnsInfoData(data);
-
+      if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
-      else if (result['log'] != null && result['log'].statusCode == '400') {
-        appConfigProvider.addLog(result['log']);
-
+      else if (result['success'] == false && result['error'] == 400) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
@@ -175,8 +163,6 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 

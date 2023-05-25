@@ -9,16 +9,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/domain_options.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
-import 'package:adguard_home_manager/widgets/options_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/models/filtering_status.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 class TopItems extends StatelessWidget {
   final String type;
@@ -36,7 +34,7 @@ class TopItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
@@ -58,52 +56,26 @@ class TopItems extends StatelessWidget {
       final ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingUserFilters);
 
-      final rules = await getFilteringRules(server: serversProvider.selectedServer!);
+      final rules = await statusProvider.blockUnblockDomain(
+        domain: domain,
+        newStatus: newStatus
+      );
 
-      if (rules['result'] == 'success') {
-        FilteringStatus oldStatus = serversProvider.serverStatus.data!.filteringStatus;
+      processModal.close();
 
-        List<String> newRules = rules['data'].userRules.where((d) => !d.contains(domain)).toList();
-        if (newStatus == 'block') {
-          newRules.add("||$domain^");
-        }
-        else if (newStatus == 'unblock') {
-          newRules.add("@@||$domain^");
-        }
-        FilteringStatus newObj = serversProvider.serverStatus.data!.filteringStatus;
-        newObj.userRules = newRules;
-        serversProvider.setFilteringStatus(newObj);
-
-        final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
-        
-        processModal.close();
-        
-        if (result['result'] == 'success') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
-              backgroundColor: Colors.green,
-            )
-          );
-        }
-        else {
-          appConfigProvider.addLog(result['log']);
-          serversProvider.setFilteringStatus(oldStatus);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
-              backgroundColor: Colors.red,
-            )
-          );
-        }
+      if (rules == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.userFilteringRulesUpdated, 
+          color: Colors.green
+        );
       }
       else {
-        appConfigProvider.addLog(rules['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.userFilteringRulesNotUpdated, 
+          color: Colors.red
+          
         );
       }
     }
@@ -141,20 +113,11 @@ class TopItems extends StatelessWidget {
       ];
     }
 
-    void openOptionsModal(String domain, String type) {
-      showDialog(
-        context: context, 
-        builder: (context) => OptionsModal(
-          options: generateOptions(domain),
-        )
-      );
-    }
-
     Widget rowItem(Map<String, dynamic> item) {
       String? name;
       if (clients != null && clients == true) {
         try {
-          name = serversProvider.serverStatus.data!.clients.firstWhere((c) => c.ids.contains(item.keys.toList()[0])).name;
+          name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(item.keys.toList()[0])).name;
         } catch (e) {
           // ---- //
         }
@@ -241,13 +204,13 @@ class TopItems extends StatelessWidget {
     List<Map<String, dynamic>> generateData() {
       switch (type) {
         case 'topQueriedDomains':
-          return serversProvider.serverStatus.data!.stats.topQueriedDomains;
+          return statusProvider.serverStatus!.stats.topQueriedDomains;
           
         case 'topBlockedDomains':
-          return serversProvider.serverStatus.data!.stats.topBlockedDomains;
+          return statusProvider.serverStatus!.stats.topBlockedDomains;
 
         case 'topClients':
-          return serversProvider.serverStatus.data!.stats.topClients;
+          return statusProvider.serverStatus!.stats.topClients;
 
         default:
           return [];
