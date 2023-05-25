@@ -77,16 +77,19 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
     super.initState();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final result = await checkInstallationSource();
+      final version = Provider.of<AppConfigProvider>(context, listen: false).getAppInfo!.version;
+      if (!version.contains('beta')) {
+        final result = await checkInstallationSource();
 
-      if (result != null && widget.appConfigProvider.doNotRememberVersion != result.tagName) {
-        await showDialog(
-          context: context, 
-          builder: (context) => UpdateModal(
-            gitHubRelease: result,
-            onDownload: (link, version) => openUrl(link),
-          ),
-        );
+        if (result != null && widget.appConfigProvider.doNotRememberVersion != result.tagName) {
+          await showDialog(
+            context: context, 
+            builder: (context) => UpdateModal(
+              gitHubRelease: result,
+              onDownload: (link, version) => openUrl(link),
+            ),
+          );
+        }
       }
     });
   }

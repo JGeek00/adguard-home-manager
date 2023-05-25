@@ -210,7 +210,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE ||
               appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
               appConfigProvider.installationSource == Source.UNKNOWN
-            ))
+            )) &&
+            !appConfigProvider.getAppInfo!.version.contains('beta')
           ) ...[
             SectionLabel(label: AppLocalizations.of(context)!.application),
             CustomListTile(
