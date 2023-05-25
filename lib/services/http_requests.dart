@@ -2204,7 +2204,7 @@ class ApiClient {
 Future checkAppUpdatesGitHub() async {
   try {
     HttpClient httpClient = HttpClient();
-    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.checkLatestReleaseUrl));
+    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.getReleasesGitHub));
     HttpClientResponse response = await request.close();
     String reply = await response.transform(utf8.decoder).join();
     httpClient.close();
@@ -2214,7 +2214,7 @@ Future checkAppUpdatesGitHub() async {
         'hasResponse': true,
         'error': false,
         'statusCode': response.statusCode,
-        'body': GitHubRelease.fromJson(jsonDecode(reply))
+        'body': List<GitHubRelease>.from(jsonDecode(reply).map((entry) => GitHubRelease.fromJson(entry)))
       };
     }
     else {

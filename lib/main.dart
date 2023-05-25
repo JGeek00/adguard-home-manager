@@ -239,7 +239,7 @@ class _MainState extends State<Main> {
             child: child!,
           );
         },
-        home: Base(appConfigProvider: appConfigProvider),
+        home: const Base(),
       ),
     );
   }

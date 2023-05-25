@@ -1,5 +1,7 @@
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import 'package:adguard_home_manager/models/github_release.dart';
+
 bool compareVersions({
   required String currentVersion, 
   required String newVersion
@@ -147,20 +149,52 @@ bool serverVersionIsAhead({
   }
 }
 
-bool gitHubUpdateExists(String appVersion, String gitHubVersion) {
-  final List<int> appVersionSplit = List<int>.from(appVersion.split('.').map((e) => int.parse(e)));
-  final List<int> gitHubVersionSplit = List<int>.from(gitHubVersion.split('.').map((e) => int.parse(e)));
+bool gitHubUpdateExists(String appVersion, List<GitHubRelease> gitHubReleases) {
+  if (appVersion.contains('beta')) {
+    final gitHubVersion = gitHubReleases.firstWhere((release) => release.prerelease == true).tagName;
 
-  if (gitHubVersionSplit[0] > appVersionSplit[0]) {
-    return true;
-  }
-  else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
-    return true;
-  }
-  else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
-    return true;
+    final appBetaSplit = appVersion.split('-');
+    final gitHubBetaSplit = gitHubVersion.split('-');
+
+    final List<int> appVersionSplit = List<int>.from(appBetaSplit[0].split('.').map((e) => int.parse(e)));
+    final int appBetaNumber = int.parse(appBetaSplit[1].split('.')[1]);
+
+    final List<int> gitHubVersionSplit = List<int>.from(gitHubBetaSplit[0].split('.').map((e) => int.parse(e)));
+    final int gitHubBetaNumber = int.parse(gitHubBetaSplit[1].split('.')[1]);
+
+    if (gitHubVersionSplit[0] > appVersionSplit[0]) {
+      return true;
+    }
+    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
+      return true;
+    }
+    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
+      return true;
+    }
+    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] == appVersionSplit[2] && gitHubBetaNumber > appBetaNumber) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
   else {
-    return false;
+    final gitHubVersion = gitHubReleases.firstWhere((release) => release.prerelease == false).tagName;
+
+    final List<int> appVersionSplit = List<int>.from(appVersion.split('.').map((e) => int.parse(e)));
+    final List<int> gitHubVersionSplit = List<int>.from(gitHubVersion.split('.').map((e) => int.parse(e)));
+
+    if (gitHubVersionSplit[0] > appVersionSplit[0]) {
+      return true;
+    }
+    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
+      return true;
+    }
+    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
