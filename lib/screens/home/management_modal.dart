@@ -223,7 +223,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(28),
-                      color: Theme.of(context).primaryColor.withOpacity(0.1)
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
                     ),
                     child: Expandable(
                       theme: const ExpandableThemeData(
