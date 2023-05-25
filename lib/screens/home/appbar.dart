@@ -40,22 +40,48 @@ class HomeAppBar extends StatelessWidget {
       floating: true,
       centerTitle: false,
       forceElevated: innerBoxScrolled,
-      leading: Icon(
-        serversProvider.selectedServer != null && statusProvider.serverStatus != null
-          ? statusProvider.serverStatus!.generalEnabled == true 
-            ? Icons.gpp_good_rounded
-            : Icons.gpp_bad_rounded
-          : Icons.shield,
-        size: 30,
-        color: serversProvider.selectedServer != null && statusProvider.serverStatus != null
-          ? statusProvider.serverStatus!.generalEnabled == true 
-            ? appConfigProvider.useThemeColorForStatus
-              ? Theme.of(context).colorScheme.primary
-              : Colors.green
-            : appConfigProvider.useThemeColorForStatus == true
-              ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
-              : Colors.red
-          : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+      leading: Stack(
+        children: [
+          Center(
+            child: Icon(
+              serversProvider.selectedServer != null && statusProvider.serverStatus != null
+                ? statusProvider.serverStatus!.generalEnabled == true 
+                  ? Icons.gpp_good_rounded
+                  : Icons.gpp_bad_rounded
+                : Icons.shield,
+              size: 30,
+              color: serversProvider.selectedServer != null && statusProvider.serverStatus != null
+                ? statusProvider.serverStatus!.generalEnabled == true 
+                  ? appConfigProvider.useThemeColorForStatus
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.green
+                  : appConfigProvider.useThemeColorForStatus == true
+                    ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                    : Colors.red
+                : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+            ),
+          ),
+          if (statusProvider.remainingTime > 0) Positioned(
+            bottom: 15,
+            right: 15,
+            child: Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Theme.of(context).colorScheme.surface
+                  ),
+                  child: Icon(
+                    Icons.timer_rounded,
+                    size: 12,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
