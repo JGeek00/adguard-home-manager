@@ -27,7 +27,6 @@ import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/colors.dart';
-import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/config/theme.dart';
 import 'package:adguard_home_manager/classes/http_override.dart';

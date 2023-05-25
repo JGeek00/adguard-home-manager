@@ -8,13 +8,10 @@ import 'package:adguard_home_manager/widgets/custom_radio_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class DnsServerSettingsScreen extends StatefulWidget {
   const DnsServerSettingsScreen({Key? key}) : super(key: key);

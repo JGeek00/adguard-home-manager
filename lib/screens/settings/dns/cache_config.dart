@@ -12,9 +12,7 @@ import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/clear_dns_cache.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class CacheConfigDnsScreen extends StatefulWidget {
   const CacheConfigDnsScreen({Key? key}) : super(key: key);

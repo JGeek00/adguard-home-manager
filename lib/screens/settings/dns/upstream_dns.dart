@@ -14,7 +14,6 @@ import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class UpstreamDnsScreen extends StatefulWidget {
   const UpstreamDnsScreen({Key? key}) : super(key: key);
@@ -67,7 +66,6 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     

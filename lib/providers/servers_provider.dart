@@ -193,7 +193,7 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>?> saveFromDb(List<Map<String, dynamic>>? data) async {
+  Future saveFromDb(List<Map<String, dynamic>>? data) async {
     if (data != null) {
       Server? defaultServer;
       for (var server in data) {
@@ -222,9 +222,6 @@ class ServersProvider with ChangeNotifier {
         _selectedServer = defaultServer;
         _apiClient = ApiClient(server: defaultServer);
         initializateServer(defaultServer);
-      }
-      else {
-        return null;
       }
     }
     else {

@@ -8,9 +8,6 @@ import 'package:adguard_home_manager/screens/settings/access_settings/clients_li
 
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class AccessSettings extends StatefulWidget {
   const AccessSettings({Key? key}) : super(key: key);

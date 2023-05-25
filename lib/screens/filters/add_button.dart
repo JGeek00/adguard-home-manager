@@ -11,11 +11,8 @@ import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
 
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class AddFiltersButton extends StatelessWidget {
