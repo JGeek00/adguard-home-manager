@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/models/server_status.dart';
@@ -19,6 +21,11 @@ class StatusProvider with ChangeNotifier {
   List<String> _protectionsManagementProcess = []; // protections that are currenty being enabled or disabled
   FilteringStatus? _filteringStatus;
 
+  // Countdown
+  DateTime? _currentDeadline;
+  Timer? _countdown;
+  int _remaining = 0;
+
   LoadStatus get loadStatus {
     return _loadStatus;
   }
@@ -35,10 +42,24 @@ class StatusProvider with ChangeNotifier {
     return _filteringStatus;
   }
 
+  int get remainingTime {
+    return _remaining;
+  }
+
+  DateTime? get currentDeadline {
+    return _currentDeadline;
+  }
+
   void setServerStatusData({
     required ServerStatus data,
   }) {
     _serverStatus = data;
+    if (
+      (_countdown == null ||( _countdown != null && _countdown!.isActive == false)) && 
+      data.disabledUntil != null
+    ) {
+      startCountdown(data.disabledUntil!);
+    }
     notifyListeners();
   }
 
@@ -50,6 +71,37 @@ class StatusProvider with ChangeNotifier {
   void setFilteringStatus(FilteringStatus status) {
     _filteringStatus = status;
     notifyListeners();
+  }
+
+  void startCountdown(DateTime deadline) {
+    stopCountdown();
+
+    _currentDeadline = deadline;
+    _remaining = deadline.difference(DateTime.now()).inSeconds+1;
+
+    _countdown = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer timer) async {
+        if (_remaining == 0) {
+          timer.cancel();
+          notifyListeners();
+          getServerStatus();
+        }
+        else {
+          _remaining = _remaining - 1;
+          notifyListeners();
+        }
+      },
+    );
+  }
+
+  void stopCountdown() {
+    if (_countdown != null && _countdown!.isActive) {
+      _countdown!.cancel();
+      _countdown = null;
+      _remaining = 0;
+      _currentDeadline = null;
+    }
   }
 
   Future<dynamic> updateBlocking({
@@ -72,12 +124,15 @@ class StatusProvider with ChangeNotifier {
         if (result['result'] == 'success') {
           _serverStatus!.generalEnabled = newStatus;
           if (time != null) {
+            final deadline = generateTimeDeadline(time);
             _serverStatus!.timeGeneralDisabled = time;
-            _serverStatus!.disabledUntil = generateTimeDeadline(time);
+            _serverStatus!.disabledUntil = deadline;
+            startCountdown(deadline);
           }
           else {
             _serverStatus!.timeGeneralDisabled = 0;
             _serverStatus!.disabledUntil = null;
+            stopCountdown();
           }
           notifyListeners();
           return null;

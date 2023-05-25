@@ -11,7 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/functions/time_server_disabled.dart';
+import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class ManagementModal extends StatefulWidget {
@@ -30,10 +30,6 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
   late AnimationController animationController;
   late Animation<double> animation;
   final ExpandableController expandableController = ExpandableController();
-
-  DateTime? currentDeadline;
-  Timer? countdown;
-  int start = 0;
 
   @override
   void initState() {
@@ -65,7 +61,6 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
 
   @override
   void dispose() {
-    if (countdown != null) countdown!.cancel();
     animationController.dispose();
     super.dispose();
   }
@@ -74,51 +69,6 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    void startTimer(DateTime deadline) {
-      setState(() {
-        currentDeadline = deadline;
-        start = deadline.difference(DateTime.now()).inSeconds+1;
-      });
-
-      const oneSec = Duration(seconds: 1);
-      countdown = Timer.periodic(
-        oneSec,
-        (Timer timer) async {
-          if (start == 0) {
-            setState(() {
-              timer.cancel();
-            });
-            final result = await statusProvider.getServerStatus();
-            if (result == false) {
-              setState(() {
-                start = start - 1;
-              });
-            }
-          }
-        },
-      );
-    }
-
-    if (
-      statusProvider.serverStatus != null && 
-      statusProvider.serverStatus!.disabledUntil != null && 
-      statusProvider.serverStatus!.disabledUntil != currentDeadline
-    ) {
-      startTimer(statusProvider.serverStatus!.disabledUntil!);
-    }
-
-    if (
-      statusProvider.serverStatus != null && 
-      statusProvider.serverStatus!.generalEnabled == true
-    ) {
-      setState(() {
-        start = 0;
-        currentDeadline = null;
-        if (countdown != null) countdown!.cancel();
-        countdown = null;
-      });
-    }
 
     void updateBlocking({
       required bool value, 
@@ -178,8 +128,8 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
                     ),
                     if (statusProvider.serverStatus!.timeGeneralDisabled > 0) ...[
                       const SizedBox(height: 2),
-                      if (currentDeadline != null) Text(
-                        "${AppLocalizations.of(context)!.remainingTime}: ${generateRemainingTimeString(currentDeadline!.difference(DateTime.now()))}"
+                      if (statusProvider.currentDeadline != null) Text(
+                        "${AppLocalizations.of(context)!.remainingTime}: ${formatRemainingSeconds(statusProvider.remainingTime)}"
                       )
                     ]
                   ],
