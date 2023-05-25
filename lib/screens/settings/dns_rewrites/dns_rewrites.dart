@@ -9,13 +9,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/settings/dns_rewrites/add_dns_rewrite_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dns_rewrites/delete_dns_rewrite.dart';
 
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/rewrite_rules_provider.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
 class DnsRewritesScreen extends StatefulWidget {
@@ -26,34 +24,14 @@ class DnsRewritesScreen extends StatefulWidget {
 }
 
 class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
-  Future fetchData() async {
-    final rewriteRulesProvider = Provider.of<RewriteRulesProvider>(context, listen: false);
-    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-
-    rewriteRulesProvider.setRewriteRulesLoadStatus(LoadStatus.loading, false);
-
-    final result = await getDnsRewriteRules(server: serversProvider.selectedServer!);
-
-    if (result['result'] == 'success') {
-      rewriteRulesProvider.setRewriteRulesData(result['data']);
-      rewriteRulesProvider.setRewriteRulesLoadStatus(LoadStatus.loaded, true);
-    }
-    else {
-      appConfigProvider.addLog(result['log']);
-      rewriteRulesProvider.setRewriteRulesLoadStatus(LoadStatus.error, true);
-    }
-  }
-
   @override
   void initState() {
-    fetchData();
+    Provider.of<RewriteRulesProvider>(context, listen: false).fetchRules();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final rewriteRulesProvider = Provider.of<RewriteRulesProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -63,18 +41,11 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.deleting);
 
-      final result = await deleteDnsRewriteRule(server: serversProvider.selectedServer!, data: {
-        "domain": rule.domain,
-        "answer": rule.answer
-      });
+      final result = await rewriteRulesProvider.deleteDnsRewrite(rule);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        List<RewriteRules> data = rewriteRulesProvider.rewriteRules!;
-        data = data.where((item) => item.domain != rule.domain).toList();
-        rewriteRulesProvider.setRewriteRulesData(data);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleDeleted, 
@@ -82,7 +53,6 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotDeleted, 
@@ -95,18 +65,11 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingRewrite);
 
-      final result = await addDnsRewriteRule(server: serversProvider.selectedServer!, data: {
-        "domain": rule.domain,
-        "answer": rule.answer
-      });
+      final result = await rewriteRulesProvider.addDnsRewrite(rule);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        List<RewriteRules> data = rewriteRulesProvider.rewriteRules!;
-        data.add(rule);
-        rewriteRulesProvider.setRewriteRulesData(data);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleAdded, 
@@ -114,7 +77,6 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotAdded, 
@@ -149,7 +111,14 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
           if (rewriteRulesProvider.rewriteRules!.isNotEmpty) {
             return RefreshIndicator(
               onRefresh: () async {
-                await fetchData();
+                final result = await rewriteRulesProvider.fetchRules();
+                if (result == false) {
+                  showSnacbkar(
+                    appConfigProvider: appConfigProvider,
+                    label: AppLocalizations.of(context)!.rewriteRulesNotLoaded, 
+                    color: Colors.red
+                  );
+                }
               },
               child: ListView.builder(
                 padding: const EdgeInsets.only(top: 0),

@@ -71,29 +71,29 @@ class AdvancedSettings extends StatelessWidget {
               right: 10
             )
           ),
-          CustomListTile(
-            icon: Icons.list_rounded,
-            title: AppLocalizations.of(context)!.logs,
-            subtitle: AppLocalizations.of(context)!.checkAppLogs,
-            onTap: () => {
-              if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
-                SplitView.of(context).push(const AppLogs())
-              }
-              else {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AppLogs()
-                  )
-                )
-              }
-            },
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 20,
-              right: 10
-            )
-          ),
+          // CustomListTile(
+          //   icon: Icons.list_rounded,
+          //   title: AppLocalizations.of(context)!.logs,
+          //   subtitle: AppLocalizations.of(context)!.checkAppLogs,
+          //   onTap: () => {
+          //     if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+          //       SplitView.of(context).push(const AppLogs())
+          //     }
+          //     else {
+          //       Navigator.of(context).push(
+          //         MaterialPageRoute(
+          //           builder: (context) => const AppLogs()
+          //         )
+          //       )
+          //     }
+          //   },
+          //   padding: const EdgeInsets.only(
+          //     top: 10,
+          //     bottom: 10,
+          //     left: 20,
+          //     right: 10
+          //   )
+          // ),
         ],
       )
     );  

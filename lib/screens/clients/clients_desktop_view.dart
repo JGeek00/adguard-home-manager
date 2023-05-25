@@ -19,13 +19,11 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 class ClientsDesktopView extends StatefulWidget {
   final ServersProvider serversProvider;
   final AppConfigProvider appConfigProvider;
-  final Future Function() fetchClients;
 
   const ClientsDesktopView({
     Key? key,
     required this.serversProvider,
     required this.appConfigProvider,
-    required this.fetchClients
   }) : super(key: key);
 
   @override
@@ -94,10 +92,8 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
         children: [
           ClientsList(
             scrollController: scrollController,
-            loadStatus: clientsProvider.loadStatus,
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.filteredActiveClients : [],
-            fetchClients: widget.fetchClients,
             onClientSelected: (client) => setState(() {
               selectedAddedClient = null;
               selectedActiveClient = client;
@@ -116,10 +112,8 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
           ),
           AddedList(
             scrollController: scrollController,
-            loadStatus: clientsProvider.loadStatus,
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.filteredAddedClients : [], 
-            fetchClients: widget.fetchClients,
             onClientSelected: (client) => setState(() {
               selectedActiveClient = null;
               selectedAddedClient = client;

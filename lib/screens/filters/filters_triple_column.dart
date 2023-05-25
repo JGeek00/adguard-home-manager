@@ -14,6 +14,7 @@ import 'package:adguard_home_manager/widgets/options_modal.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
@@ -24,14 +25,12 @@ class FiltersTripleColumn extends StatelessWidget {
   final void Function(String) onRemoveCustomRule;
   final void Function(Filter, String) onOpenDetailsModal;
   final List<Widget> actions;
-  final Future Function() refreshData;
 
   const FiltersTripleColumn({
     Key? key,
     required this.onRemoveCustomRule,
     required this.onOpenDetailsModal,
     required this.actions,
-    required this.refreshData
   }) : super(key: key);
 
   @override
@@ -330,7 +329,16 @@ class FiltersTripleColumn extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.filters),
         actions: [
           IconButton(
-            onPressed: refreshData, 
+            onPressed: () async {
+              final result = await filteringProvider.fetchFilters();
+              if (result == false) {
+                showSnacbkar(
+                  appConfigProvider: appConfigProvider,
+                  label: AppLocalizations.of(context)!.errorLoadFilters, 
+                  color: Colors.red
+                );
+              }
+            }, 
             icon: const Icon(Icons.refresh_rounded),
             tooltip: AppLocalizations.of(context)!.refresh,
           ),

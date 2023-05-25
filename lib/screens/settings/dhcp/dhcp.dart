@@ -16,7 +16,6 @@ import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -54,33 +53,21 @@ class _DhcpScreenState extends State<DhcpScreen> {
   bool dataValid = false;
 
   void loadDhcpStatus() async {
-    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final dhcpProvider = Provider.of<DhcpProvider>(context, listen: false);
-
-    dhcpProvider.setDhcpLoadStatus(LoadStatus.loading, false);
-
-    final result = await getDhcpData(server: serversProvider.selectedServer!);
-
-    if (mounted) {
-      if (result['result'] == 'success') {
-        dhcpProvider.setDhcpData(result['data']);
-        dhcpProvider.setDhcpLoadStatus(LoadStatus.loaded, true);
+    final result = await Provider.of<DhcpProvider>(context, listen: false).loadDhcpStatus();
+    if (mounted && result == true) {
+      final dhcpProvider = Provider.of<DhcpProvider>(context, listen: false);
+      if (dhcpProvider.dhcp != null) {
         setState(() {
-          if (result['data'].dhcpStatus.interfaceName != '') {
-            selectedInterface = result['data'].networkInterfaces.firstWhere((iface) => iface.name == result['data'].dhcpStatus.interfaceName);
-
-            enabled = result['data'].dhcpStatus.enabled;
-            ipv4StartRangeController.text = result['data'].dhcpStatus.v4.rangeStart;
-            ipv4StartRangeController.text = result['data'].dhcpStatus.v4.rangeStart;
-            ipv4EndRangeController.text = result['data'].dhcpStatus.v4.rangeEnd;
-            ipv4SubnetMaskController.text = result['data'].dhcpStatus.v4.subnetMask;
-            ipv4GatewayController.text = result['data'].dhcpStatus.v4.gatewayIp;
-            ipv4LeaseTimeController.text = result['data'].dhcpStatus.v4.leaseDuration.toString();
+          if (dhcpProvider.dhcp!.dhcpStatus.interfaceName != '') {
+            selectedInterface = dhcpProvider.dhcp!.networkInterfaces.firstWhere((iface) => iface.name == dhcpProvider.dhcp!.dhcpStatus.interfaceName);
+            enabled = dhcpProvider.dhcp!.dhcpStatus.enabled;
+            ipv4StartRangeController.text = dhcpProvider.dhcp!.dhcpStatus.v4.rangeStart;
+            ipv4EndRangeController.text = dhcpProvider.dhcp!.dhcpStatus.v4.rangeEnd ?? '';
+            ipv4SubnetMaskController.text = dhcpProvider.dhcp!.dhcpStatus.v4.subnetMask ?? '';
+            ipv4GatewayController.text = dhcpProvider.dhcp!.dhcpStatus.v4.gatewayIp ?? '';
+            ipv4LeaseTimeController.text = dhcpProvider.dhcp!.dhcpStatus.v4.leaseDuration.toString();
           }
         });
-      }
-      else {
-        dhcpProvider.setDhcpLoadStatus(LoadStatus.error, true);
       }
     }
     checkDataValid();
@@ -205,22 +192,24 @@ class _DhcpScreenState extends State<DhcpScreen> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingSettings);
 
-      final result = await saveDhcpConfig(server: serversProvider.selectedServer!, data: {
-        "enabled": enabled,
-        "interface_name": selectedInterface!.name,
-        if (selectedInterface!.ipv4Addresses.isNotEmpty) "v4": {
-          "gateway_ip": ipv4GatewayController.text,
-          "subnet_mask": ipv4SubnetMaskController.text,
-          "range_start": ipv4StartRangeController.text,
-          "range_end": ipv4EndRangeController.text,
-          "lease_duration": ipv4LeaseTimeController.text != '' ? int.parse(ipv4LeaseTimeController.text) : null
-        },
-        if (selectedInterface!.ipv6Addresses.isNotEmpty) "v6": {
-          "range_start": ipv6StartRangeController.text,
-          "range_end": ipv6EndRangeController.text,
-          "lease_duration": ipv6LeaseTimeController.text != '' ? int.parse(ipv6LeaseTimeController.text) : null
+      final result = await serversProvider.apiClient!.saveDhcpConfig(
+        data: {
+          "enabled": enabled,
+          "interface_name": selectedInterface!.name,
+          if (selectedInterface!.ipv4Addresses.isNotEmpty) "v4": {
+            "gateway_ip": ipv4GatewayController.text,
+            "subnet_mask": ipv4SubnetMaskController.text,
+            "range_start": ipv4StartRangeController.text,
+            "range_end": ipv4EndRangeController.text,
+            "lease_duration": ipv4LeaseTimeController.text != '' ? int.parse(ipv4LeaseTimeController.text) : null
+          },
+          if (selectedInterface!.ipv6Addresses.isNotEmpty) "v6": {
+            "range_start": ipv6StartRangeController.text,
+            "range_end": ipv6EndRangeController.text,
+            "lease_duration": ipv6LeaseTimeController.text != '' ? int.parse(ipv6LeaseTimeController.text) : null
+          }
         }
-      });
+      );
 
       processModal.close();
 
@@ -232,8 +221,6 @@ class _DhcpScreenState extends State<DhcpScreen> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.settingsNotSaved, 
@@ -247,7 +234,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
         ProcessModal processModal = ProcessModal(context: context);
         processModal.open(AppLocalizations.of(context)!.restoringConfig);
 
-        final result = await resetDhcpConfig(server: serversProvider.selectedServer!);
+        final result = await serversProvider.apiClient!.resetDhcpConfig();
 
         processModal.close();
 
@@ -261,8 +248,6 @@ class _DhcpScreenState extends State<DhcpScreen> {
           );
         }
         else {
-          appConfigProvider.addLog(result['log']);
-
           showSnacbkar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.configNotRestored, 
@@ -277,7 +262,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
         ProcessModal processModal = ProcessModal(context: context);
         processModal.open(AppLocalizations.of(context)!.restoringLeases);
 
-        final result = await restoreAllLeases(server: serversProvider.selectedServer!);
+        final result = await serversProvider.apiClient!.restoreAllLeases();
 
         processModal.close();
 
@@ -294,8 +279,6 @@ class _DhcpScreenState extends State<DhcpScreen> {
           );
         }
         else {
-          appConfigProvider.addLog(result['log']);
-
           showSnacbkar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.leasesNotRestored, 

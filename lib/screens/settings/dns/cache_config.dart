@@ -75,7 +75,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
-      final result = await setDnsConfig(server: serversProvider.selectedServer!, data: {
+      final result = await dnsProvider.saveCacheCacheConfig({
         "cache_size": int.parse(cacheSizeController.text),
         "cache_ttl_min": int.parse(overrideMinTtlController.text),
         "cache_ttl_max": int.parse(overrideMaxTtlController.text),
@@ -84,23 +84,14 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        DnsInfo data = dnsProvider.dnsInfo!;
-        data.cacheSize = int.parse(cacheSizeController.text);
-        data.cacheTtlMin = int.parse(overrideMinTtlController.text);
-        data.cacheTtlMax = int.parse(overrideMaxTtlController.text);
-        data.cacheOptimistic = optimisticCache;
-        dnsProvider.setDnsInfoData(data);
-
+      if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
-      else if (result['log'] != null && result['log'].statusCode == '400') {
-        appConfigProvider.addLog(result['log']);
-
+      else if (result['success'] == false && result['error'] == 400) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
@@ -108,8 +99,6 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 

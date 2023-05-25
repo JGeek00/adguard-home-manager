@@ -14,7 +14,6 @@ import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -22,7 +21,6 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class SearchClients extends StatefulWidget {
   const SearchClients({Key? key}) : super(key: key);
@@ -84,7 +82,6 @@ class _SearchClientsState extends State<SearchClients> {
 
   @override
   Widget build(BuildContext context) {    
-    final serversProvider = Provider.of<ServersProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
     final clientsProvider = Provider.of<ClientsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
@@ -95,19 +92,11 @@ class _SearchClientsState extends State<SearchClients> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.removingClient);
       
-      final result = await postDeleteClient(server: serversProvider.selectedServer!, name: client.name);
+      final result = await clientsProvider.deleteClient(client);
     
       processModal.close();
 
-      if (result['result'] == 'success') {
-        Clients clientsData = clientsProvider.clients!;
-        clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
-        clientsProvider.setClientsData(clientsData);
-        setState(() {
-          clients = clientsData.clients;
-        });
-        search(searchController.text);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientDeletedSuccessfully, 
@@ -115,44 +104,23 @@ class _SearchClientsState extends State<SearchClients> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotDeleted, 
           color: Colors.red
         );
       }
-    }
+    }  
 
     void confirmEditClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
-      final result = await postUpdateClient(server: serversProvider.selectedServer!, data: {
-        'name': client.name,
-        'data': client.toJson()
-      });
+      final result = await clientsProvider.editClient(client);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        Clients clientsData = clientsProvider.clients!;
-        clientsData.clients = clientsData.clients.map((e) {
-          if (e.name == client.name) {
-            return client;
-          }
-          else {
-            return e;
-          }
-        }).toList();
-        clientsProvider.setClientsData(clientsData);
-
-        setState(() {
-          clients = clientsData.clients;
-        });
-        search(searchController.text);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientUpdatedSuccessfully, 
@@ -160,8 +128,6 @@ class _SearchClientsState extends State<SearchClients> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotUpdated, 

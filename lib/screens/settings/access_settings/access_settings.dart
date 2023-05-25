@@ -23,29 +23,9 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
   final ScrollController scrollController = ScrollController();
   late TabController tabController;
 
-  Future fetchClients() async {
-    final clientsProvider = Provider.of<ClientsProvider>(context, listen: false);
-    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-
-    clientsProvider.setClientsLoadStatus(LoadStatus.loading, false);
-    final result = await getClients(serversProvider.selectedServer!);
-    if (mounted) {
-      if (result['result'] == 'success') {
-        clientsProvider.setClientsData(result['data']);
-        clientsProvider.setClientsLoadStatus(LoadStatus.loaded, true);
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-        clientsProvider.setClientsLoadStatus(LoadStatus.error, true);
-      }
-    }
-  }
-
-
   @override
   void initState() {
-    fetchClients();
+    Provider.of<ClientsProvider>(context, listen: false).fetchClients(updateLoading: true);
     super.initState();
     tabController = TabController(
       initialIndex: 0,
@@ -68,7 +48,6 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
             loadStatus: clientsProvider.loadStatus, 
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.clients!.clientsAllowedBlocked!.allowedClients : [], 
-            fetchClients: fetchClients
           ),
           ClientsList(
             type: 'disallowed',
@@ -76,7 +55,6 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
             loadStatus: clientsProvider.loadStatus, 
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.clients!.clientsAllowedBlocked!.disallowedClients : [], 
-            fetchClients: fetchClients
           ),
           ClientsList(
             type: 'domains',
@@ -84,7 +62,6 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
             loadStatus: clientsProvider.loadStatus, 
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.clients!.clientsAllowedBlocked!.blockedHosts : [], 
-            fetchClients: fetchClients
           ),
         ]
       );

@@ -628,5 +628,7 @@
     "application": "Application",
     "combinedChart": "Combined chart",
     "combinedChartDescription": "Combine all charts into one",
-    "statistics": "Statistics"
+    "statistics": "Statistics",
+    "errorLoadFilters": "Error when loading filters.",
+    "clientRemovedSuccessfully": "Client removed successfully."
 }

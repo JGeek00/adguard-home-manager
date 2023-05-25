@@ -21,7 +21,6 @@ import 'package:adguard_home_manager/functions/clear_dns_cache.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class DnsSettings extends StatefulWidget {
   const DnsSettings({Key? key}) : super(key: key);
@@ -31,31 +30,9 @@ class DnsSettings extends StatefulWidget {
 }
 
 class _DnsSettingsState extends State<DnsSettings> {
-
-  void fetchData({bool? showRefreshIndicator}) async {
-    final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
-    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-
-    dnsProvider.setDnsInfoLoadStatus(LoadStatus.loading, showRefreshIndicator ?? false);
-
-    final result = await getDnsInfo(server: serversProvider.selectedServer!);
-
-    if (mounted) {
-      if (result['result'] == 'success') {
-        dnsProvider.setDnsInfoData(result['data']);
-        dnsProvider.setDnsInfoLoadStatus(LoadStatus.loaded, true);
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-        dnsProvider.setDnsInfoLoadStatus(LoadStatus.error, true);
-      }
-    }
-  }
-
   @override
   void initState() {
-    fetchData();
+    Provider.of<DnsProvider>(context, listen: false).fetchDnsData(showLoading: true);
     super.initState();
   }
 
@@ -192,7 +169,7 @@ class _DnsSettingsState extends State<DnsSettings> {
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
-                onTap: () => fetchData(showRefreshIndicator: true), 
+                onTap: () => dnsProvider.fetchDnsData(),
                 child: Row(
                   children: [
                     const Icon(Icons.refresh_rounded),

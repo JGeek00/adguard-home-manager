@@ -102,10 +102,12 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
         : await login(server);
 
       if (result['result'] == 'success') {
+        final ApiClient apiClient = ApiClient(server: server);
+        serversProvider.setApiClient(apiClient);
         serversProvider.setSelectedServer(server);
 
         statusProvider.setServerStatusLoad(LoadStatus.loading);
-        final serverStatus = await getServerStatus(server);
+        final serverStatus = await apiClient.getServerStatus();
         if (serverStatus['result'] == 'success') {
           statusProvider.setServerStatusData(
             data: serverStatus['data']

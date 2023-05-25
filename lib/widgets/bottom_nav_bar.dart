@@ -17,10 +17,9 @@ class BottomNavBar extends StatelessWidget {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
-    List<AppScreen> screens = serversProvider.selectedServer != null
+    List<AppScreen> screens = serversProvider.selectedServer != null && serversProvider.apiClient != null
       ? screensServerConnected 
       : screensSelectServer;
-
 
     String translatedName(String key) {
       switch (key) {
@@ -47,8 +46,14 @@ class BottomNavBar extends StatelessWidget {
       }
     }
 
+    if ((serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1) {
+      appConfigProvider.setSelectedScreen(0);
+    }
+
     return NavigationBar(
-      selectedIndex: appConfigProvider.selectedScreen,
+      selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
+        ? 0
+        : appConfigProvider.selectedScreen,
       destinations: screens.map((screen) => NavigationDestination(
         icon: Stack(
           children: [

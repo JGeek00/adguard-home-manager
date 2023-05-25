@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -15,11 +14,16 @@ class ServersProvider with ChangeNotifier {
 
   List<Server> _serversList = [];
   Server? _selectedServer;
+  ApiClient? _apiClient;
 
   final UpdateAvailable _updateAvailable = UpdateAvailable(
     loadStatus: LoadStatus.loading,
     data: null,
   );
+
+  ApiClient? get apiClient {
+    return _apiClient;
+  }
 
   List<Server> get serversList {
     return _serversList;
@@ -56,6 +60,11 @@ class ServersProvider with ChangeNotifier {
 
   void setUpdateAvailableData(UpdateAvailableData data) {
     _updateAvailable.data = data;
+    notifyListeners();
+  }
+
+  void setApiClient(ApiClient client) {
+    _apiClient = client;
     notifyListeners();
   }
 
@@ -118,6 +127,11 @@ class ServersProvider with ChangeNotifier {
         }
       }).toList();
       _serversList = newServers;
+
+      if (selectedServer != null &&server.id == selectedServer!.id) {
+        _apiClient = ApiClient(server: server);
+      }
+
       notifyListeners();
       return null;
     }
@@ -130,6 +144,7 @@ class ServersProvider with ChangeNotifier {
     final result = await removeServerQuery(_dbInstance!, server.id);
     if (result == true) {
       _selectedServer = null;
+      _apiClient = null;
       List<Server> newServers = _serversList.where((s) => s.id != server.id).toList();
       _serversList = newServers;
       notifyListeners();
@@ -142,10 +157,10 @@ class ServersProvider with ChangeNotifier {
 
   void checkServerUpdatesAvailable(Server server) async {
     setUpdateAvailableLoadStatus(LoadStatus.loading, true);
-    final result = await checkServerUpdates(server: server);
+    final result = await _apiClient!.checkServerUpdates();
     if (result['result'] == 'success') {
       UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
-      final gitHubResult = await getUpdateChangelog(server: server, releaseTag: data.newVersion ?? data.currentVersion);
+      final gitHubResult = await _apiClient!.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
       if (gitHubResult['result'] == 'success') {
         data.changelog = gitHubResult['body'];
       }
@@ -171,21 +186,11 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> initializateServer(Server server) async {
-    _selectedServer = server;
-    final serverStatus = await getServerStatus(server);
+  Future initializateServer(Server server) async {
+    final serverStatus = await _apiClient!.getServerStatus();
     if (serverStatus['result'] == 'success') {
       checkServerUpdatesAvailable(server); // Do not await
-      return {
-        "success": true,
-        "serverData": serverStatus['data']
-      };
     }
-    else {
-      return {
-        "success": false
-      };
-    } 
   }
 
   Future<Map<String, dynamic>?> saveFromDb(List<Map<String, dynamic>>? data) async {
@@ -214,8 +219,9 @@ class ServersProvider with ChangeNotifier {
       notifyListeners();
 
       if (defaultServer != null) {
-        final result =  await initializateServer(defaultServer);
-        return result;
+        _selectedServer = defaultServer;
+        _apiClient = ApiClient(server: defaultServer);
+        initializateServer(defaultServer);
       }
       else {
         return null;

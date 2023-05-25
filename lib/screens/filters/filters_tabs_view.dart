@@ -12,7 +12,6 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class FiltersTabsView extends StatefulWidget {
   final AppConfigProvider appConfigProvider;
-  final Future Function() fetchFilters;
   final List<Widget> actions;
   final void Function(String) onRemoveCustomRule;
   final void Function(Filter, String) onOpenDetailsModal;
@@ -20,7 +19,6 @@ class FiltersTabsView extends StatefulWidget {
   const FiltersTabsView({
     Key? key,
     required this.appConfigProvider,
-    required this.fetchFilters,
     required this.actions,
     required this.onOpenDetailsModal,
     required this.onRemoveCustomRule
@@ -36,7 +34,6 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
 
   @override
   void initState() {
-    widget.fetchFilters();
     super.initState();
     tabController = TabController(
       initialIndex: 0,
@@ -115,7 +112,6 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
               type: 'whitelist',
               data: filteringProvider.loadStatus == LoadStatus.loaded
                 ? filteringProvider.filtering!.whitelistFilters : [],
-              fetchData: widget.fetchFilters,
               onOpenDetailsScreen: widget.onOpenDetailsModal,
             ),
             FiltersList(
@@ -124,7 +120,6 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
               type: 'blacklist',
               data: filteringProvider.loadStatus == LoadStatus.loaded
                 ? filteringProvider.filtering!.filters : [],
-              fetchData: widget.fetchFilters,
               onOpenDetailsScreen: widget.onOpenDetailsModal,
             ),
             CustomRulesList(
@@ -132,7 +127,6 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
               scrollController: scrollController,
               data: filteringProvider.loadStatus == LoadStatus.loaded
                 ? filteringProvider.filtering!.userRules : [],
-              fetchData: widget.fetchFilters,
               onRemoveCustomRule: widget.onRemoveCustomRule,
             ),
           ]

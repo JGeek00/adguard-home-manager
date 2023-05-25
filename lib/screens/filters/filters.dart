@@ -21,9 +21,7 @@ import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Filters extends StatefulWidget {
   const Filters({Key? key}) : super(key: key);
@@ -33,83 +31,41 @@ class Filters extends StatefulWidget {
 }
 
 class _FiltersState extends State<Filters> {
-  Future fetchFilters() async {
-    final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
-    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-
-    filteringProvider.setFilteringLoadStatus(LoadStatus.loading, false);
-
-    final result = await getFiltering(server: serversProvider.selectedServer!);
-
-    if (mounted) {
-      if (result['result'] == 'success') {
-        filteringProvider.setFilteringData(result['data']);
-        filteringProvider.setFilteringLoadStatus(LoadStatus.loaded, false);
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-        filteringProvider.setFilteringLoadStatus(LoadStatus.error, false);
-      }
-    }
-  }
-
   List<AutoClient> generateClientsList(List<AutoClient> clients, List<String> ips) {
     return clients.where((client) => ips.contains(client.ip)).toList();
   }
 
   @override
   void initState() {
-    fetchFilters();
+    final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
+    filteringProvider.fetchFilters(showLoading: true);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
-    void fetchUpdateLists() async {
+    void updateLists() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updatingLists);
 
-      final result = await updateLists(server: serversProvider.selectedServer!);
+      final result = await filteringProvider.updateLists();
 
-      if (result['result'] == 'success') {
-        final result2 = await getFiltering(server: serversProvider.selectedServer!);
+      processModal.close();
 
-        processModal.close();
-
-        if (mounted) {
-          if (result2['result'] == 'success') {
-            filteringProvider.setFilteringData(result2['data']);
-
-            showSnacbkar(
-              appConfigProvider: appConfigProvider,
-              label: "${result['data']['updated']} ${AppLocalizations.of(context)!.listsUpdated}", 
-              color: Colors.green
-            );
-          }
-          else {
-            appConfigProvider.addLog(result2['log']);
-
-            showSnacbkar(
-              appConfigProvider: appConfigProvider,
-              label:  AppLocalizations.of(context)!.listsNotLoaded, 
-              color: Colors.red
-            );
-          }
-        }
-        
+      if (result['success'] == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: "${result['data']['updated']} ${AppLocalizations.of(context)!.listsUpdated}", 
+          color: Colors.green
+        );
       }
       else {
-        processModal.close();
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listsNotUpdated, 
@@ -149,16 +105,11 @@ class _FiltersState extends State<Filters> {
           : AppLocalizations.of(context)!.enableFiltering
       );
 
-      final result = await updateFiltering(
-        server: serversProvider.selectedServer!, 
-        enable: !statusProvider.serverStatus!.filteringEnabled
-      );
+      final result = await filteringProvider.enableDisableFiltering();
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        filteringProvider.setFilteringProtectionStatus(!statusProvider.serverStatus!.filteringEnabled);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.filteringStatusUpdated, 
@@ -178,16 +129,11 @@ class _FiltersState extends State<Filters> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.changingUpdateFrequency);
 
-      final result = await requestChangeUpdateFrequency(server: serversProvider.selectedServer!, data: {
-        "enabled": filteringProvider.filtering!.enabled,
-        "interval": value
-      });
+      final result = await filteringProvider.changeUpdateFrequency(value);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        filteringProvider.setFiltersUpdateFrequency(value);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.updateFrequencyChanged, 
@@ -230,17 +176,11 @@ class _FiltersState extends State<Filters> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.deletingRule);
 
-      final List<String> newRules = filteringProvider.filtering!.userRules.where((r) => r != rule).toList();
-
-      final result = await setCustomRules(server: serversProvider.selectedServer!, rules: newRules);
+      final result = await filteringProvider.removeCustomRule(rule);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        Filtering filteringData = filteringProvider.filtering!;
-        filteringData.userRules = newRules;
-        filteringProvider.setFilteringData(filteringData);
-
+      if (result == true) {
         showSnacbkar( 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleRemovedSuccessfully, 
@@ -248,13 +188,11 @@ class _FiltersState extends State<Filters> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleNotRemoved, 
           color: Colors.red
-        );
+        );  
       }
     }
 
@@ -295,7 +233,7 @@ class _FiltersState extends State<Filters> {
     List<Widget> actions() {
       if (filteringProvider.loadStatus == LoadStatus.loaded) {
         return [
-          IconButton(
+          if (statusProvider.loadStatus == LoadStatus.loaded) IconButton(
             onPressed: enableDisableFiltering, 
             tooltip: filteringProvider.filtering!.enabled == true
               ? AppLocalizations.of(context)!.disableFiltering
@@ -364,7 +302,7 @@ class _FiltersState extends State<Filters> {
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
-                onTap: fetchUpdateLists,
+                onTap: updateLists,
                 child: Row(
                   children: [
                     const Icon(Icons.sync_rounded),
@@ -408,13 +346,11 @@ class _FiltersState extends State<Filters> {
         onRemoveCustomRule: openRemoveCustomRuleModal,
         onOpenDetailsModal: openListDetails,
         actions: actions(),
-        refreshData: fetchFilters,
       );
     }
     else {
       return FiltersTabsView(
-        appConfigProvider: appConfigProvider,
-        fetchFilters: fetchFilters, 
+        appConfigProvider: appConfigProvider, 
         actions: actions(),
         onRemoveCustomRule: openRemoveCustomRuleModal,
         onOpenDetailsModal: openListDetails,

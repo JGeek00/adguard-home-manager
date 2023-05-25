@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
@@ -10,7 +11,6 @@ import 'package:adguard_home_manager/screens/logs/log_details_screen.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class LogsListClient extends StatefulWidget {
   final String ip;
@@ -53,6 +53,8 @@ class _LogsListClientState extends State<LogsListClient> {
     String? responseStatus,
     String? searchText,
   }) async {
+    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    
     int offst = inOffset ?? offset;
 
     if (loadingMore != null && loadingMore == true) {
@@ -62,8 +64,7 @@ class _LogsListClientState extends State<LogsListClient> {
     if (cancelableRequest != null) cancelableRequest!.cancel(); 
 
     cancelableRequest = CancelableOperation.fromFuture(
-      getLogs(
-        server: widget.serversProvider.selectedServer!, 
+      serversProvider.apiClient!.getLogs(
         count: logsQuantity, 
         offset: offst,
         search: '"${widget.ip}"'

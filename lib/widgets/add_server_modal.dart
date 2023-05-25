@@ -261,13 +261,16 @@ class _AddServerModalState extends State<AddServerModal> {
         final serverCreated = await serversProvider.createServer(serverObj);
         if (serverCreated == null) {
           statusProvider.setServerStatusLoad(LoadStatus.loading);
+
+          final ApiClient apiClient = ApiClient(server: serverObj);
           
-          final serverStatus = await getServerStatus(serverObj);
+          final serverStatus = await apiClient.getServerStatus();
 
           if (serverStatus['result'] == 'success') {
             statusProvider.setServerStatusData(
               data: serverStatus['data']
             );
+            serversProvider.setApiClient(apiClient);
             statusProvider.setServerStatusLoad(LoadStatus.loaded);
             if (serverStatus['data'].serverVersion.contains('a') || serverStatus['data'].serverVersion.contains('b')) {
               Navigator.pop(context);
@@ -382,7 +385,8 @@ class _AddServerModalState extends State<AddServerModal> {
         final serverSaved = await serversProvider.editServer(serverObj);
 
         if (serverSaved == null) {
-          final version = await getServerVersion(serverObj);
+          final ApiClient apiClient = ApiClient(server: serverObj);
+          final version = await apiClient.getServerVersion();
           if (
             version['result'] == 'success' && 
             (version['data'].contains('a') || version['data'].contains('b'))  // alpha or beta

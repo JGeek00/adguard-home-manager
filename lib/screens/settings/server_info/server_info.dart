@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +8,6 @@ import 'package:adguard_home_manager/screens/settings/server_info/dns_addresses_
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/server_info.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
@@ -41,20 +41,19 @@ class ServerInformationWidget extends StatefulWidget {
 }
 
 class _ServerInformationWidgetState extends State<ServerInformationWidget> {
-  ServerInfo serverInfo = ServerInfo(loadStatus: 0);
+  ServerInfo serverInfo = ServerInfo(loadStatus: LoadStatus.loading);
 
   void fetchServerInfo() async {
-    final result = await getServerInfo(server: widget.serversProvider.selectedServer!);
+    final result = await Provider.of<ServersProvider>(context, listen: false).apiClient!.getServerInfo();
     if (mounted) {
       if (result['result'] == 'success') {
         setState(() {
-          serverInfo.loadStatus = 1;
+          serverInfo.loadStatus = LoadStatus.loaded;
           serverInfo.data = result['data'];
         });
       }
       else {
-        widget.appConfigProvider.addLog(result['log']);
-        setState(() => serverInfo.loadStatus = 2);
+        setState(() => serverInfo.loadStatus = LoadStatus.loaded);
       }
     }
   }
@@ -69,7 +68,7 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
   Widget build(BuildContext context) {
     Widget generateBody() {
       switch (serverInfo.loadStatus) {
-        case 0:
+        case LoadStatus.loading:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -93,7 +92,7 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
             ),
           );
 
-        case 1:
+        case LoadStatus.loaded:
           return ListView(
             children: [
               CustomListTile(
@@ -145,7 +144,7 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
             ]
           );
 
-        case 2:
+        case LoadStatus.error:
           return SizedBox(
             width: double.maxFinite,
             child: Column(

@@ -13,10 +13,8 @@ import 'package:adguard_home_manager/screens/settings/dhcp/add_static_lease_moda
 import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class DhcpLeases extends StatelessWidget {
   final List<Lease> items;
@@ -30,7 +28,6 @@ class DhcpLeases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final dhcpProvider = Provider.of<DhcpProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -40,19 +37,11 @@ class DhcpLeases extends StatelessWidget {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.deleting);
 
-      final result = await deleteStaticLease(server: serversProvider.selectedServer!, data: {
-        "mac": lease.mac,
-        "ip": lease.ip,
-        "hostname": lease.hostname
-      });
+      final result = await dhcpProvider.deleteLease(lease);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        DhcpModel data = dhcpProvider.dhcp!;
-        data.dhcpStatus.staticLeases = data.dhcpStatus.staticLeases.where((l) => l.mac != lease.mac).toList();
-        dhcpProvider.setDhcpData(data);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseDeleted, 
@@ -60,7 +49,6 @@ class DhcpLeases extends StatelessWidget {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseNotDeleted, 
@@ -73,35 +61,25 @@ class DhcpLeases extends StatelessWidget {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.creating);
 
-      final result = await createStaticLease(server: serversProvider.selectedServer!, data: {
-        "mac": lease.mac,
-        "ip": lease.ip,
-        "hostname": lease.hostname,
-      });
+      final result = await dhcpProvider.createLease(lease);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        DhcpModel data = dhcpProvider.dhcp!;
-        data.dhcpStatus.staticLeases.add(lease);
-        dhcpProvider.setDhcpData(data);
-
+      if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseCreated, 
           color: Colors.green
         );
       }
-      else if (result['result'] == 'error' && result['message'] == 'already_exists' ) {
-        appConfigProvider.addLog(result['log']);
+      else if (result['success'] == false && result['error'] == 'already_exists' ) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseExists, 
           color: Colors.red
         );
       }
-      else if (result['result'] == 'error' && result['message'] == 'server_not_configured' ) {
-        appConfigProvider.addLog(result['log']);
+      else if (result['success'] == false && result['error'] == 'server_not_configured' ) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.serverNotConfigured, 
@@ -109,7 +87,6 @@ class DhcpLeases extends StatelessWidget {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseNotCreated, 

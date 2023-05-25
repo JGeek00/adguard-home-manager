@@ -13,11 +13,8 @@ import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
 class ClientsList extends StatefulWidget {
@@ -25,7 +22,6 @@ class ClientsList extends StatefulWidget {
   final ScrollController scrollController;
   final LoadStatus loadStatus;
   final List<String> data;
-  final Future Function() fetchClients;
 
   const ClientsList({
     Key? key,
@@ -33,7 +29,6 @@ class ClientsList extends StatefulWidget {
     required this.scrollController,
     required this.loadStatus,
     required this.data,
-    required this.fetchClients
   }) : super(key: key);
 
   @override
@@ -68,11 +63,21 @@ class _ClientsListState extends State<ClientsList> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final clientsProvider = Provider.of<ClientsProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
+
+    Future refetchClients() async {
+      final result = await clientsProvider.fetchClients();
+      if (result == false) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientsNotLoaded, 
+          color: Colors.red
+        );
+      }
+    }
 
     void confirmRemoveItem(String client, String type) async {
       Map<String, List<String>> body = {
@@ -94,20 +99,18 @@ class _ClientsListState extends State<ClientsList> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.removingClient);
 
-      final result = await requestAllowedBlockedClientsHosts(serversProvider.selectedServer!, body);
+      final result = await clientsProvider.removeClientList(client, type);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        clientsProvider.setAllowedDisallowedClientsBlockedDomains(
-          ClientsAllowedBlocked(
-            allowedClients: body['allowed_clients'] ?? [], 
-            disallowedClients: body['disallowed_clients'] ?? [], 
-            blockedHosts: body['blocked_hosts'] ?? [], 
-          )
+      if (result['success'] == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientRemovedSuccessfully, 
+          color: Colors.green
         );
       }
-      else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
+      else if (result['success'] == false && result['error'] == 'client_another_list') {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
@@ -115,50 +118,32 @@ class _ClientsListState extends State<ClientsList> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.clientNotRemoved, 
+          label: type == 'allowed' || type == 'blocked'
+            ? AppLocalizations.of(context)!.clientNotRemoved
+            : AppLocalizations.of(context)!.domainNotAdded,
           color: Colors.red
         );
       }
     }
 
     void confirmAddItem(String item, String type) async {
-      Map<String, List<String>> body = {
-        "allowed_clients": clientsProvider.clients!.clientsAllowedBlocked?.allowedClients ?? [],
-        "disallowed_clients": clientsProvider.clients!.clientsAllowedBlocked?.disallowedClients ?? [],
-        "blocked_hosts": clientsProvider.clients!.clientsAllowedBlocked?.blockedHosts ?? [],
-      };
-
-      if (type == 'allowed') {
-        body['allowed_clients']!.add(item);
-      }
-      else if (type == 'disallowed') {
-        body['disallowed_clients']!.add(item);
-      }
-      else if (type == 'domains') {
-        body['blocked_hosts']!.add(item);
-      }
-
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.removingClient);
 
-      final result = await requestAllowedBlockedClientsHosts(serversProvider.selectedServer!, body);
+      final result = await clientsProvider.addClientList(item, type);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        clientsProvider.setAllowedDisallowedClientsBlockedDomains(
-          ClientsAllowedBlocked(
-            allowedClients: body['allowed_clients'] ?? [], 
-            disallowedClients: body['disallowed_clients'] ?? [], 
-            blockedHosts: body['blocked_hosts'] ?? [], 
-          )
+      if (result['success'] == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
+          color: Colors.green
         );
       }
-      else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
+      else if (result['success'] == false && result['error'] == 'client_another_list') {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
@@ -166,8 +151,6 @@ class _ClientsListState extends State<ClientsList> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: type == 'allowed' || type == 'blocked'
@@ -327,7 +310,7 @@ class _ClientsListState extends State<ClientsList> {
                 ),
                 const SizedBox(height: 30),
                 TextButton.icon(
-                  onPressed: widget.fetchClients, 
+                  onPressed: refetchClients, 
                   icon: const Icon(Icons.refresh_rounded), 
                   label: Text(AppLocalizations.of(context)!.refresh),
                 )
@@ -361,7 +344,7 @@ class _ClientsListState extends State<ClientsList> {
         ),
       ), 
       loadStatus: widget.loadStatus, 
-      onRefresh: widget.fetchClients,
+      onRefresh: refetchClients,
       refreshIndicatorOffset: 0,
       fab: FloatingActionButton(
         onPressed: () {

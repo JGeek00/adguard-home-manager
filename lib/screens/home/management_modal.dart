@@ -13,8 +13,6 @@ import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class ManagementModal extends StatefulWidget {
   final bool dialog;
@@ -74,7 +72,6 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -92,16 +89,12 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
             setState(() {
               timer.cancel();
             });
-            final result = await getServerStatus(serversProvider.selectedServer!);
-            if (result['result'] == 'success') {
-              statusProvider.setServerStatusData(
-                data: result['data']
-              );
+            final result = await statusProvider.getServerStatus();
+            if (result == false) {
+              setState(() {
+                start = start - 1;
+              });
             }
-          } else {
-            setState(() {
-              start = start - 1;
-            });
           }
         },
       );
@@ -133,7 +126,6 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
       int? time
     }) async {
       final result = await statusProvider.updateBlocking(
-        server: serversProvider.selectedServer!,
         block: filter, 
         newStatus: value,
         time: time

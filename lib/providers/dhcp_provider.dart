@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 
 class DhcpProvider with ChangeNotifier {
+  ServersProvider? _serversProvider;
+
+  update(ServersProvider? provider) {
+    _serversProvider = provider;
+  }
+
   LoadStatus _loadStatus = LoadStatus.loading;
   DhcpModel? _dhcp;
 
@@ -24,6 +31,85 @@ class DhcpProvider with ChangeNotifier {
     _loadStatus = status;
     if (notify == true) {
       notifyListeners();
+    }
+  }
+
+  Future<bool> loadDhcpStatus({
+    bool? showLoading
+  }) async {
+    if (showLoading == true) {
+      _loadStatus = LoadStatus.loading;
+      notifyListeners();
+    }
+    final result = await _serversProvider!.apiClient!.getDhcpData();
+    if (result['result'] == 'success') {
+      _dhcp = result['data'];
+      _loadStatus = LoadStatus.loaded;
+      notifyListeners();
+      return true;
+    }
+    else {
+      if (showLoading == true) {
+        _loadStatus = LoadStatus.error;
+        notifyListeners();
+      }
+      return false;
+    }
+  }
+
+  Future<bool> deleteLease(Lease lease) async {
+    final result = await _serversProvider!.apiClient!.deleteStaticLease(
+      data: {
+        "mac": lease.mac,
+        "ip": lease.ip,
+        "hostname": lease.hostname
+      }
+    );
+
+    if (result['result'] == 'success') {
+      DhcpModel data = dhcp!;
+      data.dhcpStatus.staticLeases = data.dhcpStatus.staticLeases.where((l) => l.mac != lease.mac).toList();
+      setDhcpData(data);
+      return true;
+    }
+    else {
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> createLease(Lease lease) async {
+    final result = await _serversProvider!.apiClient!.createStaticLease(
+      data: {
+        "mac": lease.mac,
+        "ip": lease.ip,
+        "hostname": lease.hostname,
+      }
+    );
+
+    if (result['result'] == 'success') {
+      DhcpModel data = dhcp!;
+      data.dhcpStatus.staticLeases.add(lease);
+      setDhcpData(data);
+      return { 'success': true };
+    }
+    else if (result['result'] == 'error' && result['message'] == 'already_exists' ) {
+      return {
+        'success': false,
+        'error': 'already_exists'
+      };
+    }
+    else if (result['result'] == 'error' && result['message'] == 'server_not_configured' ) {
+      return {
+        'success': false,
+        'error': 'server_not_configured'
+      };
+    }
+    else {
+      return {
+        'success': false,
+        'error': null
+      };
     }
   }
 } 

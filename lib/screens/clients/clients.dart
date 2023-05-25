@@ -14,7 +14,6 @@ import 'package:adguard_home_manager/screens/clients/added_list.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
@@ -32,28 +31,11 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
   bool searchMode = false;
   final TextEditingController searchController = TextEditingController();
 
-  Future fetchClients() async {
-    final clientsProvider = Provider.of<ClientsProvider>(context, listen: false);
-    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-
-    clientsProvider.setClientsLoadStatus(LoadStatus.loading, false);
-    final result = await getClients(serversProvider.selectedServer!);
-    if (mounted) {
-      if (result['result'] == 'success') {
-        clientsProvider.setClientsData(result['data']);
-        clientsProvider.setClientsLoadStatus(LoadStatus.loaded, true);
-      }
-      else {
-        appConfigProvider.addLog(result['log']);
-        clientsProvider.setClientsLoadStatus(LoadStatus.error, true);
-      }
-    }
-  }
-
   @override
   void initState() {
-    fetchClients();
+    final clientsProvider = Provider.of<ClientsProvider>(context, listen: false);
+    clientsProvider.fetchClients(updateLoading: true);
+
     super.initState();
     tabController = TabController(
       initialIndex: 0,
@@ -112,10 +94,8 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
         children: [
           ClientsList(
             scrollController: scrollController,
-            loadStatus: clientsProvider.loadStatus,
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.filteredActiveClients : [],
-            fetchClients: fetchClients,
             onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
               builder: (context) => LogsListClient(
                 ip: client.ip, 
@@ -128,10 +108,8 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
           ),
           AddedList(
             scrollController: scrollController,
-            loadStatus: clientsProvider.loadStatus,
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.filteredAddedClients : [], 
-            fetchClients: fetchClients,
             onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
               builder: (context) => LogsListClient(
                 ip: client.ids[0], 
@@ -165,7 +143,6 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
         child: ClientsDesktopView(
           serversProvider: serversProvider,
           appConfigProvider: appConfigProvider,
-          fetchClients: fetchClients,
         )
       );
     }

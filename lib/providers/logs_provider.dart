@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 
+import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 
 class LogsProvider with ChangeNotifier {
-  int _loadStatus = 0;
+  ServersProvider? _serversProvider;
+
+  update(ServersProvider? provider) {
+    _serversProvider = provider;
+  }
+
+  LoadStatus _loadStatus = LoadStatus.loading;
   LogsData? _logsData;
   List<AutoClient>? _clients;
-  int _clientsLoadStatus = 0;
 
   DateTime? _logsOlderThan;
   String _selectedResultStatus = 'all';
@@ -18,13 +25,15 @@ class LogsProvider with ChangeNotifier {
   int _logsQuantity = 100;
   int _offset = 0;
 
+  bool _isLoadingMore = false;
+
   AppliedFiters _appliedFilters = AppliedFiters(
     selectedResultStatus: 'all', 
     searchText: null,
     clients: null
   );
 
-  int get loadStatus {
+  LoadStatus get loadStatus {
     return _loadStatus;
   }
 
@@ -60,16 +69,15 @@ class LogsProvider with ChangeNotifier {
     return _selectedClients;
   }
 
-  int get clientsLoadStatus {
-    return _clientsLoadStatus;
-  }
-
   AppliedFiters get appliedFilters {
     return _appliedFilters;
   }
 
+  bool get isLoadingMore {
+    return _isLoadingMore;
+  }
 
-  void setLoadStatus(int value) {
+  void setLoadStatus(LoadStatus value) {
     _loadStatus = value;
     notifyListeners();
   }
@@ -81,11 +89,6 @@ class LogsProvider with ChangeNotifier {
 
   void setClients(List<AutoClient> clients) {
     _clients = clients;
-    notifyListeners();
-  }
-
-  void setClientsLoadStatus(int status) {
-    _clientsLoadStatus = status;
     notifyListeners();
   }
  
@@ -129,5 +132,137 @@ class LogsProvider with ChangeNotifier {
   void setAppliedFilters(AppliedFiters value) {
     _appliedFilters = value;
     notifyListeners();
+  }
+
+  void setIsLoadingMore(bool status) {
+    _isLoadingMore = status;
+  }
+
+  Future<bool> fetchLogs({
+    int? inOffset,
+    bool? loadingMore,
+    String? responseStatus,
+    String? searchText,
+  }) async {
+    int offst = inOffset ?? offset;
+
+    String resStatus = responseStatus ?? selectedResultStatus;
+    String? search = searchText ?? searchText;
+
+    if (loadingMore != null && loadingMore == true) {
+      _isLoadingMore = true;
+      notifyListeners();
+    }
+
+    final result = await _serversProvider!.apiClient!.getLogs(
+      count: logsQuantity, 
+      offset: offst,
+      olderThan: logsOlderThan,
+      responseStatus: resStatus,
+      search: search
+    );
+
+    if (loadingMore != null && loadingMore == true) {
+      _isLoadingMore = false;
+      notifyListeners();
+    }
+
+    if (result['result'] == 'success') {
+      _offset = inOffset != null ? inOffset+logsQuantity : offset+logsQuantity;
+      if (loadingMore != null && loadingMore == true && logsData != null) {
+        LogsData newLogsData = result['data'];
+        newLogsData.data = [...logsData!.data, ...result['data'].data];
+        if (appliedFilters.clients != null) {
+          newLogsData.data = newLogsData.data.where(
+            (item) => appliedFilters.clients!.contains(item.client)
+          ).toList();
+        }
+        _logsData = newLogsData;
+      }
+      else {
+        LogsData newLogsData = result['data'];
+        if (appliedFilters.clients != null) {
+          newLogsData.data = newLogsData.data.where(
+            (item) => appliedFilters.clients!.contains(item.client)
+          ).toList();
+        }
+        _logsData = newLogsData;
+      }
+      _loadStatus = LoadStatus.loaded;
+      notifyListeners();
+      return true;
+    }
+    else {
+      _loadStatus = LoadStatus.error;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> requestResetFilters() async {
+    _loadStatus = LoadStatus.loading;
+    notifyListeners();
+
+    resetFilters();
+
+    final result = await _serversProvider!.apiClient!.getLogs(
+      count: logsQuantity
+    );
+
+    _appliedFilters = AppliedFiters(
+      selectedResultStatus: 'all', 
+      searchText: null,
+      clients: null
+    );
+
+    if (result['result'] == 'success') {
+      _logsData = result['data'];
+      _loadStatus = LoadStatus.loaded;
+      notifyListeners();
+      return true;
+    }
+    else {
+      _loadStatus = LoadStatus.error;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> filterLogs() async {
+    _loadStatus = LoadStatus.loading;
+    notifyListeners();
+
+    setOffset(0);
+
+    final result = await _serversProvider!.apiClient!.getLogs(
+      count: logsQuantity,
+      olderThan: logsOlderThan,
+      responseStatus: selectedResultStatus,
+      search: searchText,
+    );
+
+    _appliedFilters = AppliedFiters(
+      selectedResultStatus: selectedResultStatus,
+      searchText: searchText,
+      clients: selectedClients
+    );
+
+    if (result['result'] == 'success') {
+      LogsData newLogsData = result['data'];
+      if (appliedFilters.clients != null) {
+        newLogsData.data = newLogsData.data.where(
+          (item) => appliedFilters.clients!.contains(item.client)
+        ).toList();
+      }
+      _logsData = newLogsData;
+      _loadStatus = LoadStatus.loaded;
+      notifyListeners();
+      return true;
+    }
+    else {
+      _loadStatus = LoadStatus.error;
+      notifyListeners();
+      return false;
+    }
   }
 }

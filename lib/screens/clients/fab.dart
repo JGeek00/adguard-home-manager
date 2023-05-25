@@ -10,13 +10,9 @@ import 'package:adguard_home_manager/screens/clients/client_screen.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/functions/maps_fns.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class ClientsFab extends StatelessWidget {
@@ -24,7 +20,6 @@ class ClientsFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
     final clientsProvider = Provider.of<ClientsProvider>(context);
@@ -35,24 +30,11 @@ class ClientsFab extends StatelessWidget {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
-      final result = await postAddClient(
-        server: serversProvider.selectedServer!, 
-        data: serverVersionIsAhead(
-          currentVersion: statusProvider.serverStatus!.serverVersion, 
-          referenceVersion: 'v0.107.28',
-          referenceVersionBeta: 'v0.108.0-b.33'
-        ) == false
-          ? removePropFromMap(client.toJson(), 'safesearch_enabled')
-          : removePropFromMap(client.toJson(), 'safe_search')
-      );
+      final result = await clientsProvider.addClient(client);
       
       processModal.close();
 
-      if (result['result'] == 'success') {
-        Clients clientsData = clientsProvider.clients!;
-        clientsData.clients.add(client);
-        clientsProvider.setClientsData(clientsData);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
@@ -60,8 +42,6 @@ class ClientsFab extends StatelessWidget {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotAdded, 

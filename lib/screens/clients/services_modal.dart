@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class ServicesModal extends StatefulWidget {
   final List<String> blockedServices;
@@ -25,28 +22,14 @@ class ServicesModal extends StatefulWidget {
 class _ServicesModalStateWidget extends State<ServicesModal> {
   List<String> blockedServices = [];
 
-  Future loadBlockedServices() async {
-    final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
-    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-
-    final result = await getBlockedServices(server: serversProvider.selectedServer!);
-    if (result['result'] == 'success') {
-      filteringProvider.setBlockedServicesListLoadStatus(LoadStatus.loaded, true);
-      filteringProvider.setBlockedServiceListData(result['data']);
-    }
-    else {
-      filteringProvider.setBlockedServicesListLoadStatus(LoadStatus.error, true);
-      appConfigProvider.addLog(result['log']);
-    }
-  }
+  
 
   @override
   void initState() {
     final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
 
     if (filteringProvider.blockedServicesLoadStatus != LoadStatus.loaded) {
-      loadBlockedServices();
+      filteringProvider.getBlockedServices();
     }
 
     blockedServices = widget.blockedServices;

@@ -9,9 +9,7 @@ import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class BlockedServicesScreen extends StatefulWidget {
   final bool dialog;
@@ -28,28 +26,12 @@ class BlockedServicesScreen extends StatefulWidget {
 class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
   List<String> values = [];
 
-  Future loadBlockedServices() async {
-    final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-
-    final result = await getBlockedServices(server: serversProvider.selectedServer!);
-    if (result['result'] == 'success') {
-      filteringProvider.setBlockedServicesListLoadStatus(LoadStatus.loaded, true);
-      filteringProvider.setBlockedServiceListData(result['data']);
-    }
-    else {
-      filteringProvider.setBlockedServicesListLoadStatus(LoadStatus.loaded, true);
-      appConfigProvider.addLog(result['log']);
-    }
-  }
-
   @override
   void initState() {
     final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
 
     if (filteringProvider.blockedServicesLoadStatus != LoadStatus.loaded) {
-      loadBlockedServices();
+      filteringProvider.loadBlockedServices(showLoading: true);
     }
 
     values = filteringProvider.filtering!.blockedServices; 
@@ -59,7 +41,6 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -80,13 +61,11 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updating);
 
-      final result = await setBlockedServices(server: serversProvider.selectedServer!, data: values);
+      final result = await filteringProvider.updateBlockedServices(values);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        filteringProvider.setBlockedServices(values);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.blockedServicesUpdated, 
@@ -265,7 +244,16 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: loadBlockedServices,
+          onRefresh: () async {
+            final result = await filteringProvider.loadBlockedServices();
+            if (result == false) {
+              showSnacbkar(
+                appConfigProvider: appConfigProvider,
+                label: AppLocalizations.of(context)!.blockedServicesListNotLoaded, 
+                color: Colors.red
+              );
+            }
+          },
           child: body()
         ),
       );

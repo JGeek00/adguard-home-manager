@@ -80,18 +80,7 @@ void main() async {
 
   serversProvider.setDbInstance(dbData['dbInstance']);
   appConfigProvider.saveFromDb(dbData['dbInstance'], dbData['appConfig']);
-  final result = await serversProvider.saveFromDb(dbData['servers']);
-  if (result != null) {
-    if (result['success'] == true) {
-      statusProvider.setServerStatusData(
-        data: result['serverData'],
-      );
-      statusProvider.setServerStatusLoad(LoadStatus.loaded);
-    }
-    else {
-      statusProvider.setServerStatusLoad(LoadStatus.error);
-    }
-  }
+  serversProvider.saveFromDb(dbData['servers']);
 
   PackageInfo appInfo = await PackageInfo.fromPlatform();
   appConfigProvider.setAppInfo(appInfo);
@@ -126,9 +115,33 @@ void main() async {
         ChangeNotifierProvider(
           create: ((context) => dnsProvider)
         ),
-        ChangeNotifierProxyProvider<StatusProvider, FilteringProvider>(
+        ChangeNotifierProxyProvider2<ServersProvider, StatusProvider, ClientsProvider>(
+          create: (context) => clientsProvider, 
+          update: (context, servers, status, clients) => clients!..update(servers, status),
+        ),
+        ChangeNotifierProxyProvider2<ServersProvider, StatusProvider, FilteringProvider>(
           create: (context) => filtersProvider, 
-          update: (context, status, filtering) => filtering!..updateStatus(status),
+          update: (context, servers, status, filtering) => filtering!..update(servers, status),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, StatusProvider>(
+          create: (context) => statusProvider, 
+          update: (context, servers, status) => status!..update(servers),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, LogsProvider>(
+          create: (context) => logsProvider, 
+          update: (context, servers, logs) => logs!..update(servers),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, DhcpProvider>(
+          create: (context) => dhcpProvider, 
+          update: (context, servers, dhcp) => dhcp!..update(servers),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, RewriteRulesProvider>(
+          create: (context) => rewriteRulesProvider, 
+          update: (context, servers, rewrite) => rewrite!..update(servers),
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, DnsProvider>(
+          create: (context) => dnsProvider, 
+          update: (context, servers, dns) => dns!..update(servers),
         ),
       ],
       child: const Main(),

@@ -18,9 +18,7 @@ import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -35,6 +33,8 @@ class _HomeState extends State<Home> {
 
   @override
   initState(){
+    Provider.of<StatusProvider>(context, listen: false).getServerStatus();
+
     super.initState();
 
     isVisible = true;
@@ -56,7 +56,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -280,14 +279,8 @@ class _HomeState extends State<Home> {
                   builder: (context) => RefreshIndicator(
                     color: Theme.of(context).colorScheme.primary,
                     onRefresh: () async {
-                      final result = await getServerStatus(serversProvider.selectedServer!);
-                      if (result['result'] == 'success') {
-                        statusProvider.setServerStatusData(
-                          data: result['data']
-                        );
-                      }
-                      else {
-                        appConfigProvider.addLog(result['log']);
+                      final result = await statusProvider.getServerStatus();
+                      if (result == false) {
                         showSnacbkar(
                           appConfigProvider: appConfigProvider, 
                           label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 

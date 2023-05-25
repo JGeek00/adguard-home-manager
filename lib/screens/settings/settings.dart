@@ -131,7 +131,11 @@ class SettingsWidget extends StatelessWidget {
         ], 
         body: ListView(
           children: [
-            if (serversProvider.selectedServer != null && statusProvider.serverStatus != null) ...[
+            if (
+              serversProvider.selectedServer != null && 
+              statusProvider.serverStatus != null && 
+              serversProvider.apiClient != null
+            ) ...[
               SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
               if (serverVersionIsAhead(
                 currentVersion: statusProvider.serverStatus!.serverVersion, 
