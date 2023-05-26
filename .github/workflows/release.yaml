@@ -40,7 +40,7 @@ jobs:
       - name: Rename apk 
         run: mv build/app/outputs/apk/release/app-release.apk build/app/outputs/apk/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
       - name: Rename aab 
-        run: mv build/app/outputs/apk/release/app-release.aab build/app/outputs/apk/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+        run: mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
       - name: Create a Release in GitHub
         uses: ncipollo/release-action@v1
         with:
