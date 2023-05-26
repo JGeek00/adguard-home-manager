@@ -38,13 +38,13 @@ jobs:
       - run: flutter build apk --release
       - run: flutter build appbundle --release
       - name: Rename apk 
-        run: mv build/app/outputs/apk/release/app-release.apk build/app/outputs/apk/release/AdGuardHomeManager_{{ github.event.inputs.version }}_Android.apk
+        run: mv build/app/outputs/apk/release/app-release.apk build/app/outputs/apk/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
       - name: Rename aab 
-        run: mv build/app/outputs/apk/release/app-release.aab build/app/outputs/apk/release/AdGuardHomeManager_{{ github.event.inputs.version }}_Android.aab
+        run: mv build/app/outputs/apk/release/app-release.aab build/app/outputs/apk/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
       - name: Create a Release in GitHub
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/AdGuardHomeManager_{{ github.event.inputs.version }}_Android.apk,build/app/outputs/bundle/release/AdGuardHomeManager_{{ github.event.inputs.version }}_Android.aab"
+          artifacts: "build/app/outputs/apk/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk,build/app/outputs/bundle/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab"
           token: ${{ secrets.GH_TOKEN }}
           tag: ${{ github.event.inputs.version }}
           commit: ${{ github.sha }}
