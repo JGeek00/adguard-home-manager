@@ -1,0 +1,43 @@
+name: Release build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number"
+        default: "1.0.0+1"
+jobs:
+  build:
+    name: Build APK and Create release
+    needs: [version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Update version in YAML
+        run: sed -i 's/99.99.99+99/${{ github.event.inputs.version }}/g' pubspec.yaml
+      - name: Update KeyStore password in gradle properties
+        run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
+      - name: Update KeyStore key password in gradle properties
+        run: sed -i 's/#{KEYSTORE_KEY_PASS}#/${{ secrets.KEYSTORE_KEY_PASS }}/g' android/key.properties
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "18.x"
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - run: flutter build appbundle --release
+      - name: Create a Release in GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/release/*.apk,build/app/outputs/bundle/release/app-release.aab"
+          token: ${{ secrets.GH_TOKEN }}
+          tag: ${{ steps.version.outputs.content }}
+          commit: ${{ github.sha }}
+      - name: Upload app bundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: appbundle
+          path: build/app/outputs/bundle/release/app-release.aab
