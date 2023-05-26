@@ -20,7 +20,7 @@ on:
         type: boolean
         default: true
 jobs:
-  build:
+  build-and-release-android:
     name: Build APK and AAB
     if: github.event.inputs.android == true
     runs-on: ubuntu-latest
@@ -64,7 +64,7 @@ jobs:
         with:
           name: appbundle
           path: build/app/outputs/bundle/release/app-release.aab
-  build:
+  build-and-release-macos:
     name: Build macOS
     if: github.event.inputs.macos == true
     runs-on: macos-latest
