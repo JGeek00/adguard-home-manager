@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Decode android/keystore.jks
-        run: echo "${{ secrets.KEYSTORE_JKS }}" | base64 --decode > android/keystore.jks
+        run: echo "${{ secrets.KEYSTORE_JKS }}" | base64 --decode > android/app/keystore.jks
       - name: Decode android/key.properties
         run: echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
       - name: Decode .env
