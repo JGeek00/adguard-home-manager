@@ -15,6 +15,10 @@ on:
         description: "Build Android"
         type: boolean
         default: true
+      macos:
+        description: "Build macOS"
+        type: boolean
+        default: true
 jobs:
   build:
     name: Build APK and AAB
@@ -60,3 +64,32 @@ jobs:
         with:
           name: appbundle
           path: build/app/outputs/bundle/release/app-release.aab
+  build:
+    name: Build macOS
+    if: github.event.inputs.macos == true
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter build macos --release
+      - name: Get into build dir
+        run: cd build/macos/Build/Products/Release
+      - name: Geneate build folder
+        run: mkdir AdGuard\ Home\ Manager
+      - name: Copy app into folder
+        run: cp AdGuard\ Home\ Manager.app AdGuard\ Home\ Manager/AdGuard\ Home\ Manager.app
+      - name: Generate symbolic link to Applications dir
+        run: ln -s /Applications AdGuard\ Home\ Manager
+      - name: Generate dmg
+        run: hdiutil create -srcfolder AdGuard\ Home\ Manager AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
+      - name: Create a Release in GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg"
+          token: ${{ secrets.GH_TOKEN }}
+          tag: ${{ github.event.inputs.version }}
+          commit: ${{ github.sha }}
