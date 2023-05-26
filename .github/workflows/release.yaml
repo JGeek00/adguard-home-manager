@@ -5,13 +5,20 @@ on:
     inputs:
       version:
         description: "Version"
+        required: true
         default: "1.0.0"
       number:
         description: "Build number"
+        required: true
         default: "1"
+      android:
+        description: "Build Android"
+        type: boolean
+        default: true
 jobs:
   build:
-    name: Build APK and Create release
+    name: Build APK and AAB
+    if: github.event.inputs.android == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
