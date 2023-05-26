@@ -11,14 +11,6 @@ on:
         description: "Build number"
         required: true
         default: "1"
-      android:
-        description: "Build Android"
-        type: boolean
-        default: true
-      macos:
-        description: "Build macOS"
-        type: boolean
-        default: true
 jobs:
   build-and-release-android:
     name: Build APK and AAB
