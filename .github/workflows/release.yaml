@@ -22,7 +22,6 @@ on:
 jobs:
   build-and-release-android:
     name: Build APK and AAB
-    if: github.event.inputs.android == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -66,7 +65,6 @@ jobs:
           path: build/app/outputs/bundle/release/app-release.aab
   build-and-release-macos:
     name: Build macOS
-    if: github.event.inputs.macos == true
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
