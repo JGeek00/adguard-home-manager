@@ -121,7 +121,10 @@ jobs:
         with:
           command: c
           cwd: build/linux/x64/release/bundle
-          files: ./*
+          files: |
+            build/linux/x64/release/bundle/data
+            build/linux/x64/release/bundle/lib
+            build/linux/x64/release/bundle/AdGuardHomeManager
           outPath: AdGuardHomeManager_${{ github.event.inputs.version }}_Linux.tar.gz
       - name: Upload artifact
         uses: actions/upload-artifact@v3
