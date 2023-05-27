@@ -156,6 +156,8 @@ jobs:
       - run: flutter clean
       - run: flutter pub get
       - run: flutter build windows --release
+      - name: ls
+        rum: ls windows
       - name: Build installer witn innosetup
         run: iscc /Q windows/innosetup_installer_builder.iss
       - name: Move installer file to root directory
