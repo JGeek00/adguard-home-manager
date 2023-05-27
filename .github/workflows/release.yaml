@@ -32,7 +32,7 @@ jobs:
         run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
       - name: Update KeyStore key password in gradle properties
         run: sed -i 's/#{KEYSTORE_KEY_PASS}#/${{ secrets.KEYSTORE_KEY_PASS }}/g' android/key.properties
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '18.x'
@@ -96,25 +96,25 @@ jobs:
     needs: [build-android, build-macos]
     steps:
       - uses: actions/checkout@v3
+      - name: Create builds directory
+        run: mkdir releases
       - name: Download Android artifacts
         uses: actions/download-artifact@v3
         with:
           name: android
+          path: releases/
       - name: Download macOS artifacts
         uses: actions/download-artifact@v3
         with:
           name: macos
+          path: releases/
       - name: Release to GitHub
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
+          artifacts: "releases/*"
+          token: ${{ secrets.GH_TOKEN }}
+          tag: ${{ github.event.inputs.version }}
+          name: v${{ github.event.inputs.version }}
           draft: false
           prerelease: false
-          name: v${{ github.event.inputs.version }}
-          tag_name: ${{ github.event.inputs.version }}
-          files: |
-            AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
-            AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
-            AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
+          commit: ${{ github.sha }}
