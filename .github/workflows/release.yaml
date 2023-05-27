@@ -87,3 +87,8 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           tag: ${{ github.event.inputs.version }}
           commit: ${{ github.sha }}
+      - name: Upload release
+        uses: actions/upload-artifact@v2
+        with:
+          name: AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
+          path: $MACOS_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
