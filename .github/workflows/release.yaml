@@ -116,6 +116,7 @@ jobs:
       - name: Generate .deb package
         run: flutter_to_debian
       - name: Move .deb package to project root
+        run: mv debian/packages/AdGuardHomeManager_${{ github.event.inputs.version }}_amd64.deb AdGuardHomeManager_${{ github.event.inputs.version }}_Linux_amd64.deb 
       - name: Generate .tar.gz package
         uses: a7ul/tar-action@v1.1.0
         id: compress
