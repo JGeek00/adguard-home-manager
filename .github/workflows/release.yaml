@@ -199,6 +199,6 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           tag: ${{ github.event.inputs.version }}
           name: v${{ github.event.inputs.version }}
-          draft: false
+          draft: true
           prerelease: false
           commit: ${{ github.sha }}
