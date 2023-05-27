@@ -139,14 +139,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Decode .env
-        shell: bash
-        run: echo '${{ secrets.ENV }}'' | base64 --decode > .env
+        shell: pwsh
+        run: |
+          [IO.File]::WriteAllBytes('.env', [Convert]::FromBase64String('${{ secrets.ENV }}'))
       - name: Update version in pubspec.yaml
         shell: bash
         run: sed -i 's/99.99.99+99/${{ github.event.inputs.version }}+${{ github.event.inputs.number }}/g' pubspec.yaml
       - name: Update version in innosetup config file
-        shell: bash
-        run: sed -i 's/<REPLACE_VERSION_ACTIONS>/${{ github.event.inputs.version }}/g' windows/innosetup_installer_builder.iss
+        shell: pwsh
+        run: |
+          (Get-Content windows/innosetup_installer_builder.iss) -replace '<REPLACE_VERSION_ACTIONS>', '${{ github.event.inputs.version }}' | Out-File -encoding ASCII windows/innosetup_installer_builder.iss
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
