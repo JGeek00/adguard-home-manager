@@ -118,7 +118,8 @@ jobs:
       - name: Move .deb package to project root
         run: mv debian/packages/AdGuardHomeManager_${{ github.event.inputs.version }}_amd64.deb AdGuardHomeManager_${{ github.event.inputs.version }}_Linux_amd64.deb 
       - name: Generate .tar.gz
-        run: tar -czaf AdGuardHomeManager_${{ github.event.inputs.version }}_Linux.tar.gz $LINUX_APP_RELEASE_PATH/*
+        run: cd $LINUX_APP_RELEASE_PATH
+        run: tar -czaf AdGuardHomeManager_${{ github.event.inputs.version }}_Linux.tar.gz ./*
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
