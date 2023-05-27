@@ -96,11 +96,12 @@ jobs:
     needs: [build-android, build-macos]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
       - name: Download Android artifacts
+        uses: actions/download-artifact@v3
         with:
           name: android
       - name: Download macOS artifacts
+        uses: actions/download-artifact@v3
         with:
           name: macos
       - name: Release to GitHub
