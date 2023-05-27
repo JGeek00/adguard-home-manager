@@ -133,10 +133,36 @@ jobs:
           path: |
             AdGuardHomeManager_${{ github.event.inputs.version }}_Linux_amd64.deb 
             AdGuardHomeManager_${{ github.event.inputs.version }}_Linux.tar.gz
+  build-windows:
+    name: Build Windows installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Decode .env
+        run: [IO.File]::WriteAllBytes('.env', [Convert]::FromBase64String('${{ secrets.ENV }}'))
+      - name: Update version in pubspec.yaml
+        run: (Get-Content pubspec.yaml) -replace '99.99.99+99', '${{ github.event.inputs.version }}' | Out-File -encoding ASCII pubspec.yaml
+      - name: Update version in innosetup config file
+        run: (Get-Content windows/innosetup_installer_builder.iss) -replace '<REPLACE_VERSION_ACTIONS>', '${{ github.event.inputs.version }}' | Out-File -encoding ASCII windows/innosetup_installer_builder.iss
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter build windows --release
+      - name: Build installer witn innosetup
+        run: iscc /Q windows/innosetup_installer_builder.iss
+      - name: Move installer file to root directory
+        run: move build/windows/aghm_installer.exe AdGuardHomeManager_${{ github.event.inputs.version }}_Windows_x64.exe
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows
+          path: AdGuardHomeManager_${{ github.event.inputs.version }}_Windows_x64.exe
   release-builds-github:
     name: Release builds to GitHub
     runs-on: ubuntu-latest
-    needs: [build-android, build-macos, build-linux]
+    needs: [build-android, build-macos, build-linux, build-windows]
     steps:
       - uses: actions/checkout@v3
       - name: Create builds directory
@@ -155,6 +181,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: linux
+          path: releases/
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: windows
           path: releases/
       - name: Release to GitHub
         uses: ncipollo/release-action@v1
