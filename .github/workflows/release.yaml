@@ -16,7 +16,8 @@ jobs:
     name: Build Android APK and AAB
     runs-on: ubuntu-latest
     env:
-      ANDROID_APP_RELEASE_PATH: build/app/outputs/apk/release
+      ANDROID_AAB_RELEASE_PATH: build/app/outputs/bundle/release
+      ANDROID_APK_RELEASE_PATH: build/app/outputs/apk/release
     steps:
       - uses: actions/checkout@v3
       - name: Decode android/app/keystore.jks
@@ -42,13 +43,13 @@ jobs:
       - run: flutter build apk --release
       - run: flutter build appbundle --release
       - name: Rename apk 
-        run: mv $ANDROID_APP_RELEASE_PATH/app-release.apk $ANDROID_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+        run: mv $ANDROID_APK_RELEASE_PATH/app-release.apk $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
       - name: Rename aab 
-        run: mv $ANDROID_APP_RELEASE_PATH/app-release.aab $ANDROID_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+        run: mv $ANDROID_AAB_RELEASE_PATH/app-release.aab $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
       - name: Copy apk to project root
-        run: cp $ANDROID_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+        run: cp $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
       - name: Copy aab to project root
-        run: cp $ANDROID_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+        run: cp $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
