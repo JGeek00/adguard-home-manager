@@ -12,7 +12,7 @@ on:
         required: true
         default: "1"
 jobs:
-  build-and-release-android:
+  build-android:
     name: Build Android .apk and .aab
     runs-on: ubuntu-latest
     env:
@@ -51,20 +51,14 @@ jobs:
         run: cp $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
       - name: Copy aab to project root
         run: cp $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          draft: false
-          prerelease: false
-          name: v${{ github.event.inputs.version }}
-          tag_name: ${{ github.event.inputs.version }}
-          files: |
+          name: android
+          path: |
             AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
             AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
-  build-and-release-macos:
+  build-macos:
     name: Build macOS .dmg
     runs-on: macos-latest
     env:
@@ -91,14 +85,32 @@ jobs:
         run: hdiutil create -srcfolder $MACOS_APP_RELEASE_PATH/AdGuard\ Home\ Manager $MACOS_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
       - name: Copy dmg to project root
         run: cp $MACOS_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          draft: false
-          prerelease: false
-          name: v${{ github.event.inputs.version }}
-          tag_name: ${{ github.event.inputs.version }}
-          files: AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
+          name: macos
+          path: AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
+  release-builds:
+    needs: [build-android, build-macos]
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+    - name: Download Android artifacts
+      with:
+        name: android
+    - name: Download macOS artifacts
+      with:
+        name: macos
+    - name: Release to GitHub
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        draft: false
+        prerelease: false
+        name: v${{ github.event.inputs.version }}
+        tag_name: ${{ github.event.inputs.version }}
+        files: |
+          AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+          AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+          AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
