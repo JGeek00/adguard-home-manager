@@ -129,7 +129,7 @@ jobs:
   release-builds-github:
     name: Release builds to GitHub
     runs-on: ubuntu-latest
-    needs: [build-android, build-macos]
+    needs: [build-android, build-macos, build-linux]
     steps:
       - uses: actions/checkout@v3
       - name: Create builds directory
