@@ -76,6 +76,8 @@ jobs:
         run:  cd $MACOS_APP_RELEASE_PATH
       - name: Create folder to build dmg
         run: mkdir AdGuard\ Home\ Manager
+      - name: dir
+        run: pwd & ls
       - name: Copy app into folder
         run: cp -r ./AdGuard\ Home\ Manager.app ./AdGuard\ Home\ Manager/AdGuard\ Home\ Manager.app
       - name: Generate symbolic link to Applications dir
