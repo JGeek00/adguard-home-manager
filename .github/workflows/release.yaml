@@ -143,9 +143,8 @@ jobs:
         run: |
           [IO.File]::WriteAllBytes('.env', [Convert]::FromBase64String('${{ secrets.ENV }}'))
       - name: Update version in pubspec.yaml
-        shell: pwsh
-        run: |
-          (Get-Content pubspec.yaml) -replace '99.99.99+99', '${{ github.event.inputs.version }}' | Out-File -encoding ASCII pubspec.yaml
+        shell: bash
+        run: sed -i 's/99.99.99+99/${{ github.event.inputs.version }}+${{ github.event.inputs.number }}/g' pubspec.yaml
       - name: Update version in innosetup config file
         shell: pwsh
         run: |
