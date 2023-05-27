@@ -50,7 +50,14 @@ jobs:
         run: cp $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
       - name: Copy aab to project root
         run: cp $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+      - name: Check if tag exists
+        uses: mukunku/tag-exists-action@v1.2.0
+        id: checkTag
+        with: 
+          github_token: ${{ secrets.GH_TOKEN }}
+          tag: ${{ github.event.inputs.version }}
       - name: Create Release
+        if: steps.checkTag.outputs.exists == false
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -109,7 +116,14 @@ jobs:
         run: hdiutil create -srcfolder $MACOS_APP_RELEASE_PATH/AdGuard\ Home\ Manager $MACOS_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
       - name: Copy dmg to project root
         run: cp $MACOS_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
+      - name: Check if tag exists
+        uses: mukunku/tag-exists-action@v1.2.0
+        id: checkTag
+        with: 
+          github_token: ${{ secrets.GH_TOKEN }}
+          tag: ${{ github.event.inputs.version }}
       - name: Create Release
+        if: steps.checkTag.outputs.exists == false
         id: create_release
         uses: actions/create-release@v1
         env:
