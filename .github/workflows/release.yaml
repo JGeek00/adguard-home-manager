@@ -13,8 +13,10 @@ on:
         default: "1"
 jobs:
   build-and-release-android:
-    name: Build APK and AAB
+    name: Build Android APK and AAB
     runs-on: ubuntu-latest
+    env:
+      ANDROID_APP_RELEASE_PATH: build/app/outputs/apk/release
     steps:
       - uses: actions/checkout@v3
       - name: Decode android/app/keystore.jks
@@ -40,21 +42,45 @@ jobs:
       - run: flutter build apk --release
       - run: flutter build appbundle --release
       - name: Rename apk 
-        run: mv build/app/outputs/apk/release/app-release.apk build/app/outputs/apk/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+        run: mv $ANDROID_APP_RELEASE_PATH/app-release.apk $ANDROID_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
       - name: Rename aab 
-        run: mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
-      - name: Create a Release in GitHub
-        uses: ncipollo/release-action@v1
+        run: mv $ANDROID_APP_RELEASE_PATH/app-release.aab $ANDROID_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+      - name: Copy apk to project root
+        run: cp $ANDROID_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+      - name: Copy aab to project root
+        run: cp $ANDROID_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          artifacts: "build/app/outputs/apk/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk,build/app/outputs/bundle/release/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab"
-          token: ${{ secrets.GH_TOKEN }}
-          tag: ${{ github.event.inputs.version }}
-          commit: ${{ github.sha }}
-      - name: Upload app bundle
-        uses: actions/upload-artifact@v2
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: v${{ github.event.inputs.version }}
+          body: |
+             Release Notes
+          draft: false
+          prerelease: false
+      - name: Upload aab
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          name: appbundle
-          path: build/app/outputs/bundle/release/app-release.aab
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+          asset_name: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+          asset_content_type: application/octet-stream
+      - name: Upload apk
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+          asset_name: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+          asset_content_type: application/octet-stream
   build-and-release-macos:
     name: Build macOS
     runs-on: macos-latest
@@ -94,10 +120,6 @@ jobs:
              Release Notes
           draft: false
           prerelease: false
-      - name: file
-        run: ls $MACOS_APP_RELEASE_PATH
-      - name: file root
-        run: ls
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
