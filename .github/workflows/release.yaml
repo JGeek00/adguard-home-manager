@@ -1,4 +1,4 @@
-name: Release build
+name: Compile and release production build
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ on:
         default: "1"
 jobs:
   build-and-release-android:
-    name: Build Android APK and AAB
+    name: Build Android .apk and .aab
     runs-on: ubuntu-latest
     env:
       ANDROID_AAB_RELEASE_PATH: build/app/outputs/bundle/release
@@ -34,7 +34,8 @@ jobs:
         run: sed -i 's/#{KEYSTORE_KEY_PASS}#/${{ secrets.KEYSTORE_KEY_PASS }}/g' android/key.properties
       - uses: actions/setup-java@v2
         with:
-          java-version: "18.x"
+          distribution: 'zulu'
+          java-version: '18.x'
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
@@ -64,7 +65,7 @@ jobs:
             AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
             AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
   build-and-release-macos:
-    name: Build macOS
+    name: Build macOS .dmg
     runs-on: macos-latest
     env:
       MACOS_APP_RELEASE_PATH: build/macos/Build/Products/Release
