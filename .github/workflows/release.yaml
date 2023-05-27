@@ -50,45 +50,19 @@ jobs:
         run: cp $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
       - name: Copy aab to project root
         run: cp $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
-      - name: Check if tag exists
-        uses: mukunku/tag-exists-action@v1.2.0
-        id: checkTag
-        with: 
-          github_token: ${{ secrets.GH_TOKEN }}
-          tag: ${{ github.event.inputs.version }}
-      - name: Create Release
-        if: steps.checkTag.outputs.exists == false
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        draft: false
+        prerelease: false
+        name: v${{ github.event.inputs.version }}
+        tag_name: ${{ github.event.inputs.version }}
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          release_name: v${{ github.event.inputs.version }}
-          body: |
-             Release Notes
-          draft: false
-          prerelease: false
-      - name: Upload aab
-        id: upload-aab
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
-          asset_name: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
-          asset_content_type: application/octet-stream
-      - name: Upload apk
-        id: upload-apk
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
-          asset_name: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
-          asset_content_type: application/octet-stream
+          files: |
+            AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+            AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
   build-and-release-macos:
     name: Build macOS
     runs-on: macos-latest
@@ -116,32 +90,14 @@ jobs:
         run: hdiutil create -srcfolder $MACOS_APP_RELEASE_PATH/AdGuard\ Home\ Manager $MACOS_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
       - name: Copy dmg to project root
         run: cp $MACOS_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
-      - name: Check if tag exists
-        uses: mukunku/tag-exists-action@v1.2.0
-        id: checkTag
-        with: 
-          github_token: ${{ secrets.GH_TOKEN }}
-          tag: ${{ github.event.inputs.version }}
-      - name: Create Release
-        if: steps.checkTag.outputs.exists == false
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        draft: false
+        prerelease: false
+        name: v${{ github.event.inputs.version }}
+        tag_name: ${{ github.event.inputs.version }}
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          release_name: v${{ github.event.inputs.version }}
-          body: |
-             Release Notes
-          draft: false
-          prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
-          asset_name: AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
-          asset_content_type: application/octet-stream
+          files: AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
