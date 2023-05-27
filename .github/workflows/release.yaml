@@ -90,6 +90,42 @@ jobs:
         with:
           name: macos
           path: AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
+  build-linux:
+    name: Build Linux .tar.gz
+    runs-on: ubuntu-latest
+    env:
+      LINUX_APP_RELEASE_PATH: build/linux/x64/release/bundle
+    steps:
+      - uses: actions/checkout@v3
+      - name: Decode .env
+        run: echo "${{ secrets.ENV }}" | base64 --decode > .env
+      - name: Update version in pubspec.yaml
+        run: sed -i 's/99.99.99+99/${{ github.event.inputs.version }}+${{ github.event.inputs.number }}/g' pubspec.yaml
+      - name: Update version in debian.yaml
+        run: sed -i 's/<REPLACE_VERSION_NUMBER_ACTIONS>/${{ github.event.inputs.version }}/g' debian/debian.yaml
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter build linux --release
+      - name: Install flutter_to_debian
+        run: dart pub global activate flutter_to_debian
+      - name: Generate .deb package
+        run: flutter_to_debian
+      - name: Move .deb package to project root
+        run: mv debian/packages/AdGuardHomeManager_${{ github.event.inputs.version }}_amd64.deb AdGuardHomeManager_${{ github.event.inputs.version }}_Linux_amd64.deb 
+      - name: Generate .tar.gz
+        run: tar -czaf AdGuardHomeManager_${{ github.event.inputs.version }}_Linux.tar.gz $LINUX_APP_RELEASE_PATH/*
+      - name: Move .tar.gz package to project root
+        run: mv $LINUX_APP_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Linux.tar.gz AdGuardHomeManager_${{ github.event.inputs.version }}_Linux.tar.gz
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: |
+            AdGuardHomeManager_${{ github.event.inputs.version }}_Linux_amd64.deb 
+            AdGuardHomeManager_${{ github.event.inputs.version }}_Linux.tar.gz
   release-builds-github:
     name: Release builds to GitHub
     runs-on: ubuntu-latest
@@ -107,6 +143,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: macos
+          path: releases/
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: linux
           path: releases/
       - name: Release to GitHub
         uses: ncipollo/release-action@v1
