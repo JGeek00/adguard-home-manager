@@ -32,10 +32,10 @@ jobs:
         run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
       - name: Update KeyStore key password in gradle properties
         run: sed -i 's/#{KEYSTORE_KEY_PASS}#/${{ secrets.KEYSTORE_KEY_PASS }}/g' android/key.properties
-      - uses: actions/setup-java@v1
+      - uses: actions/setup-java@v2
         with:
           java-version: "18.x"
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
       - run: flutter clean
@@ -74,7 +74,7 @@ jobs:
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Update version in YAML
         run: sed -i '' 's/99.99.99+99/${{ github.event.inputs.version }}+${{ github.event.inputs.number }}/g' pubspec.yaml
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
       - run: flutter clean
