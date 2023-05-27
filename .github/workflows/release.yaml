@@ -62,7 +62,7 @@ jobs:
           draft: false
           prerelease: false
       - name: Upload aab
-        id: upload-release-asset
+        id: upload-aab
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -72,7 +72,7 @@ jobs:
           asset_name: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
           asset_content_type: application/octet-stream
       - name: Upload apk
-        id: upload-release-asset
+        id: upload-apk
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
