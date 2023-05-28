@@ -197,7 +197,7 @@ jobs:
         with:
           artifacts: "releases/*"
           token: ${{ secrets.GH_TOKEN }}
-          tag: ${{ github.event.inputs.version }}
+          tag: '${{ github.event.inputs.version }} (${{ github.event.inputs.number }})'
           name: v${{ github.event.inputs.version }}
           draft: true
           prerelease: false
