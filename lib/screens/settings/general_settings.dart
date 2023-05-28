@@ -57,9 +57,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
       setState(() => appUpdatesStatus = AppUpdatesStatus.checking);
       
       final res = await checkAppUpdates(
-        appVersion: appConfigProvider.getAppInfo!.version, 
+        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber, 
         setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable, 
-        installationSource: appConfigProvider.installationSource
+        installationSource: appConfigProvider.installationSource,
+        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
       );
 
       if (res != null) {

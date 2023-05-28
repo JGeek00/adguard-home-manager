@@ -39,9 +39,10 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
       final result = await checkAppUpdates(
-        appVersion: appConfigProvider.getAppInfo!.version,
+        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber,
         installationSource: appConfigProvider.installationSource,
-        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable
+        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable,
+        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
       );
 
       if (result != null && appConfigProvider.doNotRememberVersion != result.tagName) {

@@ -60,7 +60,7 @@ class _UpdateModalState extends State<UpdateModal> {
           ),
           const SizedBox(height: 10),
           Text(
-            "${AppLocalizations.of(context)!.newVersion}: ${widget.gitHubRelease.tagName}",
+            "${AppLocalizations.of(context)!.newVersion}: ${widget.gitHubRelease.name.replaceAll('v', '')}",
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant
             ),
@@ -101,7 +101,9 @@ class _UpdateModalState extends State<UpdateModal> {
       ),
       actions: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: downloadLink != null 
+            ? MainAxisAlignment.spaceBetween
+            : MainAxisAlignment.end,
           children: [
             if (downloadLink != null) TextButton(
               onPressed: () {

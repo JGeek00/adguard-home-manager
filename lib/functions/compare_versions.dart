@@ -149,52 +149,36 @@ bool serverVersionIsAhead({
   }
 }
 
-bool gitHubUpdateExists(String appVersion, List<GitHubRelease> gitHubReleases) {
-  if (appVersion.contains('beta')) {
-    final gitHubVersion = gitHubReleases.firstWhere((release) => release.prerelease == true).tagName;
+bool gitHubUpdateExists({
+  required String currentBuildNumber, 
+  required List<GitHubRelease> gitHubReleases,
+  required bool isBeta
+}) {
+  final release = isBeta == true
+    ? gitHubReleases.firstWhere((release) => release.prerelease == true)
+    : gitHubReleases.firstWhere((release) => release.prerelease == false);
+  
+  final versionNumberRegex = RegExp(r'\(\d+\)');
+  final releaseNumberExtracted = versionNumberRegex.allMatches(release.tagName).first.group(0);
 
-    final appBetaSplit = appVersion.split('-');
-    final gitHubBetaSplit = gitHubVersion.split('-');
-
-    final List<int> appVersionSplit = List<int>.from(appBetaSplit[0].split('.').map((e) => int.parse(e)));
-    final int appBetaNumber = int.parse(appBetaSplit[1].split('.')[1]);
-
-    final List<int> gitHubVersionSplit = List<int>.from(gitHubBetaSplit[0].split('.').map((e) => int.parse(e)));
-    final int gitHubBetaNumber = int.parse(gitHubBetaSplit[1].split('.')[1]);
-
-    if (gitHubVersionSplit[0] > appVersionSplit[0]) {
-      return true;
-    }
-    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
-      return true;
-    }
-    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
-      return true;
-    }
-    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] == appVersionSplit[2] && gitHubBetaNumber > appBetaNumber) {
-      return true;
-    }
-    else {
+  if (releaseNumberExtracted != null) {
+    final releaseNumber = releaseNumberExtracted.replaceAll(RegExp(r'\(|\)'), '');
+    try {
+      final newReleaseParsed = int.parse(releaseNumber);
+      final currentReleaseParsed = int.parse(currentBuildNumber);
+      if (newReleaseParsed > currentReleaseParsed) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    } catch (e) {
+      Sentry.captureMessage("Invalid release number. Current release: $currentBuildNumber. New release: $releaseNumber");
       return false;
     }
   }
   else {
-    final gitHubVersion = gitHubReleases.firstWhere((release) => release.prerelease == false).tagName;
-
-    final List<int> appVersionSplit = List<int>.from(appVersion.split('.').map((e) => int.parse(e)));
-    final List<int> gitHubVersionSplit = List<int>.from(gitHubVersion.split('.').map((e) => int.parse(e)));
-
-    if (gitHubVersionSplit[0] > appVersionSplit[0]) {
-      return true;
-    }
-    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
-      return true;
-    }
-    else if (gitHubVersionSplit[0] == appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    Sentry.captureMessage("Invalid release number. Tagname: ${release.tagName}");
+    return false;
   }
 }

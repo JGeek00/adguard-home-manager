@@ -7,17 +7,22 @@ import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 
 Future<GitHubRelease?> checkAppUpdates({
-  required String appVersion,
+  required String currentBuildNumber,
   required void Function(GitHubRelease?) setUpdateAvailable,
-  required Source installationSource
+  required Source installationSource,
+  required bool isBeta
 }) async {
   final result = await checkAppUpdatesGitHub();
 
   if (result['result'] == 'success') {
-    final update = gitHubUpdateExists(appVersion, result['body']);
+    final update = gitHubUpdateExists(
+      currentBuildNumber: currentBuildNumber, 
+      gitHubReleases: result['body'],
+      isBeta: isBeta
+    );
 
     if (update == true) {
-      final release = appVersion.contains('beta')
+      final release = isBeta == true
         ? result['body'].firstWhere((release) => release.prerelease == true)
         : result['body'].firstWhere((release) => release.prerelease == false);
 
