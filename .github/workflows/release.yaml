@@ -91,7 +91,7 @@ jobs:
           name: macos
           path: AdGuardHomeManager_${{ github.event.inputs.version }}_macOS_Universal.dmg
   build-linux:
-    name: Build Linux .tar.gz
+    name: Build Linux .tar.gz and .deb
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
