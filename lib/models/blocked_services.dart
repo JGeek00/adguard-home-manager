@@ -11,12 +11,10 @@ class BlockedServicesFromApi {
 }
 
 class BlockedServices {
-  int loadStatus = 0;
-  List<BlockedService>? services; 
+  List<BlockedService> services; 
 
   BlockedServices({
-    this.loadStatus = 0,
-    this.services
+    required this.services
   });
 }
 

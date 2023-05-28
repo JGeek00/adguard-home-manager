@@ -15,160 +15,61 @@ import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class Logs extends StatelessWidget {
+class Logs extends StatefulWidget {
   const Logs({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    final logsProvider = Provider.of<LogsProvider>(context);
-
-    return LogsWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider,
-      logsProvider: logsProvider,
-      selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus,
-      searchText: logsProvider.appliedFilters.searchText,
-    );
-  }
+  State<Logs> createState() => _LogsState();
 }
 
-class LogsWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-  final LogsProvider logsProvider;
-  final String selectedResultStatus;
-  final String? searchText;
-
-  const LogsWidget({
-    Key? key,
-    required this.serversProvider,
-    required this.appConfigProvider,
-    required this.logsProvider,
-    required this.selectedResultStatus,
-    required this.searchText,
-  }) : super(key: key);
-
-  @override
-  State<LogsWidget> createState() => _LogsWidgetState();
-}
-
-class _LogsWidgetState extends State<LogsWidget> {
+class _LogsState extends State<Logs> {
   late ScrollController scrollController;
-  
-  bool isLoadingMore = false;
 
   bool showDivider = true;
 
   Log? selectedLog;
 
-  Future fetchLogs({
-    int? inOffset,
-    bool? loadingMore,
-    String? responseStatus,
-    String? searchText,
-  }) async {
-    int offst = inOffset ?? widget.logsProvider.offset;
-
-    String resStatus = responseStatus ?? widget.selectedResultStatus;
-    String? search = searchText ?? widget.searchText;
-
-    if (loadingMore != null && loadingMore == true) {
-      setState(() => isLoadingMore = true);
-    }
-
-    final result = await getLogs(
-      server: widget.serversProvider.selectedServer!, 
-      count: widget.logsProvider.logsQuantity, 
-      offset: offst,
-      olderThan: widget.logsProvider.logsOlderThan,
-      responseStatus: resStatus,
-      search: search
-    );
-
-    if (loadingMore != null && loadingMore == true) {
-      setState(() => isLoadingMore = false);
-    }
-
-    if (mounted) {
-      if (result['result'] == 'success') {
-        widget.logsProvider.setOffset(inOffset != null ? inOffset+widget.logsProvider.logsQuantity : widget.logsProvider.offset+widget.logsProvider.logsQuantity);
-        if (loadingMore != null && loadingMore == true && widget.logsProvider.logsData != null) {
-          LogsData newLogsData = result['data'];
-          newLogsData.data = [...widget.logsProvider.logsData!.data, ...result['data'].data];
-          if (widget.logsProvider.appliedFilters.clients != null) {
-            newLogsData.data = newLogsData.data.where(
-              (item) => widget.logsProvider.appliedFilters.clients!.contains(item.client)
-            ).toList();
-          }
-          widget.logsProvider.setLogsData(newLogsData);
-        }
-        else {
-          LogsData newLogsData = result['data'];
-          if (widget.logsProvider.appliedFilters.clients != null) {
-            newLogsData.data = newLogsData.data.where(
-              (item) => widget.logsProvider.appliedFilters.clients!.contains(item.client)
-            ).toList();
-          }
-          widget.logsProvider.setLogsData(newLogsData);
-        }
-        widget.logsProvider.setLoadStatus(1);
-      }
-      else {
-        widget.logsProvider.setLoadStatus(2);
-        widget.appConfigProvider.addLog(result['log']);
-      }
-    }
-  }
-
   void fetchFilteringRules() async {
-    final result = await getFilteringRules(server: widget.serversProvider.selectedServer!);
-    if (mounted) {
-      if (result['result'] == 'success') {
-        widget.serversProvider.setFilteringStatus(result['data']);
-      }
-      else {
-        widget.appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),
-            backgroundColor: Colors.red,
-          )
-        );
-      }
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
+
+    final result = await statusProvider.getFilteringRules();
+    if (mounted && result == false) {
+      showSnacbkar(
+        appConfigProvider: appConfigProvider, 
+        label: AppLocalizations.of(context)!.couldntGetFilteringStatus, 
+        color: Colors.red
+      );
     }
   }
 
   Future fetchClients() async {
-    final result = await getClients(widget.serversProvider.selectedServer!);
-    if (mounted) {
-      if (result['result'] == 'success') {
-        widget.logsProvider.setClientsLoadStatus(1);
-        widget.logsProvider.setClients(result['data'].autoClientsData);
-      }
-      else {
-        widget.logsProvider.setClientsLoadStatus(2);
-        widget.appConfigProvider.addLog(result['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.couldntGetFilteringStatus),
-            backgroundColor: Colors.red,
-          )
-        );
-      }
+    final clientsProvider = Provider.of<ClientsProvider>(context, listen: false);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+
+    final result = await clientsProvider.fetchClients();
+    if (mounted && result == false) {
+      showSnacbkar(
+        appConfigProvider: appConfigProvider, 
+        label: AppLocalizations.of(context)!.couldntGetFilteringStatus, 
+        color: Colors.red
+      );
     }
   }
 
   void scrollListener() {
-    if (scrollController.position.extentAfter < 500 && isLoadingMore == false) {
-      fetchLogs(loadingMore: true);
+    final logsProvider = Provider.of<LogsProvider>(context, listen: false);
+
+    if (scrollController.position.extentAfter < 500 && logsProvider.isLoadingMore == false) {
+      logsProvider.fetchLogs(loadingMore: true);
     }
     if (scrollController.position.pixels > 0) {
       setState(() => showDivider = false);
@@ -180,8 +81,10 @@ class _LogsWidgetState extends State<LogsWidget> {
 
   @override
   void initState() {
+    final logsProvider = Provider.of<LogsProvider>(context, listen: false);
+
     scrollController = ScrollController()..addListener(scrollListener);
-    fetchLogs(inOffset: 0);
+    logsProvider.fetchLogs(inOffset: 0);
     fetchFilteringRules();
     fetchClients();
     super.initState();
@@ -190,6 +93,7 @@ class _LogsWidgetState extends State<LogsWidget> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
@@ -200,12 +104,12 @@ class _LogsWidgetState extends State<LogsWidget> {
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
 
       final result = serverVersionIsAhead(
-        currentVersion: widget.serversProvider.serverStatus.data!.serverVersion, 
+        currentVersion: statusProvider.serverStatus!.serverVersion, 
         referenceVersion: 'v0.107.28',
         referenceVersionBeta: 'v0.108.0-b.33'
       ) == true 
-        ? await updateQueryLogParameters(server: serversProvider.selectedServer!, data: data)
-        : await updateQueryLogParametersLegacy(server: serversProvider.selectedServer!, data: data);
+        ? await serversProvider.apiClient!.updateQueryLogParameters(data: data)
+        : await serversProvider.apiClient!.updateQueryLogParametersLegacy(data: data);
 
       processModal.close();
 
@@ -231,7 +135,7 @@ class _LogsWidgetState extends State<LogsWidget> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
 
-      final result = await clearLogs(server: serversProvider.selectedServer!);
+      final result = await serversProvider.apiClient!.clearLogs();
 
       processModal.close();
 
@@ -243,8 +147,6 @@ class _LogsWidgetState extends State<LogsWidget> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsNotCleared, 
@@ -289,7 +191,7 @@ class _LogsWidgetState extends State<LogsWidget> {
 
     Widget generateBody() {
       switch (logsProvider.loadStatus) {
-        case 0:
+        case LoadStatus.loading:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -309,20 +211,20 @@ class _LogsWidgetState extends State<LogsWidget> {
             ),
           );
         
-        case 1:
+        case LoadStatus.loaded:
           return RefreshIndicator(
             onRefresh: () async {
-              await fetchLogs(inOffset: 0);
+              await logsProvider.fetchLogs(inOffset: 0);
             },
             child: logsProvider.logsData!.data.isNotEmpty
               ? ListView.builder(
                   controller: scrollController,
                   padding: const EdgeInsets.only(top: 0),
-                  itemCount: isLoadingMore == true 
+                  itemCount: logsProvider.isLoadingMore == true 
                     ? logsProvider.logsData!.data.length+1
                     : logsProvider.logsData!.data.length,
                   itemBuilder: (context, index) {
-                    if (isLoadingMore == true && index == logsProvider.logsData!.data.length) {
+                    if (logsProvider.isLoadingMore == true && index == logsProvider.logsData!.data.length) {
                       return const Padding(
                         padding: EdgeInsets.symmetric(vertical: 20),
                         child: Center(
@@ -385,7 +287,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                 )
           );
           
-        case 2:
+        case LoadStatus.error:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -421,11 +323,11 @@ class _LogsWidgetState extends State<LogsWidget> {
           centerTitle: false,
           actions: [
             if (!(Platform.isAndroid || Platform.isIOS)) IconButton(
-              onPressed: () => fetchLogs(inOffset: 0), 
+              onPressed: () => logsProvider.fetchLogs(inOffset: 0), 
               icon: const Icon(Icons.refresh_rounded),
               tooltip: AppLocalizations.of(context)!.refresh,
             ),
-            logsProvider.loadStatus == 1 
+            logsProvider.loadStatus == LoadStatus.loaded
               ? IconButton(
                   onPressed: openFilersModal, 
                   icon: const Icon(Icons.filter_list_rounded),
@@ -442,7 +344,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                       onConfirm: updateConfig,
                       onClear: clearQueries,
                       dialog: true,
-                      serverVersion: serversProvider.serverStatus.data!.serverVersion,
+                      serverVersion: statusProvider.serverStatus!.serverVersion,
                     ),
                     barrierDismissible: false
                   )
@@ -454,7 +356,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                       onConfirm: updateConfig,
                       onClear: clearQueries,
                       dialog: false,
-                      serverVersion: serversProvider.serverStatus.data!.serverVersion,
+                      serverVersion: statusProvider.serverStatus!.serverVersion,
                     ),
                     backgroundColor: Colors.transparent,
                     isScrollControlled: true
@@ -510,7 +412,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                               )
                             );
                             logsProvider.setSearchText(null);
-                            fetchLogs(
+                            logsProvider.fetchLogs(
                               inOffset: 0,
                               searchText: ''
                             );
@@ -543,7 +445,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                               )
                             );
                             logsProvider.setSelectedResultStatus('all');
-                            fetchLogs(
+                            logsProvider.fetchLogs(
                               inOffset: 0,
                               responseStatus: 'all'
                             );
@@ -578,7 +480,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                               )
                             );
                             logsProvider.setSelectedClients(null);
-                            fetchLogs(
+                            logsProvider.fetchLogs(
                               inOffset: 0,
                               responseStatus: logsProvider.appliedFilters.selectedResultStatus
                             );

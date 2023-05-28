@@ -1,0 +1,102 @@
+name: Compile and release beta build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (beta)"
+        required: true
+        default: "1.0.0-beta.1"
+      number:
+        description: "Build number"
+        required: true
+        default: "1"
+jobs:
+  build-android:
+    name: Build Android .apk and .aab
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_AAB_RELEASE_PATH: build/app/outputs/bundle/release
+      ANDROID_APK_RELEASE_PATH: build/app/outputs/apk/release
+    steps:
+      - uses: actions/checkout@v3
+      - name: Decode android/app/keystore.jks
+        run: echo "${{ secrets.KEYSTORE_JKS }}" | base64 --decode > android/app/keystore.jks
+      - name: Decode android/key.properties
+        run: echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
+      - name: Decode .env
+        run: echo "${{ secrets.ENV }}" | base64 --decode > .env
+      - name: Update version in YAML
+        run: sed -i 's/99.99.99+99/${{ github.event.inputs.version }}+${{ github.event.inputs.number }}/g' pubspec.yaml
+      - name: Update KeyStore password in gradle properties
+        run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
+      - name: Update KeyStore key password in gradle properties
+        run: sed -i 's/#{KEYSTORE_KEY_PASS}#/${{ secrets.KEYSTORE_KEY_PASS }}/g' android/key.properties
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '18.x'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - run: flutter build appbundle --release
+      - name: Rename apk 
+        run: mv $ANDROID_APK_RELEASE_PATH/app-release.apk $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+      - name: Rename aab 
+        run: mv $ANDROID_AAB_RELEASE_PATH/app-release.aab $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+      - name: Copy apk to project root
+        run: cp $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+      - name: Copy aab to project root
+        run: cp $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android
+          path: |
+            AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+            AdGuardHomeManager_${{ github.event.inputs.version }}_Android.apk
+  release-builds-github:
+    name: Release beta build to GitHub
+    runs-on: ubuntu-latest
+    needs: [build-android]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create builds directory
+        run: mkdir releases
+      - name: Download Android artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: android
+          path: releases/
+      - name: Release to GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "releases/*"
+          token: ${{ secrets.GH_TOKEN }}
+          tag: '${{ github.event.inputs.version }}_(${{ github.event.inputs.number }})'
+          name: v${{ github.event.inputs.version }}
+          draft: true
+          prerelease: true
+          commit: ${{ github.sha }}
+  release-build-google-play:
+    name: Release Android beta build to the Google Play Store
+    runs-on: ubuntu-latest
+    needs: [build-android]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download Android artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: android
+      - name: Release app to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
+          packageName: com.jgeek00.adguard_home_manager
+          releaseFiles: AdGuardHomeManager_${{ github.event.inputs.version }}_Android.aab
+          track: beta
+          status: draft
+          releaseName: ${{ github.event.inputs.version }}

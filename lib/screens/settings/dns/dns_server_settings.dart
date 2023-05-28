@@ -8,20 +8,13 @@ import 'package:adguard_home_manager/widgets/custom_radio_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class DnsServerSettingsScreen extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const DnsServerSettingsScreen({
-    Key? key,
-    required this.serversProvider
-  }) : super(key: key);
+  const DnsServerSettingsScreen({Key? key}) : super(key: key);
 
   @override
   State<DnsServerSettingsScreen> createState() => _DnsServerSettingsScreenState();
@@ -89,56 +82,48 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
 
   @override
   void initState() {
-    limitRequestsController.text = widget.serversProvider.dnsInfo.data!.ratelimit.toString();
-    enableEdns = widget.serversProvider.dnsInfo.data!.ednsCsEnabled;
-    enableDnssec = widget.serversProvider.dnsInfo.data!.dnssecEnabled;
-    disableIpv6Resolving = widget.serversProvider.dnsInfo.data!.disableIpv6;
-    blockingMode = widget.serversProvider.dnsInfo.data!.blockingMode;
-    ipv4controller.text = widget.serversProvider.dnsInfo.data!.blockingIpv4;
-    ipv6controller.text = widget.serversProvider.dnsInfo.data!.blockingIpv6;
+    final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
+
+    limitRequestsController.text = dnsProvider.dnsInfo!.ratelimit.toString();
+    enableEdns = dnsProvider.dnsInfo!.ednsCsEnabled;
+    enableDnssec = dnsProvider.dnsInfo!.dnssecEnabled;
+    disableIpv6Resolving = dnsProvider.dnsInfo!.disableIpv6;
+    blockingMode = dnsProvider.dnsInfo!.blockingMode;
+    ipv4controller.text = dnsProvider.dnsInfo!.blockingIpv4;
+    ipv6controller.text = dnsProvider.dnsInfo!.blockingIpv6;
     isDataValid = true;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
-      final result = await setDnsConfig(server: serversProvider.selectedServer!, data: {
+      final result = await dnsProvider.saveDnsServerConfig({
         "ratelimit": int.parse(limitRequestsController.text),
         "edns_cs_enabled": enableEdns,
         "dnssec_enabled": enableDnssec,
         "disable_ipv6": disableIpv6Resolving,
-        "blocking_mode": blockingMode
+        "blocking_mode": blockingMode,
+        "blocking_ipv4": ipv4controller.text,
+        "blocking_ipv6": ipv6controller.text
       });
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        DnsInfoData data = serversProvider.dnsInfo.data!;
-        data.ratelimit = int.parse(limitRequestsController.text);
-        data.ednsCsEnabled = enableEdns;
-        data.dnssecEnabled = enableDnssec;
-        data.disableIpv6 = disableIpv6Resolving;
-        data.blockingMode = blockingMode;
-        data.blockingIpv4 = ipv4controller.text;
-        data.blockingIpv6 = ipv6controller.text;
-        serversProvider.setDnsInfoData(data);
-
+      if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
-      else if (result['log'] != null && result['log'].statusCode == '400') {
-        appConfigProvider.addLog(result['log']);
-
+      else if (result['success'] == false && result['error'] == 400) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
@@ -146,8 +131,6 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 

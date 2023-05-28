@@ -16,7 +16,6 @@ import 'package:adguard_home_manager/screens/settings/encryption/error_message.d
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/base64.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
@@ -98,7 +97,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
   void fetchData({bool? showRefreshIndicator}) async {
     setState(() => loadStatus = 0);
 
-    final result = await getEncryptionSettings(server: widget.serversProvider.selectedServer!);
+    final result = await Provider.of<ServersProvider>(context, listen: false).apiClient!.getEncryptionSettings();
 
     if (mounted) {
       if (result['result'] == 'success') {
@@ -141,19 +140,21 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
   Future checkValidDataApi({Map<String, dynamic>? data}) async {
     setState(() => certKeyValidApi = 0);
 
-    final result = await checkEncryptionSettings(server: widget.serversProvider.selectedServer!, data: data ?? {
-      "enabled": enabled,
-      "server_name": domainNameController.text,
-      "force_https": redirectHttps,
-      "port_https": httpsPortController.text != '' ? int.parse(httpsPortController.text) : null,
-      "port_dns_over_tls": tlsPortController.text != '' ? int.parse(tlsPortController.text) : null,
-      "port_dns_over_quic": dnsOverQuicPortController.text != '' ? int.parse(dnsOverQuicPortController.text) : null,
-      if (certificateOption == 1) "certificate_chain": encodeBase64(certificateContentController.text),
-      if (privateKeyOption == 1 && usePreviouslySavedKey == false) "private_key": encodeBase64(pastePrivateKeyController.text),
-      "private_key_saved": usePreviouslySavedKey,
-      if (certificateOption == 0) "certificate_path": certificatePathController.text,
-      if (privateKeyOption == 0) "private_key_path": privateKeyPathController.text,
-    });
+    final result = await Provider.of<ServersProvider>(context, listen: false).apiClient!.checkEncryptionSettings(
+      data: data ?? {
+        "enabled": enabled,
+        "server_name": domainNameController.text,
+        "force_https": redirectHttps,
+        "port_https": httpsPortController.text != '' ? int.parse(httpsPortController.text) : null,
+        "port_dns_over_tls": tlsPortController.text != '' ? int.parse(tlsPortController.text) : null,
+        "port_dns_over_quic": dnsOverQuicPortController.text != '' ? int.parse(dnsOverQuicPortController.text) : null,
+        if (certificateOption == 1) "certificate_chain": encodeBase64(certificateContentController.text),
+        if (privateKeyOption == 1 && usePreviouslySavedKey == false) "private_key": encodeBase64(pastePrivateKeyController.text),
+        "private_key_saved": usePreviouslySavedKey,
+        if (certificateOption == 0) "certificate_path": certificatePathController.text,
+        if (privateKeyOption == 0) "private_key_path": privateKeyPathController.text,
+      }
+    );
 
     if (mounted) {
       if (result['result'] == 'success') {
@@ -224,19 +225,21 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
-      final result = await saveEncryptionSettings(server: serversProvider.selectedServer!, data: {
-        "enabled": enabled,
-        "server_name": domainNameController.text,
-        "force_https": redirectHttps,
-        "port_https": int.tryParse(httpsPortController.text),
-        "port_dns_over_tls": int.tryParse(tlsPortController.text),
-        "port_dns_over_quic": int.tryParse(dnsOverQuicPortController.text),
-        "certificate_chain": encodeBase64(certificateContentController.text),
-        "private_key": encodeBase64(pastePrivateKeyController.text),
-        "private_key_saved": usePreviouslySavedKey,
-        "certificate_path": certificatePathController.text,
-        "private_key_path": privateKeyPathController.text,
-      });
+      final result = await serversProvider.apiClient!.saveEncryptionSettings(
+        data: {
+          "enabled": enabled,
+          "server_name": domainNameController.text,
+          "force_https": redirectHttps,
+          "port_https": int.tryParse(httpsPortController.text),
+          "port_dns_over_tls": int.tryParse(tlsPortController.text),
+          "port_dns_over_quic": int.tryParse(dnsOverQuicPortController.text),
+          "certificate_chain": encodeBase64(certificateContentController.text),
+          "private_key": encodeBase64(pastePrivateKeyController.text),
+          "private_key_saved": usePreviouslySavedKey,
+          "certificate_path": certificatePathController.text,
+          "private_key_path": privateKeyPathController.text,
+        }
+      );
 
       processModal.close();
 

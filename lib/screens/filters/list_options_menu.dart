@@ -1,20 +1,20 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/list_functions.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/options_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class ListOptionsMenu extends StatelessWidget {
   final Filter list;
@@ -30,17 +30,27 @@ class ListOptionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void enableDisable() async {
-      final result = await enableDisableList(
-        context: context, 
-        serversProvider: serversProvider, 
-        appConfigProvider: appConfigProvider, 
-        list: list, 
-        listType: listType, 
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(
+        list.enabled == true
+          ? AppLocalizations.of(context)!.disablingList
+          : AppLocalizations.of(context)!.enablingList
       );
+
+      final result = await filteringProvider.updateList(
+        list: list, 
+        type: listType, 
+        action: list.enabled == true
+          ? FilteringListActions.disable
+          : FilteringListActions.enable
+      );
+
+      processModal.close();
+
       if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,

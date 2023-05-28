@@ -2,6 +2,8 @@
 
 import 'dart:io';
 
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
@@ -19,64 +21,25 @@ import 'package:adguard_home_manager/functions/clear_dns_cache.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
-class DnsSettings extends StatelessWidget {
+class DnsSettings extends StatefulWidget {
   const DnsSettings({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return DnsSettingsWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider,
-    );
-  }
-}
-class DnsSettingsWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-
-  const DnsSettingsWidget({
-    required this.serversProvider,
-    required this.appConfigProvider,
-    Key? key
-  }) : super(key: key);
-
-  @override
-  State<DnsSettingsWidget> createState() => _DnsSettingsWidgetState();
+  State<DnsSettings> createState() => _DnsSettingsState();
 }
 
-class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
-
-  void fetchData({bool? showRefreshIndicator}) async {
-    widget.serversProvider.setDnsInfoLoadStatus(0, showRefreshIndicator ?? false);
-
-    final result = await getDnsInfo(server: widget.serversProvider.selectedServer!);
-
-    if (mounted) {
-      if (result['result'] == 'success') {
-        widget.serversProvider.setDnsInfoData(result['data']);
-        widget.serversProvider.setDnsInfoLoadStatus(1, true);
-      }
-      else {
-        widget.appConfigProvider.addLog(result['log']);
-        widget.serversProvider.setDnsInfoLoadStatus(2, true);
-      }
-    }
-  }
-
+class _DnsSettingsState extends State<DnsSettings> {
   @override
   void initState() {
-    fetchData();
+    Provider.of<DnsProvider>(context, listen: false).fetchDnsData(showLoading: true);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -93,8 +56,8 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
     }
 
     Widget generateBody() {
-      switch (widget.serversProvider.dnsInfo.loadStatus) {
-        case 0:
+      switch (dnsProvider.loadStatus) {
+        case LoadStatus.loading:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -115,63 +78,43 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
             )
           );
 
-        case 1:
+        case LoadStatus.loaded:
           return ListView(
             children: [
               CustomListTile(
                 title: AppLocalizations.of(context)!.upstreamDns,
                 subtitle: AppLocalizations.of(context)!.upstreamDnsDescription,
-                onTap: () => navigate(
-                  UpstreamDnsScreen(
-                    serversProvider: serversProvider
-                  )
-                ),
+                onTap: () => navigate(const UpstreamDnsScreen()),
                 icon: Icons.upload_rounded,
               ),
               CustomListTile(
                 title: AppLocalizations.of(context)!.bootstrapDns,
                 subtitle: AppLocalizations.of(context)!.bootstrapDnsDescription,
-                onTap: () => navigate(
-                  BootstrapDnsScreen(
-                    serversProvider: serversProvider
-                  )
-                ),
+                onTap: () => navigate(const BootstrapDnsScreen()),
                 icon: Icons.dns_rounded,
               ),
               CustomListTile(
                 title: AppLocalizations.of(context)!.privateReverseDnsServers,
                 subtitle: AppLocalizations.of(context)!.privateReverseDnsDescription,
-                onTap: () => navigate(
-                  PrivateReverseDnsServersScreen(
-                    serversProvider: serversProvider
-                  )
-                ),
+                onTap: () => navigate(const PrivateReverseDnsServersScreen()),
                 icon: Icons.person_rounded,
               ),
               CustomListTile(
                 title: AppLocalizations.of(context)!.dnsServerSettings,
                 subtitle: AppLocalizations.of(context)!.dnsServerSettingsDescription,
-                onTap: () => navigate(
-                  DnsServerSettingsScreen(
-                    serversProvider: serversProvider
-                  )
-                ),
+                onTap: () => navigate(const DnsServerSettingsScreen()),
                 icon: Icons.settings,
               ),
               CustomListTile(
                 title: AppLocalizations.of(context)!.dnsCacheConfig,
                 subtitle: AppLocalizations.of(context)!.dnsCacheConfigDescription,
-                onTap: () => navigate(
-                  CacheConfigDnsScreen(
-                    serversProvider: serversProvider
-                  )
-                ),
+                onTap: () => navigate(const CacheConfigDnsScreen()),
                 icon: Icons.storage_rounded,
               ),
             ],
           );
 
-        case 2:
+        case LoadStatus.error:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -226,7 +169,7 @@ class _DnsSettingsWidgetState extends State<DnsSettingsWidget> {
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
-                onTap: () => fetchData(showRefreshIndicator: true), 
+                onTap: () => dnsProvider.fetchDnsData(),
                 child: Row(
                   children: [
                     const Icon(Icons.refresh_rounded),

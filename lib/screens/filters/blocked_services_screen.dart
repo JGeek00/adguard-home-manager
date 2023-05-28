@@ -7,11 +7,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class BlockedServicesScreen extends StatelessWidget {
+class BlockedServicesScreen extends StatefulWidget {
   final bool dialog;
 
   const BlockedServicesScreen({
@@ -20,63 +20,28 @@ class BlockedServicesScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return BlockedServicesScreenWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider,
-      dialog: dialog,
-    );
-  }
+  State<BlockedServicesScreen> createState() => _BlockedServicesScreenStateWidget();
 }
 
-class BlockedServicesScreenWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-  final bool dialog;
-
-  const BlockedServicesScreenWidget({
-    Key? key,
-    required this.serversProvider,
-    required this.appConfigProvider,
-    required this.dialog
-  }) : super(key: key);
-
-  @override
-  State<BlockedServicesScreenWidget> createState() => _BlockedServicesScreenStateWidget();
-}
-
-class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidget> {
+class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
   List<String> values = [];
-
-  Future loadBlockedServices() async {
-    final result = await getBlockedServices(server: widget.serversProvider.selectedServer!);
-    if (result['result'] == 'success') {
-      widget.serversProvider.setBlockedServicesListLoadStatus(1, true);
-      widget.serversProvider.setBlockedServiceListData(result['data']);
-    }
-    else {
-      widget.serversProvider.setBlockedServicesListLoadStatus(2, true);
-      widget.appConfigProvider.addLog(result['log']);
-    }
-  }
 
   @override
   void initState() {
-    if (widget.serversProvider.blockedServicesList.loadStatus != 1) {
-      loadBlockedServices();
+    final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
+
+    if (filteringProvider.blockedServicesLoadStatus != LoadStatus.loaded) {
+      filteringProvider.loadBlockedServices(showLoading: true);
     }
 
-    values = widget.serversProvider.filtering.data!.blockedServices; 
+    values = filteringProvider.filtering!.blockedServices; 
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void updateValues(bool value, BlockedService item) {
@@ -96,13 +61,11 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updating);
 
-      final result = await setBlockedServices(server: serversProvider.selectedServer!, data: values);
+      final result = await filteringProvider.updateBlockedServices(values);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        serversProvider.setBlockedServices(values);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.blockedServicesUpdated, 
@@ -119,8 +82,8 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
     }
 
     Widget body() {
-      switch (serversProvider.blockedServicesList.loadStatus) {
-        case 0:
+      switch (filteringProvider.blockedServicesLoadStatus) {
+        case LoadStatus.loading:
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             width: double.maxFinite,
@@ -142,15 +105,15 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
             ),
           );
 
-        case 1:
+        case LoadStatus.loaded:
           return ListView.builder(
-            itemCount: serversProvider.blockedServicesList.services!.length,
+            itemCount: filteringProvider.blockedServices!.services.length,
             itemBuilder: (context, index) => Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => updateValues(
-                  values.contains(serversProvider.blockedServicesList.services![index].id), 
-                  serversProvider.blockedServicesList.services![index]
+                  values.contains(filteringProvider.blockedServices!.services[index].id), 
+                  filteringProvider.blockedServices!.services[index]
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -163,17 +126,17 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        serversProvider.blockedServicesList.services![index].name,
+                        filteringProvider.blockedServices!.services[index].name,
                         style: TextStyle(
                           fontSize: 16,
                           color: Theme.of(context).colorScheme.onSurface
                         ),
                       ),
                       Checkbox(
-                        value: values.contains(serversProvider.blockedServicesList.services![index].id), 
+                        value: values.contains(filteringProvider.blockedServices!.services[index].id), 
                         onChanged: (value) => updateValues(
                           value!, 
-                          serversProvider.blockedServicesList.services![index]
+                          filteringProvider.blockedServices!.services[index]
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)
@@ -186,7 +149,7 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
             )
           );
 
-        case 2:
+        case LoadStatus.error:
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             width: double.maxFinite,
@@ -281,7 +244,16 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreenWidge
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: loadBlockedServices,
+          onRefresh: () async {
+            final result = await filteringProvider.loadBlockedServices();
+            if (result == false) {
+              showSnacbkar(
+                appConfigProvider: appConfigProvider,
+                label: AppLocalizations.of(context)!.blockedServicesListNotLoaded, 
+                color: Colors.red
+              );
+            }
+          },
           child: body()
         ),
       );

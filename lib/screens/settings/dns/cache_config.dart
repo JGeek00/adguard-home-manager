@@ -8,21 +8,14 @@ import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/dns/clear_dns_cache_dialog.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
-
+import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/clear_dns_cache.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class CacheConfigDnsScreen extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const CacheConfigDnsScreen({
-    Key? key,
-    required this.serversProvider
-  }) : super(key: key);
+  const CacheConfigDnsScreen({Key? key}) : super(key: key);
 
   @override
   State<CacheConfigDnsScreen> createState() => _CacheConfigDnsScreenState();
@@ -60,10 +53,12 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
 
   @override
   void initState() {
-    cacheSizeController.text = widget.serversProvider.dnsInfo.data!.cacheSize.toString();
-    overrideMinTtlController.text = widget.serversProvider.dnsInfo.data!.cacheTtlMin.toString();
-    overrideMaxTtlController.text = widget.serversProvider.dnsInfo.data!.cacheTtlMax.toString();
-    optimisticCache = widget.serversProvider.dnsInfo.data!.cacheOptimistic;
+    final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
+
+    cacheSizeController.text = dnsProvider.dnsInfo!.cacheSize.toString();
+    overrideMinTtlController.text = dnsProvider.dnsInfo!.cacheTtlMin.toString();
+    overrideMaxTtlController.text = dnsProvider.dnsInfo!.cacheTtlMax.toString();
+    optimisticCache = dnsProvider.dnsInfo!.cacheOptimistic;
     validData = true;
     super.initState();
   }
@@ -71,13 +66,14 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
-      final result = await setDnsConfig(server: serversProvider.selectedServer!, data: {
+      final result = await dnsProvider.saveCacheCacheConfig({
         "cache_size": int.parse(cacheSizeController.text),
         "cache_ttl_min": int.parse(overrideMinTtlController.text),
         "cache_ttl_max": int.parse(overrideMaxTtlController.text),
@@ -86,23 +82,14 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        DnsInfoData data = serversProvider.dnsInfo.data!;
-        data.cacheSize = int.parse(cacheSizeController.text);
-        data.cacheTtlMin = int.parse(overrideMinTtlController.text);
-        data.cacheTtlMax = int.parse(overrideMaxTtlController.text);
-        data.cacheOptimistic = optimisticCache;
-        serversProvider.setDnsInfoData(data);
-
+      if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
-      else if (result['log'] != null && result['log'].statusCode == '400') {
-        appConfigProvider.addLog(result['log']);
-
+      else if (result['success'] == false && result['error'] == 400) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
@@ -110,8 +97,6 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 

@@ -1,5 +1,7 @@
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import 'package:adguard_home_manager/models/github_release.dart';
+
 bool compareVersions({
   required String currentVersion, 
   required String newVersion
@@ -147,20 +149,36 @@ bool serverVersionIsAhead({
   }
 }
 
-bool gitHubUpdateExists(String appVersion, String gitHubVersion) {
-  final List<int> appVersionSplit = List<int>.from(appVersion.split('.').map((e) => int.parse(e)));
-  final List<int> gitHubVersionSplit = List<int>.from(gitHubVersion.split('.').map((e) => int.parse(e)));
+bool gitHubUpdateExists({
+  required String currentBuildNumber, 
+  required List<GitHubRelease> gitHubReleases,
+  required bool isBeta
+}) {
+  final release = isBeta == true
+    ? gitHubReleases.firstWhere((release) => release.prerelease == true)
+    : gitHubReleases.firstWhere((release) => release.prerelease == false);
+  
+  final versionNumberRegex = RegExp(r'\(\d+\)');
+  final releaseNumberExtracted = versionNumberRegex.allMatches(release.tagName).first.group(0);
 
-  if (gitHubVersionSplit[0] > appVersionSplit[0]) {
-    return true;
-  }
-  else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] > appVersionSplit[1]) {
-    return true;
-  }
-  else if (gitHubVersionSplit[0] ==  appVersionSplit[0] && gitHubVersionSplit[1] == appVersionSplit[1] && gitHubVersionSplit[2] > appVersionSplit[2]) {
-    return true;
+  if (releaseNumberExtracted != null) {
+    final releaseNumber = releaseNumberExtracted.replaceAll(RegExp(r'\(|\)'), '');
+    try {
+      final newReleaseParsed = int.parse(releaseNumber);
+      final currentReleaseParsed = int.parse(currentBuildNumber);
+      if (newReleaseParsed > currentReleaseParsed) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    } catch (e) {
+      Sentry.captureMessage("Invalid release number. Current release: $currentBuildNumber. New release: $releaseNumber");
+      return false;
+    }
   }
   else {
+    Sentry.captureMessage("Invalid release number. Tagname: ${release.tagName}");
     return false;
   }
 }

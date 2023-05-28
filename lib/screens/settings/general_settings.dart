@@ -2,20 +2,19 @@
 
 import 'dart:io';
 
-import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
 
+import 'package:adguard_home_manager/functions/check_app_updates.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/functions/app_update_download_link.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 
 class GeneralSettings extends StatefulWidget {
   const GeneralSettings({Key? key}) : super(key: key);
@@ -56,16 +55,16 @@ class _GeneralSettingsState extends State<GeneralSettings> {
 
     Future checkUpdatesAvailable() async {
       setState(() => appUpdatesStatus = AppUpdatesStatus.checking);
-      final result = await checkAppUpdatesGitHub();
-      if (result['result'] == 'success') {
-        final update = gitHubUpdateExists(appConfigProvider.getAppInfo!.version, result['body'].tagName);
-        if (update == true) {
-          appConfigProvider.setAppUpdatesAvailable(result['body']);
-          setState(() => appUpdatesStatus = AppUpdatesStatus.available);
-        }
-        else {
-          setState(() => appUpdatesStatus = AppUpdatesStatus.recheck);
-        }
+      
+      final res = await checkAppUpdates(
+        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber, 
+        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable, 
+        installationSource: appConfigProvider.installationSource,
+        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
+      );
+
+      if (res != null) {
+        setState(() => appUpdatesStatus = AppUpdatesStatus.available);
       }
       else {
         setState(() => appUpdatesStatus = AppUpdatesStatus.recheck);

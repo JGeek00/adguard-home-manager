@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
@@ -36,7 +35,7 @@ class UpdateScreen extends StatelessWidget {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.requestingUpdate);
 
-      final result = await requestUpdateServer(server: serversProvider.selectedServer!);
+      final result = await serversProvider.apiClient!.requestUpdateServer();
 
       processModal.close();
       
@@ -56,7 +55,6 @@ class UpdateScreen extends StatelessWidget {
           color: Colors.red,
           labelColor: Colors.white,
         );
-        appConfigProvider.addLog(result['log']);
       }
     }  
 
@@ -92,8 +90,8 @@ class UpdateScreen extends StatelessWidget {
             child: Column(
               children: [
                 serversProvider.updateAvailable.loadStatus == LoadStatus.loading
-                  ? Column(
-                      children: const [
+                  ? const Column(
+                      children: [
                         CircularProgressIndicator(),
                         SizedBox(height: 4)
                       ],

@@ -199,7 +199,7 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
-  void setAppUpdatesAvailable(GitHubRelease value) {
+  void setAppUpdatesAvailable(GitHubRelease? value) {
     _appUpdatesAvailable = value;
     notifyListeners();
   }

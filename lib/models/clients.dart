@@ -1,45 +1,28 @@
-import 'dart:convert';
-
-import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/safe_search.dart';
 
 class Clients {
-  LoadStatus loadStatus;
-  ClientsData? data;
-
-  Clients({
-    required this.loadStatus,
-    this.data
-  });
-}
-
-ClientsData clientsFromJson(String str) => ClientsData.fromJson(json.decode(str));
-
-String clientsToJson(ClientsData data) => json.encode(data.toJson());
-
-class ClientsData {
   List<Client> clients;
-  final List<AutoClient> autoClientsData;
+  final List<AutoClient> autoClients;
   final List<String> supportedTags;
   ClientsAllowedBlocked? clientsAllowedBlocked;
 
-  ClientsData({
+  Clients({
     required this.clients,
-    required this.autoClientsData,
+    required this.autoClients,
     required this.supportedTags,
     this.clientsAllowedBlocked
   });
 
-  factory ClientsData.fromJson(Map<String, dynamic> json) => ClientsData(
+  factory Clients.fromJson(Map<String, dynamic> json) => Clients(
     clients: json["clients"] != null ? List<Client>.from(json["clients"].map((x) => Client.fromJson(x))) : [],
-    autoClientsData: json["auto_clients"] != null ? List<AutoClient>.from(json["auto_clients"].map((x) => AutoClient.fromJson(x))) : [],
+    autoClients: json["auto_clients"] != null ? List<AutoClient>.from(json["auto_clients"].map((x) => AutoClient.fromJson(x))) : [],
     supportedTags: json["supported_tags"] != null ? List<String>.from(json["supported_tags"].map((x) => x)) : [],
   );
 
   Map<String, dynamic> toJson() => {
     "clients": List<dynamic>.from(clients.map((x) => x.toJson())),
-    "auto_clients": List<dynamic>.from(autoClientsData.map((x) => x.toJson())),
+    "auto_clients": List<dynamic>.from(autoClients.map((x) => x.toJson())),
     "supported_tags": List<dynamic>.from(supportedTags.map((x) => x)),
   };
 }

@@ -10,11 +10,11 @@ import 'package:adguard_home_manager/screens/logs/log_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/models/logs.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class LogDetailsScreen extends StatelessWidget {
@@ -29,13 +29,13 @@ class LogDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
 
     Filter? getList(int id) {
       try {
-        return serversProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
-          return serversProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
+        return statusProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
+          return statusProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
         });
       } catch (_) {
         return null;
@@ -53,56 +53,29 @@ class LogDetailsScreen extends StatelessWidget {
       );
     }
 
-    void blockUnblock(Log log, String newStatus) async {
+    void blockUnblock(String domain, String newStatus) async {
       final ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingUserFilters);
 
-      final rules = await getFilteringRules(server: serversProvider.selectedServer!);
+      final rules = await statusProvider.blockUnblockDomain(
+        domain: domain,
+        newStatus: newStatus
+      );
 
-      if (rules['result'] == 'success') {
-        FilteringStatus oldStatus = serversProvider.filteringStatus!;
+      processModal.close();
 
-        List<String> newRules = rules['data'].userRules.where((domain) => !domain.contains(log.question.name)).toList();
-        if (newStatus == 'block') {
-          newRules.add("||${log.question.name}^");
-        }
-        else if (newStatus == 'unblock') {
-          newRules.add("@@||${log.question.name}^");
-        }
-        FilteringStatus newObj = serversProvider.filteringStatus!;
-        newObj.userRules = newRules;
-        serversProvider.setFilteringStatus(newObj);
-
-        final result  = await postFilteringRules(server: serversProvider.selectedServer!, data: {'rules': newRules});
-        
-        processModal.close();
-        
-        if (result['result'] == 'success') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.userFilteringRulesUpdated),
-              backgroundColor: Colors.green,
-            )
-          );
-        }
-        else {
-          appConfigProvider.addLog(result['log']);
-          serversProvider.setFilteringStatus(oldStatus);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
-              backgroundColor: Colors.red,
-            )
-          );
-        }
+      if (rules == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.userFilteringRulesUpdated, 
+          color: Colors.green
+        );
       }
       else {
-        appConfigProvider.addLog(rules['log']);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.userFilteringRulesNotUpdated),
-            backgroundColor: Colors.red,
-          )
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.userFilteringRulesNotUpdated, 
+          color: Colors.red
         );
       }
     }
@@ -266,7 +239,12 @@ class LogDetailsScreen extends StatelessWidget {
                     Row(
                       children: [
                         IconButton(
-                          onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
+                          onPressed: log.question.name != null
+                            ? () => blockUnblock(
+                                log.question.name!, 
+                                getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'
+                              )
+                            : null,
                           icon: Icon(
                             getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
                               ? Icons.check_circle_rounded
@@ -298,8 +276,13 @@ class LogDetailsScreen extends StatelessWidget {
           centerTitle: false,
           title:  Text(AppLocalizations.of(context)!.logDetails),
           actions: [
-            if (serversProvider.filteringStatus != null) IconButton(
-              onPressed: () => blockUnblock(log, getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'),
+            if (statusProvider.filteringStatus != null) IconButton(
+              onPressed: log.question.name != null
+                ? () => blockUnblock(
+                    log.question.name!, 
+                    getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'
+                  )
+                : null,
               icon: Icon(
                 getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
                   ? Icons.check_circle_rounded

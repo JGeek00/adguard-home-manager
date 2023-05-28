@@ -11,43 +11,25 @@ import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/client_screen.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 
+import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/widgets/section_label.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 
-class SearchClients extends StatelessWidget {
+class SearchClients extends StatefulWidget {
   const SearchClients({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-
-    return SearchClientsWidget(
-      serversProvider: serversProvider,
-    );
-  }
+  State<SearchClients> createState() => _SearchClientsState();
 }
 
-class SearchClientsWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-
-  const SearchClientsWidget({
-    Key? key,
-    required this.serversProvider,
-  }) : super(key: key);
-
-  @override
-  State<SearchClientsWidget> createState() => _SearchClientsWidgetState();
-}
-
-class _SearchClientsWidgetState extends State<SearchClientsWidget> {
+class _SearchClientsState extends State<SearchClients> {
   late ScrollController scrollController;
 
   final TextEditingController searchController = TextEditingController();
@@ -86,11 +68,13 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
 
   @override
   void initState() {
+    final clientsProvider =  Provider.of<ClientsProvider>(context, listen: false);
+      
     scrollController = ScrollController()..addListener(scrollListener);
 
     setState(() {
-      clients = widget.serversProvider.clients.data!.clients;
-      autoClients = widget.serversProvider.clients.data!.autoClientsData;
+      clients = clientsProvider.clients!.clients;
+      autoClients = clientsProvider.clients!.autoClients;
     });
 
     super.initState();
@@ -98,7 +82,8 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
 
   @override
   Widget build(BuildContext context) {    
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -107,19 +92,11 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.removingClient);
       
-      final result = await postDeleteClient(server: serversProvider.selectedServer!, name: client.name);
+      final result = await clientsProvider.deleteClient(client);
     
       processModal.close();
 
-      if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
-        clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
-        serversProvider.setClientsData(clientsData);
-        setState(() {
-          clients = clientsData.clients;
-        });
-        search(searchController.text);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientDeletedSuccessfully, 
@@ -127,44 +104,23 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotDeleted, 
           color: Colors.red
         );
       }
-    }
+    }  
 
     void confirmEditClient(Client client) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
-      final result = await postUpdateClient(server: serversProvider.selectedServer!, data: {
-        'name': client.name,
-        'data': client.toJson()
-      });
+      final result = await clientsProvider.editClient(client);
 
       processModal.close();
 
-      if (result['result'] == 'success') {
-        ClientsData clientsData = serversProvider.clients.data!;
-        clientsData.clients = clientsData.clients.map((e) {
-          if (e.name == client.name) {
-            return client;
-          }
-          else {
-            return e;
-          }
-        }).toList();
-        serversProvider.setClientsData(clientsData);
-
-        setState(() {
-          clients = clientsData.clients;
-        });
-        search(searchController.text);
-
+      if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientUpdatedSuccessfully, 
@@ -172,8 +128,6 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotUpdated, 
@@ -189,7 +143,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
           context: context, 
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmEditClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             onDelete: deleteClient,
             client: client,
             dialog: true,
@@ -201,7 +155,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
           fullscreenDialog: true,
           builder: (BuildContext context) => ClientScreen(
             onConfirm: confirmEditClient,
-            serverVersion: serversProvider.serverStatus.data!.serverVersion,
+            serverVersion: statusProvider.serverStatus!.serverVersion,
             onDelete: deleteClient,
             client: client,
             dialog: false,
@@ -356,7 +310,7 @@ class _SearchClientsWidgetState extends State<SearchClientsWidget> {
                               Icons.search_rounded,
                               size: 19,
                               color: serverVersionIsAhead(
-                                currentVersion: serversProvider.serverStatus.data!.serverVersion, 
+                                currentVersion: statusProvider.serverStatus!.serverVersion, 
                                 referenceVersion: 'v0.107.28',
                                 referenceVersionBeta: 'v0.108.0-b.33'
                               ) == true 

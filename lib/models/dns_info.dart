@@ -1,20 +1,4 @@
-import 'dart:convert';
-
 class DnsInfo {
-  int loadStatus = 0;
-  DnsInfoData? data;
-
-  DnsInfo({
-    required this.loadStatus,
-    this.data
-  });
-}
-
-DnsInfoData dnsInfoDataFromJson(String str) => DnsInfoData.fromJson(json.decode(str));
-
-String dnsInfoDataToJson(DnsInfoData data) => json.encode(data.toJson());
-
-class DnsInfoData {
   List<String> upstreamDns;
   String upstreamDnsFile;
   List<String> bootstrapDns;
@@ -34,9 +18,9 @@ class DnsInfoData {
   List<String> localPtrUpstreams;
   String blockingIpv4;
   String blockingIpv6;
-
   List<String> defaultLocalPtrUpstreams;
-  DnsInfoData({
+
+  DnsInfo({
     required this.upstreamDns,
     required this.upstreamDnsFile,
     required this.bootstrapDns,
@@ -59,7 +43,7 @@ class DnsInfoData {
     required this.defaultLocalPtrUpstreams,
   });
 
-  factory DnsInfoData.fromJson(Map<String, dynamic> json) => DnsInfoData(
+  factory DnsInfo.fromJson(Map<String, dynamic> json) => DnsInfo(
     upstreamDns: json["upstream_dns"] != null ? List<String>.from(json["upstream_dns"].map((x) => x)) : [],
     upstreamDnsFile: json["upstream_dns_file"],
     bootstrapDns: List<String>.from(json["bootstrap_dns"].map((x) => x)),

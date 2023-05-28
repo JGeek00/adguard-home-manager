@@ -2,18 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/add_button.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 
 class CustomRulesList extends StatefulWidget {
   final LoadStatus loadStatus;
   final ScrollController scrollController;
   final List<String> data;
-  final Future<void> Function() fetchData;
   final void Function(String) onRemoveCustomRule;
 
   const CustomRulesList({
@@ -21,7 +24,6 @@ class CustomRulesList extends StatefulWidget {
     required this.loadStatus,
     required this.scrollController,
     required this.data,
-    required this.fetchData,
     required this.onRemoveCustomRule
   }) : super(key: key);
 
@@ -55,6 +57,9 @@ class _CustomRulesListState extends State<CustomRulesList> {
 
   @override
   Widget build(BuildContext context) {
+    final filteringProvider = Provider.of<FilteringProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
     bool checkIfComment(String value) {
       final regex = RegExp(r'^(!|#).*$');
       if (regex.hasMatch(value)) {
@@ -155,7 +160,16 @@ class _CustomRulesListState extends State<CustomRulesList> {
             ),
             const SizedBox(height: 30),
             TextButton.icon(
-              onPressed: widget.fetchData, 
+              onPressed: () async {
+                final result = await filteringProvider.fetchFilters();
+                if (result == false) {
+                  showSnacbkar(
+                    appConfigProvider: appConfigProvider,
+                    label: AppLocalizations.of(context)!.errorLoadFilters, 
+                    color: Colors.red
+                  );
+                }
+              }, 
               icon: const Icon(Icons.refresh_rounded), 
               label: Text(AppLocalizations.of(context)!.refresh),
             )
@@ -186,7 +200,16 @@ class _CustomRulesListState extends State<CustomRulesList> {
         ),
       ), 
       loadStatus: widget.loadStatus, 
-      onRefresh: widget.fetchData,
+      onRefresh: () async {
+        final result = await filteringProvider.fetchFilters();
+        if (result == false) {
+          showSnacbkar(
+            appConfigProvider: appConfigProvider,
+            label: AppLocalizations.of(context)!.errorLoadFilters, 
+            color: Colors.red
+          );
+        }
+      }, 
       fab: AddFiltersButton(
         type: 'custom_rule',
         widget: (fn) => FloatingActionButton(

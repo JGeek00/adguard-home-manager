@@ -12,11 +12,10 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 class TopItemsScreen extends StatefulWidget {
   final String type;
@@ -57,7 +56,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
@@ -130,12 +129,8 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          final result = await getServerStatus(serversProvider.selectedServer!);
-          if (result['result'] == 'success') {
-            serversProvider.setServerStatusData(result['data']);
-          }
-          else {
-            appConfigProvider.addLog(result['log']);
+          final result = await statusProvider.getServerStatus();
+          if (result == false) {
             showSnacbkar(
               appConfigProvider: appConfigProvider, 
               label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
@@ -150,7 +145,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                 String? name;
                 if (widget.isClient != null && widget.isClient == true) {
                   try {
-                    name = serversProvider.serverStatus.data!.clients.firstWhere((c) => c.ids.contains(screenData[index].keys.toList()[0])).name;
+                    name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(screenData[index].keys.toList()[0])).name;
                   } catch (e) {
                     // ---- //
                   }

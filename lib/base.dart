@@ -1,15 +1,11 @@
 // ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
 
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:store_checker/store_checker.dart';
 import 'package:flutter/services.dart';
 
 import 'package:adguard_home_manager/widgets/bottom_nav_bar.dart';
@@ -18,21 +14,14 @@ import 'package:adguard_home_manager/widgets/update_modal.dart';
 import 'package:adguard_home_manager/widgets/navigation_rail.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
-import 'package:adguard_home_manager/models/github_release.dart';
+import 'package:adguard_home_manager/functions/check_app_updates.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/app_screen.dart';
 import 'package:adguard_home_manager/config/app_screens.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Base extends StatefulWidget {
-  final AppConfigProvider appConfigProvider;
-
-  const Base({
-    Key? key,
-    required this.appConfigProvider,
-  }) : super(key: key);
+  const Base({Key? key}) : super(key: key);
 
   @override
   State<Base> createState() => _BaseState();
@@ -41,35 +30,6 @@ class Base extends StatefulWidget {
 class _BaseState extends State<Base> with WidgetsBindingObserver {
   int selectedScreen = 0;
 
-  Future<GitHubRelease?> checkInstallationSource() async {
-    final result = await checkAppUpdatesGitHub();
-    if (result['result'] == 'success') {
-      final update = gitHubUpdateExists(widget.appConfigProvider.getAppInfo!.version, result['body'].tagName);
-      if (update == true) {
-        widget.appConfigProvider.setAppUpdatesAvailable(result['body']);
-        if (Platform.isAndroid) {
-          if (
-            widget.appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE ||
-            widget.appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
-            widget.appConfigProvider.installationSource == Source.UNKNOWN
-          ) {
-            return result['body'];
-          }
-          else {
-            return null;
-          }
-        }
-        else if (Platform.isIOS) {
-          return null;
-        }
-        else {
-          return result['body'];
-        }
-      }
-    }
-    return null;
-  }
-
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -77,9 +37,15 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
     super.initState();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final result = await checkInstallationSource();
+      final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+      final result = await checkAppUpdates(
+        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber,
+        installationSource: appConfigProvider.installationSource,
+        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable,
+        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
+      );
 
-      if (result != null && widget.appConfigProvider.doNotRememberVersion != result.tagName) {
+      if (result != null && appConfigProvider.doNotRememberVersion != result.tagName) {
         await showDialog(
           context: context, 
           builder: (context) => UpdateModal(

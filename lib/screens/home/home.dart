@@ -15,10 +15,10 @@ import 'package:adguard_home_manager/screens/home/top_items.dart';
 import 'package:adguard_home_manager/screens/home/chart.dart';
 
 import 'package:adguard_home_manager/functions/number_format.dart';
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -33,6 +33,8 @@ class _HomeState extends State<Home> {
 
   @override
   initState(){
+    Provider.of<StatusProvider>(context, listen: false).getServerStatus();
+
     super.initState();
 
     isVisible = true;
@@ -54,7 +56,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
@@ -109,7 +111,7 @@ class _HomeState extends State<Home> {
 
     List<Widget> listItems() {
       return [
-        ServerStatus(serverStatus: serversProvider.serverStatus.data!),
+        ServerStatusWidget(serverStatus: statusProvider.serverStatus!),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Divider(
@@ -124,40 +126,40 @@ class _HomeState extends State<Home> {
             FractionallySizedBox(
               widthFactor: width > 700 ? 0.5 : 1,
               child: HomeChart(
-                data: serversProvider.serverStatus.data!.stats.dnsQueries, 
+                data: statusProvider.serverStatus!.stats.dnsQueries, 
                 label: AppLocalizations.of(context)!.dnsQueries, 
-                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numDnsQueries, Platform.localeName), 
-                secondaryValue: "${doubleFormat(serversProvider.serverStatus.data!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
+                primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
+                secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
                 color: Colors.blue,
               ),
             ),
             FractionallySizedBox(
               widthFactor: width > 700 ? 0.5 : 1,
               child: HomeChart(
-                data: serversProvider.serverStatus.data!.stats.blockedFiltering, 
+                data: statusProvider.serverStatus!.stats.blockedFiltering, 
                 label: AppLocalizations.of(context)!.blockedFilters, 
-                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numBlockedFiltering, Platform.localeName), 
-                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numBlockedFiltering/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
+                secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.red,
               ),
             ),
             FractionallySizedBox(
               widthFactor: width > 700 ? 0.5 : 1,
               child: HomeChart(
-                data: serversProvider.serverStatus.data!.stats.replacedSafebrowsing, 
+                data: statusProvider.serverStatus!.stats.replacedSafebrowsing, 
                 label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
-                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing, Platform.localeName), 
-                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedSafebrowsing/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
+                secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.green,
               ),
             ),
             FractionallySizedBox(
               widthFactor: width > 700 ? 0.5 : 1,
               child: HomeChart(
-                data: serversProvider.serverStatus.data!.stats.replacedParental, 
+                data: statusProvider.serverStatus!.stats.replacedParental, 
                 label: AppLocalizations.of(context)!.blockedAdultWebsites, 
-                primaryValue: intFormat(serversProvider.serverStatus.data!.stats.numReplacedParental, Platform.localeName), 
-                secondaryValue: "${serversProvider.serverStatus.data!.stats.numDnsQueries > 0 ? doubleFormat((serversProvider.serverStatus.data!.stats.numReplacedParental/serversProvider.serverStatus.data!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
+                secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedParental/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.orange,
               ),
             ),             
@@ -172,7 +174,7 @@ class _HomeState extends State<Home> {
         if (width <= 700) ...[
           TopItems(
             label: AppLocalizations.of(context)!.topQueriedDomains, 
-            data: serversProvider.serverStatus.data!.stats.topQueriedDomains,
+            data: statusProvider.serverStatus!.stats.topQueriedDomains,
             type: 'topQueriedDomains',
           ),
           Padding(
@@ -187,7 +189,7 @@ class _HomeState extends State<Home> {
             
           TopItems(
             label: AppLocalizations.of(context)!.topBlockedDomains, 
-            data: serversProvider.serverStatus.data!.stats.topBlockedDomains,
+            data: statusProvider.serverStatus!.stats.topBlockedDomains,
             type: 'topBlockedDomains',
           ),
           Padding(
@@ -201,7 +203,7 @@ class _HomeState extends State<Home> {
                
           TopItems(
             label: AppLocalizations.of(context)!.topClients, 
-            data: serversProvider.serverStatus.data!.stats.topClients,
+            data: statusProvider.serverStatus!.stats.topClients,
             type: 'topClients',
             clients: true,
           ),
@@ -219,7 +221,7 @@ class _HomeState extends State<Home> {
                     ),
                     child: TopItems(
                       label: AppLocalizations.of(context)!.topQueriedDomains, 
-                      data: serversProvider.serverStatus.data!.stats.topQueriedDomains,
+                      data: statusProvider.serverStatus!.stats.topQueriedDomains,
                       type: 'topQueriedDomains',
                     ),
                   ),
@@ -232,7 +234,7 @@ class _HomeState extends State<Home> {
                     ),
                     child: TopItems(
                       label: AppLocalizations.of(context)!.topBlockedDomains, 
-                      data: serversProvider.serverStatus.data!.stats.topBlockedDomains,
+                      data: statusProvider.serverStatus!.stats.topBlockedDomains,
                       type: 'topBlockedDomains',
                     ),
                   ),
@@ -245,7 +247,7 @@ class _HomeState extends State<Home> {
                     ),
                     child: TopItems(
                       label: AppLocalizations.of(context)!.topClients, 
-                      data: serversProvider.serverStatus.data!.stats.topClients,
+                      data: statusProvider.serverStatus!.stats.topClients,
                       type: 'topClients',
                     ),
                   ),
@@ -277,12 +279,8 @@ class _HomeState extends State<Home> {
                   builder: (context) => RefreshIndicator(
                     color: Theme.of(context).colorScheme.primary,
                     onRefresh: () async {
-                      final result = await getServerStatus(serversProvider.selectedServer!);
-                      if (result['result'] == 'success') {
-                        serversProvider.setServerStatusData(result['data']);
-                      }
-                      else {
-                        appConfigProvider.addLog(result['log']);
+                      final result = await statusProvider.getServerStatus();
+                      if (result == false) {
                         showSnacbkar(
                           appConfigProvider: appConfigProvider, 
                           label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
@@ -295,13 +293,13 @@ class _HomeState extends State<Home> {
                         SliverOverlapInjector(
                           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                         ),
-                        if (serversProvider.serverStatus.loadStatus == 0) SliverFillRemaining(
+                        if (statusProvider.loadStatus == LoadStatus.loading) SliverFillRemaining(
                           child: loading(),
                         ),
-                        if (serversProvider.serverStatus.loadStatus == 1) SliverList.list(
+                        if (statusProvider.loadStatus == LoadStatus.loaded) SliverList.list(
                           children: listItems()
                         ),
-                        if (serversProvider.serverStatus.loadStatus == 2) SliverFillRemaining(
+                        if (statusProvider.loadStatus == LoadStatus.error) SliverFillRemaining(
                           child: loadError(),
                         ),
                       ],
