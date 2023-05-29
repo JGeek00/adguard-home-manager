@@ -66,7 +66,7 @@ class DnsProvider with ChangeNotifier {
     if (result['result'] == 'success') {
       DnsInfo data = dnsInfo!;
       if (value['local_ptr_upstreams'] != null) {
-        data.localPtrUpstreams = value['local_ptr_upsreams'];
+        data.localPtrUpstreams = value['local_ptr_upstreams'];
       }
       data.usePrivatePtrResolvers = value['use_private_ptr_resolvers'];
       data.resolveClients = value['resolve_clients'];
