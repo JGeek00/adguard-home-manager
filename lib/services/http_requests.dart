@@ -2029,7 +2029,7 @@ class ApiClient {
       if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
         final Map<String, dynamic> obj = {
           ...jsonDecode(result[0]['body']),
-          'current_version': jsonDecode(result[1]['body'])['version']
+          'current_version': ServerInfoData.fromJson(jsonDecode(result[1]['body'])).version
         };
         return {
           'result': 'success',
