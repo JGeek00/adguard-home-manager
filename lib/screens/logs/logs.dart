@@ -390,7 +390,7 @@ class _LogsState extends State<Logs> {
                         const SizedBox(width: 15),
                         Chip(
                           avatar: const Icon(
-                            Icons.link_rounded,
+                            Icons.search_rounded,
                           ),
                           label: Row(
                             children: [
