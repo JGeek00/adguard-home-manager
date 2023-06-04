@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -12,12 +11,10 @@ import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 
 import 'package:adguard_home_manager/models/applied_filters.dart';
-import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
-import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+
 class TopItems extends StatelessWidget {
   final String type;
   final String label;
@@ -39,79 +36,6 @@ class TopItems extends StatelessWidget {
     final logsProvider = Provider.of<LogsProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
-
-    bool? getIsBlocked() {
-      if (type == 'topBlockedDomains') {
-        return true;
-      }
-      else if (type == 'topQueriedDomains') {
-        return false;
-      }
-      else {
-        return null;
-      }
-    }
-
-    void blockUnblock(String domain, String newStatus) async {
-      final ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.savingUserFilters);
-
-      final rules = await statusProvider.blockUnblockDomain(
-        domain: domain,
-        newStatus: newStatus
-      );
-
-      processModal.close();
-
-      if (rules == true) {
-        showSnacbkar(
-          appConfigProvider: appConfigProvider, 
-          label: AppLocalizations.of(context)!.userFilteringRulesUpdated, 
-          color: Colors.green
-        );
-      }
-      else {
-        showSnacbkar(
-          appConfigProvider: appConfigProvider, 
-          label: AppLocalizations.of(context)!.userFilteringRulesNotUpdated, 
-          color: Colors.red
-          
-        );
-      }
-    }
-
-    void copyDomainClipboard(String domain) async {
-      await Clipboard.setData(
-        ClipboardData(text: domain)
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.domainCopiedClipboard),
-          backgroundColor: Colors.green,
-        )
-      );
-    }
-
-    List<MenuOption> generateOptions(String domain) {
-      final isBlocked = getIsBlocked();
-      return [
-        if (isBlocked == true) MenuOption(
-          title: AppLocalizations.of(context)!.unblock, 
-          icon: Icons.check,
-          action: () => blockUnblock(domain, 'unblock')
-        ),
-        if (isBlocked == false) MenuOption(
-          title: AppLocalizations.of(context)!.block, 
-          icon: Icons.check,
-          action: () => blockUnblock(domain, 'block')
-        ),
-        MenuOption(
-          title: AppLocalizations.of(context)!.copyClipboard, 
-          icon: Icons.check,
-          action: () => copyDomainClipboard(domain)
-        ),
-      ];
-    }
 
     Widget rowItem(Map<String, dynamic> item) {
       String? name;

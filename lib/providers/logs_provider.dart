@@ -146,8 +146,7 @@ class LogsProvider with ChangeNotifier {
   }) async {
     int offst = inOffset ?? offset;
 
-    String resStatus = responseStatus ?? selectedResultStatus;
-    String? search = searchText ?? searchText;
+    String resStatus = responseStatus ?? _selectedResultStatus;
 
     if (loadingMore != null && loadingMore == true) {
       _isLoadingMore = true;
@@ -159,7 +158,7 @@ class LogsProvider with ChangeNotifier {
       offset: offst,
       olderThan: logsOlderThan,
       responseStatus: resStatus,
-      search: search
+      search: _searchText
     );
 
     if (loadingMore != null && loadingMore == true) {
