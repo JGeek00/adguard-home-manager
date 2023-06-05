@@ -35,7 +35,6 @@ class ActiveClientTile extends StatelessWidget {
               icon: Icons.copy_rounded,
               action: () {
                 copyToClipboard(
-                  context: context, 
                   value: client.name != '' 
                     ? client.name!
                     : client.ip,
@@ -58,7 +57,6 @@ class ActiveClientTile extends StatelessWidget {
               icon: Icons.copy_rounded,
               onTap: () {
                 copyToClipboard(
-                  context: context, 
                   value: client.name != '' 
                     ? client.name!
                     : client.ip,
@@ -137,7 +135,6 @@ class ActiveClientTile extends StatelessWidget {
             icon: Icons.copy_rounded,
             onTap: () {
               copyToClipboard(
-                context: context, 
                 value: client.name != '' 
                   ? client.name!
                   : client.ip,

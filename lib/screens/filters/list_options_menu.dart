@@ -87,7 +87,6 @@ class ListOptionsMenu extends StatelessWidget {
           onTap: () {
             Navigator.pop(context);  // Closes the context menu
             copyToClipboard(
-              context: context, 
               value: list.url, 
               successMessage: AppLocalizations.of(context)!.listUrlCopied
             );
@@ -114,7 +113,6 @@ class ListOptionsMenu extends StatelessWidget {
                   title: AppLocalizations.of(context)!.copyListUrl,
                   icon: Icons.copy_rounded,
                   action: () => copyToClipboard(
-                    context: context, 
                     value: list.url, 
                     successMessage: AppLocalizations.of(context)!.listUrlCopied
                   )

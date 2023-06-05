@@ -25,7 +25,6 @@ class AppLogs extends StatelessWidget {
           IconButton(
             onPressed: appConfigProvider.logs.isNotEmpty
               ? () => copyToClipboard(
-                  context: context, 
                   value: jsonEncode(appConfigProvider.logs.map((log) => log.toMap()).toList()), 
                   successMessage: AppLocalizations.of(context)!.logsCopiedClipboard
                 )
