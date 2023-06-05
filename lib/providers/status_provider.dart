@@ -290,10 +290,12 @@ class StatusProvider with ChangeNotifier {
     required String domain,
     required String newStatus
   }) async {
+    if (_serverStatus == null) return false;
+
     final rules = await _serversProvider!.apiClient!.getFilteringRules();
 
     if (rules['result'] == 'success') {
-      FilteringStatus oldStatus = serverStatus!.filteringStatus;
+      FilteringStatus oldStatus = _serverStatus!.filteringStatus;
 
       List<String> newRules = rules['data'].userRules.where((d) => !d.contains(domain)).toList();
       if (newStatus == 'block') {
@@ -302,7 +304,7 @@ class StatusProvider with ChangeNotifier {
       else if (newStatus == 'unblock') {
         newRules.add("@@||$domain^");
       }
-      FilteringStatus newObj = serverStatus!.filteringStatus;
+      FilteringStatus newObj = _serverStatus!.filteringStatus;
       newObj.userRules = newRules;
       _filteringStatus = newObj;
 
