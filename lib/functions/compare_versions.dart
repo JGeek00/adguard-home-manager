@@ -159,26 +159,34 @@ bool gitHubUpdateExists({
     : gitHubReleases.firstWhere((release) => release.prerelease == false);
   
   final versionNumberRegex = RegExp(r'\(\d+\)');
-  final releaseNumberExtracted = versionNumberRegex.allMatches(release.tagName).first.group(0);
+  final releaseNumberExtractedMatches = versionNumberRegex.allMatches(release.tagName);
 
-  if (releaseNumberExtracted != null) {
-    final releaseNumber = releaseNumberExtracted.replaceAll(RegExp(r'\(|\)'), '');
-    try {
-      final newReleaseParsed = int.parse(releaseNumber);
-      final currentReleaseParsed = int.parse(currentBuildNumber);
-      if (newReleaseParsed > currentReleaseParsed) {
-        return true;
-      }
-      else {
+  if (releaseNumberExtractedMatches.isNotEmpty) {
+    final releaseNumberExtracted = releaseNumberExtractedMatches.first.group(0);
+
+    if (releaseNumberExtracted != null) {
+      final releaseNumber = releaseNumberExtracted.replaceAll(RegExp(r'\(|\)'), '');
+      try {
+        final newReleaseParsed = int.parse(releaseNumber);
+        final currentReleaseParsed = int.parse(currentBuildNumber);
+        if (newReleaseParsed > currentReleaseParsed) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } catch (e) {
+        Sentry.captureMessage("Invalid release number. Current release: $currentBuildNumber. New release: $releaseNumber");
         return false;
       }
-    } catch (e) {
-      Sentry.captureMessage("Invalid release number. Current release: $currentBuildNumber. New release: $releaseNumber");
+    }
+    else {
+      Sentry.captureMessage("Invalid release number. Tagname: ${release.tagName}");
       return false;
     }
   }
   else {
-    Sentry.captureMessage("Invalid release number. Tagname: ${release.tagName}");
+    Sentry.captureMessage("No matches. ${release.tagName}");
     return false;
   }
 }
