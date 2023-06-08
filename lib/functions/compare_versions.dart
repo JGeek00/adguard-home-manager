@@ -39,7 +39,7 @@ bool compareVersions({
     }
     else {    // stable
       final current = currentVersion.replaceAll('v', '');
-      final newV = currentVersion.replaceAll('v', '');
+      final newV = newVersion.replaceAll('v', '');
       
       final currentSplit = current.split('.').map((e) => int.parse(e)).toList();
       final newSplit = newV.split('.').map((e) => int.parse(e)).toList();

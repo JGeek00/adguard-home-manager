@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -155,8 +157,11 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  void checkServerUpdatesAvailable(Server server) async {
-    setUpdateAvailableLoadStatus(LoadStatus.loading, true);
+  void checkServerUpdatesAvailable({
+    required Server server, 
+    bool? setValues
+  }) async {
+    if (setValues == true) setUpdateAvailableLoadStatus(LoadStatus.loading, true);
     final result = await _apiClient!.checkServerUpdates();
     if (result['result'] == 'success') {
       UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
@@ -170,11 +175,16 @@ class ServersProvider with ChangeNotifier {
             newVersion: data.newVersion!,
           )
         : false;
-      setUpdateAvailableData(data);
-      setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
+      if (setValues == true) {
+        setUpdateAvailableData(data);
+      }
+      else {
+        if (data.currentVersion == data.newVersion) setUpdateAvailableData(data);
+      }
+      if (setValues == true) setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
     }
     else {
-      setUpdateAvailableLoadStatus(LoadStatus.error, true);
+      if (setValues == true) setUpdateAvailableLoadStatus(LoadStatus.error, true);
     }
   }
 
@@ -189,7 +199,10 @@ class ServersProvider with ChangeNotifier {
   Future initializateServer(Server server) async {
     final serverStatus = await _apiClient!.getServerStatus();
     if (serverStatus['result'] == 'success') {
-      checkServerUpdatesAvailable(server); // Do not await
+      checkServerUpdatesAvailable(
+        server: server,
+        setValues: true
+      ); // Do not await
     }
   }
 
@@ -227,6 +240,23 @@ class ServersProvider with ChangeNotifier {
     else {
       notifyListeners();
       return null;
+    }
+  }
+
+  void recheckPeriodServerUpdated() {
+    if (_selectedServer != null) {
+      Server server = _selectedServer!;
+      Timer.periodic(
+        const Duration(seconds: 2), 
+        (timer) {
+          if (_selectedServer != null && _selectedServer == server) {
+            checkServerUpdatesAvailable(server: server, setValues: false);
+          }
+          else {
+            timer.cancel();
+          }
+        }
+      );
     }
   }
 }

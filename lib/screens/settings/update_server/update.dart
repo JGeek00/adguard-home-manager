@@ -41,6 +41,7 @@ class UpdateScreen extends StatelessWidget {
       
       if (result['result'] == 'success') {
         serversProvider.clearUpdateAvailable(serversProvider.selectedServer!, serversProvider.updateAvailable.data!.newVersion!);
+        serversProvider.recheckPeriodServerUpdated();
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.requestStartUpdateSuccessful,
@@ -79,7 +80,10 @@ class UpdateScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 tooltip: AppLocalizations.of(context)!.checkUpdates,
-                onPressed: () => serversProvider.checkServerUpdatesAvailable(serversProvider.selectedServer!)
+                onPressed: () => serversProvider.checkServerUpdatesAvailable(
+                  server: serversProvider.selectedServer!,
+                  setValues: true
+                )
               ),
             ],
           ),
