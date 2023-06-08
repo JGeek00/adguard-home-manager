@@ -34,7 +34,7 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Update version in YAML
-        run: sed -i 's/99.99.99+99/${{ VERSION_NAME }}+${{ github.event.inputs.number }}/g' pubspec.yaml
+        run: sed -i 's/99.99.99+99/${{ env.VERSION_NAME }}+${{ github.event.inputs.number }}/g' pubspec.yaml
       - name: Update KeyStore password in gradle properties
         run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
       - name: Update KeyStore key password in gradle properties
@@ -51,20 +51,20 @@ jobs:
       - run: flutter build apk --release
       - run: flutter build appbundle --release
       - name: Rename apk 
-        run: mv $ANDROID_APK_RELEASE_PATH/app-release.apk $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ VERSION_NAME }}_Android.apk
+        run: mv $ANDROID_APK_RELEASE_PATH/app-release.apk $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.apk
       - name: Rename aab 
-        run: mv $ANDROID_AAB_RELEASE_PATH/app-release.aab $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ VERSION_NAME }}_Android.aab
+        run: mv $ANDROID_AAB_RELEASE_PATH/app-release.aab $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.aab
       - name: Copy apk to project root
-        run: cp $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ VERSION_NAME }}_Android.apk AdGuardHomeManager_${{ VERSION_NAME }}_Android.apk
+        run: cp $ANDROID_APK_RELEASE_PATH/AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.apk AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.apk
       - name: Copy aab to project root
-        run: cp $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ VERSION_NAME }}_Android.aab AdGuardHomeManager_${{ VERSION_NAME }}_Android.aab
+        run: cp $ANDROID_AAB_RELEASE_PATH/AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.aab AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.aab
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: android
           path: |
-            AdGuardHomeManager_${{ VERSION_NAME }}_Android.aab
-            AdGuardHomeManager_${{ VERSION_NAME }}_Android.apk
+            AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.aab
+            AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.apk
   release-builds-github:
     name: Release beta build to GitHub
     runs-on: ubuntu-latest
@@ -87,8 +87,8 @@ jobs:
         with:
           artifacts: "releases/*"
           token: ${{ secrets.GH_TOKEN }}
-          tag: '${{ VERSION_NAME }}_(${{ github.event.inputs.number }})'
-          name: v${{ VERSION_NAME }}
+          tag: '${{ env.VERSION_NAME }}_(${{ github.event.inputs.number }})'
+          name: v${{ env.VERSION_NAME }}
           draft: true
           prerelease: true
           commit: ${{ github.sha }}
@@ -111,7 +111,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
           packageName: com.jgeek00.adguard_home_manager
-          releaseFiles: AdGuardHomeManager_${{ VERSION_NAME }}_Android.aab
+          releaseFiles: AdGuardHomeManager_${{ env.VERSION_NAME }}_Android.aab
           track: beta
           status: draft
-          releaseName: ${{ VERSION_NAME }}z
+          releaseName: ${{ env.VERSION_NAME }}
