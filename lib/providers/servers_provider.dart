@@ -8,7 +8,6 @@ import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/services/db/queries.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 
 class ServersProvider with ChangeNotifier {
@@ -17,6 +16,8 @@ class ServersProvider with ChangeNotifier {
   List<Server> _serversList = [];
   Server? _selectedServer;
   ApiClient? _apiClient;
+
+  bool _updatingServer = false;
 
   final UpdateAvailable _updateAvailable = UpdateAvailable(
     loadStatus: LoadStatus.loading,
@@ -37,6 +38,10 @@ class ServersProvider with ChangeNotifier {
 
   UpdateAvailable get updateAvailable {
     return _updateAvailable;
+  }
+
+  bool get updatingServer {
+    return _updatingServer;
   }
 
   void setDbInstance(Database db) {
@@ -67,6 +72,11 @@ class ServersProvider with ChangeNotifier {
 
   void setApiClient(ApiClient client) {
     _apiClient = client;
+    notifyListeners();
+  }
+
+  void setUpdatingServer(bool status) {
+    _updatingServer = status;
     notifyListeners();
   }
 
@@ -159,9 +169,8 @@ class ServersProvider with ChangeNotifier {
 
   void checkServerUpdatesAvailable({
     required Server server, 
-    bool? setValues
   }) async {
-    if (setValues == true) setUpdateAvailableLoadStatus(LoadStatus.loading, true);
+    setUpdateAvailableLoadStatus(LoadStatus.loading, true);
     final result = await _apiClient!.checkServerUpdates();
     if (result['result'] == 'success') {
       UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
@@ -169,40 +178,20 @@ class ServersProvider with ChangeNotifier {
       if (gitHubResult['result'] == 'success') {
         data.changelog = gitHubResult['body'];
       }
-      data.updateAvailable = data.newVersion != null 
-        ? compareVersions(
-            currentVersion: data.currentVersion,
-            newVersion: data.newVersion!,
-          )
-        : false;
-      if (setValues == true) {
-        setUpdateAvailableData(data);
-      }
-      else {
-        if (data.currentVersion == data.newVersion) setUpdateAvailableData(data);
-      }
-      if (setValues == true) setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
+      setUpdateAvailableData(data);
+      setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
     }
     else {
-      if (setValues == true) setUpdateAvailableLoadStatus(LoadStatus.error, true);
-    }
-  }
-
-  void clearUpdateAvailable(Server server, String newCurrentVersion) {
-    if (_updateAvailable.data != null) {
-      _updateAvailable.data!.updateAvailable = null;
-      _updateAvailable.data!.currentVersion = newCurrentVersion;
-      notifyListeners();
+      setUpdateAvailableLoadStatus(LoadStatus.error, true);
     }
   }
 
   Future initializateServer(Server server) async {
     final serverStatus = await _apiClient!.getServerStatus();
     if (serverStatus['result'] == 'success') {
-      checkServerUpdatesAvailable(
+      checkServerUpdatesAvailable( // Do not await
         server: server,
-        setValues: true
-      ); // Do not await
+      ); 
     }
   }
 
@@ -245,15 +234,33 @@ class ServersProvider with ChangeNotifier {
 
   void recheckPeriodServerUpdated() {
     if (_selectedServer != null) {
+      setUpdatingServer(true);
       Server server = _selectedServer!;
       Timer.periodic(
         const Duration(seconds: 2), 
-        (timer) {
+        (timer) async {
           if (_selectedServer != null && _selectedServer == server) {
-            checkServerUpdatesAvailable(server: server, setValues: false);
+            final result = await _apiClient!.checkServerUpdates();
+            if (result['result'] == 'success') {
+              UpdateAvailableData data = UpdateAvailableData.fromJsonUpdate(result['data']);
+              if (data.currentVersion == data.newVersion) {
+                final gitHubResult = await _apiClient!.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
+                if (gitHubResult['result'] == 'success') {
+                  data.changelog = gitHubResult['body'];
+                }
+                setUpdateAvailableData(data);
+                timer.cancel();
+                setUpdatingServer(false);
+              }
+            }
+            else {
+              timer.cancel();
+              setUpdatingServer(false);
+            }
           }
           else {
             timer.cancel();
+            setUpdatingServer(false);
           }
         }
       );

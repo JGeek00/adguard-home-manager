@@ -114,7 +114,6 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
           );
           serversProvider.checkServerUpdatesAvailable(
             server: server,
-            setValues: true
           );
           statusProvider.setServerStatusLoad(LoadStatus.loaded);
         }

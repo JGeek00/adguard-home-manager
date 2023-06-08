@@ -147,7 +147,6 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
           );
           serversProvider.checkServerUpdatesAvailable(
             server: server,
-            setValues: true
           );
           statusProvider.setServerStatusLoad(LoadStatus.loaded);
         }

@@ -18,7 +18,6 @@ class UpdateAvailableData {
   final bool? canAutoupdate;
   final bool disabled;
   String? changelog;
-  bool? updateAvailable;
 
   UpdateAvailableData({
     required this.currentVersion,
@@ -28,7 +27,6 @@ class UpdateAvailableData {
     required this.canAutoupdate,
     required this.disabled,
     this.changelog,
-    this.updateAvailable
   });
 
   factory UpdateAvailableData.fromJson(Map<String, dynamic> json) => UpdateAvailableData(
@@ -39,7 +37,15 @@ class UpdateAvailableData {
     canAutoupdate: json["can_autoupdate"],
     disabled: json["disabled"],
     changelog: json["changelog"],
-    updateAvailable: json['update_available']
+  );
+  
+  factory UpdateAvailableData.fromJsonUpdate(Map<String, dynamic> json) => UpdateAvailableData(
+    currentVersion: json["current_version"],
+    newVersion: json["new_version"],
+    announcement: json["announcement"],
+    announcementUrl: json["announcement_url"],
+    canAutoupdate: json["can_autoupdate"],
+    disabled: json["disabled"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -50,6 +56,5 @@ class UpdateAvailableData {
     "can_autoupdate": canAutoupdate,
     "disabled": disabled,
     "changelog": changelog,
-    "update_available": updateAvailable
   };
 }
