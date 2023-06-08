@@ -188,8 +188,7 @@ class SettingsWidget extends StatelessWidget {
                 title: AppLocalizations.of(context)!.updates,
                 subtitle: AppLocalizations.of(context)!.updatesDescription,
                 trailing: serversProvider.updateAvailable.data != null &&
-                  serversProvider.updateAvailable.data!.updateAvailable != null &&
-                  serversProvider.updateAvailable.data!.updateAvailable == true
+                  serversProvider.updateAvailable.data!.canAutoupdate == true
                     ? Container(
                         width: 10,
                         height: 10,

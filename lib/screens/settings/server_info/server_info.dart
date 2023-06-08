@@ -48,12 +48,12 @@ class _ServerInformationWidgetState extends State<ServerInformationWidget> {
     if (mounted) {
       if (result['result'] == 'success') {
         setState(() {
-          serverInfo.loadStatus = LoadStatus.loaded;
           serverInfo.data = result['data'];
+          serverInfo.loadStatus = LoadStatus.loaded;
         });
       }
       else {
-        setState(() => serverInfo.loadStatus = LoadStatus.loaded);
+        setState(() => serverInfo.loadStatus = LoadStatus.error);
       }
     }
   }

@@ -55,7 +55,6 @@ class AddedClientTile extends StatelessWidget {
                 icon: Icons.copy_rounded,
                 onTap: () {
                   copyToClipboard(
-                    context: context, 
                     value: client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''), 
                     successMessage: AppLocalizations.of(context)!.copiedClipboard,
                   );
@@ -189,7 +188,6 @@ class AddedClientTile extends StatelessWidget {
             icon: Icons.copy_rounded,
             onTap: () {
               copyToClipboard(
-                context: context, 
                 value: client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''), 
                 successMessage: AppLocalizations.of(context)!.copiedClipboard,
               );

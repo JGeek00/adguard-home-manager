@@ -40,7 +40,7 @@ class UpdateScreen extends StatelessWidget {
       processModal.close();
       
       if (result['result'] == 'success') {
-        serversProvider.clearUpdateAvailable(serversProvider.selectedServer!, serversProvider.updateAvailable.data!.newVersion!);
+        serversProvider.recheckPeriodServerUpdated();
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.requestStartUpdateSuccessful,
@@ -79,7 +79,9 @@ class UpdateScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 tooltip: AppLocalizations.of(context)!.checkUpdates,
-                onPressed: () => serversProvider.checkServerUpdatesAvailable(serversProvider.selectedServer!)
+                onPressed: () => serversProvider.checkServerUpdatesAvailable(
+                  server: serversProvider.selectedServer!,
+                )
               ),
             ],
           ),
@@ -97,11 +99,9 @@ class UpdateScreen extends StatelessWidget {
                       ],
                     )
                   : Icon(
-                      serversProvider.updateAvailable.data!.updateAvailable != null
-                        ? serversProvider.updateAvailable.data!.updateAvailable == true
-                          ? Icons.system_update_rounded
-                          : Icons.system_security_update_good_rounded
-                        : Icons.system_security_update_warning_rounded,
+                      serversProvider.updateAvailable.data!.canAutoupdate == true
+                        ? Icons.system_update_rounded
+                        : Icons.system_security_update_good_rounded,
                       size: 40,
                       color: Theme.of(context).colorScheme.primary,
                     ),
@@ -109,11 +109,9 @@ class UpdateScreen extends StatelessWidget {
                 Text(
                   serversProvider.updateAvailable.loadStatus == LoadStatus.loading
                     ? AppLocalizations.of(context)!.checkingUpdates
-                    : serversProvider.updateAvailable.data!.updateAvailable != null
-                      ? serversProvider.updateAvailable.data!.updateAvailable == true
-                        ? AppLocalizations.of(context)!.updateAvailable
-                        :  AppLocalizations.of(context)!.serverUpdated
-                      : AppLocalizations.of(context)!.unknownStatus,
+                    : serversProvider.updateAvailable.data!.canAutoupdate == true
+                      ? AppLocalizations.of(context)!.updateAvailable
+                      :  AppLocalizations.of(context)!.serverUpdated,
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w400
@@ -127,7 +125,7 @@ class UpdateScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          serversProvider.updateAvailable.data!.updateAvailable != null && serversProvider.updateAvailable.data!.updateAvailable == true
+                          serversProvider.updateAvailable.data!.canAutoupdate == true
                             ? AppLocalizations.of(context)!.newVersion
                             : AppLocalizations.of(context)!.currentVersion,
                           style: const TextStyle(
@@ -136,11 +134,9 @@ class UpdateScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          serversProvider.updateAvailable.data!.updateAvailable != null
-                            ? serversProvider.updateAvailable.data!.updateAvailable == true
-                              ? serversProvider.updateAvailable.data!.newVersion ?? 'N/A'
-                              : serversProvider.updateAvailable.data!.currentVersion
-                            : "N/A",
+                          serversProvider.updateAvailable.data!.canAutoupdate == true
+                            ? serversProvider.updateAvailable.data!.newVersion ?? 'N/A'
+                            : serversProvider.updateAvailable.data!.currentVersion,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -153,11 +149,13 @@ class UpdateScreen extends StatelessWidget {
                     FilledButton.icon(
                       icon: const Icon(Icons.download_rounded),
                       label: Text(AppLocalizations.of(context)!.updateNow),
-                      onPressed: serversProvider.updateAvailable.data!.updateAvailable != null && serversProvider.updateAvailable.data!.updateAvailable == true 
-                        ? serversProvider.updateAvailable.data!.canAutoupdate != null && serversProvider.updateAvailable.data!.canAutoupdate == true
-                          ? () => update()
-                          : () => showAutoUpdateUnavailableModal()
-                        : null
+                      onPressed: serversProvider.updatingServer == true
+                        ? null
+                        : serversProvider.updateAvailable.data!.canAutoupdate == true 
+                          ? serversProvider.updateAvailable.data!.canAutoupdate != null && serversProvider.updateAvailable.data!.canAutoupdate == true
+                            ? () => update()
+                            : () => showAutoUpdateUnavailableModal()
+                          : null
                     )
                   ],
                 ),
@@ -174,7 +172,7 @@ class UpdateScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "Changelog ${serversProvider.updateAvailable.data!.updateAvailable == true 
+              "Changelog ${serversProvider.updateAvailable.data!.canAutoupdate == true 
                 ? serversProvider.updateAvailable.data!.newVersion
                 : serversProvider.updateAvailable.data!.currentVersion}",
               style: TextStyle(

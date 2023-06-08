@@ -3,18 +3,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:adguard_home_manager/config/globals.dart';
+
 void copyToClipboard({
-  required BuildContext context,
   required String value,
   required String successMessage
 }) async {
-  await Clipboard.setData(
-    ClipboardData(text: value)
-  );
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(successMessage),
-      backgroundColor: Colors.green,
-    )
-  );
+  if (scaffoldMessengerKey.currentState != null) {
+    await Clipboard.setData(
+      ClipboardData(text: value)
+    );
+    scaffoldMessengerKey.currentState!.showSnackBar(
+      SnackBar(
+        content: Text(successMessage),
+        backgroundColor: Colors.green,
+      )
+    );
+  }
 }

@@ -66,8 +66,7 @@ class BottomNavBar extends StatelessWidget {
             if (
               screen.name == 'settings' &&
               serversProvider.updateAvailable.data != null &&
-              serversProvider.updateAvailable.data!.updateAvailable != null &&
-              serversProvider.updateAvailable.data!.updateAvailable == true
+              serversProvider.updateAvailable.data!.canAutoupdate == true
             ) Positioned(
                 bottom: 0,
                 right: -12,

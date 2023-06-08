@@ -249,7 +249,6 @@ class FiltersTripleColumn extends StatelessWidget {
                               icon: Icons.copy_rounded,
                               onTap: () {
                                 copyToClipboard(
-                                  context: context, 
                                   value: filteringProvider.filtering!.userRules[index],
                                   successMessage: AppLocalizations.of(context)!.copiedClipboard,
                                 );
@@ -266,7 +265,6 @@ class FiltersTripleColumn extends StatelessWidget {
                                     title: AppLocalizations.of(context)!.copyClipboard,
                                     icon: Icons.copy_rounded,
                                     action: () => copyToClipboard(
-                                      context: context, 
                                       value: filteringProvider.filtering!.userRules[index],
                                       successMessage: AppLocalizations.of(context)!.copiedClipboard,
                                     )

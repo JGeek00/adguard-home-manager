@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -6,7 +8,6 @@ import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/services/db/queries.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 
 class ServersProvider with ChangeNotifier {
@@ -15,6 +16,8 @@ class ServersProvider with ChangeNotifier {
   List<Server> _serversList = [];
   Server? _selectedServer;
   ApiClient? _apiClient;
+
+  bool _updatingServer = false;
 
   final UpdateAvailable _updateAvailable = UpdateAvailable(
     loadStatus: LoadStatus.loading,
@@ -35,6 +38,10 @@ class ServersProvider with ChangeNotifier {
 
   UpdateAvailable get updateAvailable {
     return _updateAvailable;
+  }
+
+  bool get updatingServer {
+    return _updatingServer;
   }
 
   void setDbInstance(Database db) {
@@ -65,6 +72,11 @@ class ServersProvider with ChangeNotifier {
 
   void setApiClient(ApiClient client) {
     _apiClient = client;
+    notifyListeners();
+  }
+
+  void setUpdatingServer(bool status) {
+    _updatingServer = status;
     notifyListeners();
   }
 
@@ -155,7 +167,9 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  void checkServerUpdatesAvailable(Server server) async {
+  void checkServerUpdatesAvailable({
+    required Server server, 
+  }) async {
     setUpdateAvailableLoadStatus(LoadStatus.loading, true);
     final result = await _apiClient!.checkServerUpdates();
     if (result['result'] == 'success') {
@@ -164,12 +178,6 @@ class ServersProvider with ChangeNotifier {
       if (gitHubResult['result'] == 'success') {
         data.changelog = gitHubResult['body'];
       }
-      data.updateAvailable = data.newVersion != null 
-        ? compareVersions(
-            currentVersion: data.currentVersion,
-            newVersion: data.newVersion!,
-          )
-        : false;
       setUpdateAvailableData(data);
       setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
     }
@@ -178,18 +186,12 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  void clearUpdateAvailable(Server server, String newCurrentVersion) {
-    if (_updateAvailable.data != null) {
-      _updateAvailable.data!.updateAvailable = null;
-      _updateAvailable.data!.currentVersion = newCurrentVersion;
-      notifyListeners();
-    }
-  }
-
   Future initializateServer(Server server) async {
     final serverStatus = await _apiClient!.getServerStatus();
     if (serverStatus['result'] == 'success') {
-      checkServerUpdatesAvailable(server); // Do not await
+      checkServerUpdatesAvailable( // Do not await
+        server: server,
+      ); 
     }
   }
 
@@ -227,6 +229,41 @@ class ServersProvider with ChangeNotifier {
     else {
       notifyListeners();
       return null;
+    }
+  }
+
+  void recheckPeriodServerUpdated() {
+    if (_selectedServer != null) {
+      setUpdatingServer(true);
+      Server server = _selectedServer!;
+      Timer.periodic(
+        const Duration(seconds: 2), 
+        (timer) async {
+          if (_selectedServer != null && _selectedServer == server) {
+            final result = await _apiClient!.checkServerUpdates();
+            if (result['result'] == 'success') {
+              UpdateAvailableData data = UpdateAvailableData.fromJsonUpdate(result['data']);
+              if (data.currentVersion == data.newVersion) {
+                final gitHubResult = await _apiClient!.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
+                if (gitHubResult['result'] == 'success') {
+                  data.changelog = gitHubResult['body'];
+                }
+                setUpdateAvailableData(data);
+                timer.cancel();
+                setUpdatingServer(false);
+              }
+            }
+            else {
+              timer.cancel();
+              setUpdatingServer(false);
+            }
+          }
+          else {
+            timer.cancel();
+            setUpdatingServer(false);
+          }
+        }
+      );
     }
   }
 }

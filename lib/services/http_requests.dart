@@ -2007,21 +2007,18 @@ class ApiClient {
     final result = await Future.wait([
       apiRequest(
         urlPath: '/version.json', 
-        method: 'get',
+        method: 'post',
         server: server,
         type: 'check_server_updates',
-        body: json.encode({
+        body: {
           "recheck_now": true
-        })
+        }
       ),
       apiRequest(
         urlPath: '/status', 
         method: 'get',
         server: server,
         type: 'check_server_updates',
-        body: json.encode({
-          "recheck_now": true
-        })
       ),
     ]);
 
