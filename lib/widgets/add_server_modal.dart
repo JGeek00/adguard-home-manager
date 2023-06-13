@@ -392,7 +392,7 @@ class _AddServerModalState extends State<AddServerModal> {
             (version['data'].contains('a') || version['data'].contains('b'))  // alpha or beta
           ) {
             Navigator.pop(context);
-            widget.onUnsupportedVersion(version);
+            widget.onUnsupportedVersion(version['data']);
           }
           else {
             Navigator.pop(context);
