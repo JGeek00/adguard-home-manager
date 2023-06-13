@@ -43,7 +43,7 @@ class ServerInfoData {
     dnsPort: json["dns_port"],
     httpPort: json["http_port"],
     protectionEnabled: json["protection_enabled"],
-    dhcpAvailable: json["dhcp_available"],
+    dhcpAvailable: json["dhcp_available"] ?? false,
     running: json["running"],
     version: json["version"],
     language: json["language"],
