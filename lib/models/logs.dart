@@ -80,7 +80,7 @@ class Log {
     elapsedMs: json["elapsedMs"],
     question: Question.fromJson(json["question"]),
     reason: json["reason"],
-    rules: List<Rule>.from(json["rules"].map((x) => Rule.fromJson(x))),
+    rules: json["rules"] != null ? List<Rule>.from(json["rules"].map((x) => Rule.fromJson(x))) : [],
     status: json["status"],
     time: DateTime.parse(json["time"]),
     upstream: json["upstream"],
