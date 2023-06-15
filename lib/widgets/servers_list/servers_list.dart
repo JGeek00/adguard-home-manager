@@ -28,38 +28,23 @@ class ServersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-
-    final width = MediaQuery.of(context).size.width;
     
     if (serversProvider.serversList.isNotEmpty) {
-      if (width > breakingWidth) {
-        return ListView(
-          children: [
-            Wrap(
-              children: serversProvider.serversList.asMap().entries.map(
-                (s) => ServersTileItem(
-                  server: serversProvider.serversList[s.key], 
-                  index: s.key, 
-                  onChange: onChange
-                )
-              ).toList(),
-            ),
-            const SizedBox(height: 8)
-          ],
-        );
-      }
-      else {  
-        return ListView.builder(
-          controller: scrollController,
-          itemCount: serversProvider.serversList.length,
-          itemBuilder: (context, index) => ServersListItem(
-            expandableController: controllers[index], 
-            server: serversProvider.serversList[index], 
-            index: index, 
-            onChange: onChange
-          )
-        );
-      }
+      return ListView(
+        children: [
+          Wrap(
+            children: serversProvider.serversList.asMap().entries.map(
+              (s) => ServersTileItem(
+                breakingWidth: breakingWidth,
+                server: serversProvider.serversList[s.key], 
+                index: s.key, 
+                onChange: onChange
+              )
+            ).toList(),
+          ),
+          const SizedBox(height: 8)
+        ],
+      );
     }
     else {
       return SizedBox(
