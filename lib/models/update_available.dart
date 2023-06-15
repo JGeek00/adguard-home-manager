@@ -16,7 +16,7 @@ class UpdateAvailableData {
   final String? announcement;
   final String? announcementUrl;
   final bool? canAutoupdate;
-  final bool disabled;
+  final bool? disabled;
   String? changelog;
 
   UpdateAvailableData({

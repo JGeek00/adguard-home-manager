@@ -17,7 +17,7 @@ class NetworkInterface {
   String name;
   String hardwareAddress;
   List<String> flags;
-  String gatewayIp;
+  String? gatewayIp;
   List<String> ipv4Addresses;
   List<String> ipv6Addresses;
 

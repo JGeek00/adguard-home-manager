@@ -46,7 +46,7 @@ class Log {
   final List<Rule> rules;
   final String? status;
   final DateTime time;
-  final String upstream;
+  final String? upstream;
   final List<Answer> answer;
   final int? filterId;
   final String? rule;
