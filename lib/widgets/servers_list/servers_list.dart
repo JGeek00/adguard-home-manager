@@ -4,7 +4,6 @@ import 'package:expandable/expandable.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/servers_list/servers_list_item.dart';
 import 'package:adguard_home_manager/widgets/servers_list/servers_tile_item.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
