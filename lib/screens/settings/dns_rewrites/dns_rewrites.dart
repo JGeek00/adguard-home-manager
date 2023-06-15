@@ -123,71 +123,69 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
               child: ListView.builder(
                 padding: const EdgeInsets.only(top: 0),
                 itemCount: rewriteRulesProvider.rewriteRules!.length,
-                itemBuilder: (context, index) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        width: 1,
-                        color: Theme.of(context).colorScheme.outline.withOpacity(0.2)
-                      )
-                    )
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "${AppLocalizations.of(context)!.domain}: ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).colorScheme.onSurface
+                itemBuilder: (context, index) => Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16, top: 16, bottom: 16, right: 8
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "${AppLocalizations.of(context)!.domain}: ",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context).colorScheme.onSurface
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                rewriteRulesProvider.rewriteRules![index].domain,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface
+                                Text(
+                                  rewriteRulesProvider.rewriteRules![index].domain,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 3),
-                          Row(
-                            children: [
-                              Text(
-                                "${AppLocalizations.of(context)!.answer}: ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).colorScheme.onSurface
+                              ],
+                            ),
+                            const SizedBox(height: 3),
+                            Row(
+                              children: [
+                                Text(
+                                  "${AppLocalizations.of(context)!.answer}: ",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context).colorScheme.onSurface
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                rewriteRulesProvider.rewriteRules![index].answer,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface
+                                Text(
+                                  rewriteRulesProvider.rewriteRules![index].answer,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        onPressed: () => {
-                          showDialog(
-                            context: context, 
-                            builder: (context) => DeleteDnsRewrite(
-                              onConfirm: () => deleteDnsRewrite(rewriteRulesProvider.rewriteRules![index])
+                              ],
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          onPressed: () => {
+                            showDialog(
+                              context: context, 
+                              builder: (context) => DeleteDnsRewrite(
+                                onConfirm: () => deleteDnsRewrite(rewriteRulesProvider.rewriteRules![index])
+                              )
                             )
-                          )
-                        }, 
-                        icon: const Icon(Icons.delete)
-                      )
-                    ],
+                          }, 
+                          icon: const Icon(Icons.delete),
+                          tooltip: AppLocalizations.of(context)!.delete,
+                        )
+                      ],
+                    ),
                   ),
                 )
               ),

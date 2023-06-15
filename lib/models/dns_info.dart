@@ -1,6 +1,6 @@
 class DnsInfo {
   List<String> upstreamDns;
-  String upstreamDnsFile;
+  String? upstreamDnsFile;
   List<String> bootstrapDns;
   bool protectionEnabled;
   int ratelimit;

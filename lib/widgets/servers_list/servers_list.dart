@@ -4,7 +4,6 @@ import 'package:expandable/expandable.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/servers_list/servers_list_item.dart';
 import 'package:adguard_home_manager/widgets/servers_list/servers_tile_item.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -28,38 +27,23 @@ class ServersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-
-    final width = MediaQuery.of(context).size.width;
     
     if (serversProvider.serversList.isNotEmpty) {
-      if (width > breakingWidth) {
-        return ListView(
-          children: [
-            Wrap(
-              children: serversProvider.serversList.asMap().entries.map(
-                (s) => ServersTileItem(
-                  server: serversProvider.serversList[s.key], 
-                  index: s.key, 
-                  onChange: onChange
-                )
-              ).toList(),
-            ),
-            const SizedBox(height: 8)
-          ],
-        );
-      }
-      else {  
-        return ListView.builder(
-          controller: scrollController,
-          itemCount: serversProvider.serversList.length,
-          itemBuilder: (context, index) => ServersListItem(
-            expandableController: controllers[index], 
-            server: serversProvider.serversList[index], 
-            index: index, 
-            onChange: onChange
-          )
-        );
-      }
+      return ListView(
+        children: [
+          Wrap(
+            children: serversProvider.serversList.asMap().entries.map(
+              (s) => ServersTileItem(
+                breakingWidth: breakingWidth,
+                server: serversProvider.serversList[s.key], 
+                index: s.key, 
+                onChange: onChange
+              )
+            ).toList(),
+          ),
+          const SizedBox(height: 8)
+        ],
+      );
     }
     else {
       return SizedBox(

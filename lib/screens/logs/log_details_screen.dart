@@ -136,7 +136,7 @@ class LogDetailsScreen extends StatelessWidget {
             subtitle: log.question.questionClass
           ),
           SectionLabel(label: AppLocalizations.of(context)!.response),
-          if (log.upstream != '') LogListTile(
+          if (log.upstream != null && log.upstream != '') LogListTile(
             icon: Icons.dns_rounded, 
             title: AppLocalizations.of(context)!.dnsServer,
             subtitle: log.upstream

@@ -22,12 +22,14 @@ class ServersTileItem extends StatefulWidget {
   final Server server;
   final int index;
   final void Function(int) onChange;
+  final double breakingWidth;
 
   const ServersTileItem({
     Key? key,
     required this.server,
     required this.index,
-    required this.onChange
+    required this.onChange,
+    required this.breakingWidth
   }) : super(key: key);
 
   @override
@@ -262,12 +264,10 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
     Widget bottomRow(Server server, int index) {
       return Column(
         children: [
-          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               PopupMenuButton(
-                // color: Theme.of(context).dialogBackgroundColor,
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     enabled: server.defaultServer == false 
@@ -316,41 +316,39 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
                 child: serversProvider.selectedServer != null && 
                   serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null && 
                   serversProvider.selectedServer?.id == server.id
-                    ? Container(
-                      margin: const EdgeInsets.only(right: 12),
-                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
-                          ? Colors.green
-                          : Colors.orange,
-                        borderRadius: BorderRadius.circular(30)
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
-                              ? Icons.check
-                              : Icons.warning,
-                            color: Colors.white,
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: Row(
+                            children: [
+                              Icon(
+                                serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
+                                  ? Icons.check
+                                  : Icons.warning,
+                                color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
+                                  ? Colors.green
+                                  : Colors.orange,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
+                                  ? AppLocalizations.of(context)!.connected
+                                  : AppLocalizations.of(context)!.selectedDisconnected,
+                                style: TextStyle(
+                                  color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
+                                    ? Colors.green
+                                    : Colors.orange,
+                                  fontWeight: FontWeight.w500
+                                ),
+                              )
+                            ],
                           ),
-                          const SizedBox(width: 10),
-                          Text(
-                            serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
-                              ? AppLocalizations.of(context)!.connected
-                              : AppLocalizations.of(context)!.selectedDisconnected,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500
-                            ),
-                          )
-                        ],
-                        ),
-                    )
+                      )
                     : Container(
                         margin: const EdgeInsets.only(right: 10),
-                        child: TextButton(
+                        child: FilledButton.icon(
+                          icon: const Icon(Icons.login),
                           onPressed: () => connectToServer(server),
-                          child: Text(AppLocalizations.of(context)!.connect),
+                          label: Text(AppLocalizations.of(context)!.connect),
                         ),
                       ),
               )
@@ -384,17 +382,24 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
     }
 
     return FractionallySizedBox(
-      widthFactor: 0.5,
+      widthFactor: width > widget.breakingWidth ? 0.5 : 1,
       child: Card(
-        margin: generateMargins(widget.index),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              topRow(widget.server, widget.index),
-              bottomRow(widget.server, widget.index)
-            ],
-          ),
+        margin:  width > widget.breakingWidth
+          ? generateMargins(widget.index)
+          : const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: topRow(widget.server, widget.index),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 8, right: 8, bottom: 16
+              ),
+              child: bottomRow(widget.server, widget.index),
+            )
+          ],
         ),
       ),
     );

@@ -118,7 +118,7 @@ class SelectInterfaceModal extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 5),
                               ],
-                              if (interfaces[index].gatewayIp != '') ...[
+                              if (interfaces[index].gatewayIp != null && interfaces[index].gatewayIp != '') ...[
                                 Row(
                                   children: [
                                     Text(
@@ -129,7 +129,7 @@ class SelectInterfaceModal extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      interfaces[index].gatewayIp,
+                                      interfaces[index].gatewayIp!,
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Theme.of(context).colorScheme.onSurfaceVariant

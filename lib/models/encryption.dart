@@ -31,7 +31,7 @@ class EncryptionData {
   final int? portHttps;
   final int? portDnsOverTls;
   final int? portDnsOverQuic;
-  final int portDnscrypt;
+  final int? portDnscrypt;
   final String dnscryptConfigFile;
   final bool allowUnencryptedDoh;
   final String certificateChain;
