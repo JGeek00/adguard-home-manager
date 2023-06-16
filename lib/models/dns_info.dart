@@ -8,7 +8,7 @@ class DnsInfo {
   bool ednsCsEnabled;
   bool dnssecEnabled;
   bool disableIpv6;
-  String upstreamMode;
+  String? upstreamMode;
   int cacheSize;
   int cacheTtlMin;
   int cacheTtlMax;

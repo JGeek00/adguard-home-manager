@@ -59,7 +59,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
         });
       }
     }
-    upstreamMode = dnsProvider.dnsInfo!.upstreamMode;
+    upstreamMode = dnsProvider.dnsInfo!.upstreamMode ?? "";
     validValues = true;
     super.initState();
   }
