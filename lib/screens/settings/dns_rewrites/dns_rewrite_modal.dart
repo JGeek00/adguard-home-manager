@@ -1,25 +1,34 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/dns_rewrites/server_version_needed.dart';
+
+import 'package:adguard_home_manager/providers/status_provider.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 
-class AddDnsRewriteModal extends StatefulWidget {
-  final void Function(RewriteRules) onConfirm;
+class DnsRewriteModal extends StatefulWidget {
+  final void Function(RewriteRules newRule, RewriteRules? previousRule) onConfirm;
   final bool dialog;
+  final RewriteRules? rule;
+  final void Function(RewriteRules) onDelete;
 
-  const AddDnsRewriteModal({
+  const DnsRewriteModal({
     Key? key,
     required this.onConfirm,
-    required this.dialog
+    required this.dialog,
+    this.rule,
+    required this.onDelete
   }) : super(key: key);
 
   @override
-  State<AddDnsRewriteModal> createState() => _AddDnsRewriteModalState();
+  State<DnsRewriteModal> createState() => _AddDnsRewriteModalState();
 }
 
-class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
+class _AddDnsRewriteModalState extends State<DnsRewriteModal> {
   final TextEditingController domainController = TextEditingController();
   String? domainError;
   final TextEditingController answerController = TextEditingController();
@@ -51,7 +60,19 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
   }
 
   @override
+  void initState() {
+    if (widget.rule != null) {
+      domainController.text = widget.rule!.domain;
+      answerController.text = widget.rule!.answer;
+      validData = true;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final statusProvider = Provider.of<StatusProvider>(context);
+
     Widget content() {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -68,14 +89,18 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
                           Padding(
                             padding: const EdgeInsets.only(top: 24),
                             child: Icon(
-                              Icons.add,
+                              widget.rule != null
+                                ? Icons.edit
+                                : Icons.add,
                               size: 24,
                               color: Theme.of(context).listTileTheme.iconColor
                             ),
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            AppLocalizations.of(context)!.addDnsRewrite,
+                            widget.rule != null
+                              ? AppLocalizations.of(context)!.editRewriteRule
+                              : AppLocalizations.of(context)!.addDnsRewrite,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 24,
@@ -131,34 +156,64 @@ class _AddDnsRewriteModalState extends State<AddDnsRewriteModal> {
           Padding(
             padding: const EdgeInsets.all(24),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations.of(context)!.cancel),
+                if (widget.rule != null) TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    widget.onDelete(
+                      RewriteRules(
+                        domain: domainController.text, 
+                        answer: answerController.text
+                      )
+                    );
+                  },
+                  child: Text(AppLocalizations.of(context)!.delete),
                 ),
-                const SizedBox(width: 20),
-                TextButton(
-                  onPressed: validData == true
-                    ? () {
-                      Navigator.pop(context);
-                      widget.onConfirm(
-                        RewriteRules(
-                          domain: domainController.text, 
-                          answer: answerController.text
-                        )
-                      );
-                    }
-                    : null,
-                  child: Text(
-                    AppLocalizations.of(context)!.confirm,
-                    style: TextStyle(
-                      color: validData == true
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                if (widget.rule == null) const SizedBox(),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(AppLocalizations.of(context)!.cancel),
                     ),
-                  ),
-                ),
+                    const SizedBox(width: 20),
+                    TextButton(
+                      onPressed: validData == true
+                        ? () {
+                          if (serverVersionIsAhead(
+                            currentVersion: statusProvider.serverStatus!.serverVersion, 
+                            referenceVersion: '0.107.33',
+                            referenceVersionBeta: '0.108.0-b.39'
+                          )) {
+                            Navigator.pop(context);
+                            widget.onConfirm(
+                              RewriteRules(
+                                domain: domainController.text, 
+                                answer: answerController.text
+                              ),
+                              widget.rule
+                            );
+                          }
+                          else {
+                            showDialog(
+                              context: context, 
+                              builder: (context) => const ServerVersionNeeded(version: 'v0.107.33')
+                            );
+                          }
+                        }
+                        : null,
+                      child: Text(
+                        AppLocalizations.of(context)!.confirm,
+                        style: TextStyle(
+                          color: validData == true
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                        ),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),

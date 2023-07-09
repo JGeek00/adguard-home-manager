@@ -630,5 +630,11 @@
     "combinedChartDescription": "Combine all charts into one",
     "statistics": "Statistics",
     "errorLoadFilters": "Error when loading filters.",
-    "clientRemovedSuccessfully": "Client removed successfully."
+    "clientRemovedSuccessfully": "Client removed successfully.",
+    "editRewriteRule": "Edit rewrite rule",
+    "dnsRewriteRuleUpdated": "DNS rewrite rule updated successfully",
+    "dnsRewriteRuleNotUpdated": "DNS rewrite rule could not be updated",
+    "updatingRule": "Updating rule...",
+    "serverUpdateNeeded": "Server update needed",
+    "updateYourServer": "Update your AdGuard Home server to {version} or greater to use this feature."
 }

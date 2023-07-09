@@ -54,6 +54,33 @@ class RewriteRulesProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> editDnsRewrite(RewriteRules newRule, RewriteRules oldRule) async {
+    final result = await _serversProvider!.apiClient!.updateRewriteRule(
+      body: {
+        "target": {
+          "answer": oldRule.answer,
+          "domain": oldRule.domain
+        },
+        "update": {
+          "answer": newRule.answer,
+          "domain": newRule.domain
+        }
+      }
+    );
+
+    if (result['result'] == 'success') {
+      List<RewriteRules> data = rewriteRules!;
+      final index = data.indexOf(oldRule);
+      data[index] = newRule;
+      setRewriteRulesData(data);
+      return true;
+    }
+    else {
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> deleteDnsRewrite(RewriteRules rule) async {
     final result = await _serversProvider!.apiClient!.deleteDnsRewriteRule(
       data: {

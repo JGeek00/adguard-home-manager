@@ -630,5 +630,11 @@
     "combinedChartDescription": "Combina todos los gráficos en uno solo",
     "statistics": "Estadísticas",
     "errorLoadFilters": "Error al cargar los filtros.",
-    "clientRemovedSuccessfully": "Cliente eliminado correctamente."
+    "clientRemovedSuccessfully": "Cliente eliminado correctamente.",
+    "editRewriteRule": "Editar reescritura DNS",
+    "dnsRewriteRuleUpdated": "Regla de reescritura DNS actualizada correctamente",
+    "dnsRewriteRuleNotUpdated": "La regla de reescritura DNS no ha podido ser actualizada",
+    "updatingRule": "Actualizando regla...",
+    "serverUpdateNeeded": "Actualización del servidor necesaria",
+    "updateYourServer": "Actualiza tu servidor AdGuard Home a {version} para utilizar esta funcionalidad."
 }
