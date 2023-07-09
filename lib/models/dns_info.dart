@@ -46,7 +46,7 @@ class DnsInfo {
   factory DnsInfo.fromJson(Map<String, dynamic> json) => DnsInfo(
     upstreamDns: json["upstream_dns"] != null ? List<String>.from(json["upstream_dns"].map((x) => x)) : [],
     upstreamDnsFile: json["upstream_dns_file"],
-    bootstrapDns: List<String>.from(json["bootstrap_dns"].map((x) => x)),
+    bootstrapDns: json["bootstrap_dns"] != null ? List<String>.from(json["bootstrap_dns"].map((x) => x)) : [],
     protectionEnabled: json["protection_enabled"],
     ratelimit: json["ratelimit"],
     blockingMode: json["blocking_mode"],
