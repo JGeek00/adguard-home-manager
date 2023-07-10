@@ -636,5 +636,20 @@
     "dnsRewriteRuleNotUpdated": "DNS rewrite rule could not be updated",
     "updatingRule": "Updating rule...",
     "serverUpdateNeeded": "Server update needed",
-    "updateYourServer": "Update your AdGuard Home server to {version} or greater to use this feature."
+    "updateYourServer": "Update your AdGuard Home server to {version} or greater to use this feature.",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December",
+    "malwarePhising": "Malware/phising",
+    "queries": "Queries",
+    "adultSites": "Adult sites"
 }

@@ -11,6 +11,7 @@ class HomeChart extends StatelessWidget {
   final String primaryValue;
   final String secondaryValue;
   final Color color;
+  final int hoursInterval;
 
   const HomeChart({
     Key? key,
@@ -18,22 +19,24 @@ class HomeChart extends StatelessWidget {
     required this.label,
     required this.primaryValue,
     required this.secondaryValue,
-    required this.color
+    required this.color,
+    required this.hoursInterval
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    bool isEmpty = true;
-    for (int item in data) {
-      if (item > 0) {
-        isEmpty = false;
-        break;
-      }
-    }
+    final bool isEmpty = data.any((i) => i == 0);
 
     if (!(appConfigProvider.hideZeroValues == true && isEmpty == true)) {
+      List<DateTime> dateTimes = [];
+      DateTime currentDate = DateTime.now().subtract(Duration(hours: hoursInterval*data.length+1));
+      for (var i = 0; i < data.length; i++) {
+        currentDate = currentDate.add(Duration(hours: hoursInterval));
+        dateTimes.add(currentDate);
+      }
+      
       return Column(
         children: [
           Padding(
@@ -109,6 +112,9 @@ class HomeChart extends StatelessWidget {
                   child: CustomLineChart(
                     data: data, 
                     color: color,
+                    dates: dateTimes,
+                    daysInterval: hoursInterval == 24,
+                    context: context,
                   )
                 ),
               ],
