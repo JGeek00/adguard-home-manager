@@ -334,7 +334,7 @@ class _LogsState extends State<Logs> {
                   tooltip: AppLocalizations.of(context)!.filters,
                 )
               : const SizedBox(),
-            IconButton(
+            if (statusProvider.serverStatus != null) IconButton(
               tooltip: AppLocalizations.of(context)!.settings,
               onPressed: () => {
                 if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {

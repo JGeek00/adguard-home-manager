@@ -2164,7 +2164,6 @@ class ApiClient {
   }
 
   Future updateSafeSearchSettings({
-
     required Map<String, bool> body
   }) async {
     final result = await apiRequest(
@@ -2184,6 +2183,39 @@ class ApiClient {
           'result': 'error',
           'log': AppLog(
             type: 'safesearch_settings', 
+            dateTime: DateTime.now(), 
+            message: 'error_code_not_expected',
+            statusCode: result['statusCode'].toString(),
+            resBody: result['body'],
+          )
+        };
+      }
+    }
+    else {
+      return result;
+    }
+  }
+
+  Future updateRewriteRule({
+    required Map<String, dynamic> body
+  }) async {
+    final result = await apiRequest(
+      urlPath: '/rewrite/update', 
+      method: 'put',
+      server: server,
+      type: 'update_rewrite',
+      body: body
+    );
+
+    if (result['hasResponse'] == true) {
+      if (result['statusCode'] == 200) {
+        return { 'result': 'success' };
+      }
+      else {
+        return {
+          'result': 'error',
+          'log': AppLog(
+            type: 'update_rewrite', 
             dateTime: DateTime.now(), 
             message: 'error_code_not_expected',
             statusCode: result['statusCode'].toString(),

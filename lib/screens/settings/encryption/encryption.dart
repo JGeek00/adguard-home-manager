@@ -103,32 +103,34 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       if (result['result'] == 'success') {
         await checkValidDataApi(data: result['data'].toJson());
 
-        setState(() {
-          enabled = result['data'].enabled;
-          domainNameController.text = result['data'].serverName ?? '';
-          redirectHttps = result['data'].forceHttps;
-          httpsPortController.text = result['data'].portHttps != null ? result['data'].portHttps.toString() : '';
-          tlsPortController.text = result['data'].portDnsOverTls != null ? result['data'].portDnsOverTls.toString() : '';
-          dnsOverQuicPortController.text = result['data'].portDnsOverQuic != null ? result['data'].portDnsOverQuic.toString() : '';
-          if (result['data'].certificateChain != '') {
-            certificateOption = 1;
-            certificateContentController.text = decodeBase64(result['data'].certificateChain);
-          }
-          else {
-            certificateOption = 0;
-            certificatePathController.text = result['data'].certificatePath;
-          }
-          if (result['data'].privateKey != '' || result['data'].privateKeySaved == true) {
-            privateKeyOption = 1;
-          }
-          else {
-            privateKeyOption = 0;
-            privateKeyPathController.text = result['data'].privateKeyPath;
-          }
-          usePreviouslySavedKey = result['data'].privateKeySaved;
+        if (mounted) {
+          setState(() {
+            enabled = result['data'].enabled;
+            domainNameController.text = result['data'].serverName ?? '';
+            redirectHttps = result['data'].forceHttps;
+            httpsPortController.text = result['data'].portHttps != null ? result['data'].portHttps.toString() : '';
+            tlsPortController.text = result['data'].portDnsOverTls != null ? result['data'].portDnsOverTls.toString() : '';
+            dnsOverQuicPortController.text = result['data'].portDnsOverQuic != null ? result['data'].portDnsOverQuic.toString() : '';
+            if (result['data'].certificateChain != '') {
+              certificateOption = 1;
+              certificateContentController.text = decodeBase64(result['data'].certificateChain);
+            }
+            else {
+              certificateOption = 0;
+              certificatePathController.text = result['data'].certificatePath;
+            }
+            if (result['data'].privateKey != '' || result['data'].privateKeySaved == true) {
+              privateKeyOption = 1;
+            }
+            else {
+              privateKeyOption = 0;
+              privateKeyPathController.text = result['data'].privateKeyPath;
+            }
+            usePreviouslySavedKey = result['data'].privateKeySaved;
 
-          loadStatus = 1;
-        });
+            loadStatus = 1;
+          });
+        }
       }
       else {
         widget.appConfigProvider.addLog(result['log']);

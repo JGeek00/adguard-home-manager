@@ -20,7 +20,7 @@ class CombinedChartData {
     required this.totalQueries,
     this.blockedFilters,
     this.replacedSafeBrowsing,
-    this.replacedParental
+    this.replacedParental,
   });
 }
 
@@ -149,6 +149,15 @@ class CombinedHomeChart extends StatelessWidget {
         );
       }
 
+      final hoursInterval = statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1;
+
+      List<DateTime> dateTimes = [];
+      DateTime currentDate = DateTime.now().subtract(Duration(hours: hoursInterval*statusProvider.serverStatus!.stats.dnsQueries.length+1));
+      for (var i = 0; i < statusProvider.serverStatus!.stats.dnsQueries.length; i++) {
+        currentDate = currentDate.add(Duration(hours: hoursInterval));
+        dateTimes.add(currentDate);
+      }
+
       if (width > 700) {
         return Column(
           children: [
@@ -170,6 +179,9 @@ class CombinedHomeChart extends StatelessWidget {
                     width: double.maxFinite,
                     child: CustomCombinedLineChart(
                       inputData: data,
+                      context: context,
+                      dates: dateTimes,
+                      daysInterval: hoursInterval == 24,
                     ),
                   ),
                 ),
@@ -241,6 +253,9 @@ class CombinedHomeChart extends StatelessWidget {
                   width: double.maxFinite,
                   child: CustomCombinedLineChart(
                     inputData: data,
+                    context: context,
+                    dates: dateTimes,
+                    daysInterval: hoursInterval == 24,
                   ),
                 ),
                 const SizedBox(height: 16),

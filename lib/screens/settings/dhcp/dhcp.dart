@@ -58,8 +58,8 @@ class _DhcpScreenState extends State<DhcpScreen> {
       final dhcpProvider = Provider.of<DhcpProvider>(context, listen: false);
       if (dhcpProvider.dhcp != null) {
         setState(() {
-          if (dhcpProvider.dhcp!.dhcpStatus.interfaceName != '') {
-            selectedInterface = dhcpProvider.dhcp!.networkInterfaces.firstWhere((iface) => iface.name == dhcpProvider.dhcp!.dhcpStatus.interfaceName);
+          if (dhcpProvider.dhcp!.dhcpStatus.interfaceName != null && dhcpProvider.dhcp!.dhcpStatus.interfaceName != '') {
+            try {selectedInterface = dhcpProvider.dhcp!.networkInterfaces.firstWhere((iface) => iface.name == dhcpProvider.dhcp!.dhcpStatus.interfaceName);} catch (_) {}
             enabled = dhcpProvider.dhcp!.dhcpStatus.enabled;
             ipv4StartRangeController.text = dhcpProvider.dhcp!.dhcpStatus.v4.rangeStart;
             ipv4EndRangeController.text = dhcpProvider.dhcp!.dhcpStatus.v4.rangeEnd ?? '';

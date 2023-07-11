@@ -3,11 +3,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/settings/dns_rewrites/add_dns_rewrite_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dns_rewrites/delete_dns_rewrite.dart';
+import 'package:adguard_home_manager/screens/settings/dns_rewrites/dns_rewrite_modal.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -24,10 +25,29 @@ class DnsRewritesScreen extends StatefulWidget {
 }
 
 class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
+  late bool isVisible;
+  final ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     Provider.of<RewriteRulesProvider>(context, listen: false).fetchRules();
     super.initState();
+
+    isVisible = true;
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (mounted && isVisible == true) {
+          setState(() => isVisible = false);
+        }
+      } 
+      else {
+        if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+          if (mounted && isVisible == false) {
+            setState(() => isVisible = true);
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -61,7 +81,7 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
       }
     }
 
-    void addDnsRewrite(RewriteRules rule) async {
+    void addDnsRewrite(RewriteRules rule, _) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.addingRewrite);
 
@@ -80,6 +100,30 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotAdded, 
+          color: Colors.red
+        );
+      }
+    }
+
+    void updateRewriteRule(RewriteRules newRule, RewriteRules? previousRule) async {
+      ProcessModal processModal = ProcessModal(context: context);
+      processModal.open(AppLocalizations.of(context)!.updatingRule);
+
+      final result = await rewriteRulesProvider.editDnsRewrite(newRule, previousRule!);
+
+      processModal.close();
+
+      if (result == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.dnsRewriteRuleUpdated, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.dnsRewriteRuleNotUpdated, 
           color: Colors.red
         );
       }
@@ -121,70 +165,102 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
                 }
               },
               child: ListView.builder(
+                controller: scrollController,
                 padding: const EdgeInsets.only(top: 0),
                 itemCount: rewriteRulesProvider.rewriteRules!.length,
                 itemBuilder: (context, index) => Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16, top: 16, bottom: 16, right: 8
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "${AppLocalizations.of(context)!.domain}: ",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Theme.of(context).colorScheme.onSurface
-                                  ),
-                                ),
-                                Text(
-                                  rewriteRulesProvider.rewriteRules![index].domain,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onSurface
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 3),
-                            Row(
-                              children: [
-                                Text(
-                                  "${AppLocalizations.of(context)!.answer}: ",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Theme.of(context).colorScheme.onSurface
-                                  ),
-                                ),
-                                Text(
-                                  rewriteRulesProvider.rewriteRules![index].answer,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onSurface
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                          onPressed: () => {
-                            showDialog(
+                  child: InkWell(
+                    onTap: () => {
+                      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                        showDialog(
+                          context: context, 
+                          builder: (context) => DnsRewriteModal(
+                            onConfirm: updateRewriteRule,
+                            dialog: true,
+                            rule: rewriteRulesProvider.rewriteRules![index],
+                            onDelete: (rule) => showDialog(
                               context: context, 
                               builder: (context) => DeleteDnsRewrite(
-                                onConfirm: () => deleteDnsRewrite(rewriteRulesProvider.rewriteRules![index])
+                                onConfirm: () => deleteDnsRewrite(rule)
                               )
-                            )
-                          }, 
-                          icon: const Icon(Icons.delete),
-                          tooltip: AppLocalizations.of(context)!.delete,
+                            ),
+                          ),
                         )
-                      ],
+                      }
+                      else {
+                        showModalBottomSheet(
+                          context: context, 
+                          builder: (context) => DnsRewriteModal(
+                            onConfirm: updateRewriteRule,
+                            dialog: false,
+                            rule: rewriteRulesProvider.rewriteRules![index],
+                            onDelete: (rule) => showDialog(
+                              context: context, 
+                              builder: (context) => DeleteDnsRewrite(
+                                onConfirm: () => deleteDnsRewrite(rule)
+                              )
+                            ),
+                          ),
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                        )
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(10),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16, top: 16, bottom: 16, right: 8
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    "${AppLocalizations.of(context)!.domain}: ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(context).colorScheme.onSurface
+                                    ),
+                                  ),
+                                  Text(
+                                    rewriteRulesProvider.rewriteRules![index].domain,
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onSurface
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 3),
+                              Row(
+                                children: [
+                                  Text(
+                                    "${AppLocalizations.of(context)!.answer}: ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(context).colorScheme.onSurface
+                                    ),
+                                  ),
+                                  Text(
+                                    rewriteRulesProvider.rewriteRules![index].answer,
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onSurface
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Icon(
+                            Icons.keyboard_arrow_right_rounded,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 )
@@ -237,31 +313,56 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
         title: Text(AppLocalizations.of(context)!.dnsRewrites),
         centerTitle: false,
       ),
-      body: generateBody(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
-            showDialog(
-              context: context, 
-              builder: (context) => AddDnsRewriteModal(
-                onConfirm: addDnsRewrite,
-                dialog: true,
+      body: Stack(
+        children: [
+          generateBody(),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut,
+            bottom: isVisible ?
+              appConfigProvider.showingSnackbar
+                ? 70 : 20
+                : -70,
+              right: 20,
+              child: FloatingActionButton(
+                onPressed: () => {
+                  if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                    showDialog(
+                      context: context, 
+                      builder: (context) => DnsRewriteModal(
+                        onConfirm: addDnsRewrite,
+                        dialog: true,
+                        onDelete: (rule) => showDialog(
+                          context: context, 
+                          builder: (context) => DeleteDnsRewrite(
+                            onConfirm: () => deleteDnsRewrite(rule)
+                          )
+                        ),
+                      ),
+                    )
+                  }
+                  else {
+                    showModalBottomSheet(
+                      context: context, 
+                      builder: (context) => DnsRewriteModal(
+                        onConfirm: addDnsRewrite,
+                        dialog: false,
+                        onDelete: (rule) => showDialog(
+                          context: context, 
+                          builder: (context) => DeleteDnsRewrite(
+                            onConfirm: () => deleteDnsRewrite(rule)
+                          )
+                        ),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true
+                    )
+                  }
+                },
+                child: const Icon(Icons.add),
               ),
-            )
-          }
-          else {
-            showModalBottomSheet(
-              context: context, 
-              builder: (context) => AddDnsRewriteModal(
-                onConfirm: addDnsRewrite,
-                dialog: false,
-              ),
-              backgroundColor: Colors.transparent,
-              isScrollControlled: true
-            )
-          }
-        },
-        child: const Icon(Icons.add),
+          )
+        ],
       ),
     );
   }

@@ -54,7 +54,7 @@ DhcpStatus dhcpStatusFromJson(String str) => DhcpStatus.fromJson(json.decode(str
 String dhcpStatusToJson(DhcpStatus data) => json.encode(data.toJson());
 
 class DhcpStatus {
-  String interfaceName;
+  String? interfaceName;
   IpVersion v4;
   IpVersion v6;
   List<Lease> leases;

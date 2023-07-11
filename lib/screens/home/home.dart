@@ -131,6 +131,7 @@ class _HomeState extends State<Home> {
                 primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
                 secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
                 color: Colors.blue,
+                hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
               ),
             ),
             FractionallySizedBox(
@@ -141,6 +142,7 @@ class _HomeState extends State<Home> {
                 primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
                 secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.red,
+                hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
               ),
             ),
             FractionallySizedBox(
@@ -151,6 +153,7 @@ class _HomeState extends State<Home> {
                 primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
                 secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.green,
+                hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
               ),
             ),
             FractionallySizedBox(
@@ -161,6 +164,7 @@ class _HomeState extends State<Home> {
                 primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
                 secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedParental/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.orange,
+                hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
               ),
             ),             
           ],
