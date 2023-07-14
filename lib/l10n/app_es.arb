@@ -651,5 +651,6 @@
     "december": "Diciembre",
     "malwarePhising": "Malware/phising",
     "queries": "Peticiones",
-    "adultSites": "Sitios de adultos"
+    "adultSites": "Sitios de adultos",
+    "quickFilters": "Filtros rápidos"
 }

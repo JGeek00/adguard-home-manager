@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/clients_modal.dart';
 import 'package:adguard_home_manager/screens/logs/filter_status_modal.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -219,6 +220,38 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
                           )
                         : null,
                   ),
+                  SectionLabel(
+                    label: AppLocalizations.of(context)!.quickFilters,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      FilterChip(
+                        selected: logsProvider.selectedResultStatus == "all",
+                        label: Text(AppLocalizations.of(context)!.all), 
+                        onSelected: (_) => logsProvider.setSelectedResultStatus("all")
+                      ),
+                      FilterChip(
+                        selected: logsProvider.selectedResultStatus == "processed" ||
+                          logsProvider.selectedResultStatus == "whitelisted",
+                        label: Text(AppLocalizations.of(context)!.allowed), 
+                        onSelected: (_) => logsProvider.setSelectedResultStatus("processed")
+                      ),
+                      FilterChip(
+                        selected: logsProvider.selectedResultStatus == "blocked" || 
+                          logsProvider.selectedResultStatus == "blocked_safebrowsing" ||
+                          logsProvider.selectedResultStatus == "blocked_parental" ||
+                          logsProvider.selectedResultStatus == "safe_search",
+                        label: Text(AppLocalizations.of(context)!.blocked), 
+                        onSelected: (_) => logsProvider.setSelectedResultStatus("blocked")
+                      ),
+                    ],
+                  ),
+                  const Padding(padding: EdgeInsets.all(8)),
                   CustomListTile(
                     title: AppLocalizations.of(context)!.responseStatus,
                     subtitle: "${translatedString[logsProvider.selectedResultStatus]}",
