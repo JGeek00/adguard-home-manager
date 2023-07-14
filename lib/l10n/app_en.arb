@@ -652,5 +652,6 @@
     "malwarePhising": "Malware/phising",
     "queries": "Queries",
     "adultSites": "Adult sites",
-    "quickFilters": "Quick filters"
+    "quickFilters": "Quick filters",
+    "searchDomainInternet": "Search domain on the Internet"
 }
