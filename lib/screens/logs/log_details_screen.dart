@@ -8,6 +8,8 @@ import 'package:adguard_home_manager/widgets/section_label.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/open_url.dart';
+import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -223,7 +225,7 @@ class LogDetailsScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                            IconButton(
+                        IconButton(
                           onPressed: () => Navigator.pop(context), 
                           icon: const Icon(Icons.clear_rounded)
                         ),
@@ -238,6 +240,11 @@ class LogDetailsScreen extends StatelessWidget {
                     ),
                     Row(
                       children: [
+                        IconButton(
+                          onPressed: () => openUrl("${Urls.googleSearchUrl}?q=${log.question.name}"), 
+                          icon: const Icon(Icons.travel_explore_rounded),
+                          tooltip: AppLocalizations.of(context)!.searchDomainInternet
+                        ),
                         IconButton(
                           onPressed: log.question.name != null
                             ? () => blockUnblock(
@@ -276,6 +283,11 @@ class LogDetailsScreen extends StatelessWidget {
           centerTitle: false,
           title:  Text(AppLocalizations.of(context)!.logDetails),
           actions: [
+            IconButton(
+              onPressed: () => openUrl("${Urls.googleSearchUrl}?q=${log.question.name}"), 
+              icon: const Icon(Icons.travel_explore_rounded),
+              tooltip: AppLocalizations.of(context)!.searchDomainInternet
+            ),
             if (statusProvider.filteringStatus != null) IconButton(
               onPressed: log.question.name != null
                 ? () => blockUnblock(
