@@ -652,6 +652,6 @@
     "malwarePhising": "恶意/钓鱼网站",
     "queries": "查询",
     "adultSites": "成人网站",
-    "quickFilters": "快速过滤器",
+    "quickFilters": "状态过滤器",
     "searchDomainInternet": "在互联网上搜索该域名"    
 }
