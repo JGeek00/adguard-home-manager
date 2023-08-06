@@ -23,7 +23,7 @@
     "invalidUsernamePassword": "用户名或密码错误",
     "tooManyAttempts": "尝试次数过多，请稍后再试",
     "cantReachServer": "无法连接服务器，请检查连接信息是否正确",
-    "sslError": "SSL 错误。转到 设置 > 高级设置 并启用 忽略 SSL 验证",
+    "sslError": "SSL 错误。转到 设置 > 高级设置 并启用 不检查 SSL 证书",
     "unknownError": "未知错误",
     "connectionNotCreated": "连接无法创建",
     "connecting": "正在连接...",
