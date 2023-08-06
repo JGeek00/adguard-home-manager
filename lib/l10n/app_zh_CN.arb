@@ -214,7 +214,7 @@
     "blacklists": "黑名单",
     "rules": "规则",
     "customRules": "自定义规则",
-  "enabledRules": "条规则已应用",
+    "enabledRules": "条规则已应用",
     "enabled": "已启用",
     "disabled": "已禁用",
     "rule": "规则",
