@@ -61,11 +61,13 @@ class _DhcpScreenState extends State<DhcpScreen> {
           if (dhcpProvider.dhcp!.dhcpStatus.interfaceName != null && dhcpProvider.dhcp!.dhcpStatus.interfaceName != '') {
             try {selectedInterface = dhcpProvider.dhcp!.networkInterfaces.firstWhere((iface) => iface.name == dhcpProvider.dhcp!.dhcpStatus.interfaceName);} catch (_) {}
             enabled = dhcpProvider.dhcp!.dhcpStatus.enabled;
-            ipv4StartRangeController.text = dhcpProvider.dhcp!.dhcpStatus.v4.rangeStart;
-            ipv4EndRangeController.text = dhcpProvider.dhcp!.dhcpStatus.v4.rangeEnd ?? '';
-            ipv4SubnetMaskController.text = dhcpProvider.dhcp!.dhcpStatus.v4.subnetMask ?? '';
-            ipv4GatewayController.text = dhcpProvider.dhcp!.dhcpStatus.v4.gatewayIp ?? '';
-            ipv4LeaseTimeController.text = dhcpProvider.dhcp!.dhcpStatus.v4.leaseDuration.toString();
+            if (dhcpProvider.dhcp!.dhcpStatus.v4 != null) {
+              ipv4StartRangeController.text = dhcpProvider.dhcp!.dhcpStatus.v4!.rangeStart;
+              ipv4EndRangeController.text = dhcpProvider.dhcp!.dhcpStatus.v4!.rangeEnd ?? '';
+              ipv4SubnetMaskController.text = dhcpProvider.dhcp!.dhcpStatus.v4!.subnetMask ?? '';
+              ipv4GatewayController.text = dhcpProvider.dhcp!.dhcpStatus.v4!.gatewayIp ?? '';
+              ipv4LeaseTimeController.text = dhcpProvider.dhcp!.dhcpStatus.v4!.leaseDuration.toString();
+            }
           }
         });
       }

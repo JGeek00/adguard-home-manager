@@ -7,6 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/constants/urls.dart';
+import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/base64.dart';
@@ -648,20 +650,28 @@ class _AddServerModalState extends State<AddServerModal> {
                         ),
                       ],
                     ),
-                    IconButton(
-                      tooltip: widget.server == null 
-                        ? AppLocalizations.of(context)!.connect
-                        : AppLocalizations.of(context)!.save,
-                      onPressed: allDataValid == true 
-                        ? widget.server == null 
-                          ? () => connect()
-                          : () => edit()
-                        : null,
-                      icon: Icon(
-                        widget.server == null
-                          ? Icons.login_rounded
-                          : Icons.save_rounded
-                      )
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => openUrl(Urls.connectionInstructions), 
+                          icon: const Icon(Icons.help_outline_outlined)
+                        ),
+                        IconButton(
+                          tooltip: widget.server == null 
+                            ? AppLocalizations.of(context)!.connect
+                            : AppLocalizations.of(context)!.save,
+                          onPressed: allDataValid == true 
+                            ? widget.server == null 
+                              ? () => connect()
+                              : () => edit()
+                            : null,
+                          icon: Icon(
+                            widget.server == null
+                              ? Icons.login_rounded
+                              : Icons.save_rounded
+                          )
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -683,6 +693,10 @@ class _AddServerModalState extends State<AddServerModal> {
             appBar: AppBar(
               title: Text(AppLocalizations.of(context)!.createConnection),
               actions: [
+                IconButton(
+                  onPressed: () => openUrl(Urls.connectionInstructions), 
+                  icon: const Icon(Icons.help_outline_outlined)
+                ),
                 IconButton(
                   tooltip: widget.server == null 
                     ? AppLocalizations.of(context)!.connect

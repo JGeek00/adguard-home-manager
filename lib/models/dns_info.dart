@@ -10,8 +10,8 @@ class DnsInfo {
   bool disableIpv6;
   String? upstreamMode;
   int? cacheSize;
-  int cacheTtlMin;
-  int cacheTtlMax;
+  int? cacheTtlMin;
+  int? cacheTtlMax;
   bool cacheOptimistic;
   bool resolveClients;
   bool usePrivatePtrResolvers;
