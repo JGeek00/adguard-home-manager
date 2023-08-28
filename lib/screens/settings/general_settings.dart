@@ -63,6 +63,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
         isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
       );
 
+      if (!mounted) return;
       if (res != null) {
         setState(() => appUpdatesStatus = AppUpdatesStatus.available);
       }

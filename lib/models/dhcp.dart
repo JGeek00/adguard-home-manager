@@ -55,8 +55,8 @@ String dhcpStatusToJson(DhcpStatus data) => json.encode(data.toJson());
 
 class DhcpStatus {
   String? interfaceName;
-  IpVersion v4;
-  IpVersion v6;
+  IpVersion? v4;
+  IpVersion? v6;
   List<Lease> leases;
   List<Lease> staticLeases;
   bool enabled;
@@ -81,8 +81,8 @@ class DhcpStatus {
 
   Map<String, dynamic> toJson() => {
     "interface_name": interfaceName,
-    "v4": v4.toJson(),
-    "v6": v6.toJson(),
+    "v4": v4 != null ? v4!.toJson() : null,
+    "v6": v6 != null ? v6!.toJson() : null,
     "leases": List<Lease>.from(leases.map((x) => x)),
     "static_leases": List<Lease>.from(staticLeases.map((x) => x)),
     "enabled": enabled,

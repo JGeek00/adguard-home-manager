@@ -26,6 +26,8 @@ class CustomCombinedLineChart extends StatelessWidget {
     String chartDate(DateTime date) {
       String twoDigits(int number) => number.toString().padLeft(2, '0');
 
+      String shortMonth(String month) => month.length > 3 ? month.substring(0, 3) : month;
+
       String getMonth(int month) {
         final List<String> months = [
           AppLocalizations.of(context)!.january,
@@ -45,10 +47,10 @@ class CustomCombinedLineChart extends StatelessWidget {
       }
       
       if (daysInterval == true) {
-        return "${date.day} ${getMonth(date.month).substring(0, 3)}";
+        return "${date.day} ${shortMonth(getMonth(date.month))}";
       }
       else {
-        return "${date.day} ${getMonth(date.month).substring(0, 3)} ${twoDigits(date.hour)}:00";
+        return "${date.day} ${shortMonth(getMonth(date.month))} ${twoDigits(date.hour)}:00";
       }
     }
 
