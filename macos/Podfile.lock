@@ -9,13 +9,13 @@ PODS:
   - FMDB/standard (2.7.5)
   - package_info_plus (0.0.1):
     - FlutterMacOS
-  - Sentry/HybridSDK (8.7.1):
-    - SentryPrivate (= 8.7.1)
+  - Sentry/HybridSDK (8.9.1):
+    - SentryPrivate (= 8.9.1)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.7.1)
-  - SentryPrivate (8.7.1)
+    - Sentry/HybridSDK (= 8.9.1)
+  - SentryPrivate (8.9.1)
   - sqflite (0.0.2):
     - FlutterMacOS
     - FMDB (>= 2.7.5)
@@ -83,9 +83,9 @@ SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
-  Sentry: 11776f6a25a128808d793d0d41bb7ad873b5ae4f
-  sentry_flutter: 886dbeb2674ba1232f540c54311a774bb50fda42
-  SentryPrivate: b3c448eacdabe9eab7679a2e0af609c608f91572
+  Sentry: e3203780941722a1fcfee99e351de14244c7f806
+  sentry_flutter: 8f0ffd53088e6a4d50c095852c5cad9e4405025c
+  SentryPrivate: 5e3683390f66611fc7c6215e27645873adb55d13
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
   sqlite3: fd89671d969f3e73efe503ce203e28b016b58f68
   sqlite3_flutter_libs: 00a50503d69f7ab0fe85a5ff25b33082f4df4ce9
