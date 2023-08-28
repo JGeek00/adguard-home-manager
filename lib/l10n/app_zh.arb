@@ -619,7 +619,7 @@
     "copyListUrl": "复制订阅规则 URL",
     "listUrlCopied": "订阅规则 URL 已复制到剪贴板",
     "unsupportedVersion": "不支持的版本",
-    "unsupprtedVersionMessage": "您的服务器版本 {version} 不在支持范围，配合使用可能会存在问题\\n\\nAdGuard Home Manager 只适配了 AdGuard Home 服务器的稳定版本。alpha 和 beta 版本也许能用，但不保证兼容性，同时使用时可能会存在问题",
+    "unsupprtedVersionMessage": "您的服务器版本 {version} 不在支持范围，配合使用可能会存在问题\n\nAdGuard Home Manager 只适配了 AdGuard Home 服务器的稳定版本。alpha 和 beta 版本也许能用，但不保证兼容性，同时使用时可能会存在问题",
     "iUnderstand": "我了解",
     "appUpdates": "应用程序更新",
     "usingLatestVersion": "您正在使用最新版本",
