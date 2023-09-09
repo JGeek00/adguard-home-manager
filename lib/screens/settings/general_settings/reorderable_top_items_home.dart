@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -151,6 +154,24 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
       }
     }
 
+    void saveSettings() async {
+      final result = await appConfigProvider.setHomeTopItemsOrder(homeTopItemsList);
+      if (result == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.settingsSaved, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.settingsNotSaved, 
+          color: Colors.red
+        );
+      }
+    }
+
     return WillPopScope(
       onWillPop: onWillPopScope,
       child: Scaffold(
@@ -159,7 +180,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
           actions: [
             IconButton(
               onPressed: !listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList)
-                ? () => appConfigProvider.setHomeTopItemsOrder(homeTopItemsList)
+                ? () => saveSettings()
                 : null, 
               icon: const Icon(Icons.save_rounded),
               tooltip: AppLocalizations.of(context)!.save,

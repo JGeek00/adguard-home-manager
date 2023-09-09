@@ -8,4 +8,6 @@ final List<HomeTopItems> homeTopItemsDefaultOrder = [
   HomeTopItems.recurrentClients
 ];  
 
-final String homeTopItemsDefaultOrderString = jsonEncode(homeTopItemsDefaultOrder);
+final String homeTopItemsDefaultOrderString = jsonEncode(
+  List<String>.from(homeTopItemsDefaultOrder.map((e) => e.name))
+);

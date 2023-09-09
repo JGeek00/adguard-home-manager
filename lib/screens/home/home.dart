@@ -175,88 +175,107 @@ class _HomeState extends State<Home> {
           child: CombinedHomeChart(),
         ),
                
-        if (width <= 700) ...[
-          TopItems(
-            label: AppLocalizations.of(context)!.topQueriedDomains, 
-            data: statusProvider.serverStatus!.stats.topQueriedDomains,
-            type: 'topQueriedDomains',
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(
-              thickness: 1,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-            ),
-          ),
-                
-          const SizedBox(height: 16),
-            
-          TopItems(
-            label: AppLocalizations.of(context)!.topBlockedDomains, 
-            data: statusProvider.serverStatus!.stats.topBlockedDomains,
-            type: 'topBlockedDomains',
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(
-              thickness: 1,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-            ),
-          ),
-          const SizedBox(height: 16),
-               
-          TopItems(
-            label: AppLocalizations.of(context)!.topClients, 
-            data: statusProvider.serverStatus!.stats.topClients,
-            type: 'topClients',
-            clients: true,
-          ),
-        ],
+        if (width <= 700) ...appConfigProvider.homeTopItemsOrder.asMap().entries.map((item) {
+          Widget list() {
+            switch (item.value) {
+              case HomeTopItems.queriedDomains:
+                return TopItems(
+                  label: AppLocalizations.of(context)!.topQueriedDomains, 
+                  data: statusProvider.serverStatus!.stats.topQueriedDomains,
+                  type: 'topQueriedDomains',
+                );
+                 
+              case HomeTopItems.blockedDomains:
+                return TopItems(
+                  label: AppLocalizations.of(context)!.topBlockedDomains, 
+                  data: statusProvider.serverStatus!.stats.topBlockedDomains,
+                  type: 'topBlockedDomains',
+                );
+                      
+              case HomeTopItems.recurrentClients:
+                return TopItems(
+                  label: AppLocalizations.of(context)!.topClients, 
+                  data: statusProvider.serverStatus!.stats.topClients,
+                  type: 'topClients',
+                  clients: true,
+                );
+                    
+              default:
+                return const SizedBox();
+            }
+          }
+              
+          return Column(
+            children: [
+              list(),
+              if (item.key < appConfigProvider.homeTopItemsOrder.length - 1) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
+                    thickness: 1,
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ]
+            ],
+          );
+        }),
         if (width > 700) Column(
           children: [
             Wrap(
               alignment: WrapAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: ConstrainedBox(
-                    constraints: const  BoxConstraints(
-                      maxWidth: 500
-                    ),
-                    child: TopItems(
-                      label: AppLocalizations.of(context)!.topQueriedDomains, 
-                      data: statusProvider.serverStatus!.stats.topQueriedDomains,
-                      type: 'topQueriedDomains',
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 500
-                    ),
-                    child: TopItems(
-                      label: AppLocalizations.of(context)!.topBlockedDomains, 
-                      data: statusProvider.serverStatus!.stats.topBlockedDomains,
-                      type: 'topBlockedDomains',
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 500
-                    ),
-                    child: TopItems(
-                      label: AppLocalizations.of(context)!.topClients, 
-                      data: statusProvider.serverStatus!.stats.topClients,
-                      type: 'topClients',
-                    ),
-                  ),
-                ),
-              ],
+              children: appConfigProvider.homeTopItemsOrder.map((item) {
+                switch (item) {
+                  case HomeTopItems.queriedDomains:
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: ConstrainedBox(
+                        constraints: const  BoxConstraints(
+                          maxWidth: 500
+                        ),
+                        child: TopItems(
+                          label: AppLocalizations.of(context)!.topQueriedDomains, 
+                          data: statusProvider.serverStatus!.stats.topQueriedDomains,
+                          type: 'topQueriedDomains',
+                        ),
+                      ),
+                    );
+
+                  case HomeTopItems.blockedDomains:
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: 500
+                        ),
+                        child: TopItems(
+                          label: AppLocalizations.of(context)!.topBlockedDomains, 
+                          data: statusProvider.serverStatus!.stats.topBlockedDomains,
+                          type: 'topBlockedDomains',
+                        ),
+                      ),
+                    );
+
+                  case HomeTopItems.recurrentClients: 
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: 500
+                        ),
+                        child: TopItems(
+                          label: AppLocalizations.of(context)!.topClients, 
+                          data: statusProvider.serverStatus!.stats.topClients,
+                          type: 'topClients',
+                        ),
+                      ),
+                    );
+                   
+                  default:
+                    return const SizedBox();
+                }
+              }).toList(),
             ),
           ],
         )
