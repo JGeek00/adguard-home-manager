@@ -655,5 +655,10 @@
     "quickFilters": "Quick filters",
     "searchDomainInternet": "Search domain on the Internet",
     "hideServerAddress": "Hide server address",
-    "hideServerAddressDescription": "Hides the server address on the home screen"
+    "hideServerAddressDescription": "Hides the server address on the home screen",
+    "topItemsOrder": "Top items order",
+    "topItemsOrderDescription": "Order the home screen top items lists",
+    "topItemsReorderInfo": "Hold and swipe an item to reorder it.",
+    "discardChanges": "Discard changes",
+    "discardChangesDescription": "Are you sure you want to discard the changes?"
 }

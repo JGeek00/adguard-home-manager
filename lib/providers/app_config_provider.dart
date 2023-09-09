@@ -374,7 +374,7 @@ class AppConfigProvider with ChangeNotifier {
     final updated = await updateConfigQuery(
       db: _dbInstance!,
       column: 'homeTopItemsOrder',
-      value: jsonEncode(order)
+      value: jsonEncode(List<String>.from(order.map((e) => e.name)))
     );
     if (updated == true) {
       _homeTopItemsOrder = order;
