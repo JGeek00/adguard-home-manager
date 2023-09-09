@@ -159,6 +159,28 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               right: 10
             )
           ),
+          CustomListTile(
+            icon: Icons.remove_red_eye_rounded,
+            title: AppLocalizations.of(context)!.hideServerAddress,
+            subtitle: AppLocalizations.of(context)!.hideServerAddressDescription,
+            trailing: Switch(
+              value: appConfigProvider.hideServerAddress, 
+              onChanged: (value) => updateSettings(
+                newStatus: value, 
+                function: appConfigProvider.setHideServerAddress
+              ),
+            ),
+            onTap: () => updateSettings(
+              newStatus: !appConfigProvider.hideServerAddress, 
+              function: appConfigProvider.setHideServerAddress
+            ),
+            padding: const EdgeInsets.only(
+              top: 10,
+              bottom: 10,
+              left: 16,
+              right: 10
+            )
+          ),
           SectionLabel(label: AppLocalizations.of(context)!.logs),
           CustomListTile(
             icon: Icons.timer_rounded,

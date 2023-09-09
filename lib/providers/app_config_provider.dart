@@ -38,6 +38,8 @@ class AppConfigProvider with ChangeNotifier {
 
   List<HomeTopItems> _homeTopItemsOrder = homeTopItemsDefaultOrder;
 
+  int _hideServerAddress = 0;
+
   final List<AppLog> _logs = [];
 
   int _overrideSslCheck = 0;
@@ -160,6 +162,10 @@ class AppConfigProvider with ChangeNotifier {
 
   List<HomeTopItems> get homeTopItemsOrder {
     return _homeTopItemsOrder;
+  }
+
+  bool get hideServerAddress {
+    return _hideServerAddress == 1 ? true : false;
   }
 
   void setDbInstance(Database db) {
@@ -380,6 +386,23 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setHideServerAddress(bool value) async {
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'hideServerAddress',
+      value: value == true ? 1 : 0
+    );
+    if (updated == true) {
+      _hideServerAddress = value == true ? 1 : 0;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+
   Future<bool> setDoNotRememberVersion(String value) async {
     final updated = await updateConfigQuery(
       db: _dbInstance!,
@@ -400,6 +423,7 @@ class AppConfigProvider with ChangeNotifier {
     _doNotRememberVersion = dbData['doNotRememberVersion'];
     _showIpLogs = dbData['showIpLogs'] ?? 0;
     _combinedChartHome = dbData['combinedChart'] ?? 0;
+    _hideServerAddress = dbData['hideServerAddress'];
     if (dbData['homeTopItemsOrder'] != null) {
       try {
         _homeTopItemsOrder = List<HomeTopItems>.from(

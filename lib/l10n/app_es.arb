@@ -653,5 +653,7 @@
     "queries": "Peticiones",
     "adultSites": "Sitios de adultos",
     "quickFilters": "Filtros rápidos",
-    "searchDomainInternet": "Buscar dominio en internet"
+    "searchDomainInternet": "Buscar dominio en internet",
+    "hideServerAddress": "Ocultar dirección del servidor",
+    "hideServerAddressDescription": "Oculta la dirección del servidor en la pantalla de inicio"
 }
