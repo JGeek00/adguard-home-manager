@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sqflite/sqlite_api.dart';
 
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/config/home_top_items_default_order.dart';
 import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/services/db/queries.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
@@ -30,6 +35,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _selectedClientsTab = 0;
   int _selectedFiltersTab = 0;
+
+  List<HomeTopItems> _homeTopItemsOrder = homeTopItemsDefaultOrder;
 
   final List<AppLog> _logs = [];
 
@@ -149,6 +156,10 @@ class AppConfigProvider with ChangeNotifier {
 
   Source get installationSource {
     return _installationSource;
+  }
+
+  List<HomeTopItems> get homeTopItemsOrder {
+    return _homeTopItemsOrder;
   }
 
   void setDbInstance(Database db) {
@@ -353,6 +364,22 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setHomeTopItemsOrder(List<HomeTopItems> order) async {
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'homeTopItemsOrder',
+      value: jsonEncode(order)
+    );
+    if (updated == true) {
+      _homeTopItemsOrder = order;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   Future<bool> setDoNotRememberVersion(String value) async {
     final updated = await updateConfigQuery(
       db: _dbInstance!,
@@ -373,6 +400,30 @@ class AppConfigProvider with ChangeNotifier {
     _doNotRememberVersion = dbData['doNotRememberVersion'];
     _showIpLogs = dbData['showIpLogs'] ?? 0;
     _combinedChartHome = dbData['combinedChart'] ?? 0;
+    if (dbData['homeTopItemsOrder'] != null) {
+      try {
+        _homeTopItemsOrder = List<HomeTopItems>.from(
+          List<String>.from(jsonDecode(dbData['homeTopItemsOrder'])).map((e) {
+            switch (e) {
+              case 'queriedDomains':
+                return HomeTopItems.queriedDomains;
+
+              case 'blockedDomains':
+                return HomeTopItems.blockedDomains;
+
+              case 'recurrentClients':
+                return HomeTopItems.recurrentClients;
+
+              default:
+                return null;
+            }
+          }).where((e) => e != null).toList()
+        );
+      } catch (e) {
+        Sentry.captureException(e);
+        _homeTopItemsOrder = homeTopItemsDefaultOrder;
+      }
+    }
 
     _dbInstance = dbInstance;
     notifyListeners();
