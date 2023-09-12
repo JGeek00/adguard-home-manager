@@ -301,6 +301,7 @@ class _HomeState extends State<Home> {
                 child: Builder(
                   builder: (context) => RefreshIndicator(
                     color: Theme.of(context).colorScheme.primary,
+                    displacement: 95,
                     onRefresh: () async {
                       final result = await statusProvider.getServerStatus();
                       if (result == false) {

@@ -231,78 +231,84 @@ class _LogsState extends State<Logs> {
             top: false,
             bottom: false,
             child: Builder(
-              builder: (context) => CustomScrollView(
-                slivers: [
-                  SliverOverlapInjector(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  ),
-                  if (logsProvider.logsData!.data.isNotEmpty) SliverList.builder(
-                    itemCount: logsProvider.logsData!.data.length,
-                    itemBuilder: (context, index) {
-                      if (logsProvider.isLoadingMore == true && index == logsProvider.logsData!.data.length) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                      else if (logsProvider.logsData!.data[index].question.name != null) {
-                        return LogTile(
-                          log: logsProvider.logsData!.data[index],
-                          index: index,
-                          length: logsProvider.logsData!.data.length,
-                          isLogSelected: selectedLog != null && selectedLog == logsProvider.logsData!.data[index],
-                          onLogTap: (log) {
-                            if (width <= 1100) {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => LogDetailsScreen(
-                                  log: log,
-                                  dialog: false,
-                                )
-                              ));
+              builder: (context) => RefreshIndicator(
+                onRefresh: () async {
+                  await logsProvider.fetchLogs(inOffset: 0);
+                },
+                displacement: 95,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                    ),
+                    if (logsProvider.logsData!.data.isNotEmpty) SliverList.builder(
+                      itemCount: logsProvider.logsData!.data.length,
+                      itemBuilder: (context, index) {
+                        if (logsProvider.isLoadingMore == true && index == logsProvider.logsData!.data.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        else if (logsProvider.logsData!.data[index].question.name != null) {
+                          return LogTile(
+                            log: logsProvider.logsData!.data[index],
+                            index: index,
+                            length: logsProvider.logsData!.data.length,
+                            isLogSelected: selectedLog != null && selectedLog == logsProvider.logsData!.data[index],
+                            onLogTap: (log) {
+                              if (width <= 1100) {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => LogDetailsScreen(
+                                    log: log,
+                                    dialog: false,
+                                  )
+                                ));
+                              }
+                              setState(() => selectedLog = log);
                             }
-                            setState(() => selectedLog = log);
-                          }
-                        );
+                          );
+                        }
+                        else {
+                          return null;
+                        }
                       }
-                      else {
-                        return null;
-                      }
-                    }
-                  ),
-                  if (logsProvider.logsData!.data.isEmpty) SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.noLogsDisplay,
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          if (logsProvider.logsOlderThan != null) Padding(
-                            padding: const EdgeInsets.only(
-                              top: 30,
-                              left: 20,
-                              right: 20
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.noLogsThatOld,
-                              textAlign: TextAlign.center,
+                    ),
+                    if (logsProvider.logsData!.data.isEmpty) SliverFillRemaining(
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.noLogsDisplay,
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 24,
                                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
-                          ),
-                        ]
+                            if (logsProvider.logsOlderThan != null) Padding(
+                              padding: const EdgeInsets.only(
+                                top: 30,
+                                left: 20,
+                                right: 20
+                              ),
+                              child: Text(
+                                AppLocalizations.of(context)!.noLogsThatOld,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ]
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ) 
           );
