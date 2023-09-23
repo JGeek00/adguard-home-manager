@@ -229,6 +229,7 @@ class _MainState extends State<Main> {
           Locale('es', ''),
           Locale('zh', ''),
           Locale('zh', 'CN'),
+          Locale('pl', ''),
           Locale('ru', '')
         ],
         scaffoldMessengerKey: scaffoldMessengerKey,

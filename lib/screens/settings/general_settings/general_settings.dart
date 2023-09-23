@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/general_settings/reorderable_top_items_home.dart';
+
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
@@ -158,6 +160,36 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               left: 16,
               right: 10
             )
+          ),
+          CustomListTile(
+            icon: Icons.remove_red_eye_rounded,
+            title: AppLocalizations.of(context)!.hideServerAddress,
+            subtitle: AppLocalizations.of(context)!.hideServerAddressDescription,
+            trailing: Switch(
+              value: appConfigProvider.hideServerAddress, 
+              onChanged: (value) => updateSettings(
+                newStatus: value, 
+                function: appConfigProvider.setHideServerAddress
+              ),
+            ),
+            onTap: () => updateSettings(
+              newStatus: !appConfigProvider.hideServerAddress, 
+              function: appConfigProvider.setHideServerAddress
+            ),
+            padding: const EdgeInsets.only(
+              top: 10,
+              bottom: 10,
+              left: 16,
+              right: 10
+            )
+          ),
+          CustomListTile(
+            icon: Icons.reorder_rounded,
+            title: AppLocalizations.of(context)!.topItemsOrder,
+            subtitle: AppLocalizations.of(context)!.topItemsOrderDescription,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+              builder: (context) => const ReorderableTopItemsHome()
+            )),
           ),
           SectionLabel(label: AppLocalizations.of(context)!.logs),
           CustomListTile(
