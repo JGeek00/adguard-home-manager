@@ -90,18 +90,20 @@ class HomeAppBar extends StatelessWidget {
           if (serversProvider.selectedServer != null) ...[
             Text(
               server!.name,
-              style: const TextStyle(
+              style: !appConfigProvider.hideServerAddress ? const TextStyle(
                 fontSize: 20
-              ),
+              ) : null,
             ),
-            const SizedBox(height: 5),
-            Text(
-              "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).listTileTheme.textColor
-              ),
-            )
+            if (!appConfigProvider.hideServerAddress) ...[
+              const SizedBox(height: 5),
+              Text(
+                "${server.connectionMethod}://${server.domain}${server.path ?? ""}${server.port != null ? ':${server.port}' : ""}",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).listTileTheme.textColor
+                ),
+              )
+            ]
           ],
           if (serversProvider.selectedServer == null) Text(
             AppLocalizations.of(context)!.noServerSelected,

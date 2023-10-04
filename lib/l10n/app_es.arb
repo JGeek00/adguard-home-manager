@@ -653,5 +653,12 @@
     "queries": "Peticiones",
     "adultSites": "Sitios de adultos",
     "quickFilters": "Filtros rápidos",
-    "searchDomainInternet": "Buscar dominio en internet"
+    "searchDomainInternet": "Buscar dominio en internet",
+    "hideServerAddress": "Ocultar dirección del servidor",
+    "hideServerAddressDescription": "Oculta la dirección del servidor en la pantalla de inicio",
+    "topItemsOrder": "Orden de los top",
+    "topItemsOrderDescription": "Ordena las listas de top de elementos en la pantalla de inicio",
+    "topItemsReorderInfo": "Mantén presionado y desliza un elemento para reordenarlo.",
+    "discardChanges": "Descartar cambios",
+    "discardChangesDescription": "¿Estás seguro de que deseas descartar los cambios realizados?"
 }

@@ -27,7 +27,7 @@ class HomeChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    final bool isEmpty = data.any((i) => i == 0);
+    final bool isEmpty = data.every((i) => i == 0);
 
     if (!(appConfigProvider.hideZeroValues == true && isEmpty == true)) {
       List<DateTime> dateTimes = [];
