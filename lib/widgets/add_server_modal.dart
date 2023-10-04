@@ -256,6 +256,8 @@ class _AddServerModalState extends State<AddServerModal> {
         ? await loginHA(serverObj)
         : await login(serverObj);
 
+      if (!mounted) return;
+
       if (result['result'] == 'success') {
         if (serverObj.user != null && serverObj.password != null) {
           serverObj.authToken = encodeBase64UserPass(serverObj.user!, serverObj.password!);
@@ -267,6 +269,8 @@ class _AddServerModalState extends State<AddServerModal> {
           final ApiClient apiClient = ApiClient(server: serverObj);
           
           final serverStatus = await apiClient.getServerStatus();
+
+          if (!mounted) return;
 
           if (serverStatus['result'] == 'success') {
             statusProvider.setServerStatusData(
@@ -380,12 +384,14 @@ class _AddServerModalState extends State<AddServerModal> {
         ? await loginHA(serverObj)
         : await login(serverObj);
 
+      if (!mounted) return;
       if (result['result'] == 'success') {
         if (serverObj.user != null && serverObj.password != null) {
           serverObj.authToken = encodeBase64UserPass(serverObj.user!, serverObj.password!);
         }
         final serverSaved = await serversProvider.editServer(serverObj);
 
+        if (!mounted) return;
         if (serverSaved == null) {
           final ApiClient apiClient = ApiClient(server: serverObj);
           final version = await apiClient.getServerVersion();

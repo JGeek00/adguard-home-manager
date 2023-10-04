@@ -80,7 +80,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
         newStatus: value,
         time: time
       );
-      if (result != null) {
+      if (mounted && result != null) {
         if (result != false) {
           appConfigProvider.addLog(result);
         }

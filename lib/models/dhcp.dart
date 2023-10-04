@@ -72,8 +72,8 @@ class DhcpStatus {
 
   factory DhcpStatus.fromJson(Map<String, dynamic> json) => DhcpStatus(
     interfaceName: json["interface_name"],
-    v4: IpVersion.fromJson(json["v4"]),
-    v6: IpVersion.fromJson(json["v6"]),
+    v4: json["v4"] != null ? IpVersion.fromJson(json["v4"]) : null,
+    v6: json["v6"] != null ? IpVersion.fromJson(json["v6"]) : null,
     leases: List<Lease>.from(json["leases"].map((x) => Lease.fromJson(x))),
     staticLeases: List<Lease>.from(json["static_leases"].map((x) => Lease.fromJson(x))),
     enabled: json["enabled"],

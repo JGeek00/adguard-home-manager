@@ -130,7 +130,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           final result = await statusProvider.getServerStatus();
-          if (result == false) {
+          if (mounted && result == false) {
             showSnacbkar(
               appConfigProvider: appConfigProvider, 
               label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
