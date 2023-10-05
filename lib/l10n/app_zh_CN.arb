@@ -653,5 +653,12 @@
     "queries": "查询",
     "adultSites": "成人网站",
     "quickFilters": "状态过滤器",
-    "searchDomainInternet": "在互联网上搜索该域名"    
+    "searchDomainInternet": "在互联网上搜索该域名",
+    "hideServerAddress": "隐藏服务器地址",
+    "hideServerAddressDescription": "在主页上隐藏服务器地址",
+    "topItemsOrder": "顶部项目顺序",
+    "topItemsOrderDescription": "排列主页顶部项目列表",
+    "topItemsReorderInfo": "按住并滑动一个项目以重新排序。",
+    "discardChanges": "放弃更改",
+    "discardChangesDescription": "您确定要放弃更改吗？"
 }
