@@ -304,7 +304,7 @@ class _HomeState extends State<Home> {
                     displacement: 95,
                     onRefresh: () async {
                       final result = await statusProvider.getServerStatus();
-                      if (result == false) {
+                      if (mounted && result == false) {
                         showSnacbkar(
                           appConfigProvider: appConfigProvider, 
                           label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 

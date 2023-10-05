@@ -120,9 +120,76 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
     'adguard_home_manager.db',
     version: 9,
     onCreate: (Database db, int version) async {
-      await db.execute("CREATE TABLE servers (id TEXT PRIMARY KEY, name TEXT, connectionMethod TEXT, domain TEXT, path TEXT, port INTEGER, user TEXT, password TEXT, defaultServer INTEGER, authToken TEXT, runningOnHa INTEGER)");
-      await db.execute("CREATE TABLE appConfig (theme NUMERIC, overrideSslCheck NUMERIC, hideZeroValues NUMERIC, useDynamicColor NUMERIC, staticColor NUMERIC, useThemeColorForStatus NUMERIC, showTimeLogs NUMERIC, showIpLogs NUMERIC, combinedChart NUMERIC, doNotRememberVersion TEXT, hideServerAddress NUMERIC, homeTopItemsOrder TEXT)");
-      await db.execute("INSERT INTO appConfig (theme, overrideSslCheck, hideZeroValues, useDynamicColor, staticColor, useThemeColorForStatus, showTimeLogs, showIpLogs, combinedChart, hideServerAddress, homeTopItemsOrder) VALUES (0, 0, 0, ${acceptsDynamicTheme == true ? 1 : 0}, 0, 0, 0, 0, 0, 0, $homeTopItemsDefaultOrderString)");
+      await db.execute(
+        """
+          CREATE TABLE 
+            servers (
+              id TEXT PRIMARY KEY, 
+              name TEXT, 
+              connectionMethod TEXT, 
+              domain TEXT, 
+              path TEXT, 
+              port INTEGER, 
+              user TEXT, 
+              password TEXT, 
+              defaultServer INTEGER, 
+              authToken TEXT, 
+              runningOnHa INTEGER
+            )
+        """
+      );
+
+      await db.execute(
+        """
+          CREATE TABLE 
+            appConfig (
+              theme NUMERIC, 
+              overrideSslCheck NUMERIC, 
+              hideZeroValues NUMERIC, 
+              useDynamicColor NUMERIC, 
+              staticColor NUMERIC, 
+              useThemeColorForStatus NUMERIC, 
+              showTimeLogs NUMERIC, 
+              showIpLogs NUMERIC, 
+              combinedChart NUMERIC, 
+              doNotRememberVersion TEXT, 
+              hideServerAddress NUMERIC, 
+              homeTopItemsOrder TEXT
+            )
+        """
+      );
+
+      await db.execute(
+        """
+          INSERT INTO 
+            appConfig (
+              theme, 
+              overrideSslCheck, 
+              hideZeroValues, 
+              useDynamicColor, 
+              staticColor, 
+              useThemeColorForStatus, 
+              showTimeLogs, 
+              showIpLogs, 
+              combinedChart, 
+              hideServerAddress, 
+              homeTopItemsOrder
+            ) 
+          VALUES (
+            0, 
+            0, 
+            0, 
+            ${acceptsDynamicTheme == true ? 1 : 0}, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            '$homeTopItemsDefaultOrderString'
+          )
+        """
+      );
     },
     onUpgrade: (Database db, int oldVersion, int newVersion) async {
       if (oldVersion == 1) {

@@ -12,7 +12,7 @@ class DnsInfo {
   int? cacheSize;
   int? cacheTtlMin;
   int? cacheTtlMax;
-  bool cacheOptimistic;
+  bool? cacheOptimistic;
   bool resolveClients;
   bool usePrivatePtrResolvers;
   List<String> localPtrUpstreams;

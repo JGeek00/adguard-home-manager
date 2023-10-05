@@ -58,7 +58,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     cacheSizeController.text = dnsProvider.dnsInfo!.cacheSize.toString();
     overrideMinTtlController.text = dnsProvider.dnsInfo!.cacheTtlMin.toString();
     overrideMaxTtlController.text = dnsProvider.dnsInfo!.cacheTtlMax.toString();
-    optimisticCache = dnsProvider.dnsInfo!.cacheOptimistic;
+    optimisticCache = dnsProvider.dnsInfo!.cacheOptimistic ?? false;
     validData = true;
     super.initState();
   }

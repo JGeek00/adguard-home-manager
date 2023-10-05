@@ -169,12 +169,14 @@ class ServersProvider with ChangeNotifier {
 
   void checkServerUpdatesAvailable({
     required Server server, 
+    ApiClient? apiClient
   }) async {
+    final client = apiClient ?? _apiClient;
     setUpdateAvailableLoadStatus(LoadStatus.loading, true);
-    final result = await _apiClient!.checkServerUpdates();
+    final result = await client!.checkServerUpdates();
     if (result['result'] == 'success') {
       UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
-      final gitHubResult = await _apiClient!.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
+      final gitHubResult = await client.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
       if (gitHubResult['result'] == 'success') {
         data.changelog = gitHubResult['body'];
       }
@@ -186,11 +188,12 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future initializateServer(Server server) async {
+  Future initializateServer(Server server, ApiClient apiClient) async {
     final serverStatus = await _apiClient!.getServerStatus();
     if (serverStatus['result'] == 'success') {
       checkServerUpdatesAvailable( // Do not await
         server: server,
+        apiClient: apiClient
       ); 
     }
   }
@@ -222,8 +225,9 @@ class ServersProvider with ChangeNotifier {
 
       if (defaultServer != null) {
         _selectedServer = defaultServer;
-        _apiClient = ApiClient(server: defaultServer);
-        initializateServer(defaultServer);
+        final client = ApiClient(server: defaultServer);
+        _apiClient = client;
+        initializateServer(defaultServer, client);
       }
     }
     else {
