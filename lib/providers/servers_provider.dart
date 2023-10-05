@@ -176,7 +176,7 @@ class ServersProvider with ChangeNotifier {
     final result = await client!.checkServerUpdates();
     if (result['result'] == 'success') {
       UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
-      final gitHubResult = await client!.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
+      final gitHubResult = await client.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
       if (gitHubResult['result'] == 'success') {
         data.changelog = gitHubResult['body'];
       }
