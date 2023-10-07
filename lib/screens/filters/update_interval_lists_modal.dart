@@ -94,19 +94,7 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                               optionsValue: selectedOption,
                               itemValue: 0,
                               onTap: _updateRadioValue,
-                              child: Center(
-                                child: AnimatedDefaultTextStyle(
-                                  duration: const Duration(milliseconds: 250),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: selectedOption == 0
-                                      ? Theme.of(context).colorScheme.onInverseSurface
-                                      : Theme.of(context).colorScheme.onSurface
-                                  ),
-                                  child: Text(AppLocalizations.of(context)!.never),
-                                ),
-                              ),
+                              label: AppLocalizations.of(context)!.never,
                             ),
                           ),
                         ),
@@ -118,19 +106,7 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                               optionsValue: selectedOption,
                               itemValue: 1,
                               onTap: _updateRadioValue,
-                              child: Center(
-                                child: AnimatedDefaultTextStyle(
-                                  duration: const Duration(milliseconds: 250),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: selectedOption == 1
-                                      ? Theme.of(context).colorScheme.onInverseSurface
-                                      : Theme.of(context).colorScheme.onSurface
-                                  ),
-                                  child: Text(AppLocalizations.of(context)!.hour1),
-                                ),
-                              ),
+                              label: AppLocalizations.of(context)!.hour1,
                             ),
                           ),
                         ),
@@ -142,19 +118,7 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                               optionsValue: selectedOption,
                               itemValue: 12,
                               onTap: _updateRadioValue,
-                              child: Center(
-                                child: AnimatedDefaultTextStyle(
-                                  duration: const Duration(milliseconds: 250),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: selectedOption == 12
-                                      ? Theme.of(context).colorScheme.onInverseSurface
-                                      : Theme.of(context).colorScheme.onSurface
-                                  ),
-                                  child: Text(AppLocalizations.of(context)!.hours12),
-                                ),
-                              ),
+                              label: AppLocalizations.of(context)!.hours12,
                             ),
                           ),
                         ),
@@ -166,19 +130,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                               optionsValue: selectedOption,
                               itemValue: 24,
                               onTap: _updateRadioValue,
-                              child: Center(
-                                child: AnimatedDefaultTextStyle(
-                                  duration: const Duration(milliseconds: 250),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: selectedOption == 24
-                                      ? Theme.of(context).colorScheme.onInverseSurface
-                                      : Theme.of(context).colorScheme.onSurface
-                                  ),
-                                  child: Text(AppLocalizations.of(context)!.hours24),
-                                ),
-                              ),
+                              label: AppLocalizations.of(context)!.hours24,
+                              
                             ),
                           ),
                         ),
@@ -190,19 +143,8 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                               optionsValue: selectedOption,
                               itemValue: 72,
                               onTap: _updateRadioValue,
-                              child: Center(
-                                child: AnimatedDefaultTextStyle(
-                                  duration: const Duration(milliseconds: 250),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: selectedOption == 72
-                                      ? Theme.of(context).colorScheme.onInverseSurface
-                                      : Theme.of(context).colorScheme.onSurface
-                                  ),
-                                  child: Text(AppLocalizations.of(context)!.days3),
-                                ),
-                              ),
+                              label: AppLocalizations.of(context)!.days3,
+                              
                             ),
                           ),
                         ),
@@ -214,19 +156,7 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                               optionsValue: selectedOption,
                               itemValue: 168,
                               onTap: _updateRadioValue,
-                              child: Center(
-                                child: AnimatedDefaultTextStyle(
-                                  duration: const Duration(milliseconds: 250),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: selectedOption == 168
-                                      ? Theme.of(context).colorScheme.onInverseSurface
-                                      : Theme.of(context).colorScheme.onSurface
-                                  ),
-                                  child: Text(AppLocalizations.of(context)!.days7),
-                                ),
-                              ),
+                              label: AppLocalizations.of(context)!.days7,
                             ),
                           ),
                         ),
