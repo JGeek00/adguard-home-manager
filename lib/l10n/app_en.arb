@@ -4,6 +4,7 @@
     "connect": "Connect",
     "servers": "Servers",
     "createConnection": "Create connection",
+    "editConnection": "Edit connection",
     "name": "Name",
     "ipDomain": "IP address or domain",
     "path": "Path",

@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/version_warning_modal.dart';
-import 'package:adguard_home_manager/widgets/add_server_modal.dart';
+import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -57,41 +56,9 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
       });
     }
 
-    void openAddServerBottomSheet({Server? server}) async {
+    void openServerModal({Server? server}) async {
       await Future.delayed(const Duration(seconds: 0), (() => {
-        if (width > 700) {
-          showDialog(
-            context: context, 
-            barrierDismissible: false,
-            builder: (context) => AddServerModal(
-              server: server,
-              window: true,
-              onUnsupportedVersion: (version) => showDialog(
-                context: context, 
-                builder: (ctx) => VersionWarningModal(
-                  version: version 
-                ),
-                barrierDismissible: false
-              ),
-            ),
-          )
-        }
-        else {
-          Navigator.push(context, MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (BuildContext context) => AddServerModal(
-              server: server,
-              window: false,
-              onUnsupportedVersion: (version) => showDialog(
-                context: context, 
-                builder: (ctx) => VersionWarningModal(
-                  version: version 
-                ),
-                barrierDismissible: false
-              ),
-            )
-          ))
-        }
+        openServerFormModal(context: context, width: width, server: server)
       }));
     }
 
@@ -291,7 +258,7 @@ class _ServersTileItemState extends State<ServersTileItem> with SingleTickerProv
                     )
                   ),
                   PopupMenuItem(
-                    onTap: (() => openAddServerBottomSheet(server: server)), 
+                    onTap: (() => openServerModal(server: server)), 
                     child: Row(
                       children: [
                         const Icon(Icons.edit),
