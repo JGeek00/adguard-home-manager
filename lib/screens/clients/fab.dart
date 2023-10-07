@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/client/client_screen.dart';
 
+import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
@@ -51,27 +52,11 @@ class ClientsFab extends StatelessWidget {
     }
 
     void openAddClient() {
-      if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
-        showDialog(
-          barrierDismissible: false,
-          context: context, 
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmAddClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            dialog: true,
-          )
-        );
-      }
-      else {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmAddClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            dialog: false,
-          )
-        ));
-      }
+      openClientFormModal(
+        context: context, 
+        width: width, 
+        onConfirm: confirmAddClient
+      );
     }
 
     return FloatingActionButton(

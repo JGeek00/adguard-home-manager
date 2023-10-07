@@ -9,7 +9,7 @@ import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/client/client_screen.dart';
+import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
 import 'package:adguard_home_manager/screens/clients/client/added_client_tile.dart';
 import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
@@ -128,31 +128,12 @@ class _AddedListState extends State<AddedList> {
     }  
 
     void openClientModal(Client client) {
-      if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
-        showDialog(
-          barrierDismissible: false,
-          context: context, 
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmEditClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            onDelete: deleteClient,
-            client: client,
-            dialog: true,
-          )
-        );
-      }
-      else {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmEditClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            onDelete: deleteClient,
-            client: client,
-            dialog: false,
-          )
-        ));
-      }
+      openClientFormModal(
+        context: context, 
+        width: width, 
+        onConfirm: confirmEditClient,
+        onDelete: deleteClient
+      );
     }
 
     void openDeleteModal(Client client) {

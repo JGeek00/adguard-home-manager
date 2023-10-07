@@ -20,18 +20,16 @@ import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientScreen extends StatefulWidget {
   final Client? client;
-  final String serverVersion;
   final void Function(Client) onConfirm;
   final void Function(Client)? onDelete;
-  final bool dialog;
+  final bool fullScreen;
 
   const ClientScreen({
     Key? key,
     this.client,
-    required this.serverVersion,
     required this.onConfirm,
     this.onDelete,
-    required this.dialog
+    required this.fullScreen
   }) : super(key: key);
 
   @override
@@ -81,7 +79,7 @@ class _ClientScreenState extends State<ClientScreen> {
   @override
   void initState() {
     version = serverVersionIsAhead(
-      currentVersion: widget.serverVersion, 
+      currentVersion: Provider.of<StatusProvider>(context, listen: false).serverStatus!.serverVersion, 
       referenceVersion: 'v0.107.28',
       referenceVersionBeta: 'v0.108.0-b.33'
     );
@@ -380,7 +378,26 @@ class _ClientScreenState extends State<ClientScreen> {
     }
 
 
-    if (widget.dialog == true) {
+    if (widget.fullScreen == true) {
+      return Dialog.fullscreen(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.close)
+            ),
+            title: Text(
+              widget.client != null 
+                ? AppLocalizations.of(context)!.client
+                : AppLocalizations.of(context)!.addClient
+            ),
+            actions: actions(),
+          ),
+          body: content(true)
+        ),
+      );
+    } 
+    else {
       return Dialog(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
@@ -419,23 +436,6 @@ class _ClientScreenState extends State<ClientScreen> {
             ],
           ),
         ),
-      );
-    }
-    else {
-      return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close)
-          ),
-          title: Text(
-            widget.client != null 
-              ? AppLocalizations.of(context)!.client
-              : AppLocalizations.of(context)!.addClient
-          ),
-          actions: actions(),
-        ),
-        body: content(true)
       );
     }
   }

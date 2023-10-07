@@ -1,4 +1,3 @@
-import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
