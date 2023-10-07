@@ -5,7 +5,7 @@ import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/logs_list_client.dart';
+import 'package:adguard_home_manager/screens/clients/client/logs_list_client.dart';
 import 'package:adguard_home_manager/screens/clients/added_list.dart';
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
 

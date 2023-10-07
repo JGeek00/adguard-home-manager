@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/active_client_tile.dart';
+import 'package:adguard_home_manager/screens/clients/client/active_client_tile.dart';
 
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 

@@ -7,8 +7,8 @@ import 'package:animations/animations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
-import 'package:adguard_home_manager/screens/clients/client_screen.dart';
+import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/client/client_screen.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 
 import 'package:adguard_home_manager/widgets/section_label.dart';
