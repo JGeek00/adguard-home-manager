@@ -149,26 +149,9 @@ class _FiltersState extends State<Filters> {
       }
     }
 
-    void openBlockedServicesModal() {
+    void openBlockedServices() {
       Future.delayed(const Duration(seconds: 0), () {
-        if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
-          showDialog(
-            context: context, 
-            builder: (context) => const BlockedServicesScreen(
-              dialog: true,
-            ),
-            barrierDismissible: false
-          );
-        }
-        else {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const BlockedServicesScreen(
-                dialog: false,
-              ),
-            )
-          );
-        }
+        openBlockedServicesModal(context: context, width: width);
       });
     }
 
@@ -312,7 +295,7 @@ class _FiltersState extends State<Filters> {
                 )
               ),
               PopupMenuItem(
-                onTap: openBlockedServicesModal,
+                onTap: openBlockedServices,
                 child: Row(
                   children: [
                     const Icon(Icons.block),

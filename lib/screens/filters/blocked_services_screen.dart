@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,11 +14,11 @@ import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class BlockedServicesScreen extends StatefulWidget {
-  final bool dialog;
+  final bool fullScreen;
 
   const BlockedServicesScreen({
     Key? key,
-    required this.dialog
+    required this.fullScreen
   }) : super(key: key);
 
   @override
@@ -180,7 +182,40 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
       }
     }
 
-    if (widget.dialog == true) {
+    if (widget.fullScreen == true) {
+      return Dialog.fullscreen(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: CloseButton(onPressed: () => Navigator.pop(context)),
+            title: Text(AppLocalizations.of(context)!.blockedServices),
+            actions: [
+              IconButton(
+                onPressed: updateBlockedServices, 
+                icon: const Icon(
+                  Icons.save_rounded
+                ),
+                tooltip: AppLocalizations.of(context)!.save,
+              ),
+              const SizedBox(width: 10)
+            ],
+          ),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              final result = await filteringProvider.loadBlockedServices();
+              if (result == false) {
+                showSnacbkar(
+                  appConfigProvider: appConfigProvider,
+                  label: AppLocalizations.of(context)!.blockedServicesListNotLoaded, 
+                  color: Colors.red
+                );
+              }
+            },
+            child: body()
+          ),
+        ),
+      );
+    }
+    else {
       return Dialog(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
@@ -228,35 +263,34 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
         ),
       );
     }
-    else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.blockedServices),
-          actions: [
-            IconButton(
-              onPressed: updateBlockedServices, 
-              icon: const Icon(
-                Icons.save_rounded
-              ),
-              tooltip: AppLocalizations.of(context)!.save,
-            ),
-            const SizedBox(width: 10)
-          ],
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            final result = await filteringProvider.loadBlockedServices();
-            if (result == false) {
-              showSnacbkar(
-                appConfigProvider: appConfigProvider,
-                label: AppLocalizations.of(context)!.blockedServicesListNotLoaded, 
-                color: Colors.red
-              );
-            }
-          },
-          child: body()
-        ),
-      );
-    }
   }
+}
+
+void openBlockedServicesModal({
+  required BuildContext context,
+  required double width,
+}) {
+  showGeneralDialog(
+    context: context, 
+    barrierColor: !(width > 700 || !(Platform.isAndroid || Platform.isIOS))
+      ?Colors.transparent 
+      : Colors.black54,
+    transitionBuilder: (context, anim1, anim2, child) {
+      return SlideTransition(
+        position: Tween(
+          begin: const Offset(0, 1), 
+          end: const Offset(0, 0)
+        ).animate(
+          CurvedAnimation(
+            parent: anim1, 
+            curve: Curves.easeInOutCubicEmphasized
+          )
+        ),
+        child: child,
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) => BlockedServicesScreen(
+      fullScreen: !(width > 700 || !(Platform.isAndroid || Platform.isIOS)),
+    ),
+  );
 }
