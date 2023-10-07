@@ -14,7 +14,7 @@ class AddedClientTile extends StatelessWidget {
   final Client client;
   final void Function(Client) onTap;
   final void Function(Client) onLongPress;
-  final void Function(Client) onEdit;
+  final void Function(Client)? onEdit;
   final void Function(Client) onDelete;
   final Client? selectedClient;
   final bool? splitView;
@@ -25,7 +25,7 @@ class AddedClientTile extends StatelessWidget {
     required this.client,
     required this.onTap,
     required this.onLongPress,
-    required this.onEdit,
+    this.onEdit,
     required this.onDelete,
     this.selectedClient,
     required this.splitView,
@@ -44,12 +44,12 @@ class AddedClientTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(28),
           child: ContextMenuArea(
             builder: (context) => [
-              CustomListTile(
+              if (onEdit != null) CustomListTile(
                 title: AppLocalizations.of(context)!.edit,
                 icon: Icons.edit_rounded,
                 onTap: () {
                   Navigator.pop(context);
-                  onEdit(client);
+                  onEdit!(client);
                 }
               ),
               CustomListTile(
@@ -185,12 +185,12 @@ class AddedClientTile extends StatelessWidget {
     else {
       return ContextMenuArea(
         builder: (context) => [
-          CustomListTile(
+          if (onEdit != null) CustomListTile(
             title: AppLocalizations.of(context)!.seeDetails,
             icon: Icons.file_open_rounded,
             onTap: () {
               Navigator.pop(context);
-              onEdit(client);
+              onEdit!(client);
             }
           ),
           CustomListTile(

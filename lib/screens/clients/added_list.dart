@@ -185,7 +185,9 @@ class _AddedListState extends State<AddedList> {
         client: widget.data[index], 
         onTap: widget.onClientSelected,
         onLongPress: openOptionsModal,
-        onEdit: openClientModal,
+        onEdit: statusProvider.serverStatus != null
+          ? (c) => openClientModal(c)
+          : null,
         onDelete: openDeleteModal,
         splitView: widget.splitView,
         serverVersion: statusProvider.serverStatus!.serverVersion,

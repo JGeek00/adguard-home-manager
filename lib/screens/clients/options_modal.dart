@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile_dialog.dart';
 
 class OptionsModal extends StatelessWidget {
@@ -15,6 +17,8 @@ class OptionsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusProvider = Provider.of<StatusProvider>(context);
+
     return AlertDialog(
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 0,
@@ -39,7 +43,7 @@ class OptionsModal extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 24),
-          CustomListTileDialog(
+          if (statusProvider.serverStatus != null) CustomListTileDialog(
             onTap: () {
               Navigator.pop(context);
               onEdit();

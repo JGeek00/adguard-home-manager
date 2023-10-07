@@ -231,7 +231,9 @@ class _SearchClientsState extends State<SearchClients> {
                       : const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     isThreeLine: true,
                     onLongPress: () => openOptionsModal(clientsScreen[index]),
-                    onTap: () => openClientModal(clientsScreen[index]),
+                    onTap: statusProvider.serverStatus != null
+                      ? () => openClientModal(clientsScreen[index])
+                      : null,
                     title: Padding(
                       padding: const EdgeInsets.only(bottom: 5),
                       child: Text(
