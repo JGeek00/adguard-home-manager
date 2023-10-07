@@ -6,12 +6,12 @@ import 'package:adguard_home_manager/constants/urls.dart';
 
 class AddCustomRule extends StatefulWidget {
   final void Function(String) onConfirm;
-  final bool dialog;
+  final bool fullScreen;
 
   const AddCustomRule({
     Key? key,
     required this.onConfirm,
-    required this.dialog
+    required this.fullScreen
   }) : super(key: key);
 
   @override
@@ -328,7 +328,32 @@ class _AddCustomRuleState extends State<AddCustomRule> {
       ];
     }
 
-    if (widget.dialog == true) {
+    if (widget.fullScreen == true) {
+      return Dialog.fullscreen(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: CloseButton(onPressed: () => Navigator.pop(context)),
+            title: Text(AppLocalizations.of(context)!.addCustomRule),
+            actions: [
+              IconButton(
+                onPressed: checkValidValues() == true
+                  ? () {
+                      Navigator.pop(context);
+                      widget.onConfirm(buildRule());
+                    }
+                  : null, 
+                icon: const Icon(Icons.check)
+              ),
+              const SizedBox(width: 10)
+            ],
+          ),
+          body: ListView(
+            children: content(),
+          )
+        ),
+      );
+    }
+    else {
       return Dialog(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
@@ -381,28 +406,6 @@ class _AddCustomRuleState extends State<AddCustomRule> {
             ],
           ),
         ),
-      );
-    }
-    else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.addCustomRule),
-          actions: [
-            IconButton(
-              onPressed: checkValidValues() == true
-                ? () {
-                    Navigator.pop(context);
-                    widget.onConfirm(buildRule());
-                  }
-                : null, 
-              icon: const Icon(Icons.check)
-            ),
-            const SizedBox(width: 10)
-          ],
-        ),
-        body: ListView(
-          children: content(),
-        )
       );
     }
   }
