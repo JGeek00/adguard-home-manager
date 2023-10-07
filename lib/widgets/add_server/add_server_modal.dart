@@ -6,6 +6,8 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/add_server/form_text_field.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
+import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -66,23 +68,6 @@ class _AddServerModalState extends State<AddServerModal> {
   bool allDataValid = false;
 
   bool isConnecting = false;
-
-  Widget sectionLabel(String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24, 
-        vertical: 24
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: Theme.of(context).colorScheme.primary
-        ),
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -166,12 +151,13 @@ class _AddServerModalState extends State<AddServerModal> {
         cancelConnecting();
         appConfigProvider.addLog(result['log']);
         if (mounted) {
-          return showSnacbkar(
+          showSnacbkar(
             appConfigProvider: appConfigProvider, 
             label: getErrorMessage(result['result']), 
             color: Colors.red
           );
         }
+        return;
       }
 
       if (serverObj.user != null && serverObj.password != null) {
@@ -181,7 +167,7 @@ class _AddServerModalState extends State<AddServerModal> {
       final serverCreated = await serversProvider.createServer(serverObj);
 
       // If something goes wrong when saving the connection on the db
-      if (serverCreated == null) {
+      if (serverCreated != null) {
         if (mounted) setState(() => isConnecting = false);
         appConfigProvider.addLog(
           AppLog(
@@ -197,6 +183,7 @@ class _AddServerModalState extends State<AddServerModal> {
             color: Colors.red
           );
         }
+        return;
       }
 
       statusProvider.setServerStatusLoad(LoadStatus.loading);
@@ -208,6 +195,7 @@ class _AddServerModalState extends State<AddServerModal> {
         appConfigProvider.addLog(serverStatus['log']);
         statusProvider.setServerStatusLoad(LoadStatus.error);
         Navigator.pop(context);
+        return;
       }
 
       // If everything is successful
@@ -223,6 +211,7 @@ class _AddServerModalState extends State<AddServerModal> {
       else {
         Navigator.pop(context);
       }
+      return;
     }
 
     void edit() async {
@@ -250,12 +239,13 @@ class _AddServerModalState extends State<AddServerModal> {
         cancelConnecting();
         appConfigProvider.addLog(result['log']);
         if (mounted) {
-          return showSnacbkar(
+          showSnacbkar(
             appConfigProvider: appConfigProvider, 
             label: getErrorMessage(result['result']), 
             color: Colors.red
           );
         }
+        return;
       }
       
       if (serverObj.user != null && serverObj.password != null) {
@@ -264,7 +254,7 @@ class _AddServerModalState extends State<AddServerModal> {
       final serverSaved = await serversProvider.editServer(serverObj);
     
       // If something goes wrong when saving the connection on the db
-      if (serverSaved == null) {
+      if (serverSaved != null) {
         if (mounted) setState(() => isConnecting = false);
         appConfigProvider.addLog(
           AppLog(
@@ -280,6 +270,7 @@ class _AddServerModalState extends State<AddServerModal> {
             color: Colors.red
           );
         }
+        return;
       }
 
       // If everything is successful
@@ -294,7 +285,8 @@ class _AddServerModalState extends State<AddServerModal> {
       }
       else {
         Navigator.pop(context);
-      }        
+      }      
+      return; 
     }
 
     Widget actions() {
@@ -314,7 +306,11 @@ class _AddServerModalState extends State<AddServerModal> {
                 : () => edit()
               : null,
             icon: isConnecting
-              ? const CircularProgressIndicator()
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator()
+                )
               : Icon(
                 widget.server == null
                   ? Icons.login_rounded
@@ -350,7 +346,10 @@ class _AddServerModalState extends State<AddServerModal> {
             ),
           ),
         ),
-        sectionLabel(AppLocalizations.of(context)!.general),
+        SectionLabel(
+          label: AppLocalizations.of(context)!.general,
+          padding: const EdgeInsets.all(24),
+        ),
         FormTextField(
           label: AppLocalizations.of(context)!.name, 
           controller: nameController, 
@@ -367,7 +366,10 @@ class _AddServerModalState extends State<AddServerModal> {
           },
           isConnecting: isConnecting,
         ),
-        sectionLabel(AppLocalizations.of(context)!.connection),
+        SectionLabel(
+          label: AppLocalizations.of(context)!.connection,
+          padding: const EdgeInsets.all(24),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: SegmentedButton<ConnectionType>(
@@ -425,7 +427,10 @@ class _AddServerModalState extends State<AddServerModal> {
           },
           isConnecting: isConnecting,
         ),
-        sectionLabel(AppLocalizations.of(context)!.authentication),
+        SectionLabel(
+          label: AppLocalizations.of(context)!.authentication,
+          padding: const EdgeInsets.all(24),
+        ),
         FormTextField(
           label: AppLocalizations.of(context)!.username, 
           controller: userController, 
@@ -441,58 +446,32 @@ class _AddServerModalState extends State<AddServerModal> {
           obscureText: true,
           isConnecting: isConnecting,
         ),
-        sectionLabel(AppLocalizations.of(context)!.other),
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: widget.server == null
-              ? () => setState(() => defaultServer = !defaultServer)
-              : null,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.defaultServer,
-                    style: const TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
-                  Switch(
-                    value: defaultServer, 
-                    onChanged: widget.server == null 
-                      ? (value) => setState(() => defaultServer = value)
-                      : null,
-                  )
-                ],
-              ),
-            ),
+        SectionLabel(
+          label: AppLocalizations.of(context)!.other,
+          padding: const EdgeInsets.only(
+            top: 32,
+            left: 24,
+            bottom: 12
           ),
         ),
-        const SizedBox(height: 20),
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => setState(() => homeAssistant = !homeAssistant),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.runningHomeAssistant,
-                    style: const TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
-                  Switch(
-                    value: homeAssistant, 
-                    onChanged: (value) => setState(() => homeAssistant = value),
-                  )
-                ],
-              ),
-            ),
+        CustomSwitchListTile(
+          value: defaultServer, 
+          onChanged:  (value) => setState(() => defaultServer = value),
+          title: AppLocalizations.of(context)!.defaultServer,
+          disabled: widget.server != null || isConnecting,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 4
+          ),
+        ),
+        CustomSwitchListTile(
+          value: homeAssistant, 
+          onChanged:  (value) => setState(() => homeAssistant = value),
+          title: AppLocalizations.of(context)!.runningHomeAssistant,
+          disabled: widget.server != null || isConnecting,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 4
           ),
         ),
         const SizedBox(height: 20),
@@ -503,6 +482,9 @@ class _AddServerModalState extends State<AddServerModal> {
       return Dialog.fullscreen(
         child: Scaffold(
           appBar: AppBar(
+            leading: CloseButton(
+              onPressed: () => Navigator.pop(context),
+            ),
             title: widget.server != null
               ? Text(AppLocalizations.of(context)!.createConnection)
               : Text(AppLocalizations.of(context)!.editConnection),

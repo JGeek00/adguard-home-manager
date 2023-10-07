@@ -68,7 +68,7 @@ String? validateAddress({
 }) {
   if (value != null && value != '') {
     RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
-    RegExp domain = RegExp(r'^(([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+)|((\w|-)+)$');
+    RegExp domain = RegExp(r'^(([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+)$');
     if (ipAddress.hasMatch(value) == true || domain.hasMatch(value) == true) {
       return null;
     }
