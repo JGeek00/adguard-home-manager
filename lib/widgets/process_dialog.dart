@@ -24,7 +24,7 @@ class ProcessDialog extends StatelessWidget {
             children: [
               const CircularProgressIndicator(),
               const SizedBox(width: 40),
-              Expanded(
+              Flexible(
                 child: Text(
                   message,
                   style: TextStyle(

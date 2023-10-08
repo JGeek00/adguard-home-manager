@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class OptionBox extends StatelessWidget {
-  final Widget child;
   final dynamic optionsValue;
   final dynamic itemValue;
   final void Function(dynamic) onTap;
+  final String label;
 
   const OptionBox({
     Key? key,
-    required this.child,
     required this.optionsValue,
     required this.itemValue,
     required this.onTap,
+    required this.label,
   }) : super(key: key);
 
   @override
@@ -25,19 +25,27 @@ class OptionBox extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),
-            border: Border.all(
-              color: optionsValue == itemValue
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onSurfaceVariant
-            ),
             color: optionsValue == itemValue
               ? Theme.of(context).colorScheme.primary
-              : Colors.transparent,
+              : Theme.of(context).colorScheme.primaryContainer,
           ),
-          child: child,
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 250),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: optionsValue == itemValue
+                ? Theme.of(context).colorScheme.onInverseSurface
+                : Theme.of(context).colorScheme.onSurface
+            ),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
       ),
     );

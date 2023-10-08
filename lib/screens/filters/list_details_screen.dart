@@ -76,15 +76,20 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
       // ------- //
     }
 
-    void updateList(FilteringListActions action) async {
+    void updateList({
+      required FilteringListActions action,
+      required Filter filterList,
+    }) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(
-        list!.enabled == true
-          ? AppLocalizations.of(context)!.disablingList
-          : AppLocalizations.of(context)!.enablingList,
+        action == FilteringListActions.edit
+          ? AppLocalizations.of(context)!.savingList
+          : action == FilteringListActions.disable 
+            ? AppLocalizations.of(context)!.disablingList
+            : AppLocalizations.of(context)!.enablingList,
       );
       final result = await filteringProvider.updateList(
-        list: list, 
+        list: filterList, 
         type: widget.type, 
         action: action
       );
@@ -204,7 +209,8 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                   list: list,
                   type: widget.type,
                   onEdit: ({required Filter list, required String type}) async => updateList(
-                    FilteringListActions.edit
+                    action: FilteringListActions.edit,
+                    filterList: list
                   ),
                   dialog: true,
                 ),
@@ -217,7 +223,8 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                   list: list,
                   type: widget.type,
                   onEdit: ({required Filter list, required String type}) async => updateList(
-                    FilteringListActions.edit
+                    action: FilteringListActions.edit,
+                    filterList: list
                   ),
                   dialog: false,
                 ),
@@ -302,9 +309,10 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                       children: [
                         IconButton(
                           onPressed: () =>  updateList(
-                            list!.enabled == true
+                            action: list!.enabled == true
                               ? FilteringListActions.disable
-                              : FilteringListActions.enable
+                              : FilteringListActions.enable,
+                            filterList: list
                           ),
                           icon: Icon(
                             list.enabled == true
@@ -371,9 +379,10 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
               right: 20,
               child: FloatingActionButton(
                 onPressed: () => updateList(
-                  list!.enabled == true
+                  action: list!.enabled == true
                     ? FilteringListActions.disable
-                    : FilteringListActions.enable
+                    : FilteringListActions.enable,
+                  filterList: list
                 ),
                 child: Icon(
                   list.enabled == true

@@ -325,14 +325,14 @@ class FilteringProvider with ChangeNotifier {
         };
       }
     }
-    else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains("Couldn't fetch filter from url")) {
+    else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains("data is HTML, not plain text")) {
       notifyListeners();
       return {
         'success': false,
         'error': 'invalid_url'
       };
     }
-    else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains('Filter URL already added')) {
+    else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains('url already exists')) {
       notifyListeners();
       return {
         'success': false,

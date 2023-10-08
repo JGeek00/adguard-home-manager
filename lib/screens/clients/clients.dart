@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
 import 'package:adguard_home_manager/screens/clients/search_clients.dart';
-import 'package:adguard_home_manager/screens/clients/logs_list_client.dart';
+import 'package:adguard_home_manager/screens/clients/client/logs_list_client.dart';
 import 'package:adguard_home_manager/screens/clients/clients_desktop_view.dart';
 import 'package:adguard_home_manager/screens/clients/added_list.dart';
 
@@ -195,7 +195,8 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
                                   clientsProvider.setSearchTermClients(null);
                                 });
                               }, 
-                              icon: const Icon(Icons.arrow_back_rounded)
+                              icon: const Icon(Icons.arrow_back_rounded),
+                              tooltip: AppLocalizations.of(context)!.exitSearch,
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -223,6 +224,7 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
                                   fontWeight: FontWeight.normal,
                                   fontSize: 18
                                 ),
+                                autofocus: true,
                               ),
                             )
                           ],

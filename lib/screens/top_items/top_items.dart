@@ -85,6 +85,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                   fontWeight: FontWeight.normal,
                   fontSize: 18
                 ),
+                autofocus: true,
               ),
           )
           : Text(widget.title),

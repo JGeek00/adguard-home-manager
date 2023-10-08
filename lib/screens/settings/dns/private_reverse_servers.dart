@@ -79,7 +79,7 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
       editReverseResolvers = true;
     }
     usePrivateReverseDnsResolvers = dnsProvider.dnsInfo!.usePrivatePtrResolvers;
-    enableReverseResolve = dnsProvider.dnsInfo!.resolveClients;
+    enableReverseResolve = dnsProvider.dnsInfo!.resolveClients ?? false;
     validValues = true;
     super.initState();
   }

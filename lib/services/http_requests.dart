@@ -616,19 +616,33 @@ class ApiClient {
   }
 
   Future getClients() async {
-    final result = await Future.wait([
-      apiRequest(server: server, method: 'get', urlPath: '/clients', type: 'get_clients'),
-      apiRequest(server: server, method: 'get', urlPath: '/access/list', type: 'get_clients'),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(server: server, method: 'get', urlPath: '/clients', type: 'get_clients'),
+        apiRequest(server: server, method: 'get', urlPath: '/access/list', type: 'get_clients'),
+      ]);
 
-    if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
-      if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
-        final clients = Clients.fromJson(jsonDecode(result[0]['body']));
-        clients.clientsAllowedBlocked = ClientsAllowedBlocked.fromJson(jsonDecode(result[1]['body']));
-        return {
-          'result': 'success',
-          'data': clients
-        };
+      if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
+        if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
+          final clients = Clients.fromJson(jsonDecode(result[0]['body']));
+          clients.clientsAllowedBlocked = ClientsAllowedBlocked.fromJson(jsonDecode(result[1]['body']));
+          return {
+            'result': 'success',
+            'data': clients
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_clients', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+              resBody: result.map((res) => res['body'] ?? 'null').toString(),
+            )
+          };
+        }
       }
       else {
         return {
@@ -636,22 +650,21 @@ class ApiClient {
           'log': AppLog(
             type: 'get_clients', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
+            message: 'no_response',
             statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
             resBody: result.map((res) => res['body'] ?? 'null').toString(),
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
         'result': 'error',
         'log': AppLog(
           type: 'get_clients', 
           dateTime: DateTime.now(), 
           message: 'no_response',
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+          resBody: e.toString()
         )
       };
     }
@@ -701,68 +714,94 @@ class ApiClient {
     String? responseStatus,
     String? search
   }) async {
-    final result = await apiRequest(
-      server: server, 
-      method: 'get', 
-      urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}',
-      type: 'get_logs'
-    );
-      
-    if (result['hasResponse'] == true) {
-      if (result['statusCode'] == 200) {
-        return {
-          'result': 'success',
-          'data': LogsData.fromJson(jsonDecode(result['body']))
-        };
+    try {
+      final result = await apiRequest(
+        server: server, 
+        method: 'get', 
+        urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}',
+        type: 'get_logs'
+      );
+        
+      if (result['hasResponse'] == true) {
+        if (result['statusCode'] == 200) {
+          return {
+            'result': 'success',
+            'data': LogsData.fromJson(jsonDecode(result['body']))
+          };
+        }
+        else {
+          return {
+            'result': 'error', 
+            'log': AppLog(
+              type: 'get_logs', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result['statusCode'].toString(),
+              resBody: result['body']
+            )
+          };
+        }
       }
       else {
-        return {
-          'result': 'error', 
-          'log': AppLog(
-            type: 'get_logs', 
-            dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
-            statusCode: result['statusCode'].toString(),
-            resBody: result['body']
-          )
-        };
+        return result;
       }
-    }
-    else {
-      return result;
+    } catch (e) {
+      Sentry.captureException(e);
+      return {
+        'result': 'error', 
+        'log': AppLog(
+          type: 'get_logs', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          resBody: e.toString()
+        )
+      };
     }
   }
 
   Future getFilteringRules() async {
-    final result = await apiRequest(
-      server: server, 
-      method: 'get', 
-      urlPath: '/filtering/status',
-      type: 'get_filtering_rules'
-    );
-      
-    if (result['hasResponse'] == true) {
-      if (result['statusCode'] == 200) {
-        return {
-          'result': 'success',
-          'data': FilteringStatus.fromJson(jsonDecode(result['body']))
-        };
+    try {
+      final result = await apiRequest(
+        server: server, 
+        method: 'get', 
+        urlPath: '/filtering/status',
+        type: 'get_filtering_rules'
+      );
+        
+      if (result['hasResponse'] == true) {
+        if (result['statusCode'] == 200) {
+          return {
+            'result': 'success',
+            'data': FilteringStatus.fromJson(jsonDecode(result['body']))
+          };
+        }
+        else {
+          return {
+            'result': 'error', 
+            'log': AppLog(
+              type: 'get_filtering_rules', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result['statusCode'].toString(),
+              resBody: result['body']
+            )
+          };
+        }
       }
       else {
-        return {
-          'result': 'error', 
-          'log': AppLog(
-            type: 'get_filtering_rules', 
-            dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
-            statusCode: result['statusCode'].toString(),
-            resBody: result['body']
-          )
-        };
+        return result;
       }
-    }
-    else {
-      return result;
+    } catch (e) {
+      Sentry.captureException(e);
+      return {
+        'result': 'error', 
+        'log': AppLog(
+          type: 'get_filtering_rules', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          resBody: e.toString()
+        )
+      };
     }
   }
 
@@ -899,32 +938,46 @@ class ApiClient {
   }
 
   Future getFiltering() async {
-    final result = await Future.wait([
-      apiRequest(
-        urlPath: '/filtering/status', 
-        method: 'get',
-        server: server, 
-        type: 'get_filtering_status'
-      ),
-      apiRequest(
-        urlPath: '/blocked_services/list', 
-        method: 'get',
-        server: server, 
-        type: 'get_filtering_status'
-      ),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(
+          urlPath: '/filtering/status', 
+          method: 'get',
+          server: server, 
+          type: 'get_filtering_status'
+        ),
+        apiRequest(
+          urlPath: '/blocked_services/list', 
+          method: 'get',
+          server: server, 
+          type: 'get_filtering_status'
+        ),
+      ]);
 
-    if (result[0]['hasResponse'] == true && result[0]['hasResponse'] == true) {
-      if (result[0]['statusCode'] == 200 && result[0]['statusCode'] == 200) {
-        return {
-          'result': 'success',
-          'data': Filtering.fromJson({
-            ...jsonDecode(result[0]['body']),
-            "blocked_services": result[1]['body'] != null 
-              ? jsonDecode(result[1]['body'])
-              : []
-          })
-        };
+      if (result[0]['hasResponse'] == true && result[0]['hasResponse'] == true) {
+        if (result[0]['statusCode'] == 200 && result[0]['statusCode'] == 200) {
+          return {
+            'result': 'success',
+            'data': Filtering.fromJson({
+              ...jsonDecode(result[0]['body']),
+              "blocked_services": result[1]['body'] != null 
+                ? jsonDecode(result[1]['body'])
+                : []
+            })
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_filtering_status', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+              resBody: result.map((res) => res['body'] ?? 'null').toString(),
+            )
+          };
+        }
       }
       else {
         return {
@@ -932,22 +985,21 @@ class ApiClient {
           'log': AppLog(
             type: 'get_filtering_status', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
+            message: 'no_response',
             statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
             resBody: result.map((res) => res['body'] ?? 'null').toString(),
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
         'result': 'error',
         'log': AppLog(
           type: 'get_filtering_status', 
           dateTime: DateTime.now(), 
           message: 'no_response',
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+          resBody: e.toString(),
         )
       };
     }

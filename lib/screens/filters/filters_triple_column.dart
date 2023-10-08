@@ -276,7 +276,8 @@ class FiltersTripleColumn extends StatelessWidget {
                             subtitleWidget: generateSubtitle(filteringProvider.filtering!.userRules[index]),
                             trailing: IconButton(
                               onPressed: () => onRemoveCustomRule(filteringProvider.filtering!.userRules[index]),
-                              icon: const Icon(Icons.delete)
+                              icon: const Icon(Icons.delete),
+                              tooltip: AppLocalizations.of(context)!.delete,
                             ),
                           ),
                         ),  

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/access_settings/add_client_modal.dart';
-import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';

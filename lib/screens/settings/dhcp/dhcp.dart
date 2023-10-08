@@ -345,7 +345,9 @@ class _DhcpScreenState extends State<DhcpScreen> {
               }),
               dialog: false,
             ),
-            isScrollControlled: true
+            isScrollControlled: true,
+            useSafeArea: true,
+            backgroundColor: Colors.transparent
           );
         }
       });

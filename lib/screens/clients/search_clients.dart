@@ -1,14 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
-import 'package:adguard_home_manager/screens/clients/client_screen.dart';
+import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 
 import 'package:adguard_home_manager/widgets/section_label.dart';
@@ -137,31 +135,12 @@ class _SearchClientsState extends State<SearchClients> {
     }
 
     void openClientModal(Client client) {
-      if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
-        showDialog(
-          barrierDismissible: false,
-          context: context, 
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmEditClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            onDelete: deleteClient,
-            client: client,
-            dialog: true,
-          )
-        );
-      }
-      else {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmEditClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            onDelete: deleteClient,
-            client: client,
-            dialog: false,
-          )
-        ));
-      }
+      openClientFormModal(
+        context: context, 
+        width: width, 
+        onConfirm: confirmEditClient,
+        onDelete: deleteClient
+      );
     }
 
     void openDeleteModal(Client client) {
@@ -252,7 +231,9 @@ class _SearchClientsState extends State<SearchClients> {
                       : const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     isThreeLine: true,
                     onLongPress: () => openOptionsModal(clientsScreen[index]),
-                    onTap: () => openClientModal(clientsScreen[index]),
+                    onTap: statusProvider.serverStatus != null
+                      ? () => openClientModal(clientsScreen[index])
+                      : null,
                     title: Padding(
                       padding: const EdgeInsets.only(bottom: 5),
                       child: Text(

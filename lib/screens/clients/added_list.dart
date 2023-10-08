@@ -9,9 +9,9 @@ import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/client_screen.dart';
-import 'package:adguard_home_manager/screens/clients/added_client_tile.dart';
-import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
+import 'package:adguard_home_manager/screens/clients/client/added_client_tile.dart';
+import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
 import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
@@ -128,31 +128,12 @@ class _AddedListState extends State<AddedList> {
     }  
 
     void openClientModal(Client client) {
-      if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
-        showDialog(
-          barrierDismissible: false,
-          context: context, 
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmEditClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            onDelete: deleteClient,
-            client: client,
-            dialog: true,
-          )
-        );
-      }
-      else {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmEditClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            onDelete: deleteClient,
-            client: client,
-            dialog: false,
-          )
-        ));
-      }
+      openClientFormModal(
+        context: context, 
+        width: width, 
+        onConfirm: confirmEditClient,
+        onDelete: deleteClient
+      );
     }
 
     void openDeleteModal(Client client) {
@@ -204,7 +185,10 @@ class _AddedListState extends State<AddedList> {
         client: widget.data[index], 
         onTap: widget.onClientSelected,
         onLongPress: openOptionsModal,
-        onEdit: openClientModal,
+        onEdit: statusProvider.serverStatus != null
+          ? (c) => openClientModal(c)
+          : null,
+        onDelete: openDeleteModal,
         splitView: widget.splitView,
         serverVersion: statusProvider.serverStatus!.serverVersion,
       ),
