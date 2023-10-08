@@ -317,6 +317,7 @@
     "deletingRule": "Deleting rule...",
     "enablingList": "Enabling list...",
     "disablingList": "Disabling list...",
+    "savingList": "Saving list...",
     "disableFiltering": "Disable filtering",
     "enablingFiltering": "Enabling filtering...",
     "disablingFiltering": "Disabling filtering...",
