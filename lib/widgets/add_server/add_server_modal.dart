@@ -126,6 +126,8 @@ class _AddServerModalState extends State<AddServerModal> {
     }
 
     void connect() async {
+      setState(() => isConnecting = true);
+
       Server serverObj = Server(
         id: uuid.v4(),
         name: nameController.text, 
@@ -140,7 +142,6 @@ class _AddServerModalState extends State<AddServerModal> {
           : null,
         runningOnHa: homeAssistant
       );
-      setState(() => isConnecting = true);
 
       final result = homeAssistant == true 
         ? await loginHA(serverObj)
@@ -211,10 +212,11 @@ class _AddServerModalState extends State<AddServerModal> {
       else {
         Navigator.pop(context);
       }
-      return;
     }
 
     void edit() async {
+      setState(() => isConnecting = true);
+      
       final Server serverObj = Server(
         id: widget.server!.id,
         name: nameController.text, 
@@ -286,7 +288,6 @@ class _AddServerModalState extends State<AddServerModal> {
       else {
         Navigator.pop(context);
       }      
-      return; 
     }
 
     Widget actions() {
