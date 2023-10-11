@@ -131,6 +131,7 @@ class _AddedListState extends State<AddedList> {
       openClientFormModal(
         context: context, 
         width: width, 
+        client: client,
         onConfirm: confirmEditClient,
         onDelete: deleteClient
       );
