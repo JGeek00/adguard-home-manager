@@ -79,13 +79,13 @@ class CombinedHomeChart extends StatelessWidget {
         replacedSafeBrowsing: appConfigProvider.hideZeroValues == true
           ? removeZero(statusProvider.serverStatus!.stats.replacedSafebrowsing) != null
             ? CombinedChartItem(
-                label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
+                label: AppLocalizations.of(context)!.malwarePhishingBlocked, 
                 color: Colors.green,
                 data: statusProvider.serverStatus!.stats.replacedSafebrowsing
               ) 
             : null
           : CombinedChartItem(
-              label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
+              label: AppLocalizations.of(context)!.malwarePhishingBlocked, 
               color: Colors.green,
               data: statusProvider.serverStatus!.stats.replacedSafebrowsing
             ) ,

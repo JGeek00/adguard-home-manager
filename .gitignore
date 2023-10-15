@@ -47,3 +47,5 @@ app.*.map.json
 /android/app/release
 
 /debian/packages
+
+untranslated.json

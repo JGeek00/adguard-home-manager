@@ -149,7 +149,7 @@ class _HomeState extends State<Home> {
               widthFactor: width > 700 ? 0.5 : 1,
               child: HomeChart(
                 data: statusProvider.serverStatus!.stats.replacedSafebrowsing, 
-                label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
+                label: AppLocalizations.of(context)!.malwarePhishingBlocked, 
                 primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
                 secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.green,
