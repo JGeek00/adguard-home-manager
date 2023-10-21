@@ -665,5 +665,7 @@
     "discardChangesDescription": "Are you sure you want to discard the changes?",
     "others": "Others",
     "showChart": "Show chart",
-    "hideChart": "Hide chart"
+    "hideChart": "Hide chart",
+    "showTopItemsChart": "Show top items chart",
+    "showTopItemsChartDescription": "Shows by default the ring chart on the top items sections. Only affects to the mobile view."
 }

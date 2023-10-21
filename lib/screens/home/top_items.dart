@@ -47,6 +47,12 @@ class _TopItemsState extends State<TopItems> {
   ];
 
   @override
+  void initState() {
+    _showChart = Provider.of<AppConfigProvider>(context, listen: false).showTopItemsChart;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
 

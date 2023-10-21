@@ -665,5 +665,7 @@
     "discardChangesDescription": "¿Estás seguro de que deseas descartar los cambios realizados?",
     "others": "Otros",
     "showChart": "Mostrar gráfico",
-    "hideChart": "Ocultar gráfico"
+    "hideChart": "Ocultar gráfico",
+    "showTopItemsChart": "Mostrar gráfico en top de items",
+    "showTopItemsChartDescription": "Muestra por defecto el gráfico de anillo en las secciones de top de items. Sólo afecta a la vista móvil."
 }
