@@ -57,10 +57,10 @@
     "serverStatusNotRefreshed": "Server status could not be refreshed",
     "loadingStatus": "Loading status...",
     "errorLoadServerStatus": "Server status could not be loaded",
-    "topQueriedDomains": "Top queried domains",
+    "topQueriedDomains": "Queried domains",
     "viewMore": "View more",
-    "topClients": "Top clients",
-    "topBlockedDomains": "Top blocked domains",
+    "topClients": "Cients",
+    "topBlockedDomains": "Blocked domains",
     "appSettings": "App settings",
     "theme": "Theme",
     "light": "Light",
@@ -662,5 +662,8 @@
     "topItemsOrderDescription": "Order the home screen top items lists",
     "topItemsReorderInfo": "Hold and swipe an item to reorder it.",
     "discardChanges": "Discard changes",
-    "discardChangesDescription": "Are you sure you want to discard the changes?"
+    "discardChangesDescription": "Are you sure you want to discard the changes?",
+    "others": "Others",
+    "showChart": "Show chart",
+    "hideChart": "Hide chart"
 }
