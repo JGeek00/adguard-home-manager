@@ -149,7 +149,7 @@ class _HomeState extends State<Home> {
               widthFactor: width > 700 ? 0.5 : 1,
               child: HomeChart(
                 data: statusProvider.serverStatus!.stats.replacedSafebrowsing, 
-                label: AppLocalizations.of(context)!.malwarePhisingBlocked, 
+                label: AppLocalizations.of(context)!.malwarePhishingBlocked, 
                 primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
                 secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 color: Colors.green,
@@ -175,110 +175,66 @@ class _HomeState extends State<Home> {
           child: CombinedHomeChart(),
         ),
                
-        if (width <= 700) ...appConfigProvider.homeTopItemsOrder.asMap().entries.map((item) {
-          Widget list() {
-            switch (item.value) {
-              case HomeTopItems.queriedDomains:
-                return TopItems(
-                  label: AppLocalizations.of(context)!.topQueriedDomains, 
-                  data: statusProvider.serverStatus!.stats.topQueriedDomains,
-                  type: 'topQueriedDomains',
-                );
-                 
-              case HomeTopItems.blockedDomains:
-                return TopItems(
-                  label: AppLocalizations.of(context)!.topBlockedDomains, 
-                  data: statusProvider.serverStatus!.stats.topBlockedDomains,
-                  type: 'topBlockedDomains',
-                );
-                      
-              case HomeTopItems.recurrentClients:
-                return TopItems(
-                  label: AppLocalizations.of(context)!.topClients, 
-                  data: statusProvider.serverStatus!.stats.topClients,
-                  type: 'topClients',
-                  clients: true,
-                );
-                    
-              default:
-                return const SizedBox();
-            }
-          }
-              
-          return Column(
-            children: [
-              list(),
-              if (item.key < appConfigProvider.homeTopItemsOrder.length - 1) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Divider(
-                    thickness: 1,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-                  ),
-                ),
-                const SizedBox(height: 16),
-              ]
-            ],
-          );
-        }),
-        if (width > 700) Column(
-          children: [
-            Wrap(
-              alignment: WrapAlignment.center,
-              children: appConfigProvider.homeTopItemsOrder.map((item) {
-                switch (item) {
-                  case HomeTopItems.queriedDomains:
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: ConstrainedBox(
-                        constraints: const  BoxConstraints(
-                          maxWidth: 500
-                        ),
-                        child: TopItems(
-                          label: AppLocalizations.of(context)!.topQueriedDomains, 
-                          data: statusProvider.serverStatus!.stats.topQueriedDomains,
-                          type: 'topQueriedDomains',
-                        ),
-                      ),
-                    );
+        TopItemsLists(order: appConfigProvider.homeTopItemsOrder),
 
-                  case HomeTopItems.blockedDomains:
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxWidth: 500
-                        ),
-                        child: TopItems(
-                          label: AppLocalizations.of(context)!.topBlockedDomains, 
-                          data: statusProvider.serverStatus!.stats.topBlockedDomains,
-                          type: 'topBlockedDomains',
-                        ),
-                      ),
-                    );
+        // if (width > 700) Column(
+        //   children: [
+        //     Wrap(
+        //       alignment: WrapAlignment.center,
+        //       children: appConfigProvider.homeTopItemsOrder.map((item) {
+        //         switch (item) {
+        //           case HomeTopItems.queriedDomains:
+        //             return Padding(
+        //               padding: const EdgeInsets.only(bottom: 16),
+        //               child: ConstrainedBox(
+        //                 constraints: const  BoxConstraints(
+        //                   maxWidth: 500
+        //                 ),
+        //                 child: TopItems(
+        //                   label: AppLocalizations.of(context)!.topQueriedDomains, 
+        //                   data: statusProvider.serverStatus!.stats.topQueriedDomains,
+        //                   type: 'topQueriedDomains',
+        //                 ),
+        //               ),
+        //             );
 
-                  case HomeTopItems.recurrentClients: 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxWidth: 500
-                        ),
-                        child: TopItems(
-                          label: AppLocalizations.of(context)!.topClients, 
-                          data: statusProvider.serverStatus!.stats.topClients,
-                          type: 'topClients',
-                        ),
-                      ),
-                    );
+        //           case HomeTopItems.blockedDomains:
+        //             return Padding(
+        //               padding: const EdgeInsets.only(bottom: 16),
+        //               child: ConstrainedBox(
+        //                 constraints: const BoxConstraints(
+        //                   maxWidth: 500
+        //                 ),
+        //                 child: TopItems(
+        //                   label: AppLocalizations.of(context)!.topBlockedDomains, 
+        //                   data: statusProvider.serverStatus!.stats.topBlockedDomains,
+        //                   type: 'topBlockedDomains',
+        //                 ),
+        //               ),
+        //             );
+
+        //           case HomeTopItems.recurrentClients: 
+        //             return Padding(
+        //               padding: const EdgeInsets.only(bottom: 16),
+        //               child: ConstrainedBox(
+        //                 constraints: const BoxConstraints(
+        //                   maxWidth: 500
+        //                 ),
+        //                 child: TopItems(
+        //                   label: AppLocalizations.of(context)!.topClients, 
+        //                   data: statusProvider.serverStatus!.stats.topClients,
+        //                   type: 'topClients',
+        //                 ),
+        //               ),
+        //             );
                    
-                  default:
-                    return const SizedBox();
-                }
-              }).toList(),
-            ),
-          ],
-        )
+        //           default:
+        //             return const SizedBox();
+        //         }
+        //       }).toList(),
+        //     ),
+        //   ],
+        // )
       ];
     }
 
@@ -346,6 +302,77 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class TopItemsLists extends StatelessWidget {
+  final List<HomeTopItems> order;
+  
+  const TopItemsLists({
+    Key? key, 
+    required this.order,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final statusProvider = Provider.of<StatusProvider>(context);
+
+    List<Widget> bottom = [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Divider(
+          thickness: 1,
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+        ),
+      ),
+      const SizedBox(height: 16),
+    ];
+
+    return Column(
+      children: order.asMap().entries.map((item) {
+        switch (item.value) {
+          case HomeTopItems.queriedDomains:
+            return Column(
+              children: [
+                TopItems(
+                  label: AppLocalizations.of(context)!.topQueriedDomains, 
+                  data: statusProvider.serverStatus!.stats.topQueriedDomains,
+                  type: 'topQueriedDomains',
+                ),
+                if (item.key < order.length - 1) ...bottom
+              ],
+            );
+             
+          case HomeTopItems.blockedDomains:
+            return Column(
+              children: [
+                TopItems(
+                  label: AppLocalizations.of(context)!.topBlockedDomains, 
+                  data: statusProvider.serverStatus!.stats.topBlockedDomains,
+                  type: 'topBlockedDomains',
+                ),
+                if (item.key < order.length - 1) ...bottom
+              ],
+            );
+                  
+          case HomeTopItems.recurrentClients:
+            return Column(
+              children: [
+                TopItems(
+                  label: AppLocalizations.of(context)!.topClients, 
+                  data: statusProvider.serverStatus!.stats.topClients,
+                  type: 'topClients',
+                  clients: true,
+                ),
+                if (item.key < order.length - 1) ...bottom
+              ],
+            );
+                
+          default:
+            return const SizedBox();
+        }
+      }).toList(),
     );
   }
 }

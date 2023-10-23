@@ -119,6 +119,8 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 - [async](https://pub.dev/packages/async)
 - [sentry flutter](https://pub.dev/packages/sentry_flutter)
 - [flutter dotenv](https://pub.dev/packages/flutter_dotenv)
+- [flutter reorderable list](https://pub.dev/packages/flutter_reorderable_list)
+- [pie chart](https://pub.dev/packages/pie_chart)
 
 <br>
 

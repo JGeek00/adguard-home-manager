@@ -21,12 +21,7 @@ class PrivateReverseDnsServersScreen extends StatefulWidget {
 class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServersScreen> {
   List<String> defaultReverseResolvers = [];
   bool editReverseResolvers = false;
-  List<Map<String, dynamic>> reverseResolversControllers = [
-    {
-      'controller': TextEditingController(),
-      'error': null
-    }
-  ];
+  List<Map<String, dynamic>> reverseResolversControllers = [];
   bool usePrivateReverseDnsResolvers = false;
   bool enableReverseResolve = false;
 
@@ -67,18 +62,24 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
     for (var item in dnsProvider.dnsInfo!.defaultLocalPtrUpstreams) {
       defaultReverseResolvers.add(item);
     }
+    if (dnsProvider.dnsInfo!.localPtrUpstreams.isEmpty) {
+      reverseResolversControllers.add({
+        'controller': TextEditingController(),
+        'error': null
+      });
+    }
     for (var item in dnsProvider.dnsInfo!.localPtrUpstreams) {
       final controller = TextEditingController();
       controller.text = item;
-      reverseResolversControllers = [{
+      reverseResolversControllers.add({
         'controller': controller,
         'error': null
-      }];
+      });
     }
     if (dnsProvider.dnsInfo!.localPtrUpstreams.isNotEmpty) {
       editReverseResolvers = true;
     }
-    usePrivateReverseDnsResolvers = dnsProvider.dnsInfo!.usePrivatePtrResolvers;
+    usePrivateReverseDnsResolvers = dnsProvider.dnsInfo!.usePrivatePtrResolvers ?? false;
     enableReverseResolve = dnsProvider.dnsInfo!.resolveClients ?? false;
     validValues = true;
     super.initState();
@@ -205,7 +206,7 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
           if (editReverseResolvers == true) ...[
             const SizedBox(height: 20),
             ...reverseResolversControllers.map((c) => Padding(
-            padding: const EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 left: 16, right: 6, bottom: 20
               ),
               child: Row(

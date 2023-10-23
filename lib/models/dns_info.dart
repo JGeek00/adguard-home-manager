@@ -14,7 +14,7 @@ class DnsInfo {
   int? cacheTtlMax;
   bool? cacheOptimistic;
   bool? resolveClients;
-  bool usePrivatePtrResolvers;
+  bool? usePrivatePtrResolvers;
   List<String> localPtrUpstreams;
   String blockingIpv4;
   String blockingIpv6;
