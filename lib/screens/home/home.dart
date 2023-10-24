@@ -176,65 +176,6 @@ class _HomeState extends State<Home> {
         ),
                
         TopItemsLists(order: appConfigProvider.homeTopItemsOrder),
-
-        // if (width > 700) Column(
-        //   children: [
-        //     Wrap(
-        //       alignment: WrapAlignment.center,
-        //       children: appConfigProvider.homeTopItemsOrder.map((item) {
-        //         switch (item) {
-        //           case HomeTopItems.queriedDomains:
-        //             return Padding(
-        //               padding: const EdgeInsets.only(bottom: 16),
-        //               child: ConstrainedBox(
-        //                 constraints: const  BoxConstraints(
-        //                   maxWidth: 500
-        //                 ),
-        //                 child: TopItems(
-        //                   label: AppLocalizations.of(context)!.topQueriedDomains, 
-        //                   data: statusProvider.serverStatus!.stats.topQueriedDomains,
-        //                   type: 'topQueriedDomains',
-        //                 ),
-        //               ),
-        //             );
-
-        //           case HomeTopItems.blockedDomains:
-        //             return Padding(
-        //               padding: const EdgeInsets.only(bottom: 16),
-        //               child: ConstrainedBox(
-        //                 constraints: const BoxConstraints(
-        //                   maxWidth: 500
-        //                 ),
-        //                 child: TopItems(
-        //                   label: AppLocalizations.of(context)!.topBlockedDomains, 
-        //                   data: statusProvider.serverStatus!.stats.topBlockedDomains,
-        //                   type: 'topBlockedDomains',
-        //                 ),
-        //               ),
-        //             );
-
-        //           case HomeTopItems.recurrentClients: 
-        //             return Padding(
-        //               padding: const EdgeInsets.only(bottom: 16),
-        //               child: ConstrainedBox(
-        //                 constraints: const BoxConstraints(
-        //                   maxWidth: 500
-        //                 ),
-        //                 child: TopItems(
-        //                   label: AppLocalizations.of(context)!.topClients, 
-        //                   data: statusProvider.serverStatus!.stats.topClients,
-        //                   type: 'topClients',
-        //                 ),
-        //               ),
-        //             );
-                   
-        //           default:
-        //             return const SizedBox();
-        //         }
-        //       }).toList(),
-        //     ),
-        //   ],
-        // )
       ];
     }
 
