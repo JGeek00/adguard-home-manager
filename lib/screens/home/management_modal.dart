@@ -31,6 +31,8 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
   late Animation<double> animation;
   final ExpandableController expandableController = ExpandableController();
 
+  final _chipsScrollController = ScrollController();
+
   @override
   void initState() {
     expandableController.addListener(() async {
@@ -155,46 +157,58 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
 
       Widget bottomRow() {
         return Container(
-          height: 40,
+          height: Platform.isMacOS || Platform.isLinux || Platform.isWindows ? 50 : 40,
           margin: const EdgeInsets.only(top: 8),
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              ActionChip(
-                label: Text(AppLocalizations.of(context)!.seconds(30)),
-                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
-                  ? () => disableWithCountdown(29000)
-                  : null,
+          child: Scrollbar(
+            controller: _chipsScrollController,
+            thumbVisibility: Platform.isMacOS || Platform.isLinux || Platform.isWindows,
+            interactive: Platform.isMacOS || Platform.isLinux || Platform.isWindows,
+            thickness: Platform.isMacOS || Platform.isLinux || Platform.isWindows ? 8 : 0,
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: Platform.isMacOS || Platform.isLinux || Platform.isWindows ? 16 : 0
               ),
-              const SizedBox(width: 8),
-              ActionChip(
-                label: Text(AppLocalizations.of(context)!.minute(1)),
-                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
-                  ? () => disableWithCountdown(59000)
-                  : null,
+              child: ListView(
+                controller: _chipsScrollController,
+                scrollDirection: Axis.horizontal,
+                children: [
+                  ActionChip(
+                    label: Text(AppLocalizations.of(context)!.seconds(30)),
+                    onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
+                      ? () => disableWithCountdown(29000)
+                      : null,
+                  ),
+                  const SizedBox(width: 8),
+                  ActionChip(
+                    label: Text(AppLocalizations.of(context)!.minute(1)),
+                    onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
+                      ? () => disableWithCountdown(59000)
+                      : null,
+                  ),
+                  const SizedBox(width: 8),
+                  ActionChip(
+                    label: Text(AppLocalizations.of(context)!.minutes(10)),
+                    onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
+                      ? () => disableWithCountdown(599000)
+                      : null,
+                  ),
+                  const SizedBox(width: 8),
+                  ActionChip(
+                    label: Text(AppLocalizations.of(context)!.hour(1)),
+                    onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
+                      ? () => disableWithCountdown(3599000)
+                      : null,
+                  ),
+                  const SizedBox(width: 8),
+                  ActionChip(
+                    label: Text(AppLocalizations.of(context)!.hours(24)),
+                    onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
+                      ? () => disableWithCountdown(86399000)
+                      : null,
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              ActionChip(
-                label: Text(AppLocalizations.of(context)!.minutes(10)),
-                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
-                  ? () => disableWithCountdown(599000)
-                  : null,
-              ),
-              const SizedBox(width: 8),
-              ActionChip(
-                label: Text(AppLocalizations.of(context)!.hour(1)),
-                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
-                  ? () => disableWithCountdown(3599000)
-                  : null,
-              ),
-              const SizedBox(width: 8),
-              ActionChip(
-                label: Text(AppLocalizations.of(context)!.hours(24)),
-                onPressed: statusProvider.protectionsManagementProcess.contains('general') == false && statusProvider.serverStatus!.generalEnabled == true
-                  ? () => disableWithCountdown(86399000)
-                  : null,
-              ),
-            ],
+            ),
           ),
         );
       }

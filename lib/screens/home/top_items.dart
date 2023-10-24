@@ -157,41 +157,46 @@ class _TopItemsState extends State<TopItems> {
           const SizedBox(height: 24),
 
           if (widget.data.isEmpty) noItems,
-          if (widget.data.isNotEmpty && width > 700) SizedBox(
-            height: 240,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  flex: 1,
+          if (widget.data.isNotEmpty && width > 700) Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                flex: 1,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: 250
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: chart,
-                  )
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    children: [
-                      ...itemsList,
-                      OthersRowItem(items: widget.data)
-                    ]
                   ),
                 )
-              ],
-            ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  children: [
+                    ...itemsList,
+                    OthersRowItem(items: widget.data)
+                  ]
+                ),
+              )
+            ],
           ),
           if (widget.data.isNotEmpty && width <= 700) ...[
             if (_showChart) ...[
-              chart,
+              SizedBox(
+                height: 300,
+                child: chart
+              ),
               const SizedBox(height: 16),
             ],
             ...itemsList,
-            if (_showChart) OthersRowItem(items: widget.data)
+            if (_showChart) OthersRowItem(items: widget.data),
+            const SizedBox(height: 16),
           ],
           
-          if (widget.data.length > 5) ...[
-            const SizedBox(height: 20),
+          if (widget.data.length > 5) ...[            
             Padding(
               padding: const EdgeInsets.only(right: 20),
               child: Row(
