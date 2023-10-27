@@ -12,21 +12,27 @@ Future<GitHubRelease?> checkAppUpdates({
   required Source installationSource,
   required bool isBeta
 }) async {
-  final result = await checkAppUpdatesGitHub();
+  var result = isBeta 
+    ? await getReleasesGitHub() 
+    : await getLatestReleaseGitHub();
 
   if (result['result'] == 'success') {
+    late GitHubRelease gitHubRelease;
+    if (isBeta) {
+      gitHubRelease = (result['body'] as List<GitHubRelease>).firstWhere((r) => r.prerelease == true);
+    }
+    else {
+      gitHubRelease = result['body'] as GitHubRelease;
+    }
+
     final update = gitHubUpdateExists(
       currentBuildNumber: currentBuildNumber, 
-      gitHubReleases: result['body'],
+      gitHubRelease: gitHubRelease,
       isBeta: isBeta
     );
 
     if (update == true) {
-      final release = isBeta == true
-        ? result['body'].firstWhere((release) => release.prerelease == true)
-        : result['body'].firstWhere((release) => release.prerelease == false);
-
-      setUpdateAvailable(release);
+      setUpdateAvailable(gitHubRelease);
         
       if (Platform.isAndroid) {
         if (
@@ -34,7 +40,7 @@ Future<GitHubRelease?> checkAppUpdates({
           installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
           installationSource == Source.UNKNOWN
         ) {
-          return release;
+          return gitHubRelease;
         }
         else {
           return null;
@@ -44,7 +50,7 @@ Future<GitHubRelease?> checkAppUpdates({
         return null;
       }
       else {
-        return release;
+        return gitHubRelease;
       }
     }
     else {

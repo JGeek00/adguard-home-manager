@@ -151,15 +151,11 @@ bool serverVersionIsAhead({
 
 bool gitHubUpdateExists({
   required String currentBuildNumber, 
-  required List<GitHubRelease> gitHubReleases,
+  required GitHubRelease gitHubRelease,
   required bool isBeta
 }) {
-  final release = isBeta == true
-    ? gitHubReleases.firstWhere((release) => release.prerelease == true)
-    : gitHubReleases.firstWhere((release) => release.prerelease == false);
-  
   final versionNumberRegex = RegExp(r'\(\d+\)');
-  final releaseNumberExtractedMatches = versionNumberRegex.allMatches(release.tagName);
+  final releaseNumberExtractedMatches = versionNumberRegex.allMatches(gitHubRelease.tagName);
 
   if (releaseNumberExtractedMatches.isNotEmpty) {
     final releaseNumberExtracted = releaseNumberExtractedMatches.first.group(0);
@@ -181,12 +177,12 @@ bool gitHubUpdateExists({
       }
     }
     else {
-      Sentry.captureMessage("Invalid release number. Tagname: ${release.tagName}");
+      Sentry.captureMessage("Invalid release number. Tagname: ${gitHubRelease.tagName}");
       return false;
     }
   }
   else {
-    Sentry.captureMessage("No matches. ${release.tagName}");
+    Sentry.captureMessage("No matches. ${gitHubRelease.tagName}");
     return false;
   }
 }
