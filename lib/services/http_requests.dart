@@ -2322,7 +2322,7 @@ class ApiClient {
   }
 }
 
-Future checkAppUpdatesGitHub() async {
+Future getReleasesGitHub() async {
   try {
     HttpClient httpClient = HttpClient();
     HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.getReleasesGitHub));
@@ -2336,6 +2336,77 @@ Future checkAppUpdatesGitHub() async {
         'error': false,
         'statusCode': response.statusCode,
         'body': List<GitHubRelease>.from(jsonDecode(reply).map((entry) => GitHubRelease.fromJson(entry)))
+      };
+    }
+    else {
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'update_encryption_settings', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          statusCode: response.statusCode.toString(),
+          resBody: reply,
+        )
+      };
+    }    
+  } on SocketException {
+    return {
+      'result': 'no_connection', 
+      'message': 'SocketException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'SocketException'
+      )
+    };
+  } on TimeoutException {
+    return {
+      'result': 'no_connection', 
+      'message': 'TimeoutException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'TimeoutException'
+      )
+    };
+  } on HandshakeException {
+    return {
+      'result': 'ssl_error', 
+      'message': 'HandshakeException',
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: 'HandshakeException'
+      )
+    };
+  } catch (e) {
+    return {
+      'result': 'error', 
+      'message': e.toString(),
+      'log': AppLog(
+        type: 'check_latest_release_github', 
+        dateTime: DateTime.now(), 
+        message: e.toString()
+      )
+    };
+  } 
+}
+
+Future getLatestReleaseGitHub() async {
+  try {
+    HttpClient httpClient = HttpClient();
+    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.getLatestReleaseGitHub));
+    HttpClientResponse response = await request.close();
+    String reply = await response.transform(utf8.decoder).join();
+    httpClient.close();
+    if (response.statusCode == 200) {
+      return {
+        'result': 'success',
+        'hasResponse': true,
+        'error': false,
+        'statusCode': response.statusCode,
+        'body': GitHubRelease.fromJson(jsonDecode(reply))
       };
     }
     else {
