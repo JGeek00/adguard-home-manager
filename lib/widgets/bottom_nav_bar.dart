@@ -84,21 +84,21 @@ class BottomNavBar extends StatelessWidget {
         ), 
         label: translatedName(screen.name)
       )).toList(),
-      onDestinationSelected: (value) {
-        // Reset clients tab to 0 when changing screen
-        if (value != 1) {
-          appConfigProvider.setSelectedClientsTab(0);
-        }
-        // Reset logs filters when changing screen
-        if (value != 2) {
-          logsProvider.resetFilters();
-        }
-        // Reset settings selected screen
-        if (value != screens.length-1) {
-          appConfigProvider.setSelectedSettingsScreen(screen: null);
-        }
-        appConfigProvider.setSelectedScreen(value);
-      },
+      // onDestinationSelected: (value) {
+      //   // Reset clients tab to 0 when changing screen
+      //   if (value != 1) {
+      //     appConfigProvider.setSelectedClientsTab(0);
+      //   }
+      //   // Reset logs filters when changing screen
+      //   if (value != 2) {
+      //     logsProvider.resetFilters();
+      //   }
+      //   // Reset settings selected screen
+      //   if (value != screens.length-1) {
+      //     appConfigProvider.setSelectedSettingsScreen(screen: null);
+      //   }
+      //   appConfigProvider.setSelectedScreen(value);
+      // },
     );
   }
 }

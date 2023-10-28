@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,6 +26,8 @@ class HomeAppBar extends StatelessWidget {
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     final Server? server =  serversProvider.selectedServer;
 
     void navigateServers() {
@@ -40,6 +43,7 @@ class HomeAppBar extends StatelessWidget {
       floating: true,
       centerTitle: false,
       forceElevated: innerBoxScrolled,
+      surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
       leading: Stack(
         children: [
           Center(

@@ -1,24 +1,25 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_split_view/flutter_split_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
-import 'package:adguard_home_manager/screens/clients/search_clients.dart';
-import 'package:adguard_home_manager/screens/clients/client/logs_list_client.dart';
-import 'package:adguard_home_manager/screens/clients/clients_desktop_view.dart';
 import 'package:adguard_home_manager/screens/clients/added_list.dart';
 
+import 'package:adguard_home_manager/constants/routes_names.dart';
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Clients extends StatefulWidget {
-  const Clients({Key? key}) : super(key: key);
+  final Widget child;
+
+  const Clients({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
 
   @override
   State<Clients> createState() => _ClientsState();
@@ -53,9 +54,7 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
     final clientsProvider = Provider.of<ClientsProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
     
     final width = MediaQuery.of(context).size.width;
 
@@ -96,163 +95,119 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
             scrollController: scrollController,
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.filteredActiveClients : [],
-            onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
-              builder: (context) => LogsListClient(
-                ip: client.ip, 
-                serversProvider: serversProvider, 
-                appConfigProvider: appConfigProvider
-              )
-            )),
-            splitView: false,
-            sliver: sliver,
+            onClientSelected: (client) => context.go(
+              RoutesNames.client, 
+              extra: {
+                "id": client.name != null && client.name != "" 
+                  ? client.name 
+                  : client.ip
+              }
+            ),
+            splitView: isDesktop(width),
           ),
           AddedList(
             scrollController: scrollController,
             data: clientsProvider.loadStatus == LoadStatus.loaded
               ? clientsProvider.filteredAddedClients : [], 
-            onClientSelected: (client) => Navigator.push(context, MaterialPageRoute(
-              builder: (context) => LogsListClient(
-                ip: client.ids[0], 
-                serversProvider: serversProvider, 
-                appConfigProvider: appConfigProvider
-              )
-            )),
-            splitView: false,
+            onClientSelected: (client) => context.go(
+              RoutesNames.client, 
+              extra: { "id": client.name }
+            ),
+            splitView: isDesktop(width),
           ),
         ]
       );
     }
 
-    if (width > 900) {
-      return SplitView.material(
-        hideDivider: true,
-        flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
-        placeholder: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              AppLocalizations.of(context)!.selectClientLeftColumn,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                color: Theme.of(context).colorScheme.onSurfaceVariant
-              ),
+    return Row(
+      children: [
+        SizedBox(
+          width: isDesktop(width) ? 300 : width,
+          height: double.maxFinite,
+          child: Material(
+            child: DefaultTabController(
+              length: 2,
+              child: NestedScrollView(
+                controller: scrollController,
+                headerSliverBuilder: ((context, innerBoxIsScrolled) {
+                  return [
+                    SliverOverlapAbsorber(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                      sliver: SliverAppBar(
+                        title: searchMode == true
+                          ? Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      searchMode = false;
+                                      searchController.text = "";
+                                      clientsProvider.setSearchTermClients(null);
+                                    });
+                                  }, 
+                                  icon: const Icon(Icons.arrow_back_rounded),
+                                  tooltip: AppLocalizations.of(context)!.exitSearch,
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: TextField(
+                                    controller: searchController,
+                                    onChanged: (value) => clientsProvider.setSearchTermClients(value),
+                                    decoration: InputDecoration(
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            searchController.text = "";
+                                            clientsProvider.setSearchTermClients(null);
+                                          });
+                                        },
+                                        icon: const Icon(Icons.clear_rounded)
+                                      ),
+                                      hintText: AppLocalizations.of(context)!.search,
+                                      hintStyle: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 18
+                                      ),
+                                      border: InputBorder.none,
+                                    ),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18
+                                    ),
+                                    autofocus: true,
+                                  ),
+                                )
+                              ],
+                            )
+                          : Text(AppLocalizations.of(context)!.clients),
+                        pinned: true,
+                        floating: true,
+                        centerTitle: false,
+                        forceElevated: innerBoxIsScrolled,
+                        actions: [
+                          if (clientsProvider.loadStatus == LoadStatus.loaded && searchMode == false) ...[
+                            IconButton(
+                              onPressed: () => setState(() => searchMode = true), 
+                              icon: const Icon(Icons.search),
+                              tooltip: AppLocalizations.of(context)!.searchClients,
+                            ),
+                            const SizedBox(width: 10),
+                          ]
+                        ],
+                        bottom: tabBar() 
+                      ),
+                    )
+                  ];
+                }), 
+                body: tabBarView(true)
+              )
             ),
           ),
         ),
-        child: ClientsDesktopView(
-          serversProvider: serversProvider,
-          appConfigProvider: appConfigProvider,
+        if (isDesktop(width) == true) Expanded(
+          child: widget.child,
         )
-      );
-    }
-    else {
-      if (!(Platform.isAndroid || Platform.isIOS)) {
-        return DefaultTabController(
-          length: 2,
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.clients),
-              centerTitle: false,
-              actions: [
-                if (clientsProvider.loadStatus == LoadStatus.loaded) ...[
-                  IconButton(
-                    onPressed: () => {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => const SearchClients()
-                      ))
-                    }, 
-                    icon: const Icon(Icons.search),
-                    tooltip: AppLocalizations.of(context)!.searchClients,
-                  ),
-                  const SizedBox(width: 10),
-                ]
-              ],
-              bottom: tabBar() 
-            ),
-            body: tabBarView(false),
-          ),
-        );
-      }
-      else {
-        return DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            controller: scrollController,
-            headerSliverBuilder: ((context, innerBoxIsScrolled) {
-              return [
-                SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverAppBar(
-                    title: searchMode == true
-                      ? Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  searchMode = false;
-                                  searchController.text = "";
-                                  clientsProvider.setSearchTermClients(null);
-                                });
-                              }, 
-                              icon: const Icon(Icons.arrow_back_rounded),
-                              tooltip: AppLocalizations.of(context)!.exitSearch,
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: TextField(
-                                controller: searchController,
-                                onChanged: (value) => clientsProvider.setSearchTermClients(value),
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        searchController.text = "";
-                                        clientsProvider.setSearchTermClients(null);
-                                      });
-                                    },
-                                    icon: const Icon(Icons.clear_rounded)
-                                  ),
-                                  hintText: AppLocalizations.of(context)!.search,
-                                  hintStyle: const TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 18
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 18
-                                ),
-                                autofocus: true,
-                              ),
-                            )
-                          ],
-                        )
-                      : Text(AppLocalizations.of(context)!.clients),
-                    pinned: true,
-                    floating: true,
-                    centerTitle: false,
-                    forceElevated: innerBoxIsScrolled,
-                    actions: [
-                      if (clientsProvider.loadStatus == LoadStatus.loaded && searchMode == false) ...[
-                        IconButton(
-                          onPressed: () => setState(() => searchMode = true), 
-                          icon: const Icon(Icons.search),
-                          tooltip: AppLocalizations.of(context)!.searchClients,
-                        ),
-                        const SizedBox(width: 10),
-                      ]
-                    ],
-                    bottom: tabBar() 
-                  ),
-                )
-              ];
-            }), 
-            body: tabBarView(true)
-          )
-        );
-      }
-    }
+      ],
+    );
   }
 }

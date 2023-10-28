@@ -97,18 +97,10 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
             onClientSelected: (client) => setState(() {
               selectedAddedClient = null;
               selectedActiveClient = client;
-              SplitView.of(context).setSecondary(
-                LogsListClient(
-                  ip: client.ip,
-                  name: client.name,
-                  serversProvider: serversProvider,
-                  appConfigProvider: appConfigProvider,
-                )
-              );
+              
             }),
             selectedClient: selectedActiveClient,
             splitView: true,
-            sliver: sliver,
           ),
           AddedList(
             scrollController: scrollController,
@@ -117,14 +109,7 @@ class _ClientsDesktopViewState extends State<ClientsDesktopView>  with TickerPro
             onClientSelected: (client) => setState(() {
               selectedActiveClient = null;
               selectedAddedClient = client;
-              SplitView.of(context).setSecondary(
-                LogsListClient(
-                  ip: client.ids[0],
-                  name: client.name,
-                  serversProvider: serversProvider,
-                  appConfigProvider: appConfigProvider,
-                )
-              );
+              
             }),
             selectedClient: selectedAddedClient,
             splitView: true,

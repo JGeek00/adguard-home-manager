@@ -667,5 +667,7 @@
     "showChart": "Show chart",
     "hideChart": "Hide chart",
     "showTopItemsChart": "Show top items chart",
-    "showTopItemsChartDescription": "Shows by default the ring chart on the top items sections. Only affects to the mobile view."
+    "showTopItemsChartDescription": "Shows by default the ring chart on the top items sections. Only affects to the mobile view.",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
 }

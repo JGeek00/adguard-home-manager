@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/rendering.dart';
@@ -157,7 +155,6 @@ class _AddedListState extends State<AddedList> {
     }
 
     return CustomTabContentList(
-      noSliver: !(Platform.isAndroid || Platform.isIOS),
       listPadding: widget.splitView == true 
         ? const EdgeInsets.only(top: 8)
         : null,

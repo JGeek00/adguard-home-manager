@@ -101,7 +101,7 @@ class _BaseState extends State<Base> with WidgetsBindingObserver {
                         child: child,
                       )
                     ),
-                    child: screens[appConfigProvider.selectedScreen].body,
+                    child: SizedBox()
                   ),
                 ),
             ],
