@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -14,12 +12,20 @@ import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class LogsListClient extends StatefulHookWidget {
-  final String id;
+class LogsListClient extends StatefulWidget {
+  final String ip;
+  final String? name;
+  final ServersProvider serversProvider;
+  final AppConfigProvider appConfigProvider;
+  final bool splitView;
 
   const LogsListClient({
     Key? key,
-    required this.id,
+    required this.ip,
+    this.name,
+    required this.serversProvider,
+    required this.appConfigProvider,
+    required this.splitView,
   }) : super(key: key);
 
   @override
@@ -34,8 +40,10 @@ class _LogsListClientState extends State<LogsListClient> {
   int logsQuantity = 100;
   int offset = 0;
 
-  LoadStatus loadStatus = LoadStatus.loading;
+  int loadStatus = 0;
   LogsData? logsData;
+
+  String previousIp = "";
 
   bool showDivider = true;
 
@@ -61,7 +69,7 @@ class _LogsListClientState extends State<LogsListClient> {
       serversProvider.apiClient!.getLogs(
         count: logsQuantity, 
         offset: offst,
-        search: '"${widget.id}"'
+        search: '"${widget.ip}"'
       )
     );
 
@@ -84,11 +92,11 @@ class _LogsListClientState extends State<LogsListClient> {
             LogsData newLogsData = result['data'];
             setState(() => logsData = newLogsData);
           }
-          setState(() => loadStatus = LoadStatus.loaded);
+          setState(() => loadStatus = 1);
         }
         else {
-          setState(() => loadStatus = LoadStatus.error);
-          Provider.of<AppConfigProvider>(context, listen: false).addLog(result['log']);
+          setState(() => loadStatus = 2);
+          widget.appConfigProvider.addLog(result['log']);
         }
       }
     }
@@ -110,6 +118,8 @@ class _LogsListClientState extends State<LogsListClient> {
   @override
   void initState() {
     scrollController = ScrollController()..addListener(scrollListener);
+    fetchLogs(inOffset: 0);
+    setState(() => previousIp = widget.ip);
     super.initState();
   }
 
@@ -117,15 +127,15 @@ class _LogsListClientState extends State<LogsListClient> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    useEffect(() {
-      setState(() => loadStatus = LoadStatus.loading);
+    if (widget.ip != previousIp) {
+      setState(() => loadStatus = 0);
       fetchLogs(inOffset: 0);
-      return null;
-    }, [widget.id]);
+      setState(() => previousIp = widget.ip);
+    }
 
     Widget status() {
       switch (loadStatus) {
-        case LoadStatus.loading:
+        case 0:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -146,7 +156,7 @@ class _LogsListClientState extends State<LogsListClient> {
             ),
           );
 
-        case LoadStatus.loaded:
+        case 1:
           if (logsData!.data.isNotEmpty) {
             return RefreshIndicator(
               onRefresh: fetchLogs,
@@ -189,7 +199,8 @@ class _LogsListClientState extends State<LogsListClient> {
                             )
                           ))
                         }
-                      }
+                      },
+                      twoColumns: widget.splitView,
                     );
                   }
                 }
@@ -209,7 +220,7 @@ class _LogsListClientState extends State<LogsListClient> {
             );
           }
         
-        case LoadStatus.error:
+        case 2:
           return SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -241,7 +252,7 @@ class _LogsListClientState extends State<LogsListClient> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.id),
+        title: Text(widget.name != null && widget.name != '' ? widget.name! : widget.ip),
         centerTitle: true,
         actions: [
           if (!(Platform.isAndroid || Platform.isIOS)) ...[

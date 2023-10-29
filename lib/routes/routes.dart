@@ -4,10 +4,8 @@ import 'package:adguard_home_manager/screens/home/home.dart';
 import 'package:adguard_home_manager/screens/clients/clients.dart';
 import 'package:adguard_home_manager/screens/connect/connect.dart';
 import 'package:adguard_home_manager/screens/filters/filters.dart';
-import 'package:adguard_home_manager/screens/settings/settings.dart';
-import 'package:adguard_home_manager/screens/clients/client/client_placeholder.dart';
-import 'package:adguard_home_manager/screens/clients/client/logs_list_client.dart';
 import 'package:adguard_home_manager/screens/logs/logs.dart';
+import 'package:adguard_home_manager/screens/settings/settings.dart';
 import 'package:adguard_home_manager/widgets/layout.dart';
 
 import 'package:adguard_home_manager/routes/router_globals.dart';
@@ -31,44 +29,15 @@ final List<RouteBase> routes = [
             path: RoutesNames.home,
             builder: (context, state) => const Home(),
           ),
-          GoRoute(
-            parentNavigatorKey: homeNavigatorKey,
-            path: RoutesNames.queriedDomains,
-            builder: (context, state) => const Home(),
-          ),
-          GoRoute(
-            parentNavigatorKey: homeNavigatorKey,
-            path: RoutesNames.blockedDomains,
-            builder: (context, state) => const Home(),
-          ),
-          GoRoute(
-            parentNavigatorKey: homeNavigatorKey,
-            path: RoutesNames.recurrentClients,
-            builder: (context, state) => const Home(),
-          ),
         ]
       ),
       StatefulShellBranch(
         navigatorKey: clientsNavigatorKey,
         routes: [
-          ShellRoute(
+          GoRoute(
             parentNavigatorKey: clientsNavigatorKey,
-            navigatorKey: clientsListNavigatorKey,
-            builder: (context, state, child) => Clients(child: child),
-            routes: [
-              GoRoute(
-                path: RoutesNames.clientPlaceholder,
-                parentNavigatorKey: clientsListNavigatorKey,
-                builder: (context, state) => const ClientPlaceholder(),
-              ),
-              GoRoute(
-                path: RoutesNames.client,
-                parentNavigatorKey: clientsListNavigatorKey,
-                builder: (context, state) => LogsListClient(
-                  id: (state.extra as Map?)?['id']
-                )
-              )
-            ]
+            path: RoutesNames.clients,
+            builder: (context, state) => const Clients(),
           )
         ]
       ),
@@ -76,6 +45,7 @@ final List<RouteBase> routes = [
         navigatorKey: logsNavigatorKey,
         routes: [
           GoRoute(
+            parentNavigatorKey: logsNavigatorKey,
             path: RoutesNames.logs,
             builder: (context, state) => const Logs(),
           )
@@ -85,6 +55,7 @@ final List<RouteBase> routes = [
         navigatorKey: filtersNavigatorKey,
         routes: [
           GoRoute(
+            parentNavigatorKey: filtersNavigatorKey,
             path: RoutesNames.filters, 
             builder: (context, state) => const Filters(),
           )
@@ -94,7 +65,8 @@ final List<RouteBase> routes = [
         navigatorKey: settingsNavigatorKey,
         routes: [
           GoRoute(
-            path: RoutesNames.settings, 
+            parentNavigatorKey: settingsNavigatorKey,
+            path: RoutesNames.settings,
             builder: (context, state) => const Settings(),
           )
         ]

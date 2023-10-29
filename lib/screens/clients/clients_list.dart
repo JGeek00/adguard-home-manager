@@ -10,7 +10,6 @@ import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientsList extends StatelessWidget {
-  final ScrollController scrollController;
   final List<AutoClient> data;
   final void Function(AutoClient) onClientSelected;
   final AutoClient? selectedClient;
@@ -18,7 +17,6 @@ class ClientsList extends StatelessWidget {
 
   const ClientsList({
     Key? key,
-    required this.scrollController,
     required this.data,
     required this.onClientSelected,
     this.selectedClient,

@@ -324,20 +324,24 @@ class _FiltersState extends State<Filters> {
       }
     }
 
-    if (width > 1200) {
-      return FiltersTripleColumn(
-        onRemoveCustomRule: openRemoveCustomRuleModal,
-        onOpenDetailsModal: openListDetails,
-        actions: actions(),
-      );
-    }
-    else {
-      return FiltersTabsView(
-        appConfigProvider: appConfigProvider, 
-        actions: actions(),
-        onRemoveCustomRule: openRemoveCustomRuleModal,
-        onOpenDetailsModal: openListDetails,
-      );
-    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 900) {
+          return FiltersTripleColumn(
+            onRemoveCustomRule: openRemoveCustomRuleModal,
+            onOpenDetailsModal: openListDetails,
+            actions: actions(),
+          );
+        }
+        else {
+          return FiltersTabsView(
+            appConfigProvider: appConfigProvider, 
+            actions: actions(),
+            onRemoveCustomRule: openRemoveCustomRuleModal,
+            onOpenDetailsModal: openListDetails,
+          );
+        }
+      },
+    );
   }
 }
