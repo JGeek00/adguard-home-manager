@@ -23,7 +23,6 @@ import 'package:adguard_home_manager/widgets/custom_settings_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
-import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/constants/strings.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
@@ -71,13 +70,24 @@ class Settings extends StatelessWidget {
     );
   }
 }
-class SettingsWidget extends StatelessWidget {
+class SettingsWidget extends StatefulWidget {
   final bool twoColumns;
 
   const SettingsWidget({
     Key? key,
     required this.twoColumns,
   }) : super(key: key);
+
+  @override
+  State<SettingsWidget> createState() => _SettingsWidgetState();
+}
+
+class _SettingsWidgetState extends State<SettingsWidget> {
+  @override
+  void initState() {
+    Provider.of<AppConfigProvider>(context, listen: false).setSelectedSettingsScreen(screen: null);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +97,7 @@ class SettingsWidget extends StatelessWidget {
 
     final width = MediaQuery.of(context).size.width;
 
-    if (!twoColumns && appConfigProvider.selectedSettingsScreen != null) {
+    if (!widget.twoColumns && appConfigProvider.selectedSettingsScreen != null) {
       appConfigProvider.setSelectedSettingsScreen(screen: null);
     }
 
@@ -99,7 +109,7 @@ class SettingsWidget extends StatelessWidget {
       required Widget screenToNavigate,
       required int thisItem
     }) {
-      if (twoColumns) {
+      if (widget.twoColumns) {
         return CustomSettingsTile(
           title: title, 
           subtitle: subtitle,
@@ -120,7 +130,7 @@ class SettingsWidget extends StatelessWidget {
           icon: icon,
           trailing: trailing,
           onTap: () {
-            rootNavigatorKey.currentState!.push(
+            Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => screenToNavigate)
             );
           },
@@ -191,7 +201,7 @@ class SettingsWidget extends StatelessWidget {
                         subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
                         thisItem: 3,
                         screenToNavigate: DnsSettings(
-                          splitView: twoColumns,
+                          splitView: widget.twoColumns,
                         ),
                       ),
                       settingsTile(

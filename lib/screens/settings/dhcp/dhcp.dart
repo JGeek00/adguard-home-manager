@@ -12,7 +12,6 @@ import 'package:adguard_home_manager/widgets/confirm_action_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_leases.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/select_interface_modal.dart';
 
-import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -706,7 +705,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            rootNavigatorKey.currentState!.push(
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => DhcpLeases(
                                   items: dhcpProvider.dhcp!.dhcpStatus.leases,
@@ -741,7 +740,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            rootNavigatorKey.currentState!.push(
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => DhcpLeases(
                                   items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
@@ -786,7 +785,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
                                 );
                               }
                               else {
-                                rootNavigatorKey.currentState!.push(
+                                Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => DhcpLeases(
                                       items: dhcpProvider.dhcp!.dhcpStatus.leases,
@@ -815,7 +814,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
                                 );
                               }
                               else {
-                                rootNavigatorKey.currentState!.push(
+                                Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => DhcpLeases(
                                       items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,

@@ -8,7 +8,6 @@ import 'package:adguard_home_manager/screens/clients/client/logs_list_client.dar
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -72,7 +71,7 @@ class _ClientsListsState extends State<ClientsLists> with TickerProviderStateMix
         SplitView.of(context).push(w);
       }
       else {
-        rootNavigatorKey.currentState!.push(
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => w,
           )
@@ -92,7 +91,7 @@ class _ClientsListsState extends State<ClientsLists> with TickerProviderStateMix
         SplitView.of(context).push(w);
       }
       else {
-        rootNavigatorKey.currentState!.push(
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => w,
           )

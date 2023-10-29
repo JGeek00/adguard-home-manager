@@ -14,7 +14,6 @@ import 'package:adguard_home_manager/screens/settings/dns/upstream_dns.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/clear_dns_cache.dart';
@@ -54,7 +53,7 @@ class _DnsSettingsState extends State<DnsSettings> {
         SplitView.of(context).push(w);
       }
       else {
-        rootNavigatorKey.currentState!.push(
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => w
           )

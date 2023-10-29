@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:animations/animations.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/config/app_screens.dart';
 import 'package:adguard_home_manager/config/sizes.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Layout extends StatefulWidget {
-  final StatefulNavigationShell navigationShell;
-
   const Layout({
     Key? key, 
-    required this.navigationShell,
   }) : super(key: key);
 
   @override
@@ -23,10 +21,7 @@ class _LayoutState extends State<Layout> {
   bool _drawerExpanded = true;
 
   void _goBranch(int index) {
-    widget.navigationShell.goBranch(
-      index,
-      initialLocation: index == widget.navigationShell.currentIndex,
-    );
+    Provider.of<AppConfigProvider>(context, listen: false).setSelectedScreen(index);
   }
 
   @override
@@ -34,6 +29,11 @@ class _LayoutState extends State<Layout> {
     final width = MediaQuery.of(context).size.width;
 
     final serversProvider = Provider.of<ServersProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final screens = serversProvider.selectedServer != null
+      ? screensServerConnected
+      : screensSelectServer;
 
     String translatedName(String key) {
       switch (key) {
@@ -93,8 +93,7 @@ class _LayoutState extends State<Layout> {
                       (s) => DrawerTile(
                         icon: s.value.icon,
                         title: translatedName(s.value.name),
-                        isSelected:
-                            widget.navigationShell.currentIndex == s.key,
+                        isSelected: appConfigProvider.selectedScreen == s.key,
                         onSelect: () => _goBranch(s.key),
                         withoutTitle: !_drawerExpanded,
                       ),
@@ -104,8 +103,7 @@ class _LayoutState extends State<Layout> {
                       (s) => DrawerTile(
                         icon: s.value.icon,
                         title: translatedName(s.value.name),
-                        isSelected:
-                            widget.navigationShell.currentIndex == s.key,
+                        isSelected: appConfigProvider.selectedScreen == s.key,
                         onSelect: () => _goBranch(s.key),
                         withoutTitle: !_drawerExpanded,
                       ),
@@ -114,7 +112,17 @@ class _LayoutState extends State<Layout> {
               ),
             ),
             Expanded(
-              child: widget.navigationShell
+              child: PageTransitionSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (
+                  (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
+                    animation: primaryAnimation, 
+                    secondaryAnimation: secondaryAnimation,
+                    child: child,
+                  )
+                ),
+                child: screens[appConfigProvider.selectedScreen].child,
+              ),
             ),
           ],
         ),
@@ -126,18 +134,28 @@ class _LayoutState extends State<Layout> {
         : screensSelectServer;
 
       return Scaffold(
-        body: widget.navigationShell,
+        body: PageTransitionSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (
+            (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
+              animation: primaryAnimation, 
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            )
+          ),
+          child: screens[appConfigProvider.selectedScreen].child,
+        ),
         bottomNavigationBar: NavigationBar(
-          selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && widget.navigationShell.currentIndex > 1
+          selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
             ? 0
-            : widget.navigationShell.currentIndex,
+            : appConfigProvider.selectedScreen,
           onDestinationSelected: (s) => _goBranch(s),
           destinations: screens.asMap().entries.map((screen) => NavigationDestination(
             icon: Stack(
               children: [
                 Icon(
                   screen.value.icon,
-                  color: widget.navigationShell.currentIndex == screen.key
+                  color: appConfigProvider.selectedScreen == screen.key
                     ? Theme.of(context).colorScheme.onSecondaryContainer
                     : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),

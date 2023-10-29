@@ -11,7 +11,6 @@ import 'package:adguard_home_manager/widgets/domain_options.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 
-import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
@@ -218,7 +217,7 @@ class _TopItemsState extends State<TopItems> {
                         )
                       }
                       else {
-                        rootNavigatorKey.currentState!.push(
+                        Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => TopItemsScreen(
                               type: widget.type,

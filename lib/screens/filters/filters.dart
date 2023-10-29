@@ -14,7 +14,6 @@ import 'package:adguard_home_manager/screens/filters/remove_custom_rule_modal.da
 import 'package:adguard_home_manager/screens/filters/blocked_services_screen.dart';
 import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal.dart';
 
-import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -203,7 +202,7 @@ class _FiltersState extends State<Filters> {
         );
       }
       else {
-        rootNavigatorKey.currentState!.push(
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ListDetailsScreen(
               listId: filter.id, 
