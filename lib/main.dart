@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -15,6 +16,10 @@ import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/menu_bar.dart';
+import 'package:adguard_home_manager/functions/check_app_updates.dart';
+import 'package:adguard_home_manager/functions/open_url.dart';
+import 'package:adguard_home_manager/widgets/update_modal.dart';
 import 'package:adguard_home_manager/routes/router.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -175,7 +180,7 @@ class Main extends StatefulWidget {
   State<Main> createState() => _MainState();
 }
 
-class _MainState extends State<Main> {
+class _MainState extends State<Main> with WidgetsBindingObserver {
   List<DisplayMode> modes = <DisplayMode>[];
   DisplayMode? active;
   DisplayMode? preferred;
@@ -195,54 +200,93 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     displayMode();
+
+    WidgetsBinding.instance.addObserver(this);
+
     super.initState();
+      
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+      final result = await checkAppUpdates(
+        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber,
+        installationSource: appConfigProvider.installationSource,
+        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable,
+        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
+      );
+      if (result != null && appConfigProvider.doNotRememberVersion != result.tagName && mounted) {
+        await showDialog(
+          context: context, 
+          builder: (context) => UpdateModal(
+            gitHubRelease: result,
+            onDownload: (link, version) => openUrl(link),
+          ),
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) => MaterialApp.router(
-        title: 'AdGuard Home Manager',
-        theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
-          ? appConfigProvider.useDynamicColor == true
-            ? lightTheme(lightDynamic)
-            : lightThemeOldVersions(colors[appConfigProvider.staticColor])
-          : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
-        darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
-          ? appConfigProvider.useDynamicColor == true
-            ? darkTheme(darkDynamic)
-            : darkThemeOldVersions(colors[appConfigProvider.staticColor])
-          : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
-        themeMode: appConfigProvider.selectedTheme,
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          AppLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en', ''),
-          Locale('es', ''),
-          Locale('zh', ''),
-          Locale('zh', 'CN'),
-          Locale('pl', ''),
-          Locale('tr', '')
-        ],
-        scaffoldMessengerKey: scaffoldMessengerKey,
-        builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
-                ? 0.9
-                : 1.0
-            ),
-            child: child!,
-          );
-        },
-        routerConfig: goRouter,
+    
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Theme.of(context).brightness == Brightness.light
+          ? Brightness.light
+          : Brightness.dark,
+        statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
+          ? Brightness.dark
+          : Brightness.light,
+        systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
+        systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light
+          ? Brightness.dark
+          : Brightness.light,
+      ),
+      child: DynamicColorBuilder(
+        builder: (lightDynamic, darkDynamic) => MaterialApp.router(
+          title: 'AdGuard Home Manager',
+          theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
+            ? appConfigProvider.useDynamicColor == true
+              ? lightTheme(lightDynamic)
+              : lightThemeOldVersions(colors[appConfigProvider.staticColor])
+            : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
+          darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
+            ? appConfigProvider.useDynamicColor == true
+              ? darkTheme(darkDynamic)
+              : darkThemeOldVersions(colors[appConfigProvider.staticColor])
+            : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
+          themeMode: appConfigProvider.selectedTheme,
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            AppLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en', ''),
+            Locale('es', ''),
+            Locale('zh', ''),
+            Locale('zh', 'CN'),
+            Locale('pl', ''),
+            Locale('tr', '')
+          ],
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          builder: (context, child) {
+            return CustomMenuBar(
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
+                    ? 0.9
+                    : 1.0
+                ),
+                child: child!,
+              ),
+            );
+          },
+          routerConfig: goRouter,
+        ),
       ),
     );
   }
