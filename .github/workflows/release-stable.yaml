@@ -82,7 +82,7 @@ jobs:
           APPLE_KEYCHAIN_PWD: ${{ secrets.APPLE_KEYCHAIN_PWD }}
           APPLE_IDENTITY_ID: ${{ secrets.APPLE_IDENTITY_ID }}
         run: |
-          echo $APPLE_CERTIFICATE | base64 -—decode > certificate.p12
+          echo "$APPLE_CERTIFICATE" | base64 -—decode > certificate.p12
           security create-keychain -p $APPLE_KEYCHAIN_PWD build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p $APPLE_KEYCHAIN_PWD build.keychain
