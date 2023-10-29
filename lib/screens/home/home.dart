@@ -61,124 +61,6 @@ class _HomeState extends State<Home> {
 
     final width = MediaQuery.of(context).size.width;
 
-    Widget loading() {
-      return SizedBox(
-        width: double.maxFinite,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 30),
-            Text(
-              AppLocalizations.of(context)!.loadingStatus,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 22,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            )
-          ],
-        ),
-      );
-    }
-
-    Widget loadError() {
-      return SizedBox(
-        width: double.maxFinite,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error,
-              color: Colors.red,
-              size: 50,
-            ),
-            const SizedBox(height: 30),
-            Text(
-              AppLocalizations.of(context)!.errorLoadServerStatus,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 22,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            )
-          ],
-        ),
-      );
-    }
-
-    List<Widget> listItems() {
-      return [
-        ServerStatusWidget(serverStatus: statusProvider.serverStatus!),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Divider(
-            thickness: 1,
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-          ),
-        ),
-        const SizedBox(height: 16),
-              
-        if (appConfigProvider.combinedChartHome == false) Wrap(
-          children: [
-            FractionallySizedBox(
-              widthFactor: width > 700 ? 0.5 : 1,
-              child: HomeChart(
-                data: statusProvider.serverStatus!.stats.dnsQueries, 
-                label: AppLocalizations.of(context)!.dnsQueries, 
-                primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
-                secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
-                color: Colors.blue,
-                hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
-              ),
-            ),
-            FractionallySizedBox(
-              widthFactor: width > 700 ? 0.5 : 1,
-              child: HomeChart(
-                data: statusProvider.serverStatus!.stats.blockedFiltering, 
-                label: AppLocalizations.of(context)!.blockedFilters, 
-                primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
-                secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                color: Colors.red,
-                hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
-              ),
-            ),
-            FractionallySizedBox(
-              widthFactor: width > 700 ? 0.5 : 1,
-              child: HomeChart(
-                data: statusProvider.serverStatus!.stats.replacedSafebrowsing, 
-                label: AppLocalizations.of(context)!.malwarePhishingBlocked, 
-                primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
-                secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                color: Colors.green,
-                hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
-              ),
-            ),
-            FractionallySizedBox(
-              widthFactor: width > 700 ? 0.5 : 1,
-              child: HomeChart(
-                data: statusProvider.serverStatus!.stats.replacedParental, 
-                label: AppLocalizations.of(context)!.blockedAdultWebsites, 
-                primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
-                secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedParental/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                color: Colors.orange,
-                hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
-              ),
-            ),             
-          ],
-        ),
-
-        if (appConfigProvider.combinedChartHome == true) const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: CombinedHomeChart(),
-        ),
-               
-        TopItemsLists(order: appConfigProvider.homeTopItemsOrder),
-      ];
-    }
-
     return Scaffold(
       body: SafeArea(
         top: false,
@@ -215,13 +97,119 @@ class _HomeState extends State<Home> {
                           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                         ),
                         if (statusProvider.loadStatus == LoadStatus.loading) SliverFillRemaining(
-                          child: loading(),
+                          child: SizedBox(
+                            width: double.maxFinite,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const CircularProgressIndicator(),
+                                const SizedBox(height: 30),
+                                Text(
+                                  AppLocalizations.of(context)!.loadingStatus,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
                         ),
                         if (statusProvider.loadStatus == LoadStatus.loaded) SliverList.list(
-                          children: listItems()
+                          children: [
+                            ServerStatusWidget(serverStatus: statusProvider.serverStatus!),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Divider(
+                                thickness: 1,
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                                  
+                            if (appConfigProvider.combinedChartHome == false) Wrap(
+                              children: [
+                                FractionallySizedBox(
+                                  widthFactor: width > 700 ? 0.5 : 1,
+                                  child: HomeChart(
+                                    data: statusProvider.serverStatus!.stats.dnsQueries, 
+                                    label: AppLocalizations.of(context)!.dnsQueries, 
+                                    primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
+                                    secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
+                                    color: Colors.blue,
+                                    hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
+                                  ),
+                                ),
+                                FractionallySizedBox(
+                                  widthFactor: width > 700 ? 0.5 : 1,
+                                  child: HomeChart(
+                                    data: statusProvider.serverStatus!.stats.blockedFiltering, 
+                                    label: AppLocalizations.of(context)!.blockedFilters, 
+                                    primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
+                                    secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                                    color: Colors.red,
+                                    hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
+                                  ),
+                                ),
+                                FractionallySizedBox(
+                                  widthFactor: width > 700 ? 0.5 : 1,
+                                  child: HomeChart(
+                                    data: statusProvider.serverStatus!.stats.replacedSafebrowsing, 
+                                    label: AppLocalizations.of(context)!.malwarePhishingBlocked, 
+                                    primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
+                                    secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                                    color: Colors.green,
+                                    hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
+                                  ),
+                                ),
+                                FractionallySizedBox(
+                                  widthFactor: width > 700 ? 0.5 : 1,
+                                  child: HomeChart(
+                                    data: statusProvider.serverStatus!.stats.replacedParental, 
+                                    label: AppLocalizations.of(context)!.blockedAdultWebsites, 
+                                    primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
+                                    secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedParental/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
+                                    color: Colors.orange,
+                                    hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
+                                  ),
+                                ),             
+                              ],
+                            ),
+
+                            if (appConfigProvider.combinedChartHome == true) const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: CombinedHomeChart(),
+                            ),
+                                  
+                            TopItemsLists(order: appConfigProvider.homeTopItemsOrder),
+                          ],
                         ),
                         if (statusProvider.loadStatus == LoadStatus.error) SliverFillRemaining(
-                          child: loadError(),
+                          child: SizedBox(
+                            width: double.maxFinite,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                  size: 50,
+                                ),
+                                const SizedBox(height: 30),
+                                Text(
+                                  AppLocalizations.of(context)!.errorLoadServerStatus,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
                         ),
                       ],
                     )
