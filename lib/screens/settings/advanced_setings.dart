@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -15,6 +16,8 @@ class AdvancedSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     Future updateSettings({
       required bool newStatus,
@@ -40,6 +43,7 @@ class AdvancedSettings extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.advancedSettings),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
       ),
       body: ListView(
         children: [

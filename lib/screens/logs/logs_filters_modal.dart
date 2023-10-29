@@ -89,6 +89,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       else {
         showModalBottomSheet(
           context: context, 
+          useRootNavigator: true,
           builder: (context) => FilterStatusModal(
             value: logsProvider.selectedResultStatus,
             dialog: false,
@@ -113,6 +114,7 @@ class _LogsFiltersModalWidgetState extends State<LogsFiltersModalWidget> {
       else {
         showModalBottomSheet(
           context: context, 
+          useRootNavigator: true,
           builder: (context) => ClientsModal(
             value: logsProvider.selectedClients,
             dialog: false,

@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/dns/clear_dns_cache_dialog.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -68,6 +69,8 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -154,6 +157,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dnsCacheConfig),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         actions: [
           IconButton(
             onPressed: validData == true

@@ -87,6 +87,7 @@ class _FiltersState extends State<Filters> {
         else {
           showModalBottomSheet(
             context: context, 
+            useRootNavigator: true,
             builder: (context) => const CheckHostModal(
               dialog: false,
             ),
@@ -269,6 +270,7 @@ class _FiltersState extends State<Filters> {
               else {
                 showModalBottomSheet(
                   context: context, 
+                  useRootNavigator: true,
                   builder: (context) => UpdateIntervalListsModal(
                     interval: filteringProvider.filtering!.interval,
                     onChange: setUpdateFrequency,

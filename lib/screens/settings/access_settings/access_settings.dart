@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/access_settings/clients_list.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 
@@ -34,6 +35,8 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     final clientsProvider = Provider.of<ClientsProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     Widget body() {
       return TabBarView(
@@ -119,6 +122,7 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
                       floating: true,
                       centerTitle: false,
                       forceElevated: innerBoxIsScrolled,
+                      surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
                       bottom: tabBar()
                     ),
                   ),

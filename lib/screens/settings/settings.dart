@@ -189,7 +189,9 @@ class SettingsWidget extends StatelessWidget {
                         title: AppLocalizations.of(context)!.dnsSettings,
                         subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
                         thisItem: 3,
-                        screenToNavigate: const DnsSettings(),
+                        screenToNavigate: DnsSettings(
+                          splitView: twoColumns,
+                        ),
                       ),
                       settingsTile(
                         icon: Icons.security_rounded,

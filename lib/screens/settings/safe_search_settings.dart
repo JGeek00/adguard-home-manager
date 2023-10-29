@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -70,6 +71,8 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void saveConfig() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingSettings);
@@ -104,167 +107,10 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
       }
     }
 
-    Widget body() {
-      switch (statusProvider.loadStatus) {
-        case LoadStatus.loading:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 30),
-                Text(
-                  AppLocalizations.of(context)!.loadingSafeSearchSettings,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-              ],
-            ),
-          );
-          
-        case LoadStatus.loaded: 
-          return RefreshIndicator(
-            onRefresh: requestSafeSearchSettings,
-            child: ListView(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 16,
-                    left: 16,
-                    right: 16,
-                    bottom: 8
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(28),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(28),
-                      onTap: () => setState(() => generalEnabled = !generalEnabled),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(28)
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.enableSafeSearch,
-                              style: const TextStyle(
-                                fontSize: 18
-                              ),
-                            ),
-                            Switch(
-                              value: generalEnabled, 
-                              onChanged: (value) => setState(() => generalEnabled = value)
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                CustomCheckboxListTile(
-                  value: bingEnabled, 
-                  onChanged: (value) => setState(() => bingEnabled = value), 
-                  title: "Bing",
-                  padding: const EdgeInsets.only(
-                    top: 8, left: 40, right: 40, bottom: 8
-                  ),
-                  disabled: !generalEnabled,
-                ),
-                CustomCheckboxListTile(
-                  value: duckduckgoEnabled, 
-                  onChanged: (value) => setState(() => duckduckgoEnabled = value), 
-                  title: "DuckDuckGo",
-                  padding: const EdgeInsets.only(
-                    top: 8, left: 40, right: 40, bottom: 8
-                  ),
-                  disabled: !generalEnabled,
-                ),
-                CustomCheckboxListTile(
-                  value: googleEnabled, 
-                  onChanged: (value) => setState(() => googleEnabled = value), 
-                  title: "Google",
-                  padding: const EdgeInsets.only(
-                    top: 8, left: 40, right: 40, bottom: 8
-                  ),
-                  disabled: !generalEnabled,
-                ),
-                CustomCheckboxListTile(
-                  value: pixabayEnabled, 
-                  onChanged: (value) => setState(() => pixabayEnabled = value), 
-                  title: "Pixabay",
-                  padding: const EdgeInsets.only(
-                    top: 8, left: 40, right: 40, bottom: 8
-                  ),
-                  disabled: !generalEnabled,
-                ),
-                CustomCheckboxListTile(
-                  value: yandexEnabled, 
-                  onChanged: (value) => setState(() => yandexEnabled = value), 
-                  title: "Yandex",
-                  padding: const EdgeInsets.only(
-                    top: 8, left: 40, right: 40, bottom: 8
-                  ),
-                  disabled: !generalEnabled,
-                ),
-                CustomCheckboxListTile(
-                  value: youtubeEnabled, 
-                  onChanged: (value) => setState(() => youtubeEnabled = value), 
-                  title: "YouTube",
-                  padding: const EdgeInsets.only(
-                    top: 8, left: 40, right: 40, bottom: 8
-                  ),
-                  disabled: !generalEnabled,
-                ),
-              ],
-            ),
-          );
-
-        case LoadStatus.error:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 50,
-                ),
-                const SizedBox(height: 30),
-                Text(
-                  AppLocalizations.of(context)!.safeSearchSettingsNotLoaded,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-              ],
-            ),
-          );
-
-
-        default:
-          return const SizedBox();
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.safeSearchSettings),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         centerTitle: false,
         actions: [
           IconButton(
@@ -277,7 +123,165 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
           const SizedBox(width: 8)
         ],
       ),
-      body: body(),
+      body: Builder(
+        builder: (context) {
+          switch (statusProvider.loadStatus) {
+            case LoadStatus.loading:
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.loadingSafeSearchSettings,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  ],
+                ),
+              );
+              
+            case LoadStatus.loaded: 
+              return RefreshIndicator(
+                onRefresh: requestSafeSearchSettings,
+                child: ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 16,
+                        left: 16,
+                        right: 16,
+                        bottom: 8
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(28),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(28),
+                          onTap: () => setState(() => generalEnabled = !generalEnabled),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(28)
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.enableSafeSearch,
+                                  style: const TextStyle(
+                                    fontSize: 18
+                                  ),
+                                ),
+                                Switch(
+                                  value: generalEnabled, 
+                                  onChanged: (value) => setState(() => generalEnabled = value)
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    CustomCheckboxListTile(
+                      value: bingEnabled, 
+                      onChanged: (value) => setState(() => bingEnabled = value), 
+                      title: "Bing",
+                      padding: const EdgeInsets.only(
+                        top: 8, left: 40, right: 40, bottom: 8
+                      ),
+                      disabled: !generalEnabled,
+                    ),
+                    CustomCheckboxListTile(
+                      value: duckduckgoEnabled, 
+                      onChanged: (value) => setState(() => duckduckgoEnabled = value), 
+                      title: "DuckDuckGo",
+                      padding: const EdgeInsets.only(
+                        top: 8, left: 40, right: 40, bottom: 8
+                      ),
+                      disabled: !generalEnabled,
+                    ),
+                    CustomCheckboxListTile(
+                      value: googleEnabled, 
+                      onChanged: (value) => setState(() => googleEnabled = value), 
+                      title: "Google",
+                      padding: const EdgeInsets.only(
+                        top: 8, left: 40, right: 40, bottom: 8
+                      ),
+                      disabled: !generalEnabled,
+                    ),
+                    CustomCheckboxListTile(
+                      value: pixabayEnabled, 
+                      onChanged: (value) => setState(() => pixabayEnabled = value), 
+                      title: "Pixabay",
+                      padding: const EdgeInsets.only(
+                        top: 8, left: 40, right: 40, bottom: 8
+                      ),
+                      disabled: !generalEnabled,
+                    ),
+                    CustomCheckboxListTile(
+                      value: yandexEnabled, 
+                      onChanged: (value) => setState(() => yandexEnabled = value), 
+                      title: "Yandex",
+                      padding: const EdgeInsets.only(
+                        top: 8, left: 40, right: 40, bottom: 8
+                      ),
+                      disabled: !generalEnabled,
+                    ),
+                    CustomCheckboxListTile(
+                      value: youtubeEnabled, 
+                      onChanged: (value) => setState(() => youtubeEnabled = value), 
+                      title: "YouTube",
+                      padding: const EdgeInsets.only(
+                        top: 8, left: 40, right: 40, bottom: 8
+                      ),
+                      disabled: !generalEnabled,
+                    ),
+                  ],
+                ),
+              );
+
+            case LoadStatus.error:
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.safeSearchSettingsNotLoaded,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  ],
+                ),
+              );
+
+
+            default:
+              return const SizedBox();
+          }
+        },
+      )
     );
   }
 }

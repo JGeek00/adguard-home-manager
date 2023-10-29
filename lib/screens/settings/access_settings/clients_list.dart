@@ -361,6 +361,7 @@ class _ClientsListState extends State<ClientsList> {
           else {
             showModalBottomSheet(
               context: context, 
+              useRootNavigator: true,
               builder: (context) => AddClientModal(
                 type: widget.type,
                 onConfirm: confirmAddItem,

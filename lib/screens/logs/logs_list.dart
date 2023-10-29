@@ -176,6 +176,7 @@ class _LogsListWidgetState extends State<LogsListWidget> {
       else {
         showModalBottomSheet(
           context: context, 
+          useRootNavigator: true,
           builder: (context) => const LogsFiltersModal(
             dialog: false,
           ),
@@ -240,7 +241,8 @@ class _LogsListWidgetState extends State<LogsListWidget> {
                     }
                     else {
                       showModalBottomSheet(
-                        context: context, 
+                        context: context,
+                        useRootNavigator: true, 
                         builder: (context) => LogsConfigModal(
                           onConfirm: updateConfig,
                           onClear: clearQueries,
