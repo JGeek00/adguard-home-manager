@@ -191,9 +191,11 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             icon: Icons.reorder_rounded,
             title: AppLocalizations.of(context)!.topItemsOrder,
             subtitle: AppLocalizations.of(context)!.topItemsOrderDescription,
-            onTap: () => Navigator.push(context, MaterialPageRoute(
-              builder: (context) => const ReorderableTopItemsHome()
-            )),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ReorderableTopItemsHome()
+              )
+            )
           ),
           CustomListTile(
             icon: Icons.donut_large_rounded,

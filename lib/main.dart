@@ -16,11 +16,12 @@ import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/layout.dart';
 import 'package:adguard_home_manager/widgets/menu_bar.dart';
+
 import 'package:adguard_home_manager/functions/check_app_updates.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/widgets/update_modal.dart';
-import 'package:adguard_home_manager/routes/router.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
@@ -244,7 +245,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
           : Brightness.light,
       ),
       child: DynamicColorBuilder(
-        builder: (lightDynamic, darkDynamic) => MaterialApp.router(
+        builder: (lightDynamic, darkDynamic) => MaterialApp(
           title: 'AdGuard Home Manager',
           theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
             ? appConfigProvider.useDynamicColor == true
@@ -285,7 +286,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
               ),
             );
           },
-          routerConfig: goRouter,
+          home: Layout(),
         ),
       ),
     );

@@ -318,14 +318,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  go_router:
-    dependency: "direct main"
-    description:
-      name: go_router
-      sha256: e156bc1b2088eb5ece9351bccd48c3e1719a4858eacbd44e59162e98a68205d1
-      url: "https://pub.dev"
-    source: hosted
-    version: "12.0.1"
   html:
     dependency: "direct main"
     description:
@@ -398,14 +390,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  logging:
-    dependency: transitive
-    description:
-      name: logging
-      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   markdown:
     dependency: "direct main"
     description:

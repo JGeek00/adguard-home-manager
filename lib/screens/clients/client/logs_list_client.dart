@@ -212,12 +212,14 @@ class _LogsListClientState extends State<LogsListClient> {
                               )
                             }
                             else {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => LogDetailsScreen(
-                                  log: log, 
-                                  dialog: false
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => LogDetailsScreen(
+                                    log: log, 
+                                    dialog: false
+                                  )
                                 )
-                              ))
+                              )
                             }
                           },
                           twoColumns: widget.splitView,

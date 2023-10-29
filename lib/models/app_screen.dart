@@ -5,11 +5,13 @@ class AppScreen {
   final IconData icon;
   final PreferredSizeWidget? appBar;
   final Widget? fab;
+  final Widget child;
 
   const AppScreen({
     required this.name,
     required this.icon,
     this.appBar,
-    this.fab
+    this.fab,
+    required this.child,
   });
 }

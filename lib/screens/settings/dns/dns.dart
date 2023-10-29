@@ -53,9 +53,11 @@ class _DnsSettingsState extends State<DnsSettings> {
         SplitView.of(context).push(w);
       }
       else {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => w
-        ));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => w
+          )
+        );
       }
     }
 

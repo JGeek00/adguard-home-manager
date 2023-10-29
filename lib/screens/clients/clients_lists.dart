@@ -71,9 +71,11 @@ class _ClientsListsState extends State<ClientsLists> with TickerProviderStateMix
         SplitView.of(context).push(w);
       }
       else {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => w,
-        ));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => w,
+          )
+        );
       }
     }
     
@@ -89,9 +91,11 @@ class _ClientsListsState extends State<ClientsLists> with TickerProviderStateMix
         SplitView.of(context).push(w);
       }
       else {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => w,
-        ));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => w,
+          )
+        );
       }
     }
 

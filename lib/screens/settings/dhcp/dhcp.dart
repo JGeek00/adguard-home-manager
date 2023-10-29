@@ -705,12 +705,14 @@ class _DhcpScreenState extends State<DhcpScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => DhcpLeases(
-                                items: dhcpProvider.dhcp!.dhcpStatus.leases,
-                                staticLeases: false,
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DhcpLeases(
+                                  items: dhcpProvider.dhcp!.dhcpStatus.leases,
+                                  staticLeases: false,
+                                )
                               )
-                            ));
+                            );
                           },
                           child: Container(
                             padding: const EdgeInsets.all(16),
@@ -738,12 +740,14 @@ class _DhcpScreenState extends State<DhcpScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => DhcpLeases(
-                                items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
-                                staticLeases: true,
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DhcpLeases(
+                                  items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
+                                  staticLeases: true,
+                                )
                               )
-                            ));
+                            );
                           },
                           child: Container(
                             padding: const EdgeInsets.all(16),
@@ -781,12 +785,14 @@ class _DhcpScreenState extends State<DhcpScreen> {
                                 );
                               }
                               else {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => DhcpLeases(
-                                    items: dhcpProvider.dhcp!.dhcpStatus.leases,
-                                    staticLeases: false,
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => DhcpLeases(
+                                      items: dhcpProvider.dhcp!.dhcpStatus.leases,
+                                      staticLeases: false,
+                                    )
                                   )
-                                ));
+                                );
                               }
                             },
                             child: Row(
@@ -808,12 +814,14 @@ class _DhcpScreenState extends State<DhcpScreen> {
                                 );
                               }
                               else {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => DhcpLeases(
-                                    items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
-                                    staticLeases: true,
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => DhcpLeases(
+                                      items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
+                                      staticLeases: true,
+                                    )
                                   )
-                                ));
+                                );
                               }
                             }, 
                             child: Row(
