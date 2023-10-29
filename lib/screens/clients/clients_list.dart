@@ -10,21 +10,17 @@ import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientsList extends StatelessWidget {
-  final ScrollController scrollController;
   final List<AutoClient> data;
   final void Function(AutoClient) onClientSelected;
   final AutoClient? selectedClient;
   final bool splitView;
-  final bool sliver;
 
   const ClientsList({
     Key? key,
-    required this.scrollController,
     required this.data,
     required this.onClientSelected,
     this.selectedClient,
     required this.splitView,
-    required this.sliver
   }) : super(key: key);
 
   @override
@@ -35,7 +31,6 @@ class ClientsList extends StatelessWidget {
       listPadding: splitView == true 
         ? const EdgeInsets.only(top: 8)
         : null,
-      noSliver: !sliver,
       loadingGenerator: () =>  SizedBox(
         width: double.maxFinite,
         height: MediaQuery.of(context).size.height-171,

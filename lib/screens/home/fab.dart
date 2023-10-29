@@ -28,6 +28,7 @@ class HomeFab extends StatelessWidget {
         showModalBottomSheet(
           context: context, 
           isScrollControlled: true,
+          useRootNavigator: true,
           builder: (context) => const ManagementModal(
             dialog: false,
           ),

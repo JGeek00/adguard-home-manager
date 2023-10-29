@@ -11,6 +11,7 @@ import 'package:adguard_home_manager/screens/settings/dns/comment_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_radio_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -90,6 +91,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
       else {
         showModalBottomSheet(
           context: context, 
+          useRootNavigator: true,
           builder: (context) => CommentModal(
             onConfirm: (value) {
               setState(() {
@@ -123,6 +125,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
       else {
         showModalBottomSheet(
           context: context, 
+          useRootNavigator: true,
           builder: (context) => CommentModal(
             comment: item['comment'],
             onConfirm: (value) {
@@ -174,6 +177,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.upstreamDns),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         actions: [
           IconButton(
             onPressed: validValues == true

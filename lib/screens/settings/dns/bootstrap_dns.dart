@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -66,6 +67,8 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
     final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
@@ -102,6 +105,7 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.bootstrapDns),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         actions: [
           IconButton(
             onPressed: validValues == true

@@ -17,6 +17,7 @@ class LogTile extends StatelessWidget {
   final bool? isLogSelected;
   final void Function(Log) onLogTap;
   final bool? useAlwaysNormalTile;
+  final bool twoColumns;
 
   const LogTile({
     Key? key,
@@ -25,14 +26,13 @@ class LogTile extends StatelessWidget {
     required this.index,
     this.isLogSelected,
     required this.onLogTap,
-    this.useAlwaysNormalTile
+    this.useAlwaysNormalTile,
+    required this.twoColumns,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    final width = MediaQuery.of(context).size.width;
 
     Widget logStatusWidget({
       required IconData icon, 
@@ -83,7 +83,7 @@ class LogTile extends StatelessWidget {
       }
     }
 
-    if (width > 1100 && !(useAlwaysNormalTile == true)) {
+    if (twoColumns && !(useAlwaysNormalTile == true)) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: InkWell(

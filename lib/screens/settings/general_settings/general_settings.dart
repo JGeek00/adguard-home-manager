@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
 import 'package:adguard_home_manager/functions/check_app_updates.dart';
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/functions/app_update_download_link.dart';
@@ -33,6 +34,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     Future updateSettings({
       required bool newStatus,
@@ -113,6 +116,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.generalSettings),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
       ),
       body: ListView(
         children: [

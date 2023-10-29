@@ -134,6 +134,7 @@ class AddFiltersButton extends StatelessWidget {
       else {
         showModalBottomSheet(
           context: context, 
+          useRootNavigator: true,
           builder: (ctx) => AddListModal(
             type: type,
             onConfirm: confirmAddList,

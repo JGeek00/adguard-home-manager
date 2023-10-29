@@ -8,6 +8,7 @@ import 'package:adguard_home_manager/widgets/custom_radio_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -99,6 +100,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
   Widget build(BuildContext context) {
     final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final width = MediaQuery.of(context).size.width;
 
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -153,6 +155,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dnsServerSettings),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         actions: [
           IconButton(
             onPressed: isDataValid == true

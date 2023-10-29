@@ -13,6 +13,7 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/options_modal.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
@@ -37,6 +38,8 @@ class FiltersTripleColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
     
     Widget? generateSubtitle(String rule) {
       final allowRegex = RegExp(r'^@@.*$');
@@ -325,6 +328,7 @@ class FiltersTripleColumn extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         title: Text(AppLocalizations.of(context)!.filters),
         actions: [
           IconButton(

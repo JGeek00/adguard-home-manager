@@ -1,4 +1,3 @@
-import 'package:adguard_home_manager/functions/generate_color_translation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,6 +8,8 @@ import 'package:adguard_home_manager/screens/settings/customization/theme_mode_b
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
+import 'package:adguard_home_manager/functions/generate_color_translation.dart';
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/constants/colors.dart';
 
@@ -56,10 +57,13 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.customization),
         centerTitle: false,
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
       ),
       body: ListView(
         children: [
