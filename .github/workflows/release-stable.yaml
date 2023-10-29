@@ -75,6 +75,20 @@ jobs:
       - run: flutter clean
       - run: flutter pub get
       - run: flutter build macos --release
+      - name: Install the Apple certificate and sign the application
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PWD: ${{ secrets.APPLE_CERTIFICATE_PWD }}
+          APPLE_KEYCHAIN_PWD: ${{ secrets.APPLE_KEYCHAIN_PWD }}
+          APPLE_IDENTITY_ID: ${{ secrets.APPLE_IDENTITY_ID }}
+        run: |
+          echo $APPLE_CERTIFICATE | base64 —decode > certificate.p12
+          security create-keychain -p $APPLE_KEYCHAIN_PWD build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p $APPLE_KEYCHAIN_PWD build.keychain
+          security import certificate.p12 -k build.keychain -P $APPLE_CERTIFICATE_PWD -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $APPLE_KEYCHAIN_PWD build.keychain
+          /usr/bin/codesign --force -s "$APPLE_IDENTITY_ID" $MACOS_APP_RELEASE_PATH/AdGuard\ Home\ Manager.app -v
       - name: Create folder to build dmg
         run: mkdir $MACOS_APP_RELEASE_PATH/AdGuard\ Home\ Manager
       - name: Copy app into folder
