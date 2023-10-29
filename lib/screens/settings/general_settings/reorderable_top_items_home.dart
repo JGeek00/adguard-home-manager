@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -91,6 +92,8 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     Widget tile(HomeTopItems title) {
       switch (title) {
         case HomeTopItems.queriedDomains:
@@ -177,6 +180,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.topItemsOrder),
+          surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
           actions: [
             IconButton(
               onPressed: !listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList)

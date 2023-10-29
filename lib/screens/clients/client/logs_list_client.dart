@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
 import 'package:adguard_home_manager/screens/logs/log_details_screen.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -17,13 +18,15 @@ class LogsListClient extends StatefulWidget {
   final String? name;
   final ServersProvider serversProvider;
   final AppConfigProvider appConfigProvider;
+  final bool splitView;
 
   const LogsListClient({
     Key? key,
     required this.ip,
     this.name,
     required this.serversProvider,
-    required this.appConfigProvider
+    required this.appConfigProvider,
+    required this.splitView,
   }) : super(key: key);
 
   @override
@@ -131,126 +134,13 @@ class _LogsListClientState extends State<LogsListClient> {
       setState(() => previousIp = widget.ip);
     }
 
-    Widget status() {
-      switch (loadStatus) {
-        case 0:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 30),
-                Text(
-                  AppLocalizations.of(context)!.loadingLogs,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-              ],
-            ),
-          );
-
-        case 1:
-          if (logsData!.data.isNotEmpty) {
-            return RefreshIndicator(
-              onRefresh: fetchLogs,
-              child: ListView.builder(
-                controller: scrollController,
-                padding: const EdgeInsets.only(top: 0),
-                itemCount: isLoadingMore == true 
-                  ? logsData!.data.length+1
-                  : logsData!.data.length,
-                itemBuilder: (context, index) {
-                  if (isLoadingMore == true && index == logsData!.data.length) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                  else {
-                    return LogTile(
-                      log: logsData!.data[index],
-                      index: index,
-                      length: logsData!.data.length,
-                      useAlwaysNormalTile: true,
-                      onLogTap: (log) => {
-                        if (width > 700) {
-                          showDialog(
-                            context: context, 
-                            builder: (context) => LogDetailsScreen(
-                              log: log, 
-                              dialog: true
-                            )
-                          )
-                        }
-                        else {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => LogDetailsScreen(
-                              log: log, 
-                              dialog: false
-                            )
-                          ))
-                        }
-                      }
-                    );
-                  }
-                }
-              ),
-            );
-          }
-          else {
-            return Center(
-              child: Text(
-                AppLocalizations.of(context)!.noLogsDisplay,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            );
-          }
-        
-        case 2:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 50,
-                ),
-                const SizedBox(height: 30),
-                Text(
-                  AppLocalizations.of(context)!.logsNotLoaded,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-              ],
-            ),
-          );
-
-        default:
-          return const SizedBox();
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.name != null && widget.name != '' ? widget.name! : widget.ip),
         centerTitle: true,
+        surfaceTintColor: isDesktop(MediaQuery.of(context).size.width) 
+          ? Colors.transparent 
+          : null,
         actions: [
           if (!(Platform.isAndroid || Platform.isIOS)) ...[
             IconButton(
@@ -262,7 +152,126 @@ class _LogsListClientState extends State<LogsListClient> {
           ]
         ],
       ),
-      body: status(),
+      body: Builder(
+        builder: (context) {
+          switch (loadStatus) {
+            case 0:
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.loadingLogs,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  ],
+                ),
+              );
+
+            case 1:
+              if (logsData!.data.isNotEmpty) {
+                return RefreshIndicator(
+                  onRefresh: fetchLogs,
+                  child: ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.only(top: 0),
+                    itemCount: isLoadingMore == true 
+                      ? logsData!.data.length+1
+                      : logsData!.data.length,
+                    itemBuilder: (context, index) {
+                      if (isLoadingMore == true && index == logsData!.data.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      else {
+                        return LogTile(
+                          log: logsData!.data[index],
+                          index: index,
+                          length: logsData!.data.length,
+                          useAlwaysNormalTile: true,
+                          onLogTap: (log) => {
+                            if (width > 700) {
+                              showDialog(
+                                context: context, 
+                                builder: (context) => LogDetailsScreen(
+                                  log: log, 
+                                  dialog: true
+                                )
+                              )
+                            }
+                            else {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => LogDetailsScreen(
+                                    log: log, 
+                                    dialog: false
+                                  )
+                                )
+                              )
+                            }
+                          },
+                          twoColumns: widget.splitView,
+                        );
+                      }
+                    }
+                  ),
+                );
+              }
+              else {
+                return Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.noLogsDisplay,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                );
+              }
+            
+            case 2:
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.logsNotLoaded,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  ],
+                ),
+              );
+
+            default:
+              return const SizedBox();
+          }
+        },
+      )
     );
   }
 }

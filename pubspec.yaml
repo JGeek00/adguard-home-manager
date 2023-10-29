@@ -74,6 +74,8 @@ dependencies:
   flutter_dotenv: ^5.0.2
   flutter_reorderable_list: ^1.3.1
   pie_chart: ^5.3.2
+  flutter_hooks: ^0.20.3
+  segmented_button_slide: ^1.0.4
 
 dev_dependencies:
   flutter_test:

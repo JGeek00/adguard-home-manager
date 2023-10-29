@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -15,8 +15,12 @@ import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/base.dart';
+import 'package:adguard_home_manager/widgets/layout.dart';
+import 'package:adguard_home_manager/widgets/menu_bar.dart';
 
+import 'package:adguard_home_manager/functions/check_app_updates.dart';
+import 'package:adguard_home_manager/functions/open_url.dart';
+import 'package:adguard_home_manager/widgets/update_modal.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
@@ -176,7 +180,7 @@ class Main extends StatefulWidget {
   State<Main> createState() => _MainState();
 }
 
-class _MainState extends State<Main> {
+class _MainState extends State<Main> with WidgetsBindingObserver {
   List<DisplayMode> modes = <DisplayMode>[];
   DisplayMode? active;
   DisplayMode? preferred;
@@ -196,13 +200,35 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     displayMode();
+
+    WidgetsBinding.instance.addObserver(this);
+
     super.initState();
+      
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+      final result = await checkAppUpdates(
+        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber,
+        installationSource: appConfigProvider.installationSource,
+        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable,
+        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
+      );
+      if (result != null && appConfigProvider.doNotRememberVersion != result.tagName && mounted) {
+        await showDialog(
+          context: context, 
+          builder: (context) => UpdateModal(
+            gitHubRelease: result,
+            onDownload: (link, version) => openUrl(link),
+          ),
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
+    
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) => MaterialApp(
         title: 'AdGuard Home Manager',
@@ -234,16 +260,18 @@ class _MainState extends State<Main> {
         ],
         scaffoldMessengerKey: scaffoldMessengerKey,
         builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
-                ? 0.9
-                : 1.0
+          return CustomMenuBar(
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
+                  ? 0.9
+                  : 1.0
+              ),
+              child: child!,
             ),
-            child: child!,
           );
         },
-        home: const Base(),
+        home: const Layout(),
       ),
     );
   }

@@ -2,6 +2,7 @@
 
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -371,21 +372,25 @@ class _AddServerModalState extends State<AddServerModal> {
           label: AppLocalizations.of(context)!.connection,
           padding: const EdgeInsets.all(24),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: SegmentedButton<ConnectionType>(
-            segments: const [
-              ButtonSegment(
-                value: ConnectionType.http,
-                label: Text("HTTP")
-              ),
-              ButtonSegment(
-                value: ConnectionType.https,
-                label: Text("HTTPS")
-              ),
-            ], 
-            selected: <ConnectionType>{connectionType},
-            onSelectionChanged: (value) => setState(() => connectionType = value.first),
+        SegmentedButtonSlide(
+          entries: const [
+            SegmentedButtonSlideEntry(label: "HTTP"),
+            SegmentedButtonSlideEntry(label: "HTTPS"),
+          ], 
+          selectedEntry: connectionType.index, 
+          onChange: (v) => setState(() => connectionType = ConnectionType.values[v]), 
+          colors: SegmentedButtonSlideColors(
+            barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
+            backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
+            foregroundSelectedColor: Theme.of(context).colorScheme.onPrimary, 
+            foregroundUnselectedColor: Theme.of(context).colorScheme.onSurface, 
+            hoverColor: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          textOverflow: TextOverflow.ellipsis,
+          fontSize: 14,
+          height: 40,
+          margin: const EdgeInsets.symmetric(
+            horizontal: 24,
           ),
         ),
         const SizedBox(height: 30),

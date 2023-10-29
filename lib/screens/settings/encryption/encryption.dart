@@ -14,6 +14,7 @@ import 'package:adguard_home_manager/screens/settings/encryption/encryption_func
 import 'package:adguard_home_manager/screens/settings/encryption/error_message.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/base64.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -272,379 +273,10 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       }
     }
 
-    Widget generateBody() {
-      switch (loadStatus) {
-        case 0:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 30),
-                Text(
-                  AppLocalizations.of(context)!.loadingEncryptionSettings,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-              ],
-            )
-          );
-
-        case 1:
-          return ListView(
-            children: [
-              EncryptionMasterSwitch(
-                value: enabled, 
-                onChange: (value) {
-                  setState(() => enabled = value);
-                  onEditValidate();
-                }
-              ),
-              SectionLabel(
-                label: AppLocalizations.of(context)!.serverConfiguration,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-              ),
-              EncryptionTextField(
-                enabled: enabled, 
-                controller: domainNameController, 
-                icon: Icons.link_rounded, 
-                onChanged: (value) {
-                  setState(() => domainError = validateDomain(context, value));
-                  onEditValidate();
-                },
-                errorText: domainError,
-                label: AppLocalizations.of(context)!.domainName,
-                helperText: AppLocalizations.of(context)!.domainNameDescription,
-              ),
-              const SizedBox(height: 10),
-              CustomSwitchListTile(
-                value: redirectHttps, 
-                onChanged: (value) {
-                  setState(() => redirectHttps = value);
-                  onEditValidate();
-                }, 
-                title: AppLocalizations.of(context)!.redirectHttps,
-                disabled: !enabled,
-              ),
-              const SizedBox(height: 10),
-              Wrap(
-                children: [
-                  FractionallySizedBox(
-                    widthFactor: width > 900 ? 0.33 : 1,
-                    child: EncryptionTextField(
-                      enabled: enabled, 
-                      controller: httpsPortController, 
-                      icon: Icons.numbers_rounded, 
-                      onChanged: (value) {
-                        setState(() => httpsPortError = validatePort(context, value));
-                        onEditValidate();
-                      },
-                      errorText: httpsPortError,
-                      label: AppLocalizations.of(context)!.httpsPort,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  Padding(
-                    padding: width <= 900
-                      ? const EdgeInsets.symmetric(vertical: 24)
-                      : const EdgeInsets.all(0),
-                    child: FractionallySizedBox(
-                      widthFactor: width > 900 ? 0.33 : 1,
-                      child: EncryptionTextField(
-                        enabled: enabled, 
-                        controller: tlsPortController, 
-                        icon: Icons.numbers_rounded, 
-                        onChanged: (value) {
-                          setState(() => tlsPortError = validatePort(context, value));
-                          onEditValidate();
-                        },
-                        errorText: tlsPortError,
-                        label: AppLocalizations.of(context)!.tlsPort,
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-                  ),
-                  FractionallySizedBox(
-                    widthFactor: width > 900 ? 0.33 : 1,
-                    child: EncryptionTextField(
-                      enabled: enabled, 
-                      controller: dnsOverQuicPortController, 
-                      icon: Icons.numbers_rounded, 
-                      onChanged: (value) {
-                        setState(() => dnsOverQuicPortError = validatePort(context, value));
-                        onEditValidate();
-                      },
-                      errorText: dnsOverQuicPortError,
-                      label: AppLocalizations.of(context)!.dnsOverQuicPort,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-              SectionLabel(
-                label: AppLocalizations.of(context)!.certificates,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-              ),
-              Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.info_rounded,
-                        color: Theme.of(context).listTileTheme.iconColor,
-                      ),
-                      const SizedBox(width: 20),
-                      Flexible(
-                        child: Text(
-                          AppLocalizations.of(context)!.certificatesDescription,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        )
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              RadioListTile(
-                value: 0, 
-                groupValue: certificateOption,
-                onChanged: enabled == true
-                  ? (value) {
-                      setState(() => certificateOption = int.parse(value.toString()));
-                      onEditValidate();
-                    }
-                  : null,
-                title: Text(
-                  AppLocalizations.of(context)!.certificateFilePath,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              RadioListTile(
-                value: 1, 
-                groupValue: certificateOption,
-                onChanged: enabled == true
-                  ? (value) {
-                      setState(() => certificateOption = int.parse(value.toString()));
-                      onEditValidate();
-                    }
-                  : null,
-                title: Text(
-                  AppLocalizations.of(context)!.pasteCertificateContent,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              if (certificateOption == 0) EncryptionTextField(
-                enabled: enabled, 
-                controller: certificatePathController, 
-                icon: Icons.description_rounded, 
-                onChanged: (value) {
-                  setState(() => certificatePathError = validatePath(context, value));
-                  onEditValidate();
-                },
-                label: AppLocalizations.of(context)!.certificatePath,
-                errorText: certificatePathError,
-              ),
-              if (certificateOption == 1) EncryptionTextField(
-                enabled: enabled, 
-                controller: certificateContentController, 
-                icon: Icons.description_rounded, 
-                onChanged: (value) {
-                  setState(() => certificateContentError = validateCertificate(context, value));
-                  onEditValidate();
-                }, 
-                label: AppLocalizations.of(context)!.certificateContent,
-                errorText: certificateContentError,
-                multiline: true,
-                keyboardType: TextInputType.multiline,
-              ),
-              if (certKeyValid != null && (certificateContentController.text != '' || certificatePathController.text != '')) ...[
-                const SizedBox(height: 20),
-                if (certKeyValid!['valid_chain'] != null) ...[
-                  Status(
-                    valid: certKeyValid!['valid_chain'], 
-                    label: certKeyValid!['valid_chain'] == true
-                      ? AppLocalizations.of(context)!.validCertificateChain
-                      : AppLocalizations.of(context)!.invalidCertificateChain,
-                  ),
-                  const SizedBox(height: 10),
-                ],
-                if (certKeyValid!['subject'] != null) ...[
-                  Status(
-                    valid: true, 
-                    label: "${AppLocalizations.of(context)!.subject}: ${certKeyValid!['subject']}"
-                  ),
-                  const SizedBox(height: 10),
-                ],
-                if (certKeyValid!['issuer'] != null) ...[
-                  Status(
-                  valid: true, 
-                  label: "${AppLocalizations.of(context)!.issuer}: ${certKeyValid!['issuer']}"
-                ),
-                  const SizedBox(height: 10),
-                ],
-                if (certKeyValid!['not_after'] != null) ...[
-                  Status(
-                    valid: true, 
-                    label: "${AppLocalizations.of(context)!.expirationDate}: ${certKeyValid!['not_after']}"
-                  ),
-                  const SizedBox(height: 10),
-                ],
-                if (certKeyValid!['dns_names'] != null) ...[
-                  Status(
-                    valid: true, 
-                    label: "${AppLocalizations.of(context)!.hostNames}: ${certKeyValid!['dns_names'].join(', ')}"
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ],
-              SectionLabel(
-                label: AppLocalizations.of(context)!.privateKey,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-              ),
-              RadioListTile(
-                value: 0, 
-                groupValue: privateKeyOption,
-                onChanged: enabled == true
-                  ? (value) {
-                      setState(() => privateKeyOption = int.parse(value.toString()));
-                      onEditValidate();
-                    }
-                  : null,
-                title: Text(
-                  AppLocalizations.of(context)!.privateKeyFile,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              RadioListTile(
-                value: 1, 
-                groupValue: privateKeyOption,
-                onChanged: enabled == true
-                  ? (value) {
-                      setState(() => privateKeyOption = int.parse(value.toString()));
-                      onEditValidate();
-                    }
-                  : null,
-                title: Text(
-                  AppLocalizations.of(context)!.pastePrivateKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              if (privateKeyOption == 0) const SizedBox(height: 10),
-              if (privateKeyOption == 1) ...[
-                CustomSwitchListTile(
-                  value: usePreviouslySavedKey, 
-                  onChanged: (value) => setState(() => usePreviouslySavedKey = value), 
-                  title: AppLocalizations.of(context)!.usePreviousKey,
-                ),
-                const SizedBox(height: 10)
-              ],
-              if (privateKeyOption == 0) EncryptionTextField(
-                enabled: enabled, 
-                controller: privateKeyPathController, 
-                icon: Icons.description_rounded, 
-                onChanged: (value) {
-                  setState(() => privateKeyPathError = validatePath(context, value));
-                  onEditValidate();
-                },
-                label: AppLocalizations.of(context)!.privateKeyPath,
-                errorText: privateKeyPathError,
-              ),
-              if (privateKeyOption == 1) EncryptionTextField(
-                enabled: enabled == true
-                  ? !usePreviouslySavedKey
-                  : false,
-                controller: pastePrivateKeyController, 
-                icon: Icons.description_rounded, 
-                onChanged: (value) {
-                  setState(() => pastePrivateKeyError = validatePrivateKey(context, value));
-                  onEditValidate();
-                },
-                label: AppLocalizations.of(context)!.pastePrivateKey,
-                errorText: pastePrivateKeyError,
-                keyboardType: TextInputType.multiline,
-                multiline: true,
-              ),
-              const SizedBox(height: 20),
-              if (certKeyValid != null && (privateKeyPathController.text != '' || pastePrivateKeyController.text != '' || usePreviouslySavedKey == true)) ...[
-                if (certKeyValid!['valid_key'] != null) ...[
-                  Status(
-                    valid: certKeyValid!['valid_key'], 
-                    label: certKeyValid!['valid_key'] == true
-                      ? AppLocalizations.of(context)!.validPrivateKey
-                      : AppLocalizations.of(context)!.invalidPrivateKey,
-                  ),
-                  const SizedBox(height: 10)
-                ],
-                if (certKeyValid!['valid_pair'] != null && certKeyValid!['valid_pair'] == false) ...[
-                  Status(
-                    valid: false, 
-                    label: AppLocalizations.of(context)!.keysNotMatch,
-                  ),
-                  const SizedBox(height: 10)
-                ],
-                if (certKeyValid!['key_type'] != null) ...[
-                  Status(
-                    valid: true, 
-                    label: "${AppLocalizations.of(context)!.keyType}: ${certKeyValid!['key_type']}"
-                  ),
-                  const SizedBox(height: 10),
-                ],
-                const SizedBox(height: 10)
-              ]
-            ],
-          );
-
-        case 2:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 50,
-                ),
-                const SizedBox(height: 30),
-                Text(
-                  AppLocalizations.of(context)!.encryptionSettingsNotLoaded,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-              ],
-            ),
-          );
-
-        default:
-          return const SizedBox();
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.encryptionSettings),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         centerTitle: false,
         actions: [
           IconButton(
@@ -668,7 +300,377 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
           const SizedBox(width: 10),
         ],
       ),
-      body: generateBody(),
+      body: Builder(
+        builder: (context) {
+          switch (loadStatus) {
+            case 0:
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.loadingEncryptionSettings,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  ],
+                )
+              );
+
+            case 1:
+              return ListView(
+                children: [
+                  EncryptionMasterSwitch(
+                    value: enabled, 
+                    onChange: (value) {
+                      setState(() => enabled = value);
+                      onEditValidate();
+                    }
+                  ),
+                  SectionLabel(
+                    label: AppLocalizations.of(context)!.serverConfiguration,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  ),
+                  EncryptionTextField(
+                    enabled: enabled, 
+                    controller: domainNameController, 
+                    icon: Icons.link_rounded, 
+                    onChanged: (value) {
+                      setState(() => domainError = validateDomain(context, value));
+                      onEditValidate();
+                    },
+                    errorText: domainError,
+                    label: AppLocalizations.of(context)!.domainName,
+                    helperText: AppLocalizations.of(context)!.domainNameDescription,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomSwitchListTile(
+                    value: redirectHttps, 
+                    onChanged: (value) {
+                      setState(() => redirectHttps = value);
+                      onEditValidate();
+                    }, 
+                    title: AppLocalizations.of(context)!.redirectHttps,
+                    disabled: !enabled,
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    children: [
+                      FractionallySizedBox(
+                        widthFactor: width > 900 ? 0.33 : 1,
+                        child: EncryptionTextField(
+                          enabled: enabled, 
+                          controller: httpsPortController, 
+                          icon: Icons.numbers_rounded, 
+                          onChanged: (value) {
+                            setState(() => httpsPortError = validatePort(context, value));
+                            onEditValidate();
+                          },
+                          errorText: httpsPortError,
+                          label: AppLocalizations.of(context)!.httpsPort,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      Padding(
+                        padding: width <= 900
+                          ? const EdgeInsets.symmetric(vertical: 24)
+                          : const EdgeInsets.all(0),
+                        child: FractionallySizedBox(
+                          widthFactor: width > 900 ? 0.33 : 1,
+                          child: EncryptionTextField(
+                            enabled: enabled, 
+                            controller: tlsPortController, 
+                            icon: Icons.numbers_rounded, 
+                            onChanged: (value) {
+                              setState(() => tlsPortError = validatePort(context, value));
+                              onEditValidate();
+                            },
+                            errorText: tlsPortError,
+                            label: AppLocalizations.of(context)!.tlsPort,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: width > 900 ? 0.33 : 1,
+                        child: EncryptionTextField(
+                          enabled: enabled, 
+                          controller: dnsOverQuicPortController, 
+                          icon: Icons.numbers_rounded, 
+                          onChanged: (value) {
+                            setState(() => dnsOverQuicPortError = validatePort(context, value));
+                            onEditValidate();
+                          },
+                          errorText: dnsOverQuicPortError,
+                          label: AppLocalizations.of(context)!.dnsOverQuicPort,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SectionLabel(
+                    label: AppLocalizations.of(context)!.certificates,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  ),
+                  Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_rounded,
+                            color: Theme.of(context).listTileTheme.iconColor,
+                          ),
+                          const SizedBox(width: 20),
+                          Flexible(
+                            child: Text(
+                              AppLocalizations.of(context)!.certificatesDescription,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                            )
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  RadioListTile(
+                    value: 0, 
+                    groupValue: certificateOption,
+                    onChanged: enabled == true
+                      ? (value) {
+                          setState(() => certificateOption = int.parse(value.toString()));
+                          onEditValidate();
+                        }
+                      : null,
+                    title: Text(
+                      AppLocalizations.of(context)!.certificateFilePath,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal
+                      ),
+                    ),
+                  ),
+                  RadioListTile(
+                    value: 1, 
+                    groupValue: certificateOption,
+                    onChanged: enabled == true
+                      ? (value) {
+                          setState(() => certificateOption = int.parse(value.toString()));
+                          onEditValidate();
+                        }
+                      : null,
+                    title: Text(
+                      AppLocalizations.of(context)!.pasteCertificateContent,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  if (certificateOption == 0) EncryptionTextField(
+                    enabled: enabled, 
+                    controller: certificatePathController, 
+                    icon: Icons.description_rounded, 
+                    onChanged: (value) {
+                      setState(() => certificatePathError = validatePath(context, value));
+                      onEditValidate();
+                    },
+                    label: AppLocalizations.of(context)!.certificatePath,
+                    errorText: certificatePathError,
+                  ),
+                  if (certificateOption == 1) EncryptionTextField(
+                    enabled: enabled, 
+                    controller: certificateContentController, 
+                    icon: Icons.description_rounded, 
+                    onChanged: (value) {
+                      setState(() => certificateContentError = validateCertificate(context, value));
+                      onEditValidate();
+                    }, 
+                    label: AppLocalizations.of(context)!.certificateContent,
+                    errorText: certificateContentError,
+                    multiline: true,
+                    keyboardType: TextInputType.multiline,
+                  ),
+                  if (certKeyValid != null && (certificateContentController.text != '' || certificatePathController.text != '')) ...[
+                    const SizedBox(height: 20),
+                    if (certKeyValid!['valid_chain'] != null) ...[
+                      Status(
+                        valid: certKeyValid!['valid_chain'], 
+                        label: certKeyValid!['valid_chain'] == true
+                          ? AppLocalizations.of(context)!.validCertificateChain
+                          : AppLocalizations.of(context)!.invalidCertificateChain,
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                    if (certKeyValid!['subject'] != null) ...[
+                      Status(
+                        valid: true, 
+                        label: "${AppLocalizations.of(context)!.subject}: ${certKeyValid!['subject']}"
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                    if (certKeyValid!['issuer'] != null) ...[
+                      Status(
+                      valid: true, 
+                      label: "${AppLocalizations.of(context)!.issuer}: ${certKeyValid!['issuer']}"
+                    ),
+                      const SizedBox(height: 10),
+                    ],
+                    if (certKeyValid!['not_after'] != null) ...[
+                      Status(
+                        valid: true, 
+                        label: "${AppLocalizations.of(context)!.expirationDate}: ${certKeyValid!['not_after']}"
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                    if (certKeyValid!['dns_names'] != null) ...[
+                      Status(
+                        valid: true, 
+                        label: "${AppLocalizations.of(context)!.hostNames}: ${certKeyValid!['dns_names'].join(', ')}"
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ],
+                  SectionLabel(
+                    label: AppLocalizations.of(context)!.privateKey,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  ),
+                  RadioListTile(
+                    value: 0, 
+                    groupValue: privateKeyOption,
+                    onChanged: enabled == true
+                      ? (value) {
+                          setState(() => privateKeyOption = int.parse(value.toString()));
+                          onEditValidate();
+                        }
+                      : null,
+                    title: Text(
+                      AppLocalizations.of(context)!.privateKeyFile,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal
+                      ),
+                    ),
+                  ),
+                  RadioListTile(
+                    value: 1, 
+                    groupValue: privateKeyOption,
+                    onChanged: enabled == true
+                      ? (value) {
+                          setState(() => privateKeyOption = int.parse(value.toString()));
+                          onEditValidate();
+                        }
+                      : null,
+                    title: Text(
+                      AppLocalizations.of(context)!.pastePrivateKey,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal
+                      ),
+                    ),
+                  ),
+                  if (privateKeyOption == 0) const SizedBox(height: 10),
+                  if (privateKeyOption == 1) ...[
+                    CustomSwitchListTile(
+                      value: usePreviouslySavedKey, 
+                      onChanged: (value) => setState(() => usePreviouslySavedKey = value), 
+                      title: AppLocalizations.of(context)!.usePreviousKey,
+                    ),
+                    const SizedBox(height: 10)
+                  ],
+                  if (privateKeyOption == 0) EncryptionTextField(
+                    enabled: enabled, 
+                    controller: privateKeyPathController, 
+                    icon: Icons.description_rounded, 
+                    onChanged: (value) {
+                      setState(() => privateKeyPathError = validatePath(context, value));
+                      onEditValidate();
+                    },
+                    label: AppLocalizations.of(context)!.privateKeyPath,
+                    errorText: privateKeyPathError,
+                  ),
+                  if (privateKeyOption == 1) EncryptionTextField(
+                    enabled: enabled == true
+                      ? !usePreviouslySavedKey
+                      : false,
+                    controller: pastePrivateKeyController, 
+                    icon: Icons.description_rounded, 
+                    onChanged: (value) {
+                      setState(() => pastePrivateKeyError = validatePrivateKey(context, value));
+                      onEditValidate();
+                    },
+                    label: AppLocalizations.of(context)!.pastePrivateKey,
+                    errorText: pastePrivateKeyError,
+                    keyboardType: TextInputType.multiline,
+                    multiline: true,
+                  ),
+                  const SizedBox(height: 20),
+                  if (certKeyValid != null && (privateKeyPathController.text != '' || pastePrivateKeyController.text != '' || usePreviouslySavedKey == true)) ...[
+                    if (certKeyValid!['valid_key'] != null) ...[
+                      Status(
+                        valid: certKeyValid!['valid_key'], 
+                        label: certKeyValid!['valid_key'] == true
+                          ? AppLocalizations.of(context)!.validPrivateKey
+                          : AppLocalizations.of(context)!.invalidPrivateKey,
+                      ),
+                      const SizedBox(height: 10)
+                    ],
+                    if (certKeyValid!['valid_pair'] != null && certKeyValid!['valid_pair'] == false) ...[
+                      Status(
+                        valid: false, 
+                        label: AppLocalizations.of(context)!.keysNotMatch,
+                      ),
+                      const SizedBox(height: 10)
+                    ],
+                    if (certKeyValid!['key_type'] != null) ...[
+                      Status(
+                        valid: true, 
+                        label: "${AppLocalizations.of(context)!.keyType}: ${certKeyValid!['key_type']}"
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                    const SizedBox(height: 10)
+                  ]
+                ],
+              );
+
+            case 2:
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.encryptionSettingsNotLoaded,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  ],
+                ),
+              );
+
+            default:
+              return const SizedBox();
+          }
+        },
+      )
     );
   }
 }

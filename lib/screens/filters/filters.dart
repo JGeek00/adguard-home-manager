@@ -87,6 +87,7 @@ class _FiltersState extends State<Filters> {
         else {
           showModalBottomSheet(
             context: context, 
+            useRootNavigator: true,
             builder: (context) => const CheckHostModal(
               dialog: false,
             ),
@@ -269,6 +270,7 @@ class _FiltersState extends State<Filters> {
               else {
                 showModalBottomSheet(
                   context: context, 
+                  useRootNavigator: true,
                   builder: (context) => UpdateIntervalListsModal(
                     interval: filteringProvider.filtering!.interval,
                     onChange: setUpdateFrequency,
@@ -324,20 +326,24 @@ class _FiltersState extends State<Filters> {
       }
     }
 
-    if (width > 1200) {
-      return FiltersTripleColumn(
-        onRemoveCustomRule: openRemoveCustomRuleModal,
-        onOpenDetailsModal: openListDetails,
-        actions: actions(),
-      );
-    }
-    else {
-      return FiltersTabsView(
-        appConfigProvider: appConfigProvider, 
-        actions: actions(),
-        onRemoveCustomRule: openRemoveCustomRuleModal,
-        onOpenDetailsModal: openListDetails,
-      );
-    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 900) {
+          return FiltersTripleColumn(
+            onRemoveCustomRule: openRemoveCustomRuleModal,
+            onOpenDetailsModal: openListDetails,
+            actions: actions(),
+          );
+        }
+        else {
+          return FiltersTabsView(
+            appConfigProvider: appConfigProvider, 
+            actions: actions(),
+            onRemoveCustomRule: openRemoveCustomRuleModal,
+            onOpenDetailsModal: openListDetails,
+          );
+        }
+      },
+    );
   }
 }

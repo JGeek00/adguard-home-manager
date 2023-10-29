@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animations/animations.dart';
@@ -108,6 +109,7 @@ class DhcpLeases extends StatelessWidget {
       else {
         showModalBottomSheet(
           context: context, 
+          useRootNavigator: true,
           builder: (context) => AddStaticLeaseModal(
             onConfirm: createLease,
             dialog: false,
@@ -120,6 +122,7 @@ class DhcpLeases extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         title: Text(
           staticLeases == true
             ? AppLocalizations.of(context)!.dhcpStatic

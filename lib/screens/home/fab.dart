@@ -1,7 +1,7 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-import 'package:adguard_home_manager/screens/home/management_modal.dart';
+import 'package:adguard_home_manager/screens/home/management_modal/management_modal.dart';
 
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -28,6 +28,7 @@ class HomeFab extends StatelessWidget {
         showModalBottomSheet(
           context: context, 
           isScrollControlled: true,
+          useRootNavigator: true,
           builder: (context) => const ManagementModal(
             dialog: false,
           ),

@@ -104,51 +104,6 @@ class CombinedHomeChart extends StatelessWidget {
             ) ,
       );
 
-      Widget legend({
-        required String label,
-        required Color color,
-        required String primaryValue,
-        String? secondaryValue
-      }) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Flexible(
-              child: Text(
-                label, 
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: color
-                ),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  primaryValue,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500
-                  ),
-                ),
-                if (secondaryValue != null) Text(
-                  secondaryValue,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: color
-                  ),
-                )
-              ],
-            )
-          ],
-        );
-      }
-
       final hoursInterval = statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1;
 
       List<DateTime> dateTimes = [];
@@ -193,28 +148,28 @@ class CombinedHomeChart extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        legend(
+                        _Legend(
                           label: data.totalQueries.label, 
                           color: data.totalQueries.color, 
                           primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
                           secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
                         ),
                         const SizedBox(height: 16),
-                        if (data.blockedFilters != null) legend(
+                        if (data.blockedFilters != null) _Legend(
                           label: data.blockedFilters!.label, 
                           color: data.blockedFilters!.color, 
                           primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
                           secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                         ),
                         const SizedBox(height: 16),
-                        if (data.replacedSafeBrowsing != null) legend(
+                        if (data.replacedSafeBrowsing != null) _Legend(
                           label: data.replacedSafeBrowsing!.label, 
                           color: data.replacedSafeBrowsing!.color, 
                           primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
                           secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                         ),
                         const SizedBox(height: 16),
-                        if (data.replacedParental != null) legend(
+                        if (data.replacedParental != null) _Legend(
                           label: data.replacedParental!.label, 
                           color: data.replacedParental!.color, 
                           primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
@@ -259,28 +214,28 @@ class CombinedHomeChart extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                legend(
+                _Legend(
                   label: data.totalQueries.label, 
                   color: data.totalQueries.color, 
                   primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
                   secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
                 ),
                 const SizedBox(height: 16),
-                if (data.blockedFilters != null) legend(
+                if (data.blockedFilters != null) _Legend(
                   label: data.blockedFilters!.label, 
                   color: data.blockedFilters!.color, 
                   primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
                   secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 ),
                 const SizedBox(height: 16),
-                if (data.replacedSafeBrowsing != null) legend(
+                if (data.replacedSafeBrowsing != null) _Legend(
                   label: data.replacedSafeBrowsing!.label, 
                   color: data.replacedSafeBrowsing!.color, 
                   primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
                   secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                 ),
                 const SizedBox(height: 16),
-                if (data.replacedParental != null) legend(
+                if (data.replacedParental != null) _Legend(
                   label: data.replacedParental!.label, 
                   color: data.replacedParental!.color, 
                   primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
@@ -301,5 +256,61 @@ class CombinedHomeChart extends StatelessWidget {
     else {
       return const SizedBox();
     }
+  }
+}
+
+class _Legend extends StatelessWidget {
+  final String label;
+  final Color color;
+  final String primaryValue;
+  final String? secondaryValue;
+
+  const _Legend({
+    Key? key,
+    required this.label,
+    required this.color,
+    required this.primaryValue,
+    this.secondaryValue
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return  Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Flexible(
+          child: Text(
+            label, 
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: color
+            ),
+          ),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              primaryValue,
+              style: TextStyle(
+                color: color,
+                fontSize: 16,
+                fontWeight: FontWeight.w500
+              ),
+            ),
+            if (secondaryValue != null) Text(
+              secondaryValue!,
+              style: TextStyle(
+                fontSize: 10,
+                color: color
+              ),
+            )
+          ],
+        )
+      ],
+    );
   }
 }

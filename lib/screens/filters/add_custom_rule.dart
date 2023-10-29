@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/functions/open_url.dart';
@@ -124,25 +125,26 @@ class _AddCustomRuleState extends State<AddCustomRule> {
           ),
         ),
         Container(height: 30),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: SegmentedButton(
-            segments: [
-              ButtonSegment(
-                value: BlockingPresets.block,
-                label: Text(AppLocalizations.of(context)!.block)
-              ),
-              ButtonSegment(
-                value: BlockingPresets.unblock,
-                label: Text(AppLocalizations.of(context)!.unblock)
-              ),
-              ButtonSegment(
-                value: BlockingPresets.custom,
-                label: Text(AppLocalizations.of(context)!.custom)
-              ),
-            ], 
-            selected: <BlockingPresets>{preset},
-            onSelectionChanged: (value) => setState(() => preset = value.first),
+        SegmentedButtonSlide(
+          entries: [
+            SegmentedButtonSlideEntry(label: AppLocalizations.of(context)!.block),
+            SegmentedButtonSlideEntry(label: AppLocalizations.of(context)!.unblock),
+            SegmentedButtonSlideEntry(label: AppLocalizations.of(context)!.custom),
+          ], 
+          selectedEntry: preset.index,
+          onChange: (v) => setState(() => preset = BlockingPresets.values[v]), 
+          colors: SegmentedButtonSlideColors(
+            barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
+            backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
+            foregroundSelectedColor: Theme.of(context).colorScheme.onPrimary, 
+            foregroundUnselectedColor: Theme.of(context).colorScheme.onSurface, 
+            hoverColor: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          textOverflow: TextOverflow.ellipsis,
+          fontSize: 14,
+          height: 40,
+          margin: const EdgeInsets.symmetric(
+            horizontal: 24,
           ),
         ),
         Container(height: 20),

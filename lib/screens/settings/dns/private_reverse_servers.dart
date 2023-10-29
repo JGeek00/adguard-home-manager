@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -90,6 +91,8 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
     final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void saveData() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
@@ -134,6 +137,7 @@ class _PrivateReverseDnsServersScreenState extends State<PrivateReverseDnsServer
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.privateReverseDnsServers),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         actions: [
           IconButton(
             onPressed: validValues == true

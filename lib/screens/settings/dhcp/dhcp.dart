@@ -12,6 +12,7 @@ import 'package:adguard_home_manager/widgets/confirm_action_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_leases.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/select_interface_modal.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/dhcp_provider.dart';
@@ -337,6 +338,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
         else {
           showModalBottomSheet(
             context: context, 
+            useRootNavigator: true,
             builder: (context) => SelectInterfaceModal(
               interfaces: dhcpProvider.dhcp!.networkInterfaces, 
               onSelect: (i) => setState(() {
@@ -353,498 +355,11 @@ class _DhcpScreenState extends State<DhcpScreen> {
       });
     }
 
-    Widget generateBody() {
-      switch (dhcpProvider.loadStatus) {
-        case LoadStatus.loading:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 30),
-                Text(
-                  AppLocalizations.of(context)!.loadingDhcp,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-              ],
-            ),
-          );
-        
-        case LoadStatus.loaded:
-          if (selectedInterface != null) {
-            return SingleChildScrollView(
-              child: Wrap(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                      left: 16, 
-                      right: 16
-                    ),
-                    child: Material(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(28),
-                      child: InkWell(
-                        onTap: selectedInterface != null
-                          ? () => setState(() => enabled = !enabled)
-                          : null,
-                        borderRadius: BorderRadius.circular(28),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.enableDhcpServer,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Theme.of(context).colorScheme.onSurface
-                                    ),
-                                  ),
-                                  if (selectedInterface != null) ...[
-                                    Text(
-                                      selectedInterface!.name,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Theme.of(context).listTileTheme.textColor
-                                      ),
-                                    )
-                                  ]
-                                ],
-                              ),
-                              Switch(
-                                value: enabled, 
-                                onChanged: selectedInterface != null
-                                  ? (value) => setState(() => enabled = value)
-                                  : null,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (selectedInterface!.ipv4Addresses.isNotEmpty) ...[
-                    SectionLabel(
-                      label: AppLocalizations.of(context)!.ipv4settings,
-                      padding: const EdgeInsets.only(
-                        top: 24, left: 16, right: 16, bottom: 8
-                      )
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: width > 900 ? 0.5 : 1,
-                      child: Padding(
-                        padding: width > 900
-                          ? const EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 8)
-                          : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: TextFormField(
-                          controller: ipv4StartRangeController,
-                          onChanged: (value) => validateIpV4(value, 'ipv4StartRangeError', AppLocalizations.of(context)!.ipNotValid),
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.skip_previous_rounded),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            errorText: ipv4StartRangeError,
-                            labelText: AppLocalizations.of(context)!.startOfRange,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: width > 900 ? 0.5 : 1,
-                      child: Padding(
-                        padding: width > 900
-                          ? const EdgeInsets.only(top: 12, bottom: 12, left: 8, right: 16)
-                          : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: TextFormField(
-                          controller: ipv4EndRangeController,
-                          onChanged: (value) => validateIpV4(value, 'ipv4EndRangeError', AppLocalizations.of(context)!.ipNotValid),
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.skip_next_rounded),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            errorText: ipv4EndRangeError,
-                            labelText: AppLocalizations.of(context)!.endOfRange,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: width > 900 ? 0.5 : 1,
-                      child: Padding(
-                        padding: width > 900
-                          ? const EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 8)
-                          : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: TextFormField(
-                          controller: ipv4SubnetMaskController,
-                          onChanged: (value) => validateIpV4(value, 'ipv4SubnetMaskError', AppLocalizations.of(context)!.subnetMaskNotValid),
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.hub_rounded),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            errorText: ipv4SubnetMaskError,
-                            labelText: AppLocalizations.of(context)!.subnetMask,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: width > 900 ? 0.5 : 1,
-                      child: Padding(
-                        padding: width > 900
-                          ? const EdgeInsets.only(top: 12, bottom: 12, left: 8, right: 16)
-                          : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: TextFormField(
-                          controller: ipv4GatewayController,
-                          onChanged: (value) => validateIpV4(value, 'ipv4GatewayError', AppLocalizations.of(context)!.gatewayNotValid),
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.router_rounded),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            errorText: ipv4GatewayError,
-                            labelText: AppLocalizations.of(context)!.gateway,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: TextFormField(
-                          controller: ipv4LeaseTimeController,
-                          onChanged: (value) {
-                            if (int.tryParse(value).runtimeType == int) {
-                              setState(() => ipv4LeaseTimeError = null);
-                            }
-                            else {
-                              setState(() => ipv4LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
-                            }
-                          },
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.timer),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            errorText: ipv4LeaseTimeError,
-                            labelText: AppLocalizations.of(context)!.leaseTime,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                  ],
-                  if (selectedInterface!.ipv6Addresses.isNotEmpty) ...[
-                    SectionLabel(
-                      label: AppLocalizations.of(context)!.ipv6settings,
-                      padding: const EdgeInsets.all(16)
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: width > 900 ? 0.5 : 1,
-                      child: Padding(
-                        padding: width > 900
-                          ? const EdgeInsets.only(top: 8, bottom: 12, left: 16, right: 8)
-                          : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: TextFormField(
-                          controller: ipv6StartRangeController,
-                          onChanged: (value) => validateIpV4(value, 'ipv6StartRangeError', AppLocalizations.of(context)!.ipNotValid),
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.skip_next_rounded),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            errorText: ipv6StartRangeError,
-                            labelText: AppLocalizations.of(context)!.startOfRange,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: width > 900 ? 0.5 : 1,
-                      child: Padding(
-                        padding: width > 900
-                          ? const EdgeInsets.only(top: 8, bottom: 12, left: 8, right: 16)
-                          : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: TextFormField(
-                          controller: ipv6EndRangeController,
-                          onChanged: (value) => validateIpV4(value, 'ipv6EndRangeError', AppLocalizations.of(context)!.ipNotValid),
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.skip_previous_rounded),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            errorText: ipv6EndRangeError,
-                            labelText: AppLocalizations.of(context)!.endOfRange,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: TextFormField(
-                          controller: ipv6LeaseTimeController,
-                          onChanged: (value) {
-                            if (int.tryParse(value).runtimeType == int) {
-                              setState(() => ipv6LeaseTimeError = null);
-                            }
-                            else {
-                              setState(() => ipv6LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
-                            }
-                          },
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.timer),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            errorText: ipv6LeaseTimeError,
-                            labelText: AppLocalizations.of(context)!.leaseTime,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 20),
-                  SectionLabel(
-                    label: AppLocalizations.of(context)!.dhcpLeases,
-                    padding: const EdgeInsets.all(16),
-                  ),
-                  if (width <= 900) Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => DhcpLeases(
-                            items: dhcpProvider.dhcp!.dhcpStatus.leases,
-                            staticLeases: false,
-                          )
-                        ));
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.dhcpLeases,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_rounded,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (width <= 900) Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => DhcpLeases(
-                            items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
-                            staticLeases: true,
-                          )
-                        ));
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.dhcpStatic,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_rounded,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (width > 900) Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          if (!(Platform.isAndroid || Platform.isIOS)) {
-                            SplitView.of(context).push(
-                              DhcpLeases(
-                                items: dhcpProvider.dhcp!.dhcpStatus.leases,
-                                staticLeases: false,
-                              )
-                            );
-                          }
-                          else {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => DhcpLeases(
-                                items: dhcpProvider.dhcp!.dhcpStatus.leases,
-                                staticLeases: false,
-                              )
-                            ));
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            Text(AppLocalizations.of(context)!.dhcpLeases),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.arrow_forward_rounded)
-                          ],
-                        )
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (!(Platform.isAndroid || Platform.isIOS)) {
-                            SplitView.of(context).push(
-                              DhcpLeases(
-                                items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
-                                staticLeases: true,
-                              )
-                            );
-                          }
-                          else {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => DhcpLeases(
-                                items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
-                                staticLeases: true,
-                              )
-                            ));
-                          }
-                        }, 
-                        child: Row(
-                          children: [
-                            Text(AppLocalizations.of(context)!.dhcpStatic),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.arrow_forward_rounded)
-                          ],
-                        )
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10)
-                ],
-              ),
-            );
-          } 
-          else {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          AppLocalizations.of(context)!.neededSelectInterface,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      ElevatedButton(
-                        onPressed: selectInterface, 
-                        child: Text(AppLocalizations.of(context)!.selectInterface)
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          }
-          
-        case LoadStatus.error:
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 50,
-                ),
-                const SizedBox(height: 30),
-                Text(
-                  AppLocalizations.of(context)!.dhcpSettingsNotLoaded,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                )
-              ],
-            ),
-          );
-
-        default:
-          return const SizedBox();
-      }
-    }
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dhcpSettings),
         centerTitle: false,
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         actions: selectedInterface != null ? [
           IconButton(
             onPressed: checkDataValid() == true
@@ -890,7 +405,502 @@ class _DhcpScreenState extends State<DhcpScreen> {
           const SizedBox(width: 10)
         ] : null,
       ),
-      body: generateBody(),
+      body: Builder(
+        builder: (context) {
+          switch (dhcpProvider.loadStatus) {
+            case LoadStatus.loading:
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.loadingDhcp,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  ],
+                ),
+              );
+            
+            case LoadStatus.loaded:
+              if (selectedInterface != null) {
+                return SingleChildScrollView(
+                  child: Wrap(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          left: 16, 
+                          right: 16
+                        ),
+                        child: Material(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(28),
+                          child: InkWell(
+                            onTap: selectedInterface != null
+                              ? () => setState(() => enabled = !enabled)
+                              : null,
+                            borderRadius: BorderRadius.circular(28),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.enableDhcpServer,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Theme.of(context).colorScheme.onSurface
+                                        ),
+                                      ),
+                                      if (selectedInterface != null) ...[
+                                        Text(
+                                          selectedInterface!.name,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Theme.of(context).listTileTheme.textColor
+                                          ),
+                                        )
+                                      ]
+                                    ],
+                                  ),
+                                  Switch(
+                                    value: enabled, 
+                                    onChanged: selectedInterface != null
+                                      ? (value) => setState(() => enabled = value)
+                                      : null,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (selectedInterface!.ipv4Addresses.isNotEmpty) ...[
+                        SectionLabel(
+                          label: AppLocalizations.of(context)!.ipv4settings,
+                          padding: const EdgeInsets.only(
+                            top: 24, left: 16, right: 16, bottom: 8
+                          )
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: width > 900 ? 0.5 : 1,
+                          child: Padding(
+                            padding: width > 900
+                              ? const EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: TextFormField(
+                              controller: ipv4StartRangeController,
+                              onChanged: (value) => validateIpV4(value, 'ipv4StartRangeError', AppLocalizations.of(context)!.ipNotValid),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.skip_previous_rounded),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                errorText: ipv4StartRangeError,
+                                labelText: AppLocalizations.of(context)!.startOfRange,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: width > 900 ? 0.5 : 1,
+                          child: Padding(
+                            padding: width > 900
+                              ? const EdgeInsets.only(top: 12, bottom: 12, left: 8, right: 16)
+                              : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: TextFormField(
+                              controller: ipv4EndRangeController,
+                              onChanged: (value) => validateIpV4(value, 'ipv4EndRangeError', AppLocalizations.of(context)!.ipNotValid),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.skip_next_rounded),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                errorText: ipv4EndRangeError,
+                                labelText: AppLocalizations.of(context)!.endOfRange,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: width > 900 ? 0.5 : 1,
+                          child: Padding(
+                            padding: width > 900
+                              ? const EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: TextFormField(
+                              controller: ipv4SubnetMaskController,
+                              onChanged: (value) => validateIpV4(value, 'ipv4SubnetMaskError', AppLocalizations.of(context)!.subnetMaskNotValid),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.hub_rounded),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                errorText: ipv4SubnetMaskError,
+                                labelText: AppLocalizations.of(context)!.subnetMask,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: width > 900 ? 0.5 : 1,
+                          child: Padding(
+                            padding: width > 900
+                              ? const EdgeInsets.only(top: 12, bottom: 12, left: 8, right: 16)
+                              : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: TextFormField(
+                              controller: ipv4GatewayController,
+                              onChanged: (value) => validateIpV4(value, 'ipv4GatewayError', AppLocalizations.of(context)!.gatewayNotValid),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.router_rounded),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                errorText: ipv4GatewayError,
+                                labelText: AppLocalizations.of(context)!.gateway,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: TextFormField(
+                              controller: ipv4LeaseTimeController,
+                              onChanged: (value) {
+                                if (int.tryParse(value).runtimeType == int) {
+                                  setState(() => ipv4LeaseTimeError = null);
+                                }
+                                else {
+                                  setState(() => ipv4LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
+                                }
+                              },
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.timer),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                errorText: ipv4LeaseTimeError,
+                                labelText: AppLocalizations.of(context)!.leaseTime,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                      ],
+                      if (selectedInterface!.ipv6Addresses.isNotEmpty) ...[
+                        SectionLabel(
+                          label: AppLocalizations.of(context)!.ipv6settings,
+                          padding: const EdgeInsets.all(16)
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: width > 900 ? 0.5 : 1,
+                          child: Padding(
+                            padding: width > 900
+                              ? const EdgeInsets.only(top: 8, bottom: 12, left: 16, right: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: TextFormField(
+                              controller: ipv6StartRangeController,
+                              onChanged: (value) => validateIpV4(value, 'ipv6StartRangeError', AppLocalizations.of(context)!.ipNotValid),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.skip_next_rounded),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                errorText: ipv6StartRangeError,
+                                labelText: AppLocalizations.of(context)!.startOfRange,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: width > 900 ? 0.5 : 1,
+                          child: Padding(
+                            padding: width > 900
+                              ? const EdgeInsets.only(top: 8, bottom: 12, left: 8, right: 16)
+                              : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: TextFormField(
+                              controller: ipv6EndRangeController,
+                              onChanged: (value) => validateIpV4(value, 'ipv6EndRangeError', AppLocalizations.of(context)!.ipNotValid),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.skip_previous_rounded),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                errorText: ipv6EndRangeError,
+                                labelText: AppLocalizations.of(context)!.endOfRange,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: TextFormField(
+                              controller: ipv6LeaseTimeController,
+                              onChanged: (value) {
+                                if (int.tryParse(value).runtimeType == int) {
+                                  setState(() => ipv6LeaseTimeError = null);
+                                }
+                                else {
+                                  setState(() => ipv6LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
+                                }
+                              },
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.timer),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10)
+                                  )
+                                ),
+                                errorText: ipv6LeaseTimeError,
+                                labelText: AppLocalizations.of(context)!.leaseTime,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 20),
+                      SectionLabel(
+                        label: AppLocalizations.of(context)!.dhcpLeases,
+                        padding: const EdgeInsets.all(16),
+                      ),
+                      if (width <= 900) Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DhcpLeases(
+                                  items: dhcpProvider.dhcp!.dhcpStatus.leases,
+                                  staticLeases: false,
+                                )
+                              )
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.dhcpLeases,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_rounded,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (width <= 900) Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DhcpLeases(
+                                  items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
+                                  staticLeases: true,
+                                )
+                              )
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.dhcpStatic,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_rounded,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (width > 900) Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (!(Platform.isAndroid || Platform.isIOS)) {
+                                SplitView.of(context).push(
+                                  DhcpLeases(
+                                    items: dhcpProvider.dhcp!.dhcpStatus.leases,
+                                    staticLeases: false,
+                                  )
+                                );
+                              }
+                              else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => DhcpLeases(
+                                      items: dhcpProvider.dhcp!.dhcpStatus.leases,
+                                      staticLeases: false,
+                                    )
+                                  )
+                                );
+                              }
+                            },
+                            child: Row(
+                              children: [
+                                Text(AppLocalizations.of(context)!.dhcpLeases),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.arrow_forward_rounded)
+                              ],
+                            )
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (!(Platform.isAndroid || Platform.isIOS)) {
+                                SplitView.of(context).push(
+                                  DhcpLeases(
+                                    items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
+                                    staticLeases: true,
+                                  )
+                                );
+                              }
+                              else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => DhcpLeases(
+                                      items: dhcpProvider.dhcp!.dhcpStatus.staticLeases,
+                                      staticLeases: true,
+                                    )
+                                  )
+                                );
+                              }
+                            }, 
+                            child: Row(
+                              children: [
+                                Text(AppLocalizations.of(context)!.dhcpStatic),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.arrow_forward_rounded)
+                              ],
+                            )
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10)
+                    ],
+                  ),
+                );
+              } 
+              else {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              AppLocalizations.of(context)!.neededSelectInterface,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          ElevatedButton(
+                            onPressed: selectInterface, 
+                            child: Text(AppLocalizations.of(context)!.selectInterface)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+              
+            case LoadStatus.error:
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 30),
+                    Text(
+                      AppLocalizations.of(context)!.dhcpSettingsNotLoaded,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  ],
+                ),
+              );
+
+            default:
+              return const SizedBox();
+          }
+        },
+      )
     );
   }
 }

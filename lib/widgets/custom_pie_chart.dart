@@ -16,7 +16,6 @@ class CustomPieChart extends StatelessWidget {
     return PieChart(
       dataMap: data,
       animationDuration: const Duration(milliseconds: 800),
-      chartRadius: MediaQuery.of(context).size.width / 3,
       colorList: colors,
       initialAngleInDegree: 270,
       chartType: ChartType.ring,

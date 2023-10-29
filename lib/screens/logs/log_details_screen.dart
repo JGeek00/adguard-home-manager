@@ -8,6 +8,7 @@ import 'package:adguard_home_manager/widgets/section_label.dart';
 
 import 'package:adguard_home_manager/screens/logs/log_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -33,6 +34,8 @@ class LogDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     Filter? getList(int id) {
       try {
@@ -288,6 +291,7 @@ class LogDetailsScreen extends StatelessWidget {
                 floating: true,
                 centerTitle: false,
                 forceElevated: innerBoxIsScrolled,
+                surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
                 title:  Text(AppLocalizations.of(context)!.logDetails),
                 actions: [
                   IconButton(

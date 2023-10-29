@@ -23,6 +23,7 @@ import 'package:adguard_home_manager/widgets/custom_settings_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/constants/strings.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
@@ -36,35 +37,57 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
-    if (width > 900) {
-      return SplitView.material(
-        hideDivider: true,
-        flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
-        placeholder: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              AppLocalizations.of(context)!.selectOptionLeftColumn,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                color: Theme.of(context).colorScheme.onSurfaceVariant
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 900) {
+          return SplitView.material(
+            hideDivider: true,
+            flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
+            placeholder: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  AppLocalizations.of(context)!.selectOptionLeftColumn,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        child: const SettingsWidget(),
-      );
-    }
-    else {
-      return const SettingsWidget();
-    }
+            child: const SettingsWidget(
+              twoColumns: true,
+            ),
+          );
+        }
+        else {
+          return const SettingsWidget(
+            twoColumns: false,
+          );
+        }
+      },
+    );
   }
 }
-class SettingsWidget extends StatelessWidget {
-  const SettingsWidget({Key? key}) : super(key: key);
+class SettingsWidget extends StatefulWidget {
+  final bool twoColumns;
+
+  const SettingsWidget({
+    Key? key,
+    required this.twoColumns,
+  }) : super(key: key);
+
+  @override
+  State<SettingsWidget> createState() => _SettingsWidgetState();
+}
+
+class _SettingsWidgetState extends State<SettingsWidget> {
+  @override
+  void initState() {
+    Provider.of<AppConfigProvider>(context, listen: false).setSelectedSettingsScreen(screen: null);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +97,7 @@ class SettingsWidget extends StatelessWidget {
 
     final width = MediaQuery.of(context).size.width;
 
-    if (width <= 900 && appConfigProvider.selectedSettingsScreen != null) {
+    if (!widget.twoColumns && appConfigProvider.selectedSettingsScreen != null) {
       appConfigProvider.setSelectedSettingsScreen(screen: null);
     }
 
@@ -86,7 +109,7 @@ class SettingsWidget extends StatelessWidget {
       required Widget screenToNavigate,
       required int thisItem
     }) {
-      if (width > 900) {
+      if (widget.twoColumns) {
         return CustomSettingsTile(
           title: title, 
           subtitle: subtitle,
@@ -125,6 +148,7 @@ class SettingsWidget extends StatelessWidget {
               floating: true,
               centerTitle: false,
               forceElevated: innerBoxIsScrolled,
+              surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
               title: Text(AppLocalizations.of(context)!.settings),
             )
           )
@@ -176,7 +200,9 @@ class SettingsWidget extends StatelessWidget {
                         title: AppLocalizations.of(context)!.dnsSettings,
                         subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
                         thisItem: 3,
-                        screenToNavigate: const DnsSettings(),
+                        screenToNavigate: DnsSettings(
+                          splitView: widget.twoColumns,
+                        ),
                       ),
                       settingsTile(
                         icon: Icons.security_rounded,

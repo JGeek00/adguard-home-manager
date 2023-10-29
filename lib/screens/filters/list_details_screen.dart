@@ -219,6 +219,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
             else {
               showModalBottomSheet(
                 context: context, 
+                useRootNavigator: true,
                 builder: (ctx) => AddListModal(
                   list: list,
                   type: widget.type,

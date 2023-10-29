@@ -186,7 +186,7 @@ class _TopItemsState extends State<TopItems> {
           if (widget.data.isNotEmpty && width <= 700) ...[
             if (_showChart) ...[
               SizedBox(
-                height: 300,
+                height: 150,
                 child: chart
               ),
               const SizedBox(height: 16),
