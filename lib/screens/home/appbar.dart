@@ -1,10 +1,11 @@
-import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/servers/servers.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
+import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
@@ -32,7 +33,7 @@ class HomeAppBar extends StatelessWidget {
 
     void navigateServers() {
       Future.delayed(const Duration(milliseconds: 0), (() {
-        Navigator.of(context).push(
+        rootNavigatorKey.currentState!.push(
           MaterialPageRoute(builder: (context) => const Servers())
         );
       }));

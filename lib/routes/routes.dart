@@ -13,6 +13,26 @@ import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/constants/routes_names.dart';
 
+Page<dynamic> routePage({
+  required  BuildContext context, 
+  required Widget child
+}) {
+  if (isDesktop(MediaQuery.of(context).size.width)) {
+    return NoTransitionPage(child: child);
+  }
+  else {
+    return CustomTransitionPage(
+      child: child,
+      transitionsBuilder: (context, anim1, anim2, child) {
+        return FadeTransition(
+          opacity: anim1,
+          child: child,
+        );
+      },
+    );
+  }
+}
+
 final List<RouteBase> routes = [
   GoRoute(
     path: "/",
@@ -29,14 +49,10 @@ final List<RouteBase> routes = [
           GoRoute(
             parentNavigatorKey: homeNavigatorKey,
             path: RoutesNames.home,
-            pageBuilder: (context, state) {
-              if (isDesktop(MediaQuery.of(context).size.width)) {
-                return const NoTransitionPage(child: Home());
-              }
-              else {
-                return const MaterialPage(child: Home());
-              }
-            },
+            pageBuilder: (context, state) => routePage(
+              context: context, 
+              child: const Home()
+            )
           ),
         ]
       ),
@@ -46,14 +62,10 @@ final List<RouteBase> routes = [
           GoRoute(
             parentNavigatorKey: clientsNavigatorKey,
             path: RoutesNames.clients,
-            pageBuilder: (context, state) {
-              if (isDesktop(MediaQuery.of(context).size.width)) {
-                return const NoTransitionPage(child: Clients());
-              }
-              else {
-                return const MaterialPage(child: Clients());
-              }
-            },
+            pageBuilder: (context, state) => routePage(
+              context: context, 
+              child: const Clients()
+            )
           )
         ]
       ),
@@ -63,14 +75,10 @@ final List<RouteBase> routes = [
           GoRoute(
             parentNavigatorKey: logsNavigatorKey,
             path: RoutesNames.logs,
-            pageBuilder: (context, state) {
-              if (isDesktop(MediaQuery.of(context).size.width)) {
-                return const NoTransitionPage(child: Logs());
-              }
-              else {
-                return const MaterialPage(child: Logs());
-              }
-            },
+            pageBuilder: (context, state) => routePage(
+              context: context, 
+              child: const Logs()
+            )
           )
         ]
       ),
@@ -80,14 +88,10 @@ final List<RouteBase> routes = [
           GoRoute(
             parentNavigatorKey: filtersNavigatorKey,
             path: RoutesNames.filters, 
-            pageBuilder: (context, state) {
-              if (isDesktop(MediaQuery.of(context).size.width)) {
-                return const NoTransitionPage(child: Filters());
-              }
-              else {
-                return const MaterialPage(child: Filters());
-              }
-            },
+            pageBuilder: (context, state) => routePage(
+              context: context, 
+              child: const Filters()
+            )
           )
         ]
       ),
@@ -97,14 +101,10 @@ final List<RouteBase> routes = [
           GoRoute(
             parentNavigatorKey: settingsNavigatorKey,
             path: RoutesNames.settings,
-            pageBuilder: (context, state) {
-              if (isDesktop(MediaQuery.of(context).size.width)) {
-                return const NoTransitionPage(child: Settings());
-              }
-              else {
-                return const MaterialPage(child: Settings());
-              }
-            },
+            pageBuilder: (context, state) => routePage(
+              context: context, 
+              child: const Settings()
+            )
           )
         ]
       ),
@@ -113,14 +113,10 @@ final List<RouteBase> routes = [
         routes: [
           GoRoute(
             path: RoutesNames.connect, 
-            pageBuilder: (context, state) {
-              if (isDesktop(MediaQuery.of(context).size.width)) {
-                return const NoTransitionPage(child: Connect());
-              }
-              else {
-                return const MaterialPage(child: Connect());
-              }
-            },
+            pageBuilder: (context, state) => routePage(
+              context: context, 
+              child: const Connect()
+            )
           )
         ]
       ),

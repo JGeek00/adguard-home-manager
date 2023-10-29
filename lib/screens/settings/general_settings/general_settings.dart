@@ -12,6 +12,7 @@ import 'package:adguard_home_manager/screens/settings/general_settings/reorderab
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
+import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/functions/check_app_updates.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -191,9 +192,11 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             icon: Icons.reorder_rounded,
             title: AppLocalizations.of(context)!.topItemsOrder,
             subtitle: AppLocalizations.of(context)!.topItemsOrderDescription,
-            onTap: () => Navigator.push(context, MaterialPageRoute(
-              builder: (context) => const ReorderableTopItemsHome()
-            )),
+            onTap: () => rootNavigatorKey.currentState!.push(
+              MaterialPageRoute(
+                builder: (context) => const ReorderableTopItemsHome()
+              )
+            )
           ),
           CustomListTile(
             icon: Icons.donut_large_rounded,

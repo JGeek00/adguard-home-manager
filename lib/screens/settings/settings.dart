@@ -23,6 +23,7 @@ import 'package:adguard_home_manager/widgets/custom_settings_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/constants/strings.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
@@ -119,7 +120,7 @@ class SettingsWidget extends StatelessWidget {
           icon: icon,
           trailing: trailing,
           onTap: () {
-            Navigator.of(context).push(
+            rootNavigatorKey.currentState!.push(
               MaterialPageRoute(builder: (context) => screenToNavigate)
             );
           },

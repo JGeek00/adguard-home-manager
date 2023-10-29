@@ -12,6 +12,7 @@ import 'package:adguard_home_manager/screens/logs/logs_config_modal.dart';
 import 'package:adguard_home_manager/screens/logs/logs_filters_modal.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
@@ -463,12 +464,14 @@ class _LogsListWidgetState extends State<LogsListWidget> {
                                     isLogSelected: widget.selectedLog != null && widget.selectedLog == logsProvider.logsData!.data[index],
                                     onLogTap: (log) {
                                       if (!widget.twoColumns) {
-                                        Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => LogDetailsScreen(
-                                            log: log,
-                                            dialog: false,
+                                        rootNavigatorKey.currentState!.push(
+                                          MaterialPageRoute(
+                                            builder: (context) => LogDetailsScreen(
+                                              log: log,
+                                              dialog: false,
+                                            )
                                           )
-                                        ));
+                                        );
                                       }
                                       widget.onLogSelected(log);
                                     },
