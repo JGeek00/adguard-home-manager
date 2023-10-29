@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:adguard_home_manager/routes/router_globals.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

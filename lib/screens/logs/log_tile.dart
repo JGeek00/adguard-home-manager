@@ -34,8 +34,6 @@ class LogTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    final width = MediaQuery.of(context).size.width;
-
     Widget logStatusWidget({
       required IconData icon, 
       required Color color, 

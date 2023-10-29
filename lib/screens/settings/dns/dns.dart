@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
