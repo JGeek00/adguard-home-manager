@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
@@ -230,64 +229,49 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.light
-          : Brightness.dark,
-        statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.dark
-          : Brightness.light,
-        systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
-        systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.dark
-          : Brightness.light,
-      ),
-      child: DynamicColorBuilder(
-        builder: (lightDynamic, darkDynamic) => MaterialApp(
-          title: 'AdGuard Home Manager',
-          theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
-            ? appConfigProvider.useDynamicColor == true
-              ? lightTheme(lightDynamic)
-              : lightThemeOldVersions(colors[appConfigProvider.staticColor])
-            : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
-          darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
-            ? appConfigProvider.useDynamicColor == true
-              ? darkTheme(darkDynamic)
-              : darkThemeOldVersions(colors[appConfigProvider.staticColor])
-            : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
-          themeMode: appConfigProvider.selectedTheme,
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            AppLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''),
-            Locale('es', ''),
-            Locale('zh', ''),
-            Locale('zh', 'CN'),
-            Locale('pl', ''),
-            Locale('tr', '')
-          ],
-          scaffoldMessengerKey: scaffoldMessengerKey,
-          builder: (context, child) {
-            return CustomMenuBar(
-              child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
-                    ? 0.9
-                    : 1.0
-                ),
-                child: child!,
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) => MaterialApp(
+        title: 'AdGuard Home Manager',
+        theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
+          ? appConfigProvider.useDynamicColor == true
+            ? lightTheme(lightDynamic)
+            : lightThemeOldVersions(colors[appConfigProvider.staticColor])
+          : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
+        darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
+          ? appConfigProvider.useDynamicColor == true
+            ? darkTheme(darkDynamic)
+            : darkThemeOldVersions(colors[appConfigProvider.staticColor])
+          : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
+        themeMode: appConfigProvider.selectedTheme,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          AppLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', ''),
+          Locale('es', ''),
+          Locale('zh', ''),
+          Locale('zh', 'CN'),
+          Locale('pl', ''),
+          Locale('tr', '')
+        ],
+        scaffoldMessengerKey: scaffoldMessengerKey,
+        builder: (context, child) {
+          return CustomMenuBar(
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
+                  ? 0.9
+                  : 1.0
               ),
-            );
-          },
-          home: Layout(),
-        ),
+              child: child!,
+            ),
+          );
+        },
+        home: const Layout(),
       ),
     );
   }

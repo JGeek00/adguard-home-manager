@@ -3,6 +3,8 @@ import 'package:animations/animations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/system_ui_overlay_style.dart';
+
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/config/app_screens.dart';
 import 'package:adguard_home_manager/config/sizes.dart';
@@ -61,70 +63,72 @@ class _LayoutState extends State<Layout> {
     }
 
     if (width > desktopBreakpoint) {
-      return Material(
-        child: Row(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.ease,
-              width: _drawerExpanded ? 250 : 90,
-              child: ListView(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8, 
-                          vertical: 16
+      return OverlayStyle(
+        child: Material(
+          child: Row(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.ease,
+                width: _drawerExpanded ? 250 : 90,
+                child: ListView(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8, 
+                            vertical: 16
+                          ),
+                          child: IconButton(
+                            onPressed: () => setState(() => _drawerExpanded = !_drawerExpanded), 
+                            icon: const Icon(Icons.menu_open_rounded),
+                            tooltip: _drawerExpanded == true
+                              ? AppLocalizations.of(context)!.closeMenu
+                              : AppLocalizations.of(context)!.openMenu,
+                          ),
                         ),
-                        child: IconButton(
-                          onPressed: () => setState(() => _drawerExpanded = !_drawerExpanded), 
-                          icon: const Icon(Icons.menu_open_rounded),
-                          tooltip: _drawerExpanded == true
-                            ? AppLocalizations.of(context)!.closeMenu
-                            : AppLocalizations.of(context)!.openMenu,
+                      ],
+                    ),
+                    if (serversProvider.selectedServer != null) 
+                      ...screensServerConnected.asMap().entries.map(
+                        (s) => DrawerTile(
+                          icon: s.value.icon,
+                          title: translatedName(s.value.name),
+                          isSelected: appConfigProvider.selectedScreen == s.key,
+                          onSelect: () => _goBranch(s.key),
+                          withoutTitle: !_drawerExpanded,
                         ),
                       ),
-                    ],
-                  ),
-                  if (serversProvider.selectedServer != null) 
-                    ...screensServerConnected.asMap().entries.map(
-                      (s) => DrawerTile(
-                        icon: s.value.icon,
-                        title: translatedName(s.value.name),
-                        isSelected: appConfigProvider.selectedScreen == s.key,
-                        onSelect: () => _goBranch(s.key),
-                        withoutTitle: !_drawerExpanded,
+                    if (serversProvider.selectedServer == null) 
+                      ...screensSelectServer.asMap().entries.map(
+                        (s) => DrawerTile(
+                          icon: s.value.icon,
+                          title: translatedName(s.value.name),
+                          isSelected: appConfigProvider.selectedScreen == s.key,
+                          onSelect: () => _goBranch(s.key),
+                          withoutTitle: !_drawerExpanded,
+                        ),
                       ),
-                    ),
-                  if (serversProvider.selectedServer == null) 
-                    ...screensSelectServer.asMap().entries.map(
-                      (s) => DrawerTile(
-                        icon: s.value.icon,
-                        title: translatedName(s.value.name),
-                        isSelected: appConfigProvider.selectedScreen == s.key,
-                        onSelect: () => _goBranch(s.key),
-                        withoutTitle: !_drawerExpanded,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: PageTransitionSwitcher(
-                duration: const Duration(milliseconds: 200),
-                transitionBuilder: (
-                  (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
-                    animation: primaryAnimation, 
-                    secondaryAnimation: secondaryAnimation,
-                    child: child,
-                  )
+                  ],
                 ),
-                child: screens[appConfigProvider.selectedScreen].child,
               ),
-            ),
-          ],
+              Expanded(
+                child: PageTransitionSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (
+                    (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
+                      animation: primaryAnimation, 
+                      secondaryAnimation: secondaryAnimation,
+                      child: child,
+                    )
+                  ),
+                  child: screens[appConfigProvider.selectedScreen].child,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -133,54 +137,56 @@ class _LayoutState extends State<Layout> {
         ? screensServerConnected 
         : screensSelectServer;
 
-      return Scaffold(
-        body: PageTransitionSwitcher(
-          duration: const Duration(milliseconds: 200),
-          transitionBuilder: (
-            (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
-              animation: primaryAnimation, 
-              secondaryAnimation: secondaryAnimation,
-              child: child,
-            )
+      return OverlayStyle(
+        child: Scaffold(
+          body: PageTransitionSwitcher(
+            duration: const Duration(milliseconds: 200),
+            transitionBuilder: (
+              (child, primaryAnimation, secondaryAnimation) => FadeThroughTransition(
+                animation: primaryAnimation, 
+                secondaryAnimation: secondaryAnimation,
+                child: child,
+              )
+            ),
+            child: screens[appConfigProvider.selectedScreen].child,
           ),
-          child: screens[appConfigProvider.selectedScreen].child,
-        ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
-            ? 0
-            : appConfigProvider.selectedScreen,
-          onDestinationSelected: (s) => _goBranch(s),
-          destinations: screens.asMap().entries.map((screen) => NavigationDestination(
-            icon: Stack(
-              children: [
-                Icon(
-                  screen.value.icon,
-                  color: appConfigProvider.selectedScreen == screen.key
-                    ? Theme.of(context).colorScheme.onSecondaryContainer
-                    : Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                if (
-                  screen.value.name == 'settings' &&
-                  serversProvider.updateAvailable.data != null &&
-                  serversProvider.updateAvailable.data!.canAutoupdate == true
-                ) Positioned(
-                    bottom: 0,
-                    right: -12,
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      margin: const EdgeInsets.only(right: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.red
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
+              ? 0
+              : appConfigProvider.selectedScreen,
+            onDestinationSelected: (s) => _goBranch(s),
+            destinations: screens.asMap().entries.map((screen) => NavigationDestination(
+              icon: Stack(
+                children: [
+                  Icon(
+                    screen.value.icon,
+                    color: appConfigProvider.selectedScreen == screen.key
+                      ? Theme.of(context).colorScheme.onSecondaryContainer
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  if (
+                    screen.value.name == 'settings' &&
+                    serversProvider.updateAvailable.data != null &&
+                    serversProvider.updateAvailable.data!.canAutoupdate == true
+                  ) Positioned(
+                      bottom: 0,
+                      right: -12,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        margin: const EdgeInsets.only(right: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.red
+                        ),
                       ),
-                    ),
-                  )
-              ],
-            ), 
-            label: translatedName(screen.value.name)
-          )).toList(),
-        )
+                    )
+                ],
+              ), 
+              label: translatedName(screen.value.name)
+            )).toList(),
+          )
+        ),
       );
     }
   }
