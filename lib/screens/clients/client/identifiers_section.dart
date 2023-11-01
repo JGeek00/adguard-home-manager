@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/screens/clients/client/client_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -5,8 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
 class IdentifiersSection extends StatefulWidget {
-  final List<Map<dynamic, dynamic>> identifiersControllers;
-  final void Function(List<Map<dynamic, dynamic>>) onUpdateIdentifiersControllers;
+  final List<ControllerListItem> identifiersControllers;
+  final void Function(List<ControllerListItem>) onUpdateIdentifiersControllers;
   final void Function() onCheckValidValues;
 
   const IdentifiersSection({
@@ -41,10 +42,10 @@ class _IdentifiersSectionState extends State<IdentifiersSection> {
               child: IconButton(
                 onPressed: () => widget.onUpdateIdentifiersControllers([
                   ...widget.identifiersControllers,
-                  Map<String, Object>.from({
-                    'id': uuid.v4(),
-                    'controller': TextEditingController()
-                  })
+                  ControllerListItem(
+                    id: uuid.v4(), 
+                    controller: TextEditingController()
+                  ),
                 ]),
                 icon: const Icon(Icons.add)
               ),
@@ -52,13 +53,15 @@ class _IdentifiersSectionState extends State<IdentifiersSection> {
           ],
         ),
         if (widget.identifiersControllers.isNotEmpty) ...widget.identifiersControllers.map((controller) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: const EdgeInsets.only(
+            top: 12, bottom: 12, left: 24, right: 20
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: TextFormField(
-                  controller: controller['controller'],
+                  controller: controller.controller,
                   onChanged: (_) => widget.onCheckValidValues(),
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.tag),
@@ -72,12 +75,12 @@ class _IdentifiersSectionState extends State<IdentifiersSection> {
                   ),
                 ),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 16),
               Padding(
                 padding: const EdgeInsets.only(bottom: 25),
                 child: IconButton(
                   onPressed: () => widget.onUpdateIdentifiersControllers(
-                    widget.identifiersControllers.where((e) => e['id'] != controller['id']).toList()
+                    widget.identifiersControllers.where((e) => e.id != controller.id).toList()
                   ),
                   icon: const Icon(Icons.remove_circle_outline_outlined)
                 ),
@@ -86,7 +89,7 @@ class _IdentifiersSectionState extends State<IdentifiersSection> {
           ),
         )).toList(),
         if (widget.identifiersControllers.isEmpty) Container(
-          padding: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Text(
             AppLocalizations.of(context)!.noIdentifiers,
             textAlign: TextAlign.center,

@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/screens/clients/client/client_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -5,9 +6,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
 class UpstreamServersSection extends StatefulWidget {
-  final List<Map<dynamic, dynamic>> upstreamServers;
+  final List<ControllerListItem> upstreamServers;
   final void Function() onCheckValidValues;
-  final void Function(List<Map<dynamic, dynamic>>) onUpdateUpstreamServers;
+  final void Function(List<ControllerListItem>) onUpdateUpstreamServers;
 
   const UpstreamServersSection({
     Key? key,
@@ -38,10 +39,10 @@ class _UpstreamServersSectionState extends State<UpstreamServersSection> {
               padding: const EdgeInsets.only(right: 20),
               child: IconButton(
                 onPressed: () => setState(() => widget.upstreamServers.add(
-                  Map<String, Object>.from({
-                    'id': uuid.v4(),
-                    'controller': TextEditingController()
-                  })
+                  ControllerListItem(
+                    id: uuid.v4(), 
+                    controller: TextEditingController()
+                  )
                 )),
                 icon: const Icon(Icons.add)
               ),
@@ -57,7 +58,7 @@ class _UpstreamServersSectionState extends State<UpstreamServersSection> {
               children: [
                 Expanded(
                   child: TextFormField(
-                    controller: controller['controller'],
+                    controller: controller.controller,
                     onChanged: (_) => widget.onCheckValidValues,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.dns_rounded),
@@ -70,10 +71,10 @@ class _UpstreamServersSectionState extends State<UpstreamServersSection> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 16),
                 IconButton(
                   onPressed: () => widget.onUpdateUpstreamServers(
-                    widget.upstreamServers.where((e) => e['id'] != controller['id']).toList()
+                    widget.upstreamServers.where((e) => e.id != controller.id).toList()
                   ),
                   icon: const Icon(Icons.remove_circle_outline_outlined)
                 )
@@ -82,7 +83,7 @@ class _UpstreamServersSectionState extends State<UpstreamServersSection> {
           ),
         )).toList(),
         if (widget.upstreamServers.isEmpty) Container(
-          padding: const EdgeInsets.only(top: 12),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
             children: [
               Text(
