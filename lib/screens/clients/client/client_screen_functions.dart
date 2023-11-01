@@ -76,12 +76,12 @@ void openSafeSearchModal({
 
 bool checkValidValues({
   required TextEditingController nameController,
-  required List<Map<dynamic, dynamic>> identifiersControllers
+  required List<ControllerListItem> identifiersControllers
 }) {
   if (
     nameController.text != '' &&
     identifiersControllers.isNotEmpty && 
-    identifiersControllers[0]['controller']!.text != ''
+    identifiersControllers[0].controller.text != ''
   ) {
     return true;
   }

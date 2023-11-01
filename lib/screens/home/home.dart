@@ -11,7 +11,7 @@ import 'package:adguard_home_manager/screens/home/server_status.dart';
 import 'package:adguard_home_manager/screens/home/combined_chart.dart';
 import 'package:adguard_home_manager/screens/home/appbar.dart';
 import 'package:adguard_home_manager/screens/home/fab.dart';
-import 'package:adguard_home_manager/screens/home/top_items.dart';
+import 'package:adguard_home_manager/screens/home/top_items/top_items.dart';
 import 'package:adguard_home_manager/screens/home/chart.dart';
 
 import 'package:adguard_home_manager/functions/number_format.dart';

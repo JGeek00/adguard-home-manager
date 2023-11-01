@@ -4,7 +4,7 @@ import 'package:adguard_home_manager/models/logs.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/screens/logs/logs_list.dart';
-import 'package:adguard_home_manager/screens/logs/log_details_screen.dart';
+import 'package:adguard_home_manager/screens/logs/details/log_details_screen.dart';
 
 class Logs extends StatefulWidget {
   const Logs({Key? key}) : super(key: key);
@@ -18,8 +18,6 @@ class _LogsState extends State<Logs> {
 
   @override
   Widget build(BuildContext context) {
-   
-
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 1000) {
