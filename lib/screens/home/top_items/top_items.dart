@@ -153,6 +153,7 @@ class _TopItemsState extends State<TopItems> {
               expandedHeaderPadding: const EdgeInsets.all(0),
               elevation: 0,
               expansionCallback: (_, isExpanded) => setState(() => _showChart = isExpanded),
+              animationDuration: const Duration(milliseconds: 250),
               children: [
                 ExpansionPanel(
                   headerBuilder: (context, isExpanded) => Padding(

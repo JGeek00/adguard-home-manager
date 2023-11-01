@@ -9,7 +9,7 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 
-class RowItem extends StatelessWidget {
+class RowItem extends StatefulWidget {
   final String type;
   final Color chartColor;
   final String domain;
@@ -28,15 +28,62 @@ class RowItem extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<RowItem> createState() => _RowItemState();
+}
+
+class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
+  late AnimationController expandController;
+  late Animation<double> animation; 
+
+  @override
+  void initState() {
+    super.initState();
+    prepareAnimations();
+    _runExpandCheck();
+  }
+
+  void prepareAnimations() {
+    expandController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250)
+    );
+    animation = CurvedAnimation(
+      parent: expandController,
+      curve: Curves.ease,
+    );
+  }
+
+  void _runExpandCheck() {
+    if (widget.showColor) {
+      expandController.forward();
+    }
+    else {
+      expandController.reverse();
+    }
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _runExpandCheck();
+  }
+
+  @override
+  void dispose() {
+    expandController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
     String? name;
-    if (clients == true) {
+    if (widget.clients == true) {
       try {
-        name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(domain)).name;
+        name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(widget.domain)).name;
       } catch (e) {
         // ---- //
       }
@@ -45,30 +92,30 @@ class RowItem extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: DomainOptions(
-        item: domain,
-        isClient: type == 'topClients',
-        isBlocked: type == 'topBlockedDomains',
+        item: widget.domain,
+        isClient: widget.type == 'topClients',
+        isBlocked: widget.type == 'topBlockedDomains',
         onTap: () {
-          if (type == 'topQueriedDomains' || type == 'topBlockedDomains') {
-            logsProvider.setSearchText(domain);
+          if (widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains') {
+            logsProvider.setSearchText(widget.domain);
             logsProvider.setSelectedClients(null);
             logsProvider.setAppliedFilters(
               AppliedFiters(
                 selectedResultStatus: 'all', 
-                searchText: domain,
+                searchText: widget.domain,
                 clients: null
               )
             );
             appConfigProvider.setSelectedScreen(2);
           }
-          else if (type == 'topClients') {
+          else if (widget.type == 'topClients') {
             logsProvider.setSearchText(null);
-            logsProvider.setSelectedClients([domain]);
+            logsProvider.setSelectedClients([widget.domain]);
             logsProvider.setAppliedFilters(
               AppliedFiters(
                 selectedResultStatus: 'all', 
                 searchText: null,
-                clients: [domain]
+                clients: [widget.domain]
               )
             );
             appConfigProvider.setSelectedScreen(2);
@@ -85,15 +132,18 @@ class RowItem extends StatelessWidget {
               Flexible(
                 child: Row(
                   children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.ease,
-                      margin: EdgeInsets.only(right: showColor ? 16 : 0),
-                      width: showColor ? 12 : 0,
-                      height: showColor ? 12 : 0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: chartColor
+                    SizeTransition(
+                      axisAlignment: 1.0,
+                      sizeFactor: animation,
+                      axis: Axis.horizontal,
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 16),
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: widget.chartColor
+                        ),
                       ),
                     ),
                     Expanded(
@@ -101,7 +151,7 @@ class RowItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            domain,
+                            widget.domain,
                             overflow: TextOverflow.ellipsis,
                             style:  TextStyle(
                               fontSize: 16,
@@ -127,7 +177,7 @@ class RowItem extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               Text(
-                number,
+                widget.number,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface
                 ),
@@ -168,7 +218,7 @@ class _OthersRowItemState extends State<OthersRowItem> with SingleTickerProvider
   void prepareAnimations() {
     expandController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200)
+      duration: const Duration(milliseconds: 250)
     );
     animation = CurvedAnimation(
       parent: expandController,
