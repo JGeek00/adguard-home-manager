@@ -90,9 +90,7 @@ class SelectInterfaceModal extends StatelessWidget {
     }
     else {
       return GestureDetector(
-      onTap: () => Navigator.of(context).pop(),
-      child: Container(
-        color: Colors.transparent,
+        onTap: () => Navigator.of(context).pop(),
         child: DraggableScrollableSheet(
           initialChildSize: 0.6,
           minChildSize: 0.3,
@@ -154,8 +152,7 @@ class SelectInterfaceModal extends StatelessWidget {
             );
           },
         ),
-      ),
-    );
+      );
     }
   }
 }

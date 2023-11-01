@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/logs/clients_modal.dart';
-import 'package:adguard_home_manager/screens/logs/filter_status_modal.dart';
+import 'package:adguard_home_manager/screens/logs/filters/clients_modal.dart';
+import 'package:adguard_home_manager/screens/logs/filters/filter_status_modal.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
