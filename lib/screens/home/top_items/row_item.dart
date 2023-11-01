@@ -71,6 +71,7 @@ class RowItem extends StatelessWidget {
                 clients: [domain]
               )
             );
+            appConfigProvider.setSelectedScreen(2);
           }
         },
         child: Padding(
