@@ -18,8 +18,6 @@ class _LogsState extends State<Logs> {
 
   @override
   Widget build(BuildContext context) {
-   
-
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 1000) {

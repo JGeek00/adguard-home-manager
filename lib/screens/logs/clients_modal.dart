@@ -32,148 +32,7 @@ class _ClientsModalState extends State<ClientsModal> {
 
   @override
   Widget build(BuildContext context) {
-    final logsProvider = Provider.of<LogsProvider>(context);
-    final clientsProvider = Provider.of<ClientsProvider>(context);
-
     final height = MediaQuery.of(context).size.height;
-
-    void apply() async {
-      logsProvider.setSelectedClients(
-        selectedClients.isNotEmpty ? selectedClients : null
-      );
-
-      Navigator.pop(context);
-    }
-
-    Widget listItem({
-      required String label,
-      required void Function() onChanged
-    }) {
-      return Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => onChanged(),
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 24,
-              top: 8,
-              right: 12,
-              bottom: 8
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.onSurface
-                    ),
-                  ),
-                ),
-                Checkbox(
-                  value: selectedClients.contains(label), 
-                  onChanged: (_) => onChanged(),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    void selectAll() {
-      setState(() {
-        selectedClients = clientsProvider.clients!.autoClients.map((item) => item.ip).toList();
-      });
-    }
-
-    void unselectAll() {
-      setState(() {
-        selectedClients = [];
-      });
-    }
-
-    Widget content() {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 24,
-                  bottom: 16,
-                ),
-                child: Icon(
-                  Icons.smartphone_rounded,
-                  size: 24,
-                  color: Theme.of(context).listTileTheme.iconColor
-                ),
-              ),
-              Text(
-                AppLocalizations.of(context)!.clients,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                  color: Theme.of(context).colorScheme.onSurface
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-          Flexible(
-            child: ListView.builder(
-              itemCount: clientsProvider.clients!.autoClients.length,
-              itemBuilder: (context, index) => listItem(
-                label: clientsProvider.clients!.autoClients[index].ip, 
-                onChanged: () {
-                  if (selectedClients.contains(clientsProvider.clients!.autoClients[index].ip)) {
-                    setState(() {
-                      selectedClients = selectedClients.where(
-                        (item) => item != clientsProvider.clients!.autoClients[index].ip
-                      ).toList();
-                    });
-                  }
-                  else {
-                    setState(() {
-                      selectedClients.add(clientsProvider.clients!.autoClients[index].ip);
-                    });
-                  }
-                }
-              )
-            )
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: selectedClients.length == clientsProvider.clients!.autoClients.length
-                    ? () => unselectAll()
-                    : () => selectAll(), 
-                  child: Text(
-                    selectedClients.length == clientsProvider.clients!.autoClients.length
-                      ? AppLocalizations.of(context)!.unselectAll
-                      : AppLocalizations.of(context)!.selectAll
-                  )
-                ),
-                TextButton(
-                  onPressed: apply, 
-                  child: Text(AppLocalizations.of(context)!.apply)
-                )
-              ],
-            ),
-          ),
-          if (Platform.isIOS) const SizedBox(height: 16)
-        ],
-      );
-    }
 
     if (widget.dialog == true) {
       return Dialog(
@@ -181,7 +40,10 @@ class _ClientsModalState extends State<ClientsModal> {
           constraints: const BoxConstraints(
             maxWidth: 500
           ),
-          child: content()
+          child: _ModalContent(
+            selectedClients: selectedClients,
+            onClientsSelected: (v) => setState(() => selectedClients = v),
+          )
         ),
       );
     }
@@ -198,9 +60,176 @@ class _ClientsModalState extends State<ClientsModal> {
             ),
             color: Theme.of(context).dialogBackgroundColor
           ),
-          child: content()
+          child: _ModalContent(
+            selectedClients: selectedClients,
+            onClientsSelected: (v) => setState(() => selectedClients = v),
+          )
         ),
       );
     }
+  }
+}
+
+class _ModalContent extends StatelessWidget {
+  final List<String> selectedClients;
+  final void Function(List<String>) onClientsSelected;
+
+  const _ModalContent({
+    Key? key,
+    required this.selectedClients,
+    required this.onClientsSelected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final clientsProvider = Provider.of<ClientsProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
+
+    void apply() async {
+      logsProvider.setSelectedClients(
+        selectedClients.isNotEmpty ? selectedClients : null
+      );
+
+      Navigator.pop(context);
+    }
+
+    void selectAll() {
+      onClientsSelected(
+        clientsProvider.clients!.autoClients.map((item) => item.ip).toList()
+      );
+    }
+
+    void unselectAll() {
+      onClientsSelected([]);
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 24,
+                bottom: 16,
+              ),
+              child: Icon(
+                Icons.smartphone_rounded,
+                size: 24,
+                color: Theme.of(context).listTileTheme.iconColor
+              ),
+            ),
+            Text(
+              AppLocalizations.of(context)!.clients,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+                color: Theme.of(context).colorScheme.onSurface
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+        Flexible(
+          child: ListView.builder(
+            itemCount: clientsProvider.clients!.autoClients.length,
+            itemBuilder: (context, index) => _ListItem(
+              label: clientsProvider.clients!.autoClients[index].ip, 
+              checkboxActive: selectedClients.contains(clientsProvider.clients!.autoClients[index].ip),
+              onChanged: (isSelected) {
+                if (isSelected == true) {
+                  onClientsSelected([
+                    ...selectedClients,
+                    clientsProvider.clients!.autoClients[index].ip
+                  ]);
+                }
+                else {
+                  onClientsSelected(
+                    selectedClients.where(
+                      (item) => item != clientsProvider.clients!.autoClients[index].ip
+                    ).toList()
+                  );
+                }
+              }
+            )
+          )
+        ),
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: selectedClients.length == clientsProvider.clients!.autoClients.length
+                  ? () => unselectAll()
+                  : () => selectAll(), 
+                child: Text(
+                  selectedClients.length == clientsProvider.clients!.autoClients.length
+                    ? AppLocalizations.of(context)!.unselectAll
+                    : AppLocalizations.of(context)!.selectAll
+                )
+              ),
+              TextButton(
+                onPressed: apply, 
+                child: Text(AppLocalizations.of(context)!.apply)
+              )
+            ],
+          ),
+        ),
+        if (Platform.isIOS) const SizedBox(height: 16)
+      ],
+    );
+  }
+}
+
+class _ListItem extends StatelessWidget {
+  final String label;
+  final bool checkboxActive;
+  final void Function(bool) onChanged;
+
+  const _ListItem({
+    Key? key,
+    required this.label,
+    required this.checkboxActive,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => onChanged(!checkboxActive),
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 24,
+            top: 8,
+            right: 12,
+            bottom: 8
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface
+                  ),
+                ),
+              ),
+              Checkbox(
+                value: checkboxActive, 
+                onChanged: (v) => onChanged(!checkboxActive),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
