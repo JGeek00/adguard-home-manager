@@ -11,8 +11,8 @@ class LogsConfigOptions extends StatelessWidget {
   final bool anonymizeClientIp;
   final void Function(bool) updateAnonymizeClientIp;
   final List<RetentionItem> retentionItems; 
-  final String? retentionTime;
-  final void Function(String?) updateRetentionTime;
+  final double? retentionTime;
+  final void Function(double?) updateRetentionTime;
   final void Function() onClear;
   final void Function() onConfirm;
 
@@ -130,14 +130,12 @@ class LogsConfigOptions extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: DropdownButtonFormField(
-                          items: retentionItems.map<DropdownMenuItem<String>>((item) {
-                            return DropdownMenuItem<String>(
-                              value: item.value.toString(),
-                              child: Text(item.label),
-                            );
-                          }).toList(),
+                          items: retentionItems.map((item) => DropdownMenuItem(
+                            value: item.value,
+                            child: Text(item.label),
+                          )).toList(),
                           value: retentionTime,
-                          onChanged: (value) => updateRetentionTime(value),
+                          onChanged: (value) => updateRetentionTime(value as double),
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(

@@ -79,7 +79,7 @@ class LogsConfigModalWidget extends StatefulWidget {
 class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
   bool generalSwitch = false;
   bool anonymizeClientIp = false;
-  String? retentionTime = "";
+  double? retentionTime;
 
   List<RetentionItem> retentionItems = [];
 
@@ -101,8 +101,10 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
         setState(() {
           generalSwitch = result['data']['enabled'];
           anonymizeClientIp = result['data']['anonymize_client_ip'];
-          retentionTime = result['data']['interval'].toString();
-          loadStatus = LoadStatus.loading;
+          retentionTime = result['data']['interval'] != null 
+            ? double.parse(result['data']['interval'].toString()) 
+            : null;
+          loadStatus = LoadStatus.loaded;
         });
       }
       else {
@@ -191,7 +193,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                     onClear: () => widget.onClear(), 
                     onConfirm: () => widget.onConfirm({
                       "enabled": generalSwitch,
-                      "interval": double.parse(retentionTime!),
+                      "interval": retentionTime,
                       "anonymize_client_ip": anonymizeClientIp
                     })
                   );
@@ -235,7 +237,7 @@ class _LogsConfigModalWidgetState extends State<LogsConfigModalWidget> {
                   onClear: () => widget.onClear(), 
                   onConfirm: () => widget.onConfirm({
                     "enabled": generalSwitch,
-                    "interval": double.parse(retentionTime!),
+                    "interval": retentionTime,
                     "anonymize_client_ip": anonymizeClientIp
                   })
                 );

@@ -214,7 +214,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
       );
       if (result != null && appConfigProvider.doNotRememberVersion != result.tagName && mounted) {
-        await showDialog(
+        showDialog(
           context: context, 
           builder: (context) => UpdateModal(
             gitHubRelease: result,

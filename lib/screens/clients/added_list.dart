@@ -188,7 +188,6 @@ class _AddedListState extends State<AddedList> {
           : null,
         onDelete: openDeleteModal,
         splitView: widget.splitView,
-        serverVersion: statusProvider.serverStatus!.serverVersion,
       ),
       noData: SizedBox(
         width: double.maxFinite,
