@@ -18,9 +18,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/layout.dart';
 import 'package:adguard_home_manager/widgets/menu_bar.dart';
 
-import 'package:adguard_home_manager/functions/check_app_updates.dart';
-import 'package:adguard_home_manager/functions/open_url.dart';
-import 'package:adguard_home_manager/widgets/update_modal.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
@@ -180,7 +177,7 @@ class Main extends StatefulWidget {
   State<Main> createState() => _MainState();
 }
 
-class _MainState extends State<Main> with WidgetsBindingObserver {
+class _MainState extends State<Main> {
   List<DisplayMode> modes = <DisplayMode>[];
   DisplayMode? active;
   DisplayMode? preferred;
@@ -201,28 +198,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
   void initState() {
     displayMode();
 
-    WidgetsBinding.instance.addObserver(this);
-
     super.initState();
-      
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-      final result = await checkAppUpdates(
-        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber,
-        installationSource: appConfigProvider.installationSource,
-        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable,
-        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
-      );
-      if (result != null && appConfigProvider.doNotRememberVersion != result.tagName && mounted) {
-        showDialog(
-          context: context, 
-          builder: (context) => UpdateModal(
-            gitHubRelease: result,
-            onDownload: (link, version) => openUrl(link),
-          ),
-        );
-      }
-    });
   }
 
   @override
