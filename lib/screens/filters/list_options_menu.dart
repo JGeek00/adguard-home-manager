@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/options_modal.dart';
 
+import 'package:adguard_home_manager/functions/open_url.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
@@ -92,11 +95,16 @@ class ListOptionsMenu extends StatelessWidget {
             );
           }
         ),
+        CustomListTile(
+          title: AppLocalizations.of(context)!.openListUrl,
+          icon: Icons.open_in_browser_rounded,
+          onTap: () => openUrl(list.url)
+        ),
       ],
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onLongPress: () => showDialog(
+          onLongPress: Platform.isAndroid || Platform.isIOS ? () => showDialog(
             context: context, 
             builder: (context) => OptionsModal(
               options: [
@@ -117,9 +125,14 @@ class ListOptionsMenu extends StatelessWidget {
                     successMessage: AppLocalizations.of(context)!.listUrlCopied
                   )
                 ),
+                MenuOption(
+                  title: AppLocalizations.of(context)!.openListUrl,
+                  icon: Icons.open_in_browser_rounded,
+                  action: () => openUrl(list.url)
+                ),
               ]
             )
-          ),
+          ) : null,
           child: child
         ),
       ), 
