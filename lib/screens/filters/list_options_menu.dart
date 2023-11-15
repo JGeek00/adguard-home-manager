@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/options_modal.dart';
+import 'package:adguard_home_manager/screens/filters/selection_screen.dart';
 
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -35,6 +36,8 @@ class ListOptionsMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     void enableDisable() async {
       ProcessModal processModal = ProcessModal(context: context);
@@ -70,6 +73,32 @@ class ListOptionsMenu extends StatelessWidget {
       }
     }
 
+    void openSelectionMode() {
+      showGeneralDialog(
+        context: context, 
+        barrierColor: !(width > 900 || !(Platform.isAndroid | Platform.isIOS))
+          ?Colors.transparent 
+          : Colors.black54,
+        transitionBuilder: (context, anim1, anim2, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 1), 
+              end: const Offset(0, 0)
+            ).animate(
+              CurvedAnimation(
+                parent: anim1, 
+                curve: Curves.easeInOutCubicEmphasized
+              )
+            ),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) => SelectionScreen(
+          isModal: width > 900 || !(Platform.isAndroid | Platform.isIOS)
+        )
+      );
+    }
+
     return ContextMenuArea(
       builder: (context) => [
         CustomListTile(
@@ -100,6 +129,11 @@ class ListOptionsMenu extends StatelessWidget {
           icon: Icons.open_in_browser_rounded,
           onTap: () => openUrl(list.url)
         ),
+        CustomListTile(
+          title: AppLocalizations.of(context)!.selectionMode,
+          icon: Icons.check_rounded,
+          onTap: openSelectionMode
+        ),
       ],
       child: Material(
         color: Colors.transparent,
@@ -129,6 +163,11 @@ class ListOptionsMenu extends StatelessWidget {
                   title: AppLocalizations.of(context)!.openListUrl,
                   icon: Icons.open_in_browser_rounded,
                   action: () => openUrl(list.url)
+                ),
+                MenuOption(
+                  title: AppLocalizations.of(context)!.selectionMode,
+                  icon: Icons.check_rounded,
+                  action: openSelectionMode
                 ),
               ]
             )

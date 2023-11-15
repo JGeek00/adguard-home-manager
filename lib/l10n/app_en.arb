@@ -670,5 +670,6 @@
     "showTopItemsChartDescription": "Shows by default the ring chart on the top items sections. Only affects to the mobile view.",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "openListUrl": "Open list URL"
+    "openListUrl": "Open list URL",
+    "selectionMode": "Selection mode"
 }

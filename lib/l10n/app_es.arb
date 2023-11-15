@@ -670,5 +670,6 @@
     "showTopItemsChartDescription": "Muestra por defecto el gráfico de anillo en las secciones de top de items. Sólo afecta a la vista móvil.",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
-    "openListUrl": "Abrir URL de lista"
+    "openListUrl": "Abrir URL de lista",
+    "selectionMode": "Modo de selección"
 }
