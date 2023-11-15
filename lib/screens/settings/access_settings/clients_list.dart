@@ -70,7 +70,7 @@ class _ClientsListState extends State<ClientsList> {
 
     Future refetchClients() async {
       final result = await clientsProvider.fetchClients();
-      if (result == false) {
+      if (result == false && mounted) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientsNotLoaded, 

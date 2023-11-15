@@ -76,7 +76,7 @@ class DhcpStatus {
     v6: json["v6"] != null ? IpVersion.fromJson(json["v6"]) : null,
     leases: List<Lease>.from(json["leases"].map((x) => Lease.fromJson(x))),
     staticLeases: List<Lease>.from(json["static_leases"].map((x) => Lease.fromJson(x))),
-    enabled: json["enabled"],
+    enabled: json["enabled"] ?? false,
   );
 
   Map<String, dynamic> toJson() => {

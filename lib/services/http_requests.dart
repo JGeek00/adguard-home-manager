@@ -1330,55 +1330,68 @@ class ApiClient {
   }
 
   Future getDhcpData() async {
-    final result = await Future.wait([
-      apiRequest(
-        urlPath: '/dhcp/interfaces', 
-        method: 'get',
-        server: server, 
-        type: 'get_dhcp_data'
-      ),
-      apiRequest(
-        urlPath: '/dhcp/status', 
-        method: 'get',
-        server: server, 
-        type: 'get_dhcp_data'
-      ),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(
+          urlPath: '/dhcp/interfaces', 
+          method: 'get',
+          server: server, 
+          type: 'get_dhcp_data'
+        ),
+        apiRequest(
+          urlPath: '/dhcp/status', 
+          method: 'get',
+          server: server, 
+          type: 'get_dhcp_data'
+        ),
+      ]);
 
-    if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
-      if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
-        List<NetworkInterface> interfaces = List<NetworkInterface>.from(jsonDecode(result[0]['body']).entries.map((entry) => NetworkInterface.fromJson(entry.value)));
+      if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
+        if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
+          List<NetworkInterface> interfaces = List<NetworkInterface>.from(jsonDecode(result[0]['body']).entries.map((entry) => NetworkInterface.fromJson(entry.value)));
 
-        return {
-          'result': 'success',
-          'data': DhcpModel(
-            networkInterfaces: interfaces, 
-            dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
-          )
-        };
+          return {
+            'result': 'success',
+            'data': DhcpModel(
+              networkInterfaces: interfaces, 
+              dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
+            )
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_dhcp_data', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+              resBody: result.map((res) => res['body'] ?? 'null').toString(),
+            )
+          };
+        }
       }
       else {
         return {
           'result': 'error',
           'log': AppLog(
-            type: 'get_dhcp_data', 
+            type: 'get_dhpc_data', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
+            message: [result[0]['log'].message, result[1]['log'].message].toString(),
             statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
             resBody: result.map((res) => res['body'] ?? 'null').toString(),
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
         'result': 'error',
         'log': AppLog(
           type: 'get_dhpc_data', 
           dateTime: DateTime.now(), 
-          message: [result[0]['log'].message, result[1]['log'].message].toString(),
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+          message: 'error_code_not_expected',
+          resBody: e.toString(),
         )
       };
     }

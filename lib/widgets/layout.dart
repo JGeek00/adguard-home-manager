@@ -153,7 +153,9 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
                       child: child,
                     )
                   ),
-                  child: screens[appConfigProvider.selectedScreen].child,
+                  child: appConfigProvider.selectedScreen < screens.length
+                    ? screens[appConfigProvider.selectedScreen].child
+                    : screens[0].child,
                 ),
               ),
             ],
@@ -177,7 +179,9 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
                 child: child,
               )
             ),
-            child: screens[appConfigProvider.selectedScreen].child,
+            child: appConfigProvider.selectedScreen < screens.length
+              ? screens[appConfigProvider.selectedScreen].child
+              : screens[0].child,
           ),
           bottomNavigationBar: NavigationBar(
             selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
