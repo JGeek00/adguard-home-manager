@@ -9,7 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/options_modal.dart';
-import 'package:adguard_home_manager/screens/filters/selection_screen.dart';
+import 'package:adguard_home_manager/screens/filters/selection/selection_screen.dart';
 
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';

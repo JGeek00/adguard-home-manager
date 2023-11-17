@@ -671,5 +671,7 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "openListUrl": "Open list URL",
-    "selectionMode": "Selection mode"
+    "selectionMode": "Selection mode",
+    "enableDisableSelected": "Enable or disable selected items",
+    "deleteSelected": "Delete selected items"
 }
