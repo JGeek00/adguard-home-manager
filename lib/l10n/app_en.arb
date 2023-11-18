@@ -673,5 +673,13 @@
     "openListUrl": "Open list URL",
     "selectionMode": "Selection mode",
     "enableDisableSelected": "Enable or disable selected items",
-    "deleteSelected": "Delete selected items"
+    "deleteSelected": "Delete selected items",
+    "deleteSelectedLists": "Delete selected lists",
+    "allSelectedListsDeletedSuccessfully": "All selected lists have been deleted successfully.",
+    "deletionResult": "Deletion result",
+    "deletingLists": "Deleting lists...",
+    "failedElements": "Failed elements",
+    "processingLists": "Processing lists...",
+    "enableDisableResult": "Enable or disable result",
+    "selectedListsEnabledDisabledSuccessfully": "All selected lists have been enabled or disabled successfully"
 }

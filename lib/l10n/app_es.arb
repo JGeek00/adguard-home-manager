@@ -673,5 +673,13 @@
     "openListUrl": "Abrir URL de lista",
     "selectionMode": "Modo de selección",
     "enableDisableSelected": "Activar o desactivar elementos seleccionados",
-    "deleteSelected": "Eliminar elementos seleccionados"
+    "deleteSelected": "Eliminar elementos seleccionados",
+    "deleteSelectedLists": "Eliminar listas seleccionadas",
+    "allSelectedListsDeletedSuccessfully": "Todas las listas seleccionadas han sido eliminadas correctamente.",
+    "deletionResult": "Resultado de eliminación",
+    "deletingLists": "Eliminando listas...",
+    "failedElements": "Elementos fallidos",
+    "processingLists": "Procesando listas...",
+    "enableDisableResult": "Resultado de activar o desactivar",
+    "selectedListsEnabledDisabledSuccessfully": "Todas las listas seleccionadas se han activado o desactivado correctamente."
 }

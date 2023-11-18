@@ -384,4 +384,75 @@ class FilteringProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<List<ProcessedList>> deleteMultipleLists({
+    required List<Filter> blacklists,
+    required List<Filter> whitelists
+  }) async {
+    Future<ProcessedList> deleteList({
+      required Filter list,
+      required bool isWhitelist,
+    }) async {
+      final result = await _serversProvider!.apiClient!.deleteFilterList(
+        data: {
+          "url": list.url,
+          "whitelist": isWhitelist
+        }
+      );
+      if (result['result'] == 'success') {
+        return ProcessedList(list: list, successful: true);
+      }
+      else {
+        return ProcessedList(list: list, successful: false);
+      }
+    }
+
+    final resultWhitelists = await Future.wait(whitelists.map((e) => deleteList(list: e, isWhitelist: true)));
+    final resultBlacklists = await Future.wait(blacklists.map((e) => deleteList(list: e, isWhitelist: false)));
+
+    await fetchFilters();
+
+    return [
+      ...resultWhitelists,
+      ...resultBlacklists,
+    ];
+  }
+
+  Future<List<ProcessedList>> enableDisableMultipleLists({
+    required List<Filter> blacklists,
+    required List<Filter> whitelists
+  }) async {
+    Future<ProcessedList> enableDisableList({
+      required Filter list,
+      required bool isWhitelist,
+    }) async {
+        final result = await _serversProvider!.apiClient!.updateFilterList(
+        data: {
+          "data": {
+            "enabled": !list.enabled,
+            "name": list.name,
+            "url": list.url
+          },
+          "url": list.url,
+          "whitelist": isWhitelist
+        }
+      );
+      if (result['result'] == 'success') {
+        return ProcessedList(list: list, successful: true);
+      }
+      else {
+        return ProcessedList(list: list, successful: false);
+      }
+    }
+
+    final resultWhitelists = await Future.wait(whitelists.map((e) => enableDisableList(list: e, isWhitelist: true)));
+    final resultBlacklists = await Future.wait(blacklists.map((e) => enableDisableList(list: e, isWhitelist: false)));
+
+    await fetchFilters();
+
+    return [
+      ...resultWhitelists,
+      ...resultBlacklists,
+    ];
+  }
 }

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/filters/selection/enable_disable_selection_modal.dart';
+import 'package:adguard_home_manager/screens/filters/selection/delete_selection_modal.dart';
+import 'package:adguard_home_manager/screens/filters/selection/selection_result_modal.dart';
 import 'package:adguard_home_manager/screens/filters/selection/selection_lists.dart';
 
+import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
 
@@ -39,7 +43,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
       vsync: this,
     );
     _scrollController = ScrollController()..addListener(() {
-      setState(() => _isScrolled = _scrollController.offset > 0);
+      setState(() => _isScrolled = _scrollController.offset > 20);
     });
   }
 
@@ -71,11 +75,65 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
     final somethingSelected = _selectedBlacklists.isNotEmpty || _selectedWhitelists.isNotEmpty;
 
     void enableDisableSelected() {
-
+      showDialog(
+        context: context, 
+        builder: (ctx) => EnableDisableSelectionModal(
+          selectedWhitelists: _selectedWhitelists,
+          selectedBlacklists: _selectedBlacklists,
+          onDelete: () async {
+            Navigator.pop(context);
+            final processModal = ProcessModal(context: context);
+            processModal.open(AppLocalizations.of(context)!.processingLists);
+            final result = await filteringProvider.enableDisableMultipleLists(
+              blacklists: _selectedBlacklists, 
+              whitelists: _selectedWhitelists
+            );
+            if (!mounted) return;
+            processModal.close();
+            showDialog(
+              context: context, 
+              builder: (ctx) => SelectionResultModal(
+                mode: SelectionResultMode.enableDisable,
+                results: result,
+                onClose: () => Navigator.pop(context),
+              ),
+              barrierDismissible: false
+            );
+          },
+        ),
+        barrierDismissible: false
+      );
     }
 
     void deleteSelected() {
-
+      showDialog(
+        context: context, 
+        builder: (ctx) => DeleteSelectionModal(
+          selectedWhitelists: _selectedWhitelists,
+          selectedBlacklists: _selectedBlacklists,
+          onDelete: () async {
+            Navigator.pop(context);
+            final processModal = ProcessModal(context: context);
+            processModal.open(AppLocalizations.of(context)!.deletingLists);
+            final result = await filteringProvider.deleteMultipleLists(
+              blacklists: _selectedBlacklists, 
+              whitelists: _selectedWhitelists
+            );
+            if (!mounted) return;
+            processModal.close();
+            showDialog(
+              context: context, 
+              builder: (ctx) => SelectionResultModal(
+                mode: SelectionResultMode.delete,
+                results: result,
+                onClose: () => Navigator.pop(context),
+              ),
+              barrierDismissible: false
+            );
+          },
+        ),
+        barrierDismissible: false
+      );
     }
     
     if (widget.isModal == true) {
@@ -107,7 +165,21 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                         )
                       ],
                     ),
-                    
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: enableDisableSelected, 
+                          icon: const Icon(Icons.shield_rounded),
+                          tooltip: AppLocalizations.of(context)!.enableDisableSelected,
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          onPressed: deleteSelected, 
+                          icon: const Icon(Icons.delete_rounded),
+                          tooltip: AppLocalizations.of(context)!.deleteSelectedLists,
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -141,7 +213,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                               selectedLists: _selectedWhitelists, 
                               onSelect: (list) => handleSelect(list, ListType.whitelist), 
                               selectAll: () => setState(() => _selectedWhitelists = filteringProvider.filtering!.whitelistFilters), 
-                              unselectAll: () => setState(() => [])
+                              unselectAll: () => setState(() => _selectedWhitelists = [])
                             ),
                             SelectionList(
                               lists: filteringProvider.filtering!.filters, 
@@ -240,7 +312,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                       Icons.shield_rounded,
                       color: somethingSelected == true
                         ? Theme.of(context).colorScheme.onPrimaryContainer
-                        : Theme.of(context).colorScheme.secondary,
+                        : Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -253,7 +325,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                       Icons.delete_rounded,
                       color: somethingSelected == true
                         ? Theme.of(context).colorScheme.onPrimaryContainer
-                        : Theme.of(context).colorScheme.secondary,
+                        : Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
                     ),
                   ),
                 ],
