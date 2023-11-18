@@ -127,12 +127,18 @@ class ListOptionsMenu extends StatelessWidget {
         CustomListTile(
           title: AppLocalizations.of(context)!.openListUrl,
           icon: Icons.open_in_browser_rounded,
-          onTap: () => openUrl(list.url)
+          onTap: () {
+            Navigator.pop(context);  // Closes the context menu
+            openUrl(list.url);
+          }
         ),
         CustomListTile(
           title: AppLocalizations.of(context)!.selectionMode,
           icon: Icons.check_rounded,
-          onTap: openSelectionMode
+          onTap: () {
+            Navigator.pop(context);  // Closes the context menu
+            openSelectionMode();
+          }
         ),
       ],
       child: Material(
