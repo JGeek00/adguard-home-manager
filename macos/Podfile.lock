@@ -9,28 +9,28 @@ PODS:
   - FMDB/standard (2.7.5)
   - package_info_plus (0.0.1):
     - FlutterMacOS
-  - Sentry/HybridSDK (8.9.1):
-    - SentryPrivate (= 8.9.1)
+  - Sentry/HybridSDK (8.15.2):
+    - SentryPrivate (= 8.15.2)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.9.1)
-  - SentryPrivate (8.9.1)
+    - Sentry/HybridSDK (= 8.15.2)
+  - SentryPrivate (8.15.2)
   - sqflite (0.0.2):
     - FlutterMacOS
     - FMDB (>= 2.7.5)
-  - sqlite3 (3.43.0):
-    - sqlite3/common (= 3.43.0)
-  - sqlite3/common (3.43.0)
-  - sqlite3/fts5 (3.43.0):
+  - sqlite3 (3.44.0):
+    - sqlite3/common (= 3.44.0)
+  - sqlite3/common (3.44.0)
+  - sqlite3/fts5 (3.44.0):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.43.0):
+  - sqlite3/perf-threadsafe (3.44.0):
     - sqlite3/common
-  - sqlite3/rtree (3.43.0):
+  - sqlite3/rtree (3.44.0):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - FlutterMacOS
-    - sqlite3 (~> 3.43.0)
+    - sqlite3 (~> 3.44.0)
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
@@ -83,12 +83,12 @@ SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
-  Sentry: e3203780941722a1fcfee99e351de14244c7f806
-  sentry_flutter: 8f0ffd53088e6a4d50c095852c5cad9e4405025c
-  SentryPrivate: 5e3683390f66611fc7c6215e27645873adb55d13
+  Sentry: 6f5742b4c47c17c9adcf265f6f328cf4a0ed1923
+  sentry_flutter: 2c309a1d4b45e59d02cfa15795705687f1e2081b
+  SentryPrivate: b2f7996f37781080f04a946eb4e377ff63c64195
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
-  sqlite3: 7afcf055d3700254769a4dcba56f27d26b5515c9
-  sqlite3_flutter_libs: 03613b0558ba0bb5544aa3ba3d0862c09c7a19b3
+  sqlite3: 6e2d4a4879854d0ec86b476bf3c3e30870bac273
+  sqlite3_flutter_libs: 5b7e226d522d67be60d7ade93f5aa11ebc0cd796
   url_launcher_macos: d2691c7dd33ed713bf3544850a623080ec693d95
   window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
 
