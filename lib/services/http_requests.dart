@@ -4,12 +4,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
-import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -19,8 +20,6 @@ import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/server.dart';
-import 'package:adguard_home_manager/constants/urls.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 
 Future<Map<String, dynamic>> apiRequest({

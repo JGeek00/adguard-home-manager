@@ -11,7 +11,6 @@ import 'package:adguard_home_manager/screens/logs/configuration/logs_config_moda
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
