@@ -27,9 +27,6 @@ class SelectionScreen extends StatefulWidget {
 
 class _SelectionScreenState extends State<SelectionScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  late ScrollController _scrollController;
-
-  bool _isScrolled = false;
 
   List<Filter> _selectedWhitelists = [];
   List<Filter> _selectedBlacklists = [];
@@ -42,9 +39,6 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
       length: 2,
       vsync: this,
     );
-    _scrollController = ScrollController()..addListener(() {
-      setState(() => _isScrolled = _scrollController.offset > 20);
-    });
   }
 
   void handleSelect(Filter list, ListType type) {
@@ -245,7 +239,6 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
             DefaultTabController(
               length: 2,
               child: NestedScrollView(
-                controller: _scrollController,
                 headerSliverBuilder: ((context, innerBoxIsScrolled) {
                   return [
                     SliverOverlapAbsorber(
