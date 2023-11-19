@@ -8,6 +8,8 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 
+enum AccessSettingsList { allowed, disallowed, domains }
+
 class ClientsProvider with ChangeNotifier {
   ServersProvider? _serversProvider;
   StatusProvider? _statusProvider;
@@ -195,20 +197,20 @@ class ClientsProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> addClientList(String item, String type) async {
+  Future<Map<String, dynamic>> addClientList(String item, AccessSettingsList type) async {
     Map<String, List<String>> body = {
       "allowed_clients": clients!.clientsAllowedBlocked?.allowedClients ?? [],
       "disallowed_clients": clients!.clientsAllowedBlocked?.disallowedClients ?? [],
       "blocked_hosts": clients!.clientsAllowedBlocked?.blockedHosts ?? [],
     };
 
-    if (type == 'allowed') {
+    if (type == AccessSettingsList.allowed) {
       body['allowed_clients']!.add(item);
     }
-    else if (type == 'disallowed') {
+    else if (type == AccessSettingsList.disallowed) {
       body['disallowed_clients']!.add(item);
     }
-    else if (type == 'domains') {
+    else if (type == AccessSettingsList.domains) {
       body['blocked_hosts']!.add(item);
     }
 
@@ -239,20 +241,20 @@ class ClientsProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> removeClientList(String client, String type) async {
+  Future<Map<String, dynamic>> removeClientList(String client, AccessSettingsList type) async {
     Map<String, List<String>> body = {
       "allowed_clients": clients!.clientsAllowedBlocked?.allowedClients ?? [],
       "disallowed_clients": clients!.clientsAllowedBlocked?.disallowedClients ?? [],
       "blocked_hosts": clients!.clientsAllowedBlocked?.blockedHosts ?? [],
     };
 
-    if (type == 'allowed') {
+    if (type == AccessSettingsList.allowed) {
       body['allowed_clients'] = body['allowed_clients']!.where((c) => c != client).toList();
     }
-    else if (type == 'disallowed') {
+    else if (type == AccessSettingsList.disallowed) {
       body['disallowed_clients'] = body['disallowed_clients']!.where((c) => c != client).toList();
     }
-    else if (type == 'domains') {
+    else if (type == AccessSettingsList.domains) {
       body['blocked_hosts'] = body['blocked_hosts']!.where((c) => c != client).toList();
     }
 

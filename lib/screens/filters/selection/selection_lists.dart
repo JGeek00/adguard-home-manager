@@ -152,11 +152,10 @@ class _Tile extends StatelessWidget {
   final bool isSelected;
 
   const _Tile({
-    Key? key,
     required this.list,
     required this.onSelect,
     required this.isSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -310,7 +310,6 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                 )
               )
             ),
-            
           ],
         ),
       );

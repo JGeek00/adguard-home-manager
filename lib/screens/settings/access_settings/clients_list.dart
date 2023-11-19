@@ -18,18 +18,18 @@ import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
 class ClientsList extends StatefulWidget {
-  final String type;
+  final AccessSettingsList type;
   final ScrollController scrollController;
   final LoadStatus loadStatus;
   final List<String> data;
 
   const ClientsList({
-    Key? key,
+    super.key,
     required this.type,
     required this.scrollController,
     required this.loadStatus,
     required this.data,
-  }) : super(key: key);
+  });
 
   @override
   State<ClientsList> createState() => _ClientsListState();
@@ -79,20 +79,20 @@ class _ClientsListState extends State<ClientsList> {
       }
     }
 
-    void confirmRemoveItem(String client, String type) async {
+    void confirmRemoveItem(String client, AccessSettingsList type) async {
       Map<String, List<String>> body = {
         "allowed_clients": clientsProvider.clients!.clientsAllowedBlocked?.allowedClients ?? [],
         "disallowed_clients": clientsProvider.clients!.clientsAllowedBlocked?.disallowedClients ?? [],
         "blocked_hosts": clientsProvider.clients!.clientsAllowedBlocked?.blockedHosts ?? [],
       };
 
-      if (type == 'allowed') {
+      if (type == AccessSettingsList.allowed) {
         body['allowed_clients'] = body['allowed_clients']!.where((c) => c != client).toList();
       }
-      else if (type == 'disallowed') {
+      else if (type == AccessSettingsList.disallowed) {
         body['disallowed_clients'] = body['disallowed_clients']!.where((c) => c != client).toList();
       }
-      else if (type == 'domains') {
+      else if (type == AccessSettingsList.domains) {
         body['blocked_hosts'] = body['blocked_hosts']!.where((c) => c != client).toList();
       }
 
@@ -128,7 +128,7 @@ class _ClientsListState extends State<ClientsList> {
       }
     }
 
-    void confirmAddItem(String item, String type) async {
+    void confirmAddItem(String item, AccessSettingsList type) async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.removingClient);
 
@@ -163,13 +163,13 @@ class _ClientsListState extends State<ClientsList> {
 
     String description() {
       switch (widget.type) {
-        case 'allowed':
+        case AccessSettingsList.allowed:
           return AppLocalizations.of(context)!.allowedClientsDescription;
 
-        case 'disallowed':
+        case AccessSettingsList.disallowed:
           return AppLocalizations.of(context)!.blockedClientsDescription;
 
-        case 'domains':
+        case AccessSettingsList.domains:
           return AppLocalizations.of(context)!.disallowedDomainsDescription;
 
         default:
@@ -179,13 +179,13 @@ class _ClientsListState extends State<ClientsList> {
 
     String noItems() {
       switch (widget.type) {
-        case 'allowed':
+        case AccessSettingsList.allowed:
           return AppLocalizations.of(context)!.noAllowedClients;
 
-        case 'disallowed':
+        case AccessSettingsList.disallowed:
           return AppLocalizations.of(context)!.noBlockedClients;
 
-        case 'domains':
+        case AccessSettingsList.domains:
           return AppLocalizations.of(context)!.noDisallowedDomains;
 
         default:

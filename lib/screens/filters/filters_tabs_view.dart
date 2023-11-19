@@ -18,12 +18,12 @@ class FiltersTabsView extends StatefulWidget {
   final void Function(Filter, String) onOpenDetailsModal;
 
   const FiltersTabsView({
-    Key? key,
+    super.key,
     required this.appConfigProvider,
     required this.actions,
     required this.onOpenDetailsModal,
     required this.onRemoveCustomRule
-  }) : super(key: key);
+  });
 
   @override
   State<FiltersTabsView> createState() => _FiltersTabsViewState();
@@ -70,6 +70,7 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
                   controller: tabController,
                   isScrollable: true,
                   unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                  tabAlignment: TabAlignment.start,
                   tabs: [
                     Tab(
                       child: Row(
