@@ -8,9 +8,9 @@ class OptionsModal extends StatelessWidget {
   final List<MenuOption> options;
 
   const OptionsModal({
-    Key? key,
+    super.key,
     required this.options,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +32,22 @@ class OptionsModal extends StatelessWidget {
           )
         ],
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: options.map((opt) => CustomListTileDialog(
-          title: opt.title,
-          icon: opt.icon,
-          onTap: () {
-            Navigator.pop(context);
-            opt.action();
-          },
-        )).toList()
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 400
+        ),
+        child: SingleChildScrollView(
+          child: Wrap(
+            children: options.map((opt) => CustomListTileDialog(
+              title: opt.title,
+              icon: opt.icon,
+              onTap: () {
+                Navigator.pop(context);
+                opt.action();
+              },
+            )).toList()
+          ),
+        ),
       ),
       actions: [
         Row(

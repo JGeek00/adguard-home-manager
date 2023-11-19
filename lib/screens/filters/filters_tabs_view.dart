@@ -77,7 +77,7 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
                         children: [
                           const Icon(Icons.verified_user_rounded),
                           const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.whitelists,)
+                          Text(AppLocalizations.of(context)!.whitelists)
                         ],
                       ),
                     ),

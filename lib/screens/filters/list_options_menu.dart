@@ -26,11 +26,11 @@ class ListOptionsMenu extends StatelessWidget {
   final String listType;
 
   const ListOptionsMenu({
-    Key? key,
+    super.key,
     required this.list,
     required this.child,
     required this.listType,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

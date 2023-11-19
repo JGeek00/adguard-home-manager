@@ -17,9 +17,9 @@ class SelectionScreen extends StatefulWidget {
   final bool isModal;
 
   const SelectionScreen({
-    Key? key,
+    super.key,
     required this.isModal
-  }) : super(key: key);
+  });
 
   @override
   State<SelectionScreen> createState() => _SelectionScreenState();
@@ -168,13 +168,17 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                     Row(
                       children: [
                         IconButton(
-                          onPressed: enableDisableSelected, 
-                          icon: const Icon(Icons.shield_rounded),
+                          onPressed: somethingSelected == true
+                            ? () => enableDisableSelected()
+                            : null, 
+                          icon: const Icon(Icons.remove_moderator_rounded),
                           tooltip: AppLocalizations.of(context)!.enableDisableSelected,
                         ),
                         const SizedBox(width: 8),
                         IconButton(
-                          onPressed: deleteSelected, 
+                          onPressed: somethingSelected == true
+                            ? () => deleteSelected()
+                            : null, 
                           icon: const Icon(Icons.delete_rounded),
                           tooltip: AppLocalizations.of(context)!.deleteSelectedLists,
                         ),
@@ -270,7 +274,24 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                               quantity: _selectedBlacklists.length
                             ),
                           ]
-                        )
+                        ),
+                        actions: [
+                          IconButton(
+                            onPressed: somethingSelected == true
+                              ? () => enableDisableSelected()
+                              : null, 
+                            icon: const Icon(Icons.remove_moderator_rounded),
+                            tooltip: AppLocalizations.of(context)!.enableDisableSelected,
+                          ),
+                          IconButton(
+                            onPressed: somethingSelected == true
+                              ? () => deleteSelected()
+                              : null, 
+                            icon: const Icon(Icons.delete_rounded),
+                            tooltip: AppLocalizations.of(context)!.deleteSelectedLists,
+                          ),
+                          const SizedBox(width: 8),
+                        ],
                       ),
                     )
                   ];
@@ -296,41 +317,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                 )
               )
             ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.ease,
-              right: 16,
-              bottom: _isScrolled ? -150 : 16,
-              child: Column(
-                children: [
-                  FloatingActionButton.small(
-                    onPressed: somethingSelected == true
-                      ? () => enableDisableSelected()
-                      : null,
-                    tooltip: AppLocalizations.of(context)!.enableDisableSelected,
-                    child: Icon(
-                      Icons.shield_rounded,
-                      color: somethingSelected == true
-                        ? Theme.of(context).colorScheme.onPrimaryContainer
-                        : Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  FloatingActionButton.small(
-                    onPressed: somethingSelected == true
-                      ? () => deleteSelected()
-                      : null,
-                    tooltip: AppLocalizations.of(context)!.deleteSelected,
-                    child: Icon(
-                      Icons.delete_rounded,
-                      color: somethingSelected == true
-                        ? Theme.of(context).colorScheme.onPrimaryContainer
-                        : Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
-                    ),
-                  ),
-                ],
-              ),
-            )
+            
           ],
         ),
       );
@@ -344,11 +331,10 @@ class _Tab extends StatelessWidget {
   final int quantity;
 
   const _Tab({
-    Key? key,
     required this.icon,
     required this.text,
     required this.quantity
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

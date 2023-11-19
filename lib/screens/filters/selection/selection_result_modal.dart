@@ -11,11 +11,11 @@ class SelectionResultModal extends StatelessWidget {
   final SelectionResultMode mode;
 
   const SelectionResultModal({
-    Key? key,
+    super.key, 
     required this.results,
     required this.onClose,
     required this.mode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class SelectionResultModal extends StatelessWidget {
           Icon(
             mode == SelectionResultMode.delete
               ? Icons.delete_rounded
-              : Icons.shield_rounded,
+              : Icons.remove_moderator_rounded,
             size: 24,
             color: Theme.of(context).listTileTheme.iconColor
           ),

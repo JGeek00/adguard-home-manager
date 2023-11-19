@@ -29,7 +29,7 @@ class _EnableDisableSelectionModalState extends State<EnableDisableSelectionModa
       title: Column(
         children: [
           Icon(
-            Icons.shield_rounded,
+            Icons.remove_moderator_rounded,
             size: 24,
             color: Theme.of(context).listTileTheme.iconColor
           ),
