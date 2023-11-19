@@ -12,6 +12,7 @@ import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
+import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
@@ -191,10 +192,11 @@ class _AddServerModalState extends State<AddServerModal> {
       statusProvider.setServerStatusLoad(LoadStatus.loading);
       final ApiClient apiClient = ApiClient(server: serverObj);
       final serverStatus = await apiClient.getServerStatus();
+      final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
+      final serverStatus2 = await apiClient2.getServerStatus();
 
       // If something goes wrong when fetching server status
-      if (serverStatus['result'] != 'success') {
-        appConfigProvider.addLog(serverStatus['log']);
+      if (serverStatus2.successful == false) {
         statusProvider.setServerStatusLoad(LoadStatus.error);
         Navigator.pop(context);
         return;

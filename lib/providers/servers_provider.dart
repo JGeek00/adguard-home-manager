@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:adguard_home_manager/services/api_client.dart';
+import 'package:adguard_home_manager/services/external_requests.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/models/update_available.dart';
 import 'package:adguard_home_manager/services/http_requests.dart';
@@ -16,6 +18,7 @@ class ServersProvider with ChangeNotifier {
   List<Server> _serversList = [];
   Server? _selectedServer;
   ApiClient? _apiClient;
+  ApiClientV2? _apiClient2;
 
   bool _updatingServer = false;
 
@@ -26,6 +29,10 @@ class ServersProvider with ChangeNotifier {
 
   ApiClient? get apiClient {
     return _apiClient;
+  }
+
+  ApiClientV2? get apiClient2 {
+    return _apiClient2;
   }
 
   List<Server> get serversList {
@@ -72,6 +79,11 @@ class ServersProvider with ChangeNotifier {
 
   void setApiClient(ApiClient client) {
     _apiClient = client;
+    notifyListeners();
+  }
+
+  void setApiClient2(ApiClientV2 client) {
+    _apiClient2 = client;
     notifyListeners();
   }
 
@@ -176,9 +188,9 @@ class ServersProvider with ChangeNotifier {
     final result = await client!.checkServerUpdates();
     if (result['result'] == 'success') {
       UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
-      final gitHubResult = await client.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
-      if (gitHubResult['result'] == 'success') {
-        data.changelog = gitHubResult['body'];
+      final gitHubResult = await ExternalRequests.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
+      if (gitHubResult.successful == true) {
+        data.changelog = gitHubResult.content;
       }
       setUpdateAvailableData(data);
       setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
@@ -188,9 +200,9 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future initializateServer(Server server, ApiClient apiClient) async {
-    final serverStatus = await _apiClient!.getServerStatus();
-    if (serverStatus['result'] == 'success') {
+  Future initializateServer(Server server, ApiClient apiClient, ApiClientV2 apiClient2) async {
+    final serverStatus = await _apiClient2!.getServerStatus();
+    if (serverStatus.successful == true) {
       checkServerUpdatesAvailable( // Do not await
         server: server,
         apiClient: apiClient
@@ -226,8 +238,10 @@ class ServersProvider with ChangeNotifier {
       if (defaultServer != null) {
         _selectedServer = defaultServer;
         final client = ApiClient(server: defaultServer);
+        final client2 = ApiClientV2(server: defaultServer);
         _apiClient = client;
-        initializateServer(defaultServer, client);
+        _apiClient2 = client2;
+        initializateServer(defaultServer, client, client2);
       }
     }
     else {
@@ -244,13 +258,13 @@ class ServersProvider with ChangeNotifier {
         const Duration(seconds: 2), 
         (timer) async {
           if (_selectedServer != null && _selectedServer == server) {
-            final result = await _apiClient!.checkServerUpdates();
-            if (result['result'] == 'success') {
-              UpdateAvailableData data = UpdateAvailableData.fromJsonUpdate(result['data']);
+            final result = await _apiClient2!.checkServerUpdates();
+            if (result.successful == true) {
+              UpdateAvailableData data = UpdateAvailableData.fromJsonUpdate(result.content);
               if (data.currentVersion == data.newVersion) {
-                final gitHubResult = await _apiClient!.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
-                if (gitHubResult['result'] == 'success') {
-                  data.changelog = gitHubResult['body'];
+                final gitHubResult = await ExternalRequests.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
+                if (gitHubResult.successful == true) {
+                  data.changelog = gitHubResult.content;
                 }
                 setUpdateAvailableData(data);
                 timer.cancel();

@@ -6,7 +6,6 @@ import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 
 class StatusProvider with ChangeNotifier {
@@ -104,7 +103,7 @@ class StatusProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> updateBlocking({
+  Future<bool> updateBlocking({
     required String block, 
     required bool newStatus,
     int? time
@@ -114,14 +113,14 @@ class StatusProvider with ChangeNotifier {
         _protectionsManagementProcess.add('general');
         notifyListeners();
 
-        final result = await _serversProvider!.apiClient!.updateGeneralProtection(
+        final result = await _serversProvider!.apiClient2!.updateGeneralProtection(
           enable: newStatus,
           time: time
         );
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
 
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           _serverStatus!.generalEnabled = newStatus;
           if (time != null) {
             final deadline = generateTimeDeadline(time);
@@ -135,31 +134,11 @@ class StatusProvider with ChangeNotifier {
             stopCountdown();
           }
           notifyListeners();
-          return null;
+          return true;
         }
         else {
-          notifyListeners();
-          return result['log'];
+          return false;
         }
-
-      case 'general_legacy':
-        _protectionsManagementProcess.add('general');
-        notifyListeners();
-
-        final result = await _serversProvider!.apiClient!.updateGeneralProtectionLegacy(newStatus);
-
-        _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'general').toList();
-
-        if (result['result'] == 'success') {
-          _serverStatus!.generalEnabled = newStatus;
-          notifyListeners();
-          return null;
-        }
-        else {
-          notifyListeners();
-          return result['log'];
-        }
-
 
       case 'filtering':
         _protectionsManagementProcess.add('filtering');
@@ -174,72 +153,61 @@ class StatusProvider with ChangeNotifier {
         if (result['result'] == 'success') {
           _serverStatus!.filteringEnabled = newStatus;
           notifyListeners();
-          return null;
+          return true;
         }
         else {
-          
-          notifyListeners();
-          return result['log'];
+          return false;
         }
 
       case 'safeSearch':
         _protectionsManagementProcess.add('safeSearch');
         notifyListeners();
 
-        final result = serverVersionIsAhead(
-          currentVersion: serverStatus!.serverVersion, 
-          referenceVersion: 'v0.107.28',
-          referenceVersionBeta: 'v0.108.0-b.33'
-        ) == true
-          ? await _serversProvider!.apiClient!.updateSafeSearchSettings(body: { 'enabled': newStatus })
-          : await _serversProvider!.apiClient!.updateSafeSearchLegacy(newStatus);
+        final result = await _serversProvider!.apiClient2!.updateSafeSearchSettings(body: { 'enabled': newStatus });
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'safeSearch').toList();
 
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           _serverStatus!.safeSearchEnabled = newStatus;
           notifyListeners();
-          return null;
+          return true;
         }
         else {
-          notifyListeners();
-          return result['log'];
+          return false;
         }
 
       case 'safeBrowsing':
         _protectionsManagementProcess.add('safeBrowsing');
         notifyListeners();
 
-        final result = await _serversProvider!.apiClient!.updateSafeBrowsing(newStatus);
+        final result = await _serversProvider!.apiClient2!.updateSafeBrowsing(enable: newStatus);
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'safeBrowsing').toList();
 
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           _serverStatus!.safeBrowsingEnabled = newStatus;
           notifyListeners();
-          return null;
+          return true;
         }
         else {
-          notifyListeners();
-          return result['log'];
+          return false;
         }
 
       case 'parentalControl':
         _protectionsManagementProcess.add('parentalControl');
         notifyListeners();
 
-        final result = await _serversProvider!.apiClient!.updateParentalControl(newStatus);
+        final result = await _serversProvider!.apiClient2!.updateParentalControl(enable: newStatus);
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'parentalControl').toList();
 
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           _serverStatus!.parentalControlEnabled = newStatus;
           notifyListeners();
-          return null;
+          return true;
         }
         else {
-          notifyListeners();
-          return result['log'];
+          return false;
         }
 
       default:
@@ -252,9 +220,9 @@ class StatusProvider with ChangeNotifier {
   }
 
   Future<bool> getFilteringRules() async {
-    final result = await _serversProvider!.apiClient!.getFilteringRules();
-    if (result['result'] == 'success') {
-      _filteringStatus = result['data'];
+    final result = await _serversProvider!.apiClient2!.getFilteringRules();
+    if (result.successful == true) {
+      _filteringStatus = result.content as FilteringStatus;
       notifyListeners();
       return true;
     }
@@ -270,10 +238,10 @@ class StatusProvider with ChangeNotifier {
       _loadStatus = LoadStatus.loading;
     }
 
-    final result = await _serversProvider!.apiClient!.getServerStatus();
-    if (result['result'] == 'success') {
+    final result = await _serversProvider!.apiClient2!.getServerStatus();
+    if (result.successful == true) {
       setServerStatusData(
-        data: result['data']
+        data: result.content as ServerStatus
       );
       _loadStatus = LoadStatus.loaded; 
       notifyListeners();
@@ -292,12 +260,12 @@ class StatusProvider with ChangeNotifier {
   }) async {
     if (_serverStatus == null) return false;
 
-    final rules = await _serversProvider!.apiClient!.getFilteringRules();
+    final rules = await _serversProvider!.apiClient2!.getFilteringRules();
 
-    if (rules['result'] == 'success') {
+    if (rules.successful == true) {
       FilteringStatus oldStatus = _serverStatus!.filteringStatus;
 
-      List<String> newRules = rules['data'].userRules.where((d) => !d.contains(domain)).toList();
+      List<String> newRules = (rules.content as FilteringStatus).userRules.where((d) => !d.contains(domain)).toList();
       if (newStatus == 'block') {
         newRules.add("||$domain^");
       }
@@ -308,9 +276,9 @@ class StatusProvider with ChangeNotifier {
       newObj.userRules = newRules;
       _filteringStatus = newObj;
 
-      final result = await _serversProvider!.apiClient!.postFilteringRules(data: {'rules': newRules});
+      final result = await _serversProvider!.apiClient2!.postFilteringRules(data: {'rules': newRules});
         
-      if (result['result'] == 'success') {
+      if (result.successful == true) {
         return true;
       }
       else {
@@ -324,11 +292,11 @@ class StatusProvider with ChangeNotifier {
   }
 
   Future<bool> updateSafeSearchConfig(Map<String, bool> status) async {
-    final result = await _serversProvider!.apiClient!.updateSafeSearchSettings(
+    final result = await _serversProvider!.apiClient2!.updateSafeSearchSettings(
       body: status
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       ServerStatus data = serverStatus!;
       data.safeSearchEnabled = status['enabled'] ?? false;
       data.safeSeachBing = status['bing'] ?? false;

@@ -35,11 +35,11 @@ class UpdateScreen extends StatelessWidget {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.requestingUpdate);
 
-      final result = await serversProvider.apiClient!.requestUpdateServer();
+      final result = await serversProvider.apiClient2!.requestUpdateServer();
 
       processModal.close();
       
-      if (result['result'] == 'success') {
+      if (result.successful == true) {
         serversProvider.recheckPeriodServerUpdated();
         showSnacbkar(
           appConfigProvider: appConfigProvider, 

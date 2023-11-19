@@ -13,6 +13,8 @@ import 'package:adguard_home_manager/screens/settings/encryption/master_switch.d
 import 'package:adguard_home_manager/screens/settings/encryption/encryption_functions.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/error_message.dart';
 
+import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/base64.dart';
@@ -20,37 +22,16 @@ import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
-class EncryptionSettings extends StatelessWidget {
-  const EncryptionSettings({Key? key}) : super(key: key);
+class EncryptionSettings extends StatefulWidget {
+  const EncryptionSettings({super.key});
+
 
   @override
-  Widget build(BuildContext context) {
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    return EncryptionSettingsWidget(
-      serversProvider: serversProvider,
-      appConfigProvider: appConfigProvider,
-    );
-  }
+  State<EncryptionSettings> createState() => _EncryptionSettingsState();
 }
 
-class EncryptionSettingsWidget extends StatefulWidget {
-  final ServersProvider serversProvider;
-  final AppConfigProvider appConfigProvider;
-
-  const EncryptionSettingsWidget({
-    Key? key,
-    required this.serversProvider,
-    required this.appConfigProvider,
-  }) : super(key: key);
-
-  @override
-  State<EncryptionSettingsWidget> createState() => _EncryptionSettingsWidgetState();
-}
-
-class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
-  int loadStatus = 0;
+class _EncryptionSettingsState extends State<EncryptionSettings> {
+  LoadStatus loadStatus = LoadStatus.loading;
 
   bool enabled = false;
 
@@ -96,54 +77,52 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
   bool formEdited = false;
 
   void fetchData({bool? showRefreshIndicator}) async {
-    setState(() => loadStatus = 0);
+    setState(() => loadStatus = LoadStatus.loading);
 
-    final result = await Provider.of<ServersProvider>(context, listen: false).apiClient!.getEncryptionSettings();
+    final result = await Provider.of<ServersProvider>(context, listen: false).apiClient2!.getEncryptionSettings();
+    if (!mounted) return;
 
-    if (mounted) {
-      if (result['result'] == 'success') {
-        await checkValidDataApi(data: result['data'].toJson());
+    final data = result.content as EncryptionData;
+    
+    if (result.successful == true) {
+      await checkValidDataApi(data: data.toJson());
+      if (!mounted) return;
 
-        if (mounted) {
-          setState(() {
-            enabled = result['data'].enabled;
-            domainNameController.text = result['data'].serverName ?? '';
-            redirectHttps = result['data'].forceHttps;
-            httpsPortController.text = result['data'].portHttps != null ? result['data'].portHttps.toString() : '';
-            tlsPortController.text = result['data'].portDnsOverTls != null ? result['data'].portDnsOverTls.toString() : '';
-            dnsOverQuicPortController.text = result['data'].portDnsOverQuic != null ? result['data'].portDnsOverQuic.toString() : '';
-            if (result['data'].certificateChain != '') {
-              certificateOption = 1;
-              certificateContentController.text = decodeBase64(result['data'].certificateChain);
-            }
-            else {
-              certificateOption = 0;
-              certificatePathController.text = result['data'].certificatePath;
-            }
-            if (result['data'].privateKey != '' || result['data'].privateKeySaved == true) {
-              privateKeyOption = 1;
-            }
-            else {
-              privateKeyOption = 0;
-              privateKeyPathController.text = result['data'].privateKeyPath;
-            }
-            usePreviouslySavedKey = result['data'].privateKeySaved;
-
-            loadStatus = 1;
-          });
+      setState(() {
+        enabled = data.enabled;
+        domainNameController.text = data.serverName ?? '';
+        redirectHttps = data.forceHttps ?? false;
+        httpsPortController.text = data.portHttps != null ? data.portHttps.toString() : '';
+        tlsPortController.text = data.portDnsOverTls != null ? data.portDnsOverTls.toString() : '';
+        dnsOverQuicPortController.text = data.portDnsOverQuic != null ? data.portDnsOverQuic.toString() : '';
+        if (data.certificateChain != '') {
+          certificateOption = 1;
+          certificateContentController.text = decodeBase64(data.certificateChain);
         }
-      }
-      else {
-        widget.appConfigProvider.addLog(result['log']);
-        setState(() => loadStatus = 2);
-      }
+        else {
+          certificateOption = 0;
+          certificatePathController.text = data.certificatePath;
+        }
+        if (data.privateKey != '' || data.privateKeySaved == true) {
+          privateKeyOption = 1;
+        }
+        else {
+          privateKeyOption = 0;
+          privateKeyPathController.text = data.privateKeyPath;
+        }
+        usePreviouslySavedKey = data.privateKeySaved;
+        loadStatus = LoadStatus.loaded;
+      });
+    }
+    else {
+      setState(() => loadStatus = LoadStatus.error);
     }
   }
 
   Future checkValidDataApi({Map<String, dynamic>? data}) async {
     setState(() => certKeyValidApi = 0);
 
-    final result = await Provider.of<ServersProvider>(context, listen: false).apiClient!.checkEncryptionSettings(
+    final result = await Provider.of<ServersProvider>(context, listen: false).apiClient2!.checkEncryptionSettings(
       data: data ?? {
         "enabled": enabled,
         "server_name": domainNameController.text,
@@ -160,23 +139,20 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
     );
 
     if (mounted) {
-      if (result['result'] == 'success') {
+      if (result.successful == true) {
         setState(() {
-          if (result['data']['warning_validation'] != null && result['data']['warning_validation'] != '') {
+          if (result.content['warning_validation'] != null && result.content['warning_validation'] != '') {
             certKeyValidApi = 2;
-            validDataError = result['data']['warning_validation'];
+            validDataError = result.content['warning_validation'];
           }
           else {
             certKeyValidApi = 1;
             validDataError = null;
           }
-          certKeyValid = result['data'];
+          certKeyValid = result.content;
         });
       }
       else {
-        if (result['log'].resBody != null) {
-          setState(() => validDataError = result['log'].resBody);
-        }
         setState(() => certKeyValidApi = 2);
       }
     }
@@ -228,7 +204,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
-      final result = await serversProvider.apiClient!.saveEncryptionSettings(
+      final result = await serversProvider.apiClient2!.saveEncryptionSettings(
         data: {
           "enabled": enabled,
           "server_name": domainNameController.text,
@@ -246,7 +222,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
 
       processModal.close();
 
-      if (result['result'] == 'success') {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.encryptionConfigSaved, 
@@ -254,19 +230,17 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.encryptionConfigNotSaved, 
           color: Colors.red
         );
 
-        if (result['log'].resBody != null) {
+        if (result.content != null) {
           showDialog(
             context: context, 
             builder: (context) => ErrorMessageEncryption(
-              errorMessage: result['log'].resBody
+              errorMessage: result.content
             )
           );
         }
@@ -303,7 +277,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
       body: Builder(
         builder: (context) {
           switch (loadStatus) {
-            case 0:
+            case LoadStatus.loading:
               return SizedBox(
                 width: double.maxFinite,
                 child: Column(
@@ -324,7 +298,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 )
               );
 
-            case 1:
+            case LoadStatus.loaded:
               return ListView(
                 children: [
                   EncryptionMasterSwitch(
@@ -641,7 +615,7 @@ class _EncryptionSettingsWidgetState extends State<EncryptionSettingsWidget> {
                 ],
               );
 
-            case 2:
+            case LoadStatus.error:
               return SizedBox(
                 width: double.maxFinite,
                 child: Column(

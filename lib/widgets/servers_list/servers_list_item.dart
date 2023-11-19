@@ -8,6 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
 
+import 'package:adguard_home_manager/models/server_status.dart';
+import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -104,22 +106,20 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
       if (result['result'] == 'success') {
         final ApiClient apiClient = ApiClient(server: server);
         serversProvider.setApiClient(apiClient);
+        final ApiClientV2 apiClient2 = ApiClientV2(server: server);
+        serversProvider.setApiClient2(apiClient2);
         serversProvider.setSelectedServer(server);
 
         statusProvider.setServerStatusLoad(LoadStatus.loading);
-        final serverStatus = await apiClient.getServerStatus();
-        if (serverStatus['result'] == 'success') {
+        final serverStatus = await apiClient2.getServerStatus();
+        if (serverStatus.successful == true) {
           statusProvider.setServerStatusData(
-            data: serverStatus['data']
+            data: serverStatus.content as ServerStatus
           );
           serversProvider.checkServerUpdatesAvailable(
             server: server,
           );
           statusProvider.setServerStatusLoad(LoadStatus.loaded);
-        }
-        else {
-          appConfigProvider.addLog(serverStatus['log']);
-          statusProvider.setServerStatusLoad(LoadStatus.error);
         }
 
         process.close();

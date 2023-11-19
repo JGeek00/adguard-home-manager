@@ -103,14 +103,14 @@ class _ClientsListState extends State<ClientsList> {
 
       processModal.close();
 
-      if (result['success'] == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientRemovedSuccessfully, 
           color: Colors.green
         );
       }
-      else if (result['success'] == false && result['error'] == 'client_another_list') {
+      else if (result.successful == false && result.content == 'client_another_list') {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
@@ -120,7 +120,7 @@ class _ClientsListState extends State<ClientsList> {
       else {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
-          label: type == 'allowed' || type == 'blocked'
+          label: type == AccessSettingsList.allowed || type == AccessSettingsList.disallowed
             ? AppLocalizations.of(context)!.clientNotRemoved
             : AppLocalizations.of(context)!.domainNotAdded,
           color: Colors.red
@@ -136,14 +136,14 @@ class _ClientsListState extends State<ClientsList> {
 
       processModal.close();
 
-      if (result['success'] == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
           color: Colors.green
         );
       }
-      else if (result['success'] == false && result['error'] == 'client_another_list') {
+      else if (result.successful == false && result.content == 'client_another_list') {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
@@ -153,7 +153,7 @@ class _ClientsListState extends State<ClientsList> {
       else {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
-          label: type == 'allowed' || type == 'blocked'
+          label: type == AccessSettingsList.allowed || type == AccessSettingsList.disallowed
             ? AppLocalizations.of(context)!.clientNotRemoved
             : AppLocalizations.of(context)!.domainNotAdded,
           color: Colors.red

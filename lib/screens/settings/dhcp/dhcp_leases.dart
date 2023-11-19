@@ -66,21 +66,21 @@ class DhcpLeases extends StatelessWidget {
 
       processModal.close();
 
-      if (result['success'] == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseCreated, 
           color: Colors.green
         );
       }
-      else if (result['success'] == false && result['error'] == 'already_exists' ) {
+      else if (result.successful == false && result.content == "already_exists") {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseExists, 
           color: Colors.red
         );
       }
-      else if (result['success'] == false && result['error'] == 'server_not_configured' ) {
+      else if (result.successful == false && result.content == "server_not_configured") {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.serverNotConfigured, 

@@ -53,11 +53,9 @@ class _FiltersState extends State<Filters> {
     void updateLists() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.updatingLists);
-
       final result = await filteringProvider.updateLists();
-
+      if (!mounted) return;
       processModal.close();
-
       if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,

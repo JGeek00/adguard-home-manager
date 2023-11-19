@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:store_checker/store_checker.dart';
 
 import 'package:adguard_home_manager/functions/compare_versions.dart';
+import 'package:adguard_home_manager/services/external_requests.dart';
 import 'package:adguard_home_manager/models/github_release.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 Future<GitHubRelease?> checkAppUpdates({
   required String currentBuildNumber,
@@ -13,16 +13,16 @@ Future<GitHubRelease?> checkAppUpdates({
   required bool isBeta
 }) async {
   var result = isBeta 
-    ? await getReleasesGitHub() 
-    : await getLatestReleaseGitHub();
+    ? await ExternalRequests.getReleasesGitHub() 
+    : await ExternalRequests.getLatestReleaseGitHub();
 
-  if (result['result'] == 'success') {
+  if (result.successful == true) {
     late GitHubRelease gitHubRelease;
     if (isBeta) {
-      gitHubRelease = (result['body'] as List<GitHubRelease>).firstWhere((r) => r.prerelease == true);
+      gitHubRelease = (result.content as List<GitHubRelease>).firstWhere((r) => r.prerelease == true);
     }
     else {
-      gitHubRelease = result['body'] as GitHubRelease;
+      gitHubRelease = result.content as GitHubRelease;
     }
 
     final update = gitHubUpdateExists(

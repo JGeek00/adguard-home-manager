@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/maps_fns.dart';
@@ -105,9 +106,9 @@ class ClientsProvider with ChangeNotifier {
     if (updateLoading == true) {
       _loadStatus = LoadStatus.loading;
     }
-    final result = await _serversProvider!.apiClient!.getClients();
-    if (result['result'] == 'success') {
-      setClientsData(result['data'], false);
+    final result = await _serversProvider!.apiClient2!.getClients();
+    if (result.successful == true) {
+      setClientsData(result.content as Clients, false);
       _loadStatus = LoadStatus.loaded;
       notifyListeners();
       return true;
@@ -122,9 +123,9 @@ class ClientsProvider with ChangeNotifier {
   }
 
   Future<bool> deleteClient(Client client) async {
-    final result = await _serversProvider!.apiClient!.postDeleteClient(name: client.name);
+    final result = await _serversProvider!.apiClient2!.postDeleteClient(name: client.name);
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       Clients clientsData = clients!;
       clientsData.clients = clientsData.clients.where((c) => c.name != client.name).toList();
       setClientsData(clientsData, false);
@@ -138,7 +139,7 @@ class ClientsProvider with ChangeNotifier {
   }
 
   Future<bool> editClient(Client client) async {      
-    final result = await _serversProvider!.apiClient!.postUpdateClient(
+    final result = await _serversProvider!.apiClient2!.postUpdateClient(
       data: {
         'name': client.name,
         'data':  serverVersionIsAhead(
@@ -151,7 +152,7 @@ class ClientsProvider with ChangeNotifier {
       }
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       Clients clientsData = clients!;
       clientsData.clients = clientsData.clients.map((e) {
         if (e.name == client.name) {
@@ -173,7 +174,7 @@ class ClientsProvider with ChangeNotifier {
   }
 
   Future<bool> addClient(Client client) async {
-    final result = await _serversProvider!.apiClient!.postAddClient(
+    final result = await _serversProvider!.apiClient2!.postAddClient(
       data: serverVersionIsAhead(
         currentVersion: _statusProvider!.serverStatus!.serverVersion, 
         referenceVersion: 'v0.107.28',
@@ -183,7 +184,7 @@ class ClientsProvider with ChangeNotifier {
         : removePropFromMap(client.toJson(), 'safe_search')
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       Clients clientsData = clients!;
       clientsData.clients.add(client);
       setClientsData(clientsData, false);
@@ -197,7 +198,7 @@ class ClientsProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> addClientList(String item, AccessSettingsList type) async {
+  Future<ApiResponse> addClientList(String item, AccessSettingsList type) async {
     Map<String, List<String>> body = {
       "allowed_clients": clients!.clientsAllowedBlocked?.allowedClients ?? [],
       "disallowed_clients": clients!.clientsAllowedBlocked?.disallowedClients ?? [],
@@ -214,34 +215,30 @@ class ClientsProvider with ChangeNotifier {
       body['blocked_hosts']!.add(item);
     }
 
-    final result = await _serversProvider!.apiClient!.requestAllowedBlockedClientsHosts(body);
+    final result = await _serversProvider!.apiClient2!.requestAllowedBlockedClientsHosts(
+      body: body
+    );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       _clients?.clientsAllowedBlocked = ClientsAllowedBlocked(
         allowedClients: body['allowed_clients'] ?? [], 
         disallowedClients: body['disallowed_clients'] ?? [], 
         blockedHosts: body['blocked_hosts'] ?? [], 
       );
       notifyListeners();
-      return { 'success': true };
+      return result;
     }
-    else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
+    else if (result.successful == false && result.content == 'client_another_list') {
       notifyListeners();
-      return {
-        'success': false,
-        'error': 'client_another_list'
-      };
+      return result;
     }
     else {
       notifyListeners();
-      return {
-        'success': false,
-        'error': null
-      };
+      return result;
     }
   }
 
-  Future<Map<String, dynamic>> removeClientList(String client, AccessSettingsList type) async {
+  Future<ApiResponse> removeClientList(String client, AccessSettingsList type) async {
     Map<String, List<String>> body = {
       "allowed_clients": clients!.clientsAllowedBlocked?.allowedClients ?? [],
       "disallowed_clients": clients!.clientsAllowedBlocked?.disallowedClients ?? [],
@@ -258,30 +255,26 @@ class ClientsProvider with ChangeNotifier {
       body['blocked_hosts'] = body['blocked_hosts']!.where((c) => c != client).toList();
     }
 
-    final result = await _serversProvider!.apiClient!.requestAllowedBlockedClientsHosts(body);
+    final result = await _serversProvider!.apiClient2!.requestAllowedBlockedClientsHosts(
+      body: body
+    );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       _clients?.clientsAllowedBlocked = ClientsAllowedBlocked(
         allowedClients: body['allowed_clients'] ?? [], 
         disallowedClients: body['disallowed_clients'] ?? [], 
         blockedHosts: body['blocked_hosts'] ?? [], 
       );
       notifyListeners();
-      return { 'success': true };
+      return result;
     }
-    else if (result['result'] == 'error' && result['message'] == 'client_another_list') {
+    else if (result.successful == false && result.content == 'client_another_list') {
       notifyListeners();
-      return {
-        'success': false,
-        'error': 'client_another_list'
-      };
+      return result;
     }
     else {
       notifyListeners();
-      return {
-        'success': false,
-        'error': null
-      };
+      return result;
     }
   }
 }

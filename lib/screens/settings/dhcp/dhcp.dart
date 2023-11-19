@@ -194,8 +194,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
     void saveSettings() async {
       ProcessModal processModal = ProcessModal(context: context);
       processModal.open(AppLocalizations.of(context)!.savingSettings);
-
-      final result = await serversProvider.apiClient!.saveDhcpConfig(
+      final result = await serversProvider.apiClient2!.saveDhcpConfig(
         data: {
           "enabled": enabled,
           "interface_name": selectedInterface!.name,
@@ -213,10 +212,9 @@ class _DhcpScreenState extends State<DhcpScreen> {
           }
         }
       );
-
+      if (!mounted) return;
       processModal.close();
-
-      if (result['result'] == 'success') {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.settingsSaved, 
@@ -236,14 +234,11 @@ class _DhcpScreenState extends State<DhcpScreen> {
       Future.delayed(const Duration(seconds: 0), () async {
         ProcessModal processModal = ProcessModal(context: context);
         processModal.open(AppLocalizations.of(context)!.restoringConfig);
-
-        final result = await serversProvider.apiClient!.resetDhcpConfig();
-
+        final result = await serversProvider.apiClient2!.resetDhcpConfig();
+        if (!mounted) return;
         processModal.close();
-
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           clearAll();
-
           showSnacbkar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.configRestored, 

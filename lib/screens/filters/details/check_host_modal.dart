@@ -58,11 +58,11 @@ class _CheckHostModalState extends State<CheckHostModal> {
     void checkHost() async {
       setState(() => resultWidget = checking());
 
-      final result = await serversProvider.apiClient!.checkHostFiltered(host: domainController.text);
+      final result = await serversProvider.apiClient2!.checkHostFiltered(host: domainController.text);
 
       if (mounted) {
-        if (result['result'] == 'success') {
-          final status = getFilteredStatus(context, appConfigProvider, result['data']['reason'], true);
+        if (result.successful == true) {
+          final status = getFilteredStatus(context, appConfigProvider, result.content['reason'], true);
           if (mounted) {
             setState(() => resultWidget = Row(
               mainAxisAlignment: MainAxisAlignment.center,

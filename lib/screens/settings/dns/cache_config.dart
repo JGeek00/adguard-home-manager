@@ -16,7 +16,7 @@ import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class CacheConfigDnsScreen extends StatefulWidget {
-  const CacheConfigDnsScreen({Key? key}) : super(key: key);
+  const CacheConfigDnsScreen({super.key});
 
   @override
   State<CacheConfigDnsScreen> createState() => _CacheConfigDnsScreenState();
@@ -85,14 +85,14 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
 
       processModal.close();
 
-      if (result['success'] == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
-      else if (result['success'] == false && result['error'] == 400) {
+      else if (result.successful== false && result.statusCode == 400) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
@@ -138,7 +138,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
 
     void clearCache() async {
       final result = await clearDnsCache(context, serversProvider.selectedServer!);
-      if (result == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheCleared, 

@@ -35,14 +35,14 @@ class RewriteRulesProvider with ChangeNotifier {
   }
 
   Future<bool> addDnsRewrite(RewriteRules rule) async {
-    final result = await _serversProvider!.apiClient!.addDnsRewriteRule(
+    final result = await _serversProvider!.apiClient2!.addDnsRewriteRule(
       data: {
         "domain": rule.domain,
         "answer": rule.answer
       }
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       List<RewriteRules> data = rewriteRules!;
       data.add(rule);
       setRewriteRulesData(data);
@@ -55,7 +55,7 @@ class RewriteRulesProvider with ChangeNotifier {
   }
 
   Future<bool> editDnsRewrite(RewriteRules newRule, RewriteRules oldRule) async {
-    final result = await _serversProvider!.apiClient!.updateRewriteRule(
+    final result = await _serversProvider!.apiClient2!.updateRewriteRule(
       body: {
         "target": {
           "answer": oldRule.answer,
@@ -68,7 +68,7 @@ class RewriteRulesProvider with ChangeNotifier {
       }
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       List<RewriteRules> data = rewriteRules!;
       final index = data.indexOf(oldRule);
       data[index] = newRule;
@@ -82,14 +82,14 @@ class RewriteRulesProvider with ChangeNotifier {
   }
 
   Future<bool> deleteDnsRewrite(RewriteRules rule) async {
-    final result = await _serversProvider!.apiClient!.deleteDnsRewriteRule(
+    final result = await _serversProvider!.apiClient2!.deleteDnsRewriteRule(
       data: {
         "domain": rule.domain,
         "answer": rule.answer
       }
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       List<RewriteRules> data = rewriteRules!;
       data = data.where((item) => item.domain != rule.domain).toList();
       setRewriteRulesData(data);
@@ -108,10 +108,10 @@ class RewriteRulesProvider with ChangeNotifier {
       _loadStatus = LoadStatus.loading;
     }
 
-    final result = await _serversProvider!.apiClient!.getDnsRewriteRules();
+    final result = await _serversProvider!.apiClient2!.getDnsRewriteRules();
 
-    if (result['result'] == 'success') {
-      _rewriteRules = result['data'];
+    if (result.successful == true) {
+      _rewriteRules = result.content as List<RewriteRules>;
       _loadStatus = LoadStatus.loaded;
       notifyListeners();
       return true;
