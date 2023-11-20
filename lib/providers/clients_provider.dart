@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/models/clients.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/maps_fns.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -13,11 +12,9 @@ enum AccessSettingsList { allowed, disallowed, domains }
 
 class ClientsProvider with ChangeNotifier {
   ServersProvider? _serversProvider;
-  StatusProvider? _statusProvider;
 
   update(ServersProvider? servers, StatusProvider? status) {
     _serversProvider = servers;
-    _statusProvider = status;
   }
 
   LoadStatus _loadStatus = LoadStatus.loading;
