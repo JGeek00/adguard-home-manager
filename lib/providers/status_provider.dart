@@ -2,6 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'package:adguard_home_manager/widgets/add_server/unsupported_version_modal.dart';
+
+import 'package:adguard_home_manager/config/globals.dart';
+import 'package:adguard_home_manager/config/minimum_server_version.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -240,11 +245,31 @@ class StatusProvider with ChangeNotifier {
 
     final result = await _serversProvider!.apiClient2!.getServerStatus();
     if (result.successful == true) {
+      final status = result.content as ServerStatus;
       setServerStatusData(
-        data: result.content as ServerStatus
+        data: status
       );
       _loadStatus = LoadStatus.loaded; 
       notifyListeners();
+
+      // Check server version and launch modal if not valid
+      final validVersion = serverVersionIsAhead(
+        currentVersion: status.serverVersion, 
+        referenceVersion: MinimumServerVersion.stable,
+        referenceVersionBeta: MinimumServerVersion.beta
+      );
+      if (validVersion == false) {
+        showDialog(
+          context: globalNavigatorKey.currentContext!, 
+          builder: (ctx) => UnsupportedVersionModal(
+            serverVersion: status.serverVersion, 
+            onClose: () {
+              _serversProvider!.setSelectedServer(null);
+            }
+          )
+        );
+      }
+
       return true;
     }
     else {

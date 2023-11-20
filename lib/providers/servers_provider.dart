@@ -60,7 +60,7 @@ class ServersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedServer(Server server) {
+  void setSelectedServer(Server? server) {
     _selectedServer = server;
     notifyListeners();
   }

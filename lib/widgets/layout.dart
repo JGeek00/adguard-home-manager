@@ -15,8 +15,8 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class Layout extends StatefulWidget {
   const Layout({
-    Key? key, 
-  }) : super(key: key);
+    super.key, 
+  });
 
   @override
   State<Layout> createState() => _LayoutState();
