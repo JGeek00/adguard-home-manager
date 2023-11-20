@@ -13,7 +13,6 @@ import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
@@ -21,7 +20,7 @@ import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 
 class SearchClients extends StatefulWidget {
-  const SearchClients({Key? key}) : super(key: key);
+  const SearchClients({super.key});
 
   @override
   State<SearchClients> createState() => _SearchClientsState();
