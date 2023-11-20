@@ -9,7 +9,7 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class SideNavigationRail extends StatelessWidget {
-  const SideNavigationRail({Key? key}) : super(key: key);
+  const SideNavigationRail({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +46,12 @@ class SideNavigationRail extends StatelessWidget {
       }
     }
 
-    if ((serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1) {
+    if ((serversProvider.selectedServer == null || serversProvider.apiClient2 == null) && appConfigProvider.selectedScreen > 1) {
       appConfigProvider.setSelectedScreen(0);
     }
 
     return NavigationRail(
-      selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
+      selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient2 == null) && appConfigProvider.selectedScreen > 1
         ? 0
         : appConfigProvider.selectedScreen,
       destinations: screens.map((screen) => NavigationRailDestination(

@@ -7,7 +7,6 @@ import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/services/external_requests.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/models/update_available.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/services/db/queries.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -17,7 +16,7 @@ class ServersProvider with ChangeNotifier {
 
   List<Server> _serversList = [];
   Server? _selectedServer;
-  ApiClient? _apiClient;
+  // ApiClient? _apiClient;
   ApiClientV2? _apiClient2;
 
   bool _updatingServer = false;
@@ -27,9 +26,9 @@ class ServersProvider with ChangeNotifier {
     data: null,
   );
 
-  ApiClient? get apiClient {
-    return _apiClient;
-  }
+  // ApiClient? get apiClient {
+  //   return _apiClient;
+  // }
 
   ApiClientV2? get apiClient2 {
     return _apiClient2;
@@ -77,10 +76,10 @@ class ServersProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setApiClient(ApiClient client) {
-    _apiClient = client;
-    notifyListeners();
-  }
+  // void setApiClient(ApiClient client) {
+  //   _apiClient = client;
+  //   notifyListeners();
+  // }
 
   void setApiClient2(ApiClientV2 client) {
     _apiClient2 = client;
@@ -153,7 +152,8 @@ class ServersProvider with ChangeNotifier {
       _serversList = newServers;
 
       if (selectedServer != null &&server.id == selectedServer!.id) {
-        _apiClient = ApiClient(server: server);
+        // _apiClient = ApiClient(server: server);
+        _apiClient2 = ApiClientV2(server: server);
       }
 
       notifyListeners();
@@ -168,7 +168,7 @@ class ServersProvider with ChangeNotifier {
     final result = await removeServerQuery(_dbInstance!, server.id);
     if (result == true) {
       _selectedServer = null;
-      _apiClient = null;
+      // _apiClient = null;
       List<Server> newServers = _serversList.where((s) => s.id != server.id).toList();
       _serversList = newServers;
       notifyListeners();
@@ -181,13 +181,13 @@ class ServersProvider with ChangeNotifier {
 
   void checkServerUpdatesAvailable({
     required Server server, 
-    ApiClient? apiClient
+    ApiClientV2? apiClient
   }) async {
-    final client = apiClient ?? _apiClient;
+    final client = apiClient ?? _apiClient2;
     setUpdateAvailableLoadStatus(LoadStatus.loading, true);
     final result = await client!.checkServerUpdates();
-    if (result['result'] == 'success') {
-      UpdateAvailableData data = UpdateAvailableData.fromJson(result['data']);
+    if (result.successful == true) {
+      UpdateAvailableData data = UpdateAvailableData.fromJson(result.content);
       final gitHubResult = await ExternalRequests.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
       if (gitHubResult.successful == true) {
         data.changelog = gitHubResult.content;
@@ -200,12 +200,12 @@ class ServersProvider with ChangeNotifier {
     }
   }
 
-  Future initializateServer(Server server, ApiClient apiClient, ApiClientV2 apiClient2) async {
+  Future initializateServer(Server server, /*ApiClient apiClient, */ ApiClientV2 apiClient2) async {
     final serverStatus = await _apiClient2!.getServerStatus();
     if (serverStatus.successful == true) {
       checkServerUpdatesAvailable( // Do not await
         server: server,
-        apiClient: apiClient
+        apiClient: apiClient2
       ); 
     }
   }
@@ -237,11 +237,11 @@ class ServersProvider with ChangeNotifier {
 
       if (defaultServer != null) {
         _selectedServer = defaultServer;
-        final client = ApiClient(server: defaultServer);
+        // final client = ApiClient(server: defaultServer);
         final client2 = ApiClientV2(server: defaultServer);
-        _apiClient = client;
+        // _apiClient = client;
         _apiClient2 = client2;
-        initializateServer(defaultServer, client, client2);
+        initializateServer(defaultServer, /*client,*/ client2);
       }
     }
     else {

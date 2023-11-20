@@ -260,11 +260,11 @@ class _DhcpScreenState extends State<DhcpScreen> {
         ProcessModal processModal = ProcessModal(context: context);
         processModal.open(AppLocalizations.of(context)!.restoringLeases);
 
-        final result = await serversProvider.apiClient!.restoreAllLeases();
+        final result = await serversProvider.apiClient2!.restoreAllLeases();
 
         processModal.close();
 
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           DhcpModel data = dhcpProvider.dhcp!;
           data.dhcpStatus.staticLeases = [];
           data.dhcpStatus.leases = [];

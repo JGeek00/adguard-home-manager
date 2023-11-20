@@ -62,7 +62,7 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    final screens = serversProvider.selectedServer != null
+    final screens = serversProvider.selectedServer != null && serversProvider.apiClient2 != null
       ? screensServerConnected
       : screensSelectServer;
 
@@ -120,26 +120,15 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
                         ),
                       ],
                     ),
-                    if (serversProvider.selectedServer != null) 
-                      ...screensServerConnected.asMap().entries.map(
-                        (s) => DrawerTile(
-                          icon: s.value.icon,
-                          title: translatedName(s.value.name),
-                          isSelected: appConfigProvider.selectedScreen == s.key,
-                          onSelect: () => _goBranch(s.key),
-                          withoutTitle: !_drawerExpanded,
-                        ),
+                    ...screens.asMap().entries.map(
+                      (s) => DrawerTile(
+                        icon: s.value.icon,
+                        title: translatedName(s.value.name),
+                        isSelected: appConfigProvider.selectedScreen == s.key,
+                        onSelect: () => _goBranch(s.key),
+                        withoutTitle: !_drawerExpanded,
                       ),
-                    if (serversProvider.selectedServer == null) 
-                      ...screensSelectServer.asMap().entries.map(
-                        (s) => DrawerTile(
-                          icon: s.value.icon,
-                          title: translatedName(s.value.name),
-                          isSelected: appConfigProvider.selectedScreen == s.key,
-                          onSelect: () => _goBranch(s.key),
-                          withoutTitle: !_drawerExpanded,
-                        ),
-                      ),
+                    ),
                   ],
                 ),
               ),
@@ -164,7 +153,7 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
       );
     }
     else {
-      final screens = serversProvider.selectedServer != null && serversProvider.apiClient != null
+      final screens = serversProvider.selectedServer != null && serversProvider.apiClient2 != null
         ? screensServerConnected 
         : screensSelectServer;
 
@@ -184,7 +173,7 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
               : screens[0].child,
           ),
           bottomNavigationBar: NavigationBar(
-            selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
+            selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient2 == null) && appConfigProvider.selectedScreen > 1
               ? 0
               : appConfigProvider.selectedScreen,
             onDestinationSelected: (s) => _goBranch(s),

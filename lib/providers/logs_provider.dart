@@ -153,7 +153,7 @@ class LogsProvider with ChangeNotifier {
       notifyListeners();
     }
 
-    final result = await _serversProvider!.apiClient!.getLogs(
+    final result = await _serversProvider!.apiClient2!.getLogs(
       count: logsQuantity, 
       offset: offst,
       olderThan: logsOlderThan,
@@ -166,11 +166,11 @@ class LogsProvider with ChangeNotifier {
       notifyListeners();
     }
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       _offset = inOffset != null ? inOffset+logsQuantity : offset+logsQuantity;
       if (loadingMore != null && loadingMore == true && logsData != null) {
-        LogsData newLogsData = result['data'];
-        newLogsData.data = [...logsData!.data, ...result['data'].data];
+        LogsData newLogsData = result.content;
+        newLogsData.data = [...logsData!.data, ...(result.content as LogsData).data];
         if (appliedFilters.clients != null) {
           newLogsData.data = newLogsData.data.where(
             (item) => appliedFilters.clients!.contains(item.client)
@@ -179,7 +179,7 @@ class LogsProvider with ChangeNotifier {
         _logsData = newLogsData;
       }
       else {
-        LogsData newLogsData = result['data'];
+        LogsData newLogsData = result.content;
         if (appliedFilters.clients != null) {
           newLogsData.data = newLogsData.data.where(
             (item) => appliedFilters.clients!.contains(item.client)
@@ -204,7 +204,7 @@ class LogsProvider with ChangeNotifier {
 
     resetFilters();
 
-    final result = await _serversProvider!.apiClient!.getLogs(
+    final result = await _serversProvider!.apiClient2!.getLogs(
       count: logsQuantity
     );
 
@@ -214,8 +214,8 @@ class LogsProvider with ChangeNotifier {
       clients: null
     );
 
-    if (result['result'] == 'success') {
-      _logsData = result['data'];
+    if (result.successful == true) {
+      _logsData = result.content as LogsData;
       _loadStatus = LoadStatus.loaded;
       notifyListeners();
       return true;
@@ -233,7 +233,7 @@ class LogsProvider with ChangeNotifier {
 
     setOffset(0);
 
-    final result = await _serversProvider!.apiClient!.getLogs(
+    final result = await _serversProvider!.apiClient2!.getLogs(
       count: logsQuantity,
       olderThan: logsOlderThan,
       responseStatus: selectedResultStatus,
@@ -246,8 +246,8 @@ class LogsProvider with ChangeNotifier {
       clients: selectedClients
     );
 
-    if (result['result'] == 'success') {
-      LogsData newLogsData = result['data'];
+    if (result.successful == true) {
+      LogsData newLogsData = result.content as LogsData;
       if (appliedFilters.clients != null) {
         newLogsData.data = newLogsData.data.where(
           (item) => appliedFilters.clients!.contains(item.client)

@@ -149,13 +149,13 @@ class StatusProvider with ChangeNotifier {
         _protectionsManagementProcess.add('filtering');
         notifyListeners();
 
-        final result = await _serversProvider!.apiClient!.updateFiltering(
+        final result = await _serversProvider!.apiClient2!.updateFiltering(
           enable: newStatus,
         );
 
         _protectionsManagementProcess = _protectionsManagementProcess.where((e) => e != 'filtering').toList();
 
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           _serverStatus!.filteringEnabled = newStatus;
           notifyListeners();
           return true;

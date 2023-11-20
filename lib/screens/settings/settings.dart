@@ -166,7 +166,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     if (
                       serversProvider.selectedServer != null && 
                       statusProvider.serverStatus != null && 
-                      serversProvider.apiClient != null
+                      serversProvider.apiClient2 != null
                     ) ...[
                       SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
                       settingsTile(

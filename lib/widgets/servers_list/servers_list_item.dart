@@ -104,8 +104,6 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
         : await login(server);
 
       if (result['result'] == 'success') {
-        final ApiClient apiClient = ApiClient(server: server);
-        serversProvider.setApiClient(apiClient);
         final ApiClientV2 apiClient2 = ApiClientV2(server: server);
         serversProvider.setApiClient2(apiClient2);
         serversProvider.setSelectedServer(server);

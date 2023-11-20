@@ -42,10 +42,10 @@ class DnsProvider with ChangeNotifier {
       _loadStatus = LoadStatus.loading;
     }
 
-    final result = await _serversProvider!.apiClient!.getDnsInfo();
+    final result = await _serversProvider!.apiClient2!.getDnsInfo();
 
-    if (result['result'] == 'success') {
-      _dnsInfo = result['data'];
+    if (result.successful == true) {
+      _dnsInfo = result.content as DnsInfo;
       _loadStatus = LoadStatus.loaded;
       notifyListeners();
       return true;
