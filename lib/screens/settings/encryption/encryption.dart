@@ -201,7 +201,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
     final width = MediaQuery.of(context).size.width;
 
     void saveData() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
       final result = await serversProvider.apiClient2!.saveEncryptionSettings(

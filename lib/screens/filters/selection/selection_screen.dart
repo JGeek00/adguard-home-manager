@@ -76,7 +76,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
           selectedBlacklists: _selectedBlacklists,
           onDelete: () async {
             Navigator.pop(context);
-            final processModal = ProcessModal(context: context);
+            final processModal = ProcessModal();
             processModal.open(AppLocalizations.of(context)!.processingLists);
             final result = await filteringProvider.enableDisableMultipleLists(
               blacklists: _selectedBlacklists, 
@@ -107,7 +107,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
           selectedBlacklists: _selectedBlacklists,
           onDelete: () async {
             Navigator.pop(context);
-            final processModal = ProcessModal(context: context);
+            final processModal = ProcessModal();
             processModal.open(AppLocalizations.of(context)!.deletingLists);
             final result = await filteringProvider.deleteMultipleLists(
               blacklists: _selectedBlacklists, 

@@ -32,7 +32,7 @@ class UpdateScreen extends StatelessWidget {
     }
 
     void update() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.requestingUpdate);
 
       final result = await serversProvider.apiClient2!.requestUpdateServer();

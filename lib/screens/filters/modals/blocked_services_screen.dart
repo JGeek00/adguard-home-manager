@@ -60,7 +60,7 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
     }
 
     void updateBlockedServices() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.updating);
 
       final result = await filteringProvider.updateBlockedServices(values);

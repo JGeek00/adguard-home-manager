@@ -96,7 +96,7 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
     }
 
     void connectToServer(Server server) async {
-      final ProcessModal process = ProcessModal(context: context);
+      final ProcessModal process = ProcessModal();
       process.open(AppLocalizations.of(context)!.connecting);
 
       final result = server.runningOnHa == true 

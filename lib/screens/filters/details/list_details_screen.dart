@@ -81,7 +81,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
       required FilteringListActions action,
       required Filter filterList,
     }) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(
         action == FilteringListActions.edit
           ? AppLocalizations.of(context)!.savingList
@@ -249,7 +249,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
               context: context, 
               builder: (c) => DeleteListModal(
                 onConfirm: () async {
-                  ProcessModal processModal = ProcessModal(context: context);
+                  ProcessModal processModal = ProcessModal();
                   processModal.open(AppLocalizations.of(context)!.deletingList);
                   final result = await filteringProvider.deleteList(
                     listUrl: list!.url, 

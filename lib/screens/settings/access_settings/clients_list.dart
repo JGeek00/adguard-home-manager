@@ -96,7 +96,7 @@ class _ClientsListState extends State<ClientsList> {
         body['blocked_hosts'] = body['blocked_hosts']!.where((c) => c != client).toList();
       }
 
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.removingClient);
 
       final result = await clientsProvider.removeClientList(client, type);
@@ -129,7 +129,7 @@ class _ClientsListState extends State<ClientsList> {
     }
 
     void confirmAddItem(String item, AccessSettingsList type) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.removingClient);
 
       final result = await clientsProvider.addClientList(item, type);

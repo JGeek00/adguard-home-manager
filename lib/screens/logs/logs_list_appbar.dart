@@ -39,7 +39,7 @@ class LogsListAppBar extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     void updateConfig(Map<String, dynamic> data) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
 
       final result = await serversProvider.apiClient2!.updateQueryLogParameters(data: data);
@@ -63,7 +63,7 @@ class LogsListAppBar extends StatelessWidget {
     }
 
     void clearQueries() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
 
       final result = await serversProvider.apiClient2!.clearLogs();

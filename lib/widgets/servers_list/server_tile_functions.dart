@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/add_server/unsupported_version_modal.dart';
 import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
 import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 
+import 'package:adguard_home_manager/config/globals.dart';
+import 'package:adguard_home_manager/config/minimum_server_version.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
@@ -71,7 +75,7 @@ void connectToServer({
   required BuildContext context,
   required Server server
 }) async {
-  final ProcessModal process = ProcessModal(context: context);
+  final ProcessModal process = ProcessModal();
   process.open(AppLocalizations.of(context)!.connecting);
       
   final result = server.runningOnHa == true 
@@ -84,13 +88,35 @@ void connectToServer({
     
     final ApiClientV2 apiClient2 = ApiClientV2(server: server);
     serversProvider.setApiClient2(apiClient2);
-    serversProvider.setSelectedServer(server);
          
     statusProvider.setServerStatusLoad(LoadStatus.loading);
     final serverStatus = await apiClient2.getServerStatus();
     if (serverStatus.successful == true) {
+      final status = serverStatus.content as ServerStatus;
+
+      // Check if server version is supported
+      final validVersion = serverVersionIsAhead(
+        currentVersion: status.serverVersion, 
+        referenceVersion: MinimumServerVersion.stable,
+        referenceVersionBeta: MinimumServerVersion.beta
+      );
+      if (validVersion == false) {
+        process.close();
+        showDialog(
+          context: globalNavigatorKey.currentContext!, 
+          builder: (ctx) => UnsupportedVersionModal(
+            serverVersion: status.serverVersion, 
+            onClose: () {
+              serversProvider.setSelectedServer(null);
+            }
+          )
+        );
+        return;
+      }
+      
+      serversProvider.setSelectedServer(server);
       statusProvider.setServerStatusData(
-        data: serverStatus.content as ServerStatus
+        data: status
       );
       serversProvider.checkServerUpdatesAvailable(
         server: server,

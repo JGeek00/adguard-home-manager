@@ -39,7 +39,7 @@ class DomainOptions extends StatelessWidget {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     void blockUnblock(String domain, String newStatus) async {
-      final ProcessModal processModal = ProcessModal(context: context);
+      final ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingUserFilters);
 
       final rules = await statusProvider.blockUnblockDomain(

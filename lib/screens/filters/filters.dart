@@ -51,7 +51,7 @@ class _FiltersState extends State<Filters> {
     final width = MediaQuery.of(context).size.width;
 
     void updateLists() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.updatingLists);
       final result = await filteringProvider.updateLists();
       if (!mounted) return;
@@ -97,7 +97,7 @@ class _FiltersState extends State<Filters> {
     }
 
     void enableDisableFiltering() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(
         statusProvider.serverStatus!.filteringEnabled == true
           ? AppLocalizations.of(context)!.disableFiltering
@@ -125,7 +125,7 @@ class _FiltersState extends State<Filters> {
     }
 
     void setUpdateFrequency(int value) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.changingUpdateFrequency);
 
       final result = await filteringProvider.changeUpdateFrequency(value);
@@ -155,7 +155,7 @@ class _FiltersState extends State<Filters> {
     }
 
     void removeCustomRule(String rule) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.deletingRule);
 
       final result = await filteringProvider.removeCustomRule(rule);

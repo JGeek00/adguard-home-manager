@@ -237,7 +237,8 @@ class StatusProvider with ChangeNotifier {
   }
 
   Future<bool> getServerStatus({
-    bool? withLoadingIndicator
+    bool? withLoadingIndicator,
+    bool? overrideCheckServerVersion
   }) async {
     if (withLoadingIndicator == true) {
       _loadStatus = LoadStatus.loading;
@@ -258,7 +259,7 @@ class StatusProvider with ChangeNotifier {
         referenceVersion: MinimumServerVersion.stable,
         referenceVersionBeta: MinimumServerVersion.beta
       );
-      if (validVersion == false) {
+      if (validVersion == false && overrideCheckServerVersion != true) {
         showDialog(
           context: globalNavigatorKey.currentContext!, 
           builder: (ctx) => UnsupportedVersionModal(
@@ -269,7 +270,6 @@ class StatusProvider with ChangeNotifier {
           )
         );
       }
-
       return true;
     }
     else {

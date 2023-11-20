@@ -12,7 +12,7 @@ import 'package:adguard_home_manager/models/server.dart';
 Future<ApiResponse> clearDnsCache(BuildContext context, Server server) async {
   final serversProvider = Provider.of<ServersProvider>(context, listen: false);
 
-  final ProcessModal processModal = ProcessModal(context: context);
+  final ProcessModal processModal = ProcessModal();
   processModal.open(AppLocalizations.of(context)!.clearingDnsCache);
 
   final result = await serversProvider.apiClient2!.resetDnsCache();

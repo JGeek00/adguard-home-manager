@@ -35,7 +35,7 @@ class DhcpLeases extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     void deleteLease(Lease lease) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.deleting);
 
       final result = await dhcpProvider.deleteLease(lease);
@@ -59,7 +59,7 @@ class DhcpLeases extends StatelessWidget {
     }
 
     void createLease(Lease lease) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.creating);
 
       final result = await dhcpProvider.createLease(lease);

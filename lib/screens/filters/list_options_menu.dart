@@ -40,7 +40,7 @@ class ListOptionsMenu extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     void enableDisable() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(
         list.enabled == true
           ? AppLocalizations.of(context)!.disablingList

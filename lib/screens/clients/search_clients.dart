@@ -86,7 +86,7 @@ class _SearchClientsState extends State<SearchClients> {
     final width = MediaQuery.of(context).size.width;
 
     void deleteClient(Client client) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.removingClient);
       
       final result = await clientsProvider.deleteClient(client);
@@ -110,7 +110,7 @@ class _SearchClientsState extends State<SearchClients> {
     }  
 
     void confirmEditClient(Client client) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
       final result = await clientsProvider.editClient(client);
