@@ -395,6 +395,21 @@ class _AddServerModalState extends State<AddServerModal> {
             horizontal: 24,
           ),
         ),
+        if (connectionType == ConnectionType.https) Card(
+          margin: const EdgeInsets.only(
+            top: 16, left: 24, right: 24
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                const Icon(Icons.info_rounded),
+                const SizedBox(width: 16),
+                Flexible(child: Text(AppLocalizations.of(context)!.sslWarning))
+              ],
+            ),
+          ),
+        ),
         const SizedBox(height: 30),
         FormTextField(
           label: AppLocalizations.of(context)!.ipDomain, 
