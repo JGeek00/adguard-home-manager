@@ -181,11 +181,6 @@ class _AddDnsRewriteModalState extends State<DnsRewriteModal> {
                     TextButton(
                       onPressed: validData == true
                         ? () {
-                          if (serverVersionIsAhead(
-                            currentVersion: statusProvider.serverStatus!.serverVersion, 
-                            referenceVersion: '0.107.33',
-                            referenceVersionBeta: '0.108.0-b.39'
-                          )) {
                             Navigator.pop(context);
                             widget.onConfirm(
                               RewriteRules(
@@ -195,13 +190,6 @@ class _AddDnsRewriteModalState extends State<DnsRewriteModal> {
                               widget.rule
                             );
                           }
-                          else {
-                            showDialog(
-                              context: context, 
-                              builder: (context) => const ServerVersionNeeded(version: 'v0.107.33')
-                            );
-                          }
-                        }
                         : null,
                       child: Text(
                         AppLocalizations.of(context)!.confirm,

@@ -170,11 +170,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       serversProvider.apiClient != null
                     ) ...[
                       SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
-                      if (serverVersionIsAhead(
-                        currentVersion: statusProvider.serverStatus!.serverVersion, 
-                        referenceVersion: 'v0.107.28',
-                        referenceVersionBeta: 'v0.108.0-b.33'
-                      ) == true) settingsTile(
+                      settingsTile(
                         icon: Icons.search_rounded,
                         title: AppLocalizations.of(context)!.safeSearch,
                         subtitle: AppLocalizations.of(context)!.safeSearchSettings,

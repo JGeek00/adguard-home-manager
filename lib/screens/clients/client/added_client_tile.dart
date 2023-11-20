@@ -5,8 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
-import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -21,7 +19,7 @@ class AddedClientTile extends StatelessWidget {
   final bool? splitView;
 
   const AddedClientTile({
-    Key? key,
+    super.key,
     required this.client,
     required this.onTap,
     required this.onLongPress,
@@ -29,11 +27,10 @@ class AddedClientTile extends StatelessWidget {
     required this.onDelete,
     this.selectedClient,
     required this.splitView,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     if (splitView == true) {
@@ -146,25 +143,13 @@ class AddedClientTile extends StatelessWidget {
                                     Icon(
                                       Icons.search_rounded,
                                       size: 19,
-                                      color: serverVersionIsAhead(
-                                        currentVersion: statusProvider.serverStatus!.serverVersion, 
-                                        referenceVersion: 'v0.107.28',
-                                        referenceVersionBeta: 'v0.108.0-b.33'
-                                      ) == true 
-                                        ? client.safeSearch != null && client.safeSearch!.enabled == true 
-                                          ? appConfigProvider.useThemeColorForStatus == true
-                                            ? Theme.of(context).colorScheme.primary
-                                            : Colors.green
-                                          : appConfigProvider.useThemeColorForStatus == true
-                                            ? Colors.grey
-                                            : Colors.red
-                                        : client.safesearchEnabled == true
-                                          ? appConfigProvider.useThemeColorForStatus == true
-                                            ? Theme.of(context).colorScheme.primary
-                                            : Colors.green
-                                          : appConfigProvider.useThemeColorForStatus == true
-                                            ? Colors.grey
-                                            : Colors.red,
+                                      color: client.safeSearch != null && client.safeSearch!.enabled == true 
+                                        ? appConfigProvider.useThemeColorForStatus == true
+                                          ? Theme.of(context).colorScheme.primary
+                                          : Colors.green
+                                        : appConfigProvider.useThemeColorForStatus == true
+                                          ? Colors.grey
+                                          : Colors.red
                                     )
                                   ],
                                 )
@@ -260,25 +245,13 @@ class AddedClientTile extends StatelessWidget {
                   Icon(
                     Icons.search_rounded,
                     size: 19,
-                    color: serverVersionIsAhead(
-                      currentVersion: statusProvider.serverStatus!.serverVersion, 
-                      referenceVersion: 'v0.107.28',
-                      referenceVersionBeta: 'v0.108.0-b.33'
-                    ) == true 
-                      ? client.safeSearch != null && client.safeSearch!.enabled == true 
-                        ? appConfigProvider.useThemeColorForStatus == true
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.green
-                        : appConfigProvider.useThemeColorForStatus == true
-                          ? Colors.grey
-                          : Colors.red
-                      : client.safesearchEnabled == true
-                        ? appConfigProvider.useThemeColorForStatus == true
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.green
-                        : appConfigProvider.useThemeColorForStatus == true
-                          ? Colors.grey
-                          : Colors.red,
+                    color: client.safeSearch != null && client.safeSearch!.enabled == true 
+                      ? appConfigProvider.useThemeColorForStatus == true
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.green
+                      : appConfigProvider.useThemeColorForStatus == true
+                        ? Colors.grey
+                        : Colors.red
                   )
                 ],
               )

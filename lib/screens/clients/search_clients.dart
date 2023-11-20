@@ -290,25 +290,13 @@ class _SearchClientsState extends State<SearchClients> {
                             Icon(
                               Icons.search_rounded,
                               size: 19,
-                              color: serverVersionIsAhead(
-                                currentVersion: statusProvider.serverStatus!.serverVersion, 
-                                referenceVersion: 'v0.107.28',
-                                referenceVersionBeta: 'v0.108.0-b.33'
-                              ) == true 
-                                ? clientsScreen[index].safeSearch != null && clientsScreen[index].safeSearch!.enabled == true 
-                                  ? appConfigProvider.useThemeColorForStatus == true
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.green
-                                  : appConfigProvider.useThemeColorForStatus == true
-                                    ? Colors.grey
-                                    : Colors.red
-                                : clientsScreen[index].safesearchEnabled == true
-                                  ? appConfigProvider.useThemeColorForStatus == true
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.green
-                                  : appConfigProvider.useThemeColorForStatus == true
-                                    ? Colors.grey
-                                    : Colors.red,
+                              color: clientsScreen[index].safeSearch != null && clientsScreen[index].safeSearch!.enabled == true 
+                                ? appConfigProvider.useThemeColorForStatus == true
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.green
+                                : appConfigProvider.useThemeColorForStatus == true
+                                  ? Colors.grey
+                                  : Colors.red
                             )
                           ],
                         )

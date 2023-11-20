@@ -29,88 +29,55 @@ class MainSwitch extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: serverVersionIsAhead(
-        currentVersion: statusProvider.serverStatus!.serverVersion, 
-        referenceVersion: 'v0.107.28',
-        referenceVersionBeta: 'v0.108.0-b.33'
-      ) == true
-        ? ExpandableNotifier(
-            controller: expandableController,
-            child: Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(28),
-              child: InkWell(
-                onTap: statusProvider.serverStatus!.generalEnabled == true && !statusProvider.protectionsManagementProcess.contains('general')
-                  ? () => expandableController.toggle()
-                  : null,
+      child: ExpandableNotifier(
+        controller: expandableController,
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(28),
+          child: InkWell(
+            onTap: statusProvider.serverStatus!.generalEnabled == true && !statusProvider.protectionsManagementProcess.contains('general')
+              ? () => expandableController.toggle()
+              : null,
+            borderRadius: BorderRadius.circular(28),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 12
+              ),
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(28),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(28),
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                  ),
-                  child: Expandable(
-                    theme: const ExpandableThemeData(
-                      animationDuration: Duration(milliseconds: 200),
-                      fadeCurve: Curves.ease
-                    ),
-                    collapsed: _TopRow(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
+              ),
+              child: Expandable(
+                theme: const ExpandableThemeData(
+                  animationDuration: Duration(milliseconds: 200),
+                  fadeCurve: Curves.ease
+                ),
+                collapsed: _TopRow(
+                  legacyMode: false,
+                  expandableController: expandableController,
+                  updateBlocking: updateBlocking,
+                  animation: animation,
+                ), 
+                expanded: Column(
+                  children: [
+                    _TopRow(
                       legacyMode: false,
                       expandableController: expandableController,
                       updateBlocking: updateBlocking,
                       animation: animation,
-                    ), 
-                    expanded: Column(
-                      children: [
-                        _TopRow(
-                          legacyMode: false,
-                          expandableController: expandableController,
-                          updateBlocking: updateBlocking,
-                          animation: animation,
-                        ),
-                        _BottomRow(
-                          disableWithCountdown: disableWithCountdown,
-                        ),
-                        const SizedBox(height: 8)
-                      ],
-                    )
-                  ),
-                ),
-              ),
-            )
-          )
-        : Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(28),
-            child: InkWell(
-              onTap: statusProvider.protectionsManagementProcess.contains('general') == false
-                ? () => updateBlocking(
-                  value: !statusProvider.serverStatus!.generalEnabled, 
-                  filter: 'general_legacy'
-                ) : null,
-              borderRadius: BorderRadius.circular(28),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(28),
-                  color: Theme.of(context).primaryColor.withOpacity(0.1)
-                ),
-                child: _TopRow(
-                  legacyMode: true,
-                  expandableController: expandableController,
-                  updateBlocking: updateBlocking,
-                  animation: animation,
+                    ),
+                    _BottomRow(
+                      disableWithCountdown: disableWithCountdown,
+                    ),
+                    const SizedBox(height: 8)
+                  ],
                 )
               ),
             ),
-          )
+          ),
+        )
+      ) 
     );
   }
 }

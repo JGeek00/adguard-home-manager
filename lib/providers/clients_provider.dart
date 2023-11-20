@@ -142,13 +142,7 @@ class ClientsProvider with ChangeNotifier {
     final result = await _serversProvider!.apiClient2!.postUpdateClient(
       data: {
         'name': client.name,
-        'data':  serverVersionIsAhead(
-          currentVersion: _statusProvider!.serverStatus!.serverVersion, 
-          referenceVersion: 'v0.107.28',
-          referenceVersionBeta: 'v0.108.0-b.33'
-        ) == false
-          ? removePropFromMap(client.toJson(), 'safesearch_enabled')
-          : removePropFromMap(client.toJson(), 'safe_search')
+        'data': removePropFromMap(client.toJson(), 'safe_search')
       }
     );
 
@@ -175,13 +169,7 @@ class ClientsProvider with ChangeNotifier {
 
   Future<bool> addClient(Client client) async {
     final result = await _serversProvider!.apiClient2!.postAddClient(
-      data: serverVersionIsAhead(
-        currentVersion: _statusProvider!.serverStatus!.serverVersion, 
-        referenceVersion: 'v0.107.28',
-        referenceVersionBeta: 'v0.108.0-b.33'
-      ) == false
-        ? removePropFromMap(client.toJson(), 'safesearch_enabled')
-        : removePropFromMap(client.toJson(), 'safe_search')
+      data: removePropFromMap(client.toJson(), 'safe_search')
     );
 
     if (result.successful == true) {

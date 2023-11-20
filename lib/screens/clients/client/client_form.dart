@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/client/blocked_services_section.dart';
@@ -15,10 +14,8 @@ import 'package:adguard_home_manager/screens/clients/client/upstream_servers_sec
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/safe_search.dart';
-import 'package:adguard_home_manager/providers/status_provider.dart';
 
 class ClientForm extends StatelessWidget {
   final bool isFullScreen;
@@ -82,8 +79,6 @@ class ClientForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusProvider = Provider.of<StatusProvider>(context);
-
     return ListView(
       padding: const EdgeInsets.only(top: 0),
       children: [
@@ -195,13 +190,7 @@ class ClientForm extends StatelessWidget {
           onChange: (value) => updateEnableParentalControl(value),
           useGlobalSettingsFiltering: useGlobalSettingsFiltering,
         ),
-        if (
-          serverVersionIsAhead(
-            currentVersion: statusProvider.serverStatus!.serverVersion, 
-            referenceVersion: 'v0.107.28',
-            referenceVersionBeta: 'v0.108.0-b.33'
-          ) == true
-        ) CustomListTile(
+        CustomListTile(
           title: AppLocalizations.of(context)!.safeSearch,
           padding: const  EdgeInsets.symmetric(
             horizontal: 42,
@@ -225,18 +214,6 @@ class ClientForm extends StatelessWidget {
                 onUpdateSafeSearch: updateSafeSearch
               )
             : null,
-        ),
-        if (
-          serverVersionIsAhead(
-            currentVersion: statusProvider.serverStatus!.serverVersion, 
-            referenceVersion: 'v0.107.28',
-            referenceVersionBeta: 'v0.108.0-b.33'
-          ) == false
-        ) SettingsTile(
-          label: AppLocalizations.of(context)!.enableSafeSearch,
-          value: enableSafeSearch, 
-          onChange: (value) => updateEnableSafeSearch(value),
-          useGlobalSettingsFiltering: useGlobalSettingsFiltering,
         ),
         SectionLabel(
           label: AppLocalizations.of(context)!.blockedServices,
