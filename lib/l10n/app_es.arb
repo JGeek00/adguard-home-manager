@@ -682,5 +682,9 @@
     "processingLists": "Procesando listas...",
     "enableDisableResult": "Resultado de activar o desactivar",
     "selectedListsEnabledDisabledSuccessfully": "Todas las listas seleccionadas se han activado o desactivado correctamente.",
-    "sslWarning": "Si estás usando una conexión HTTPS con un certificado autofirmado, asegúrate de activar \"No comprobar el certificado SSL\" en Ajustes > Ajustes avanzados."
+    "sslWarning": "Si estás usando una conexión HTTPS con un certificado autofirmado, asegúrate de activar \"No comprobar el certificado SSL\" en Ajustes > Ajustes avanzados.",
+    "unsupportedServerVersion": "Versión del servidor no soportada",
+    "unsupportedServerVersionMessage": "La versión de tu servidor AdGuard Home es demasiado antigua y no está soportada por AdGuard Home Manager. Necesitarás actualizar tu servidor AdGuard Home a una versión más actual para utilizar esta aplicación.",
+    "yourVersion": "Tu versión: {version}",
+    "minimumRequiredVersion": "Versión mínima requerida: {version}"
 }

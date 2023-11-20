@@ -5,12 +5,15 @@ import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/add_server/unsupported_version_modal.dart';
 import 'package:adguard_home_manager/widgets/add_server/form_text_field.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 
+import 'package:adguard_home_manager/config/minimum_server_version.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
+import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/services/auth.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/api_client.dart';
@@ -166,6 +169,36 @@ class _AddServerModalState extends State<AddServerModal> {
         serverObj.authToken = encodeBase64UserPass(serverObj.user!, serverObj.password!);
       }
 
+      statusProvider.setServerStatusLoad(LoadStatus.loading);
+      final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
+      final serverStatus = await apiClient2.getServerStatus();
+
+      // If something goes wrong when fetching server status
+      if (serverStatus.successful == false) {
+        statusProvider.setServerStatusLoad(LoadStatus.error);
+        Navigator.pop(context);
+        return;
+      }
+
+      final status = serverStatus.content as ServerStatus;
+
+      // Check if ths server version is compatible
+      final validVersion = serverVersionIsAhead(
+        currentVersion: status.serverVersion, 
+        referenceVersion: MinimumServerVersion.stable,
+        referenceVersionBeta: MinimumServerVersion.beta
+      );
+      if (validVersion == false) {
+        showDialog(
+          context: context, 
+          builder: (ctx) => UnsupportedVersionModal(
+            serverVersion: status.serverVersion,
+            onClose: () => Navigator.pop(context)
+          )
+        );
+        return;
+      }
+
       final serverCreated = await serversProvider.createServer(serverObj);
 
       // If something goes wrong when saving the connection on the db
@@ -180,19 +213,6 @@ class _AddServerModalState extends State<AddServerModal> {
         }
         return;
       }
-
-      statusProvider.setServerStatusLoad(LoadStatus.loading);
-      final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
-      final serverStatus = await apiClient2.getServerStatus();
-
-      // If something goes wrong when fetching server status
-      if (serverStatus.successful == false) {
-        statusProvider.setServerStatusLoad(LoadStatus.error);
-        Navigator.pop(context);
-        return;
-      }
-
-      final status = serverStatus.content as ServerStatus;
 
       // If everything is successful
       statusProvider.setServerStatusData(
@@ -247,6 +267,31 @@ class _AddServerModalState extends State<AddServerModal> {
       if (serverObj.user != null && serverObj.password != null) {
         serverObj.authToken = encodeBase64UserPass(serverObj.user!, serverObj.password!);
       }
+
+      final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
+      final version = await apiClient2.getServerVersion();
+      if (version.successful == false) {
+        if (mounted) setState(() => isConnecting = false);
+        return;
+      }
+
+      // Check if ths server version is compatible
+      final validVersion = serverVersionIsAhead(
+        currentVersion: version.content, 
+        referenceVersion: MinimumServerVersion.stable,
+        referenceVersionBeta: MinimumServerVersion.beta
+      );
+      if (validVersion == false) {
+        showDialog(
+          context: context, 
+          builder: (ctx) => UnsupportedVersionModal(
+            serverVersion: version.content,
+            onClose: () => Navigator.pop(context)
+          )
+        );
+        return;
+      }
+
       final serverSaved = await serversProvider.editServer(serverObj);
     
       // If something goes wrong when saving the connection on the db
@@ -270,8 +315,6 @@ class _AddServerModalState extends State<AddServerModal> {
       }
 
       // If everything is successful
-      final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
-      final version = await apiClient2.getServerVersion();
       if (
         version.successful == true && 
         (version.content.contains('a') || version.content.contains('b'))  // alpha or beta
@@ -499,7 +542,7 @@ class _AddServerModalState extends State<AddServerModal> {
             leading: CloseButton(
               onPressed: () => Navigator.pop(context),
             ),
-            title: widget.server != null
+            title: widget.server == null
               ? Text(AppLocalizations.of(context)!.createConnection)
               : Text(AppLocalizations.of(context)!.editConnection),
             actions: [
@@ -532,7 +575,9 @@ class _AddServerModalState extends State<AddServerModal> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          AppLocalizations.of(context)!.createConnection,
+                          widget.server == null
+                            ? AppLocalizations.of(context)!.createConnection
+                            : AppLocalizations.of(context)!.editConnection,
                           style: const TextStyle(
                             fontSize: 20
                           ),
