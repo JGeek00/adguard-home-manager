@@ -681,5 +681,6 @@
     "failedElements": "Failed elements",
     "processingLists": "Processing lists...",
     "enableDisableResult": "Enable or disable result",
-    "selectedListsEnabledDisabledSuccessfully": "All selected lists have been enabled or disabled successfully"
+    "selectedListsEnabledDisabledSuccessfully": "All selected lists have been enabled or disabled successfully",
+    "sslWarning": "If you are using an HTTPS connection with a self signed certificate, make sure to enable \"Don't check SSL certificate\" at Settings > Advanced settings."
 }

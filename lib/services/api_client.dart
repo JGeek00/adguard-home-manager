@@ -36,6 +36,19 @@ class ApiClientV2 {
     required this.server
   });
 
+  Future<ApiResponse> getServerVersion() async {
+    final result = await HttpRequestClient.get(urlPath: '/status', server: server);
+    if (result.successful == true) {
+      return ApiResponse(
+        successful: true,
+        content: jsonDecode(result.body!)['version']
+      );
+    }
+    else {
+      return const ApiResponse(successful: false);
+    }
+  }
+
   Future<ApiResponse> getServerStatus() async {
     final results = await Future.wait([
       HttpRequestClient.get(urlPath: "/stats", server: server),

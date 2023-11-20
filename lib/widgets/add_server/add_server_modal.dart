@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:segmented_button_slide/segmented_button_slide.dart';
@@ -11,6 +10,8 @@ import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 
+import 'package:adguard_home_manager/models/server_status.dart';
+import 'package:adguard_home_manager/services/auth.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -19,7 +20,6 @@ import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/base64.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
@@ -32,11 +32,11 @@ class AddServerModal extends StatefulWidget {
   final void Function(String version) onUnsupportedVersion;
 
   const AddServerModal({
-    Key? key,
+    super.key,
     this.server,
     required this.fullScreen,
     required this.onUnsupportedVersion
-  }) : super(key: key);
+  });
 
   @override
   State<AddServerModal> createState() => _AddServerModalState();
@@ -119,11 +119,11 @@ class _AddServerModalState extends State<AddServerModal> {
       ));
     }
 
-    String getErrorMessage(String message) {
-      if (message == 'invalid_username_password') return AppLocalizations.of(context)!.invalidUsernamePassword;
-      if (message == 'many_attempts') return AppLocalizations.of(context)!.tooManyAttempts;
-      if (message == 'no_connection') return AppLocalizations.of(context)!.cantReachServer;
-      if (message == 'server_error') return AppLocalizations.of(context)!.serverError;
+    String getErrorMessage(AuthStatus status) {
+      if (status == AuthStatus.invalidCredentials) return AppLocalizations.of(context)!.invalidUsernamePassword;
+      if (status == AuthStatus.manyAttepts) return AppLocalizations.of(context)!.tooManyAttempts;
+      if (status == AuthStatus.socketException || status == AuthStatus.timeoutException) return AppLocalizations.of(context)!.cantReachServer;
+      if (status == AuthStatus.serverError) return AppLocalizations.of(context)!.serverError;
       return AppLocalizations.of(context)!.unknownError;
     }
 
@@ -146,17 +146,16 @@ class _AddServerModalState extends State<AddServerModal> {
       );
 
       final result = homeAssistant == true 
-        ? await loginHA(serverObj)
-        : await login(serverObj);
+        ? await ServerAuth.loginHA(serverObj)
+        : await ServerAuth.login(serverObj);
 
       // If something goes wrong with the connection
-      if (result['result'] != 'success') {
+      if (result != AuthStatus.success) {
         cancelConnecting();
-        appConfigProvider.addLog(result['log']);
         if (mounted) {
           showSnacbkar(
             appConfigProvider: appConfigProvider, 
-            label: getErrorMessage(result['result']), 
+            label: getErrorMessage(result), 
             color: Colors.red
           );
         }
@@ -172,13 +171,6 @@ class _AddServerModalState extends State<AddServerModal> {
       // If something goes wrong when saving the connection on the db
       if (serverCreated != null) {
         if (mounted) setState(() => isConnecting = false);
-        appConfigProvider.addLog(
-          AppLog(
-            type: 'save_connection_db', 
-            dateTime: DateTime.now(),
-            message: serverCreated.toString()
-          )
-        );
         if (mounted) {
           showSnacbkar(
             appConfigProvider: appConfigProvider, 
@@ -190,27 +182,27 @@ class _AddServerModalState extends State<AddServerModal> {
       }
 
       statusProvider.setServerStatusLoad(LoadStatus.loading);
-      final ApiClient apiClient = ApiClient(server: serverObj);
-      final serverStatus = await apiClient.getServerStatus();
       final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
-      final serverStatus2 = await apiClient2.getServerStatus();
+      final serverStatus = await apiClient2.getServerStatus();
 
       // If something goes wrong when fetching server status
-      if (serverStatus2.successful == false) {
+      if (serverStatus.successful == false) {
         statusProvider.setServerStatusLoad(LoadStatus.error);
         Navigator.pop(context);
         return;
       }
 
+      final status = serverStatus.content as ServerStatus;
+
       // If everything is successful
       statusProvider.setServerStatusData(
-        data: serverStatus['data']
+        data: status
       );
-      serversProvider.setApiClient(apiClient);
+      serversProvider.setApiClient2(apiClient2);
       statusProvider.setServerStatusLoad(LoadStatus.loaded);
-      if (serverStatus['data'].serverVersion.contains('a') || serverStatus['data'].serverVersion.contains('b')) {
+      if (status.serverVersion.contains('a') || status.serverVersion.contains('b')) {
         Navigator.pop(context);
-        widget.onUnsupportedVersion(serverStatus['data'].serverVersion);
+        widget.onUnsupportedVersion(status.serverVersion);
       }
       else {
         Navigator.pop(context);
@@ -236,17 +228,16 @@ class _AddServerModalState extends State<AddServerModal> {
       );
       
       final result = homeAssistant == true 
-        ? await loginHA(serverObj)
-        : await login(serverObj);
+        ? await ServerAuth.loginHA(serverObj)
+        : await ServerAuth.login(serverObj);
 
       // If something goes wrong with the connection
-      if (result['result'] != 'success') {
+      if (result != AuthStatus.success) {
         cancelConnecting();
-        appConfigProvider.addLog(result['log']);
         if (mounted) {
           showSnacbkar(
             appConfigProvider: appConfigProvider, 
-            label: getErrorMessage(result['result']), 
+            label: getErrorMessage(result), 
             color: Colors.red
           );
         }
@@ -279,14 +270,14 @@ class _AddServerModalState extends State<AddServerModal> {
       }
 
       // If everything is successful
-      final ApiClient apiClient = ApiClient(server: serverObj);
-      final version = await apiClient.getServerVersion();
+      final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
+      final version = await apiClient2.getServerVersion();
       if (
-        version['result'] == 'success' && 
-        (version['data'].contains('a') || version['data'].contains('b'))  // alpha or beta
+        version.successful == true && 
+        (version.content.contains('a') || version.content.contains('b'))  // alpha or beta
       ) {
         Navigator.pop(context);
-        widget.onUnsupportedVersion(version['data']);
+        widget.onUnsupportedVersion(version.content);
       }
       else {
         Navigator.pop(context);

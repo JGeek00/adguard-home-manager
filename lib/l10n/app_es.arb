@@ -681,5 +681,6 @@
     "failedElements": "Elementos fallidos",
     "processingLists": "Procesando listas...",
     "enableDisableResult": "Resultado de activar o desactivar",
-    "selectedListsEnabledDisabledSuccessfully": "Todas las listas seleccionadas se han activado o desactivado correctamente."
+    "selectedListsEnabledDisabledSuccessfully": "Todas las listas seleccionadas se han activado o desactivado correctamente.",
+    "sslWarning": "Si estás usando una conexión HTTPS con un certificado autofirmado, asegúrate de activar \"No comprobar el certificado SSL\" en Ajustes > Ajustes avanzados."
 }
