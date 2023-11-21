@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/add_custom_rule.dart';
-import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
+import 'package:adguard_home_manager/screens/filters/modals/add_custom_rule.dart';
+import 'package:adguard_home_manager/screens/filters/details/add_list_modal.dart';
 
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -32,7 +32,7 @@ class AddFiltersButton extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     void confirmAddRule(String rule) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingRule);
 
       final result = await filteringProvider.addCustomRule(rule);
@@ -83,7 +83,7 @@ class AddFiltersButton extends StatelessWidget {
     }
 
     void confirmAddList({required String name, required String url, required String type}) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingList);
 
       final result = await filteringProvider.addList(name: name, url: url, type: type);

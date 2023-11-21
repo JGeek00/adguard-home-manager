@@ -59,7 +59,7 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
     final width = MediaQuery.of(context).size.width;
 
     void deleteDnsRewrite(RewriteRules rule) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.deleting);
 
       final result = await rewriteRulesProvider.deleteDnsRewrite(rule);
@@ -83,7 +83,7 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
     }
 
     void addDnsRewrite(RewriteRules rule, _) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingRewrite);
 
       final result = await rewriteRulesProvider.addDnsRewrite(rule);
@@ -107,7 +107,7 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
     }
 
     void updateRewriteRule(RewriteRules newRule, RewriteRules? previousRule) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.updatingRule);
 
       final result = await rewriteRulesProvider.editDnsRewrite(newRule, previousRule!);

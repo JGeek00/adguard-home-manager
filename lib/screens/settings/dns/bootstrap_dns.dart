@@ -11,7 +11,7 @@ import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class BootstrapDnsScreen extends StatefulWidget {
-  const BootstrapDnsScreen({Key? key}) : super(key: key);
+  const BootstrapDnsScreen({super.key});
 
   @override
   State<BootstrapDnsScreen> createState() => _BootstrapDnsScreenState();
@@ -70,7 +70,7 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
     final width = MediaQuery.of(context).size.width;
 
     void saveData() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
       final result = await dnsProvider.saveBootstrapDnsConfig({
@@ -79,14 +79,14 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
 
       processModal.close();
 
-      if (result['success'] == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
-      else if (result['success'] == false && result['error'] == 400) {
+      else if (result.successful == false && result.statusCode == 400) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 

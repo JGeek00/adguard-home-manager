@@ -7,10 +7,11 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
-import 'package:adguard_home_manager/screens/filters/delete_list_modal.dart';
+import 'package:adguard_home_manager/screens/filters/details/add_list_modal.dart';
+import 'package:adguard_home_manager/screens/filters/modals/delete_list_modal.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/functions/format_time.dart';
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -80,7 +81,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
       required FilteringListActions action,
       required Filter filterList,
     }) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(
         action == FilteringListActions.edit
           ? AppLocalizations.of(context)!.savingList
@@ -158,6 +159,11 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                 vertical: 8
               )
             : null,
+          trailing: IconButton(
+            onPressed: () => openUrl(list!.url), 
+            icon: const Icon(Icons.open_in_browser_rounded),
+            tooltip: AppLocalizations.of(context)!.openListUrl,
+          ),
         ),
         CustomListTile(
           icon: Icons.list_rounded, 
@@ -243,7 +249,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
               context: context, 
               builder: (c) => DeleteListModal(
                 onConfirm: () async {
-                  ProcessModal processModal = ProcessModal(context: context);
+                  ProcessModal processModal = ProcessModal();
                   processModal.open(AppLocalizations.of(context)!.deletingList);
                   final result = await filteringProvider.deleteList(
                     listUrl: list!.url, 
@@ -352,47 +358,52 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
       );
     }
     else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.listDetails),
-          actions: list != null ? actions() : null,
-        ),
-        body: Stack(
-          children: [
-            if (list != null) ListView(
-              children: content(),
+      return Dialog.fullscreen(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: CloseButton(
+              onPressed: () => Navigator.pop(context),
             ),
-            if (list == null) Center(
-              child: Text(
-                AppLocalizations.of(context)!.listNotAvailable,
-                style: const TextStyle(
-                  fontSize: 24,
+            title: Text(AppLocalizations.of(context)!.listDetails),
+            actions: list != null ? actions() : null,
+          ),
+          body: Stack(
+            children: [
+              if (list != null) ListView(
+                children: content(),
+              ),
+              if (list == null) Center(
+                child: Text(
+                  AppLocalizations.of(context)!.listNotAvailable,
+                  style: const TextStyle(
+                    fontSize: 24,
+                  ),
                 ),
               ),
-            ),
-            if (list != null) AnimatedPositioned(
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeInOut,
-              bottom: fabVisible ?
-                appConfigProvider.showingSnackbar
-                  ? 70 : (Platform.isIOS ? 40 : 20)
-                : -70,
-              right: 20,
-              child: FloatingActionButton(
-                onPressed: () => updateList(
-                  action: list!.enabled == true
-                    ? FilteringListActions.disable
-                    : FilteringListActions.enable,
-                  filterList: list
+              if (list != null) AnimatedPositioned(
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeInOut,
+                bottom: fabVisible ?
+                  appConfigProvider.showingSnackbar
+                    ? 70 : (Platform.isIOS ? 40 : 20)
+                  : -70,
+                right: 20,
+                child: FloatingActionButton(
+                  onPressed: () => updateList(
+                    action: list!.enabled == true
+                      ? FilteringListActions.disable
+                      : FilteringListActions.enable,
+                    filterList: list
+                  ),
+                  child: Icon(
+                    list.enabled == true
+                      ? Icons.gpp_bad_rounded
+                      : Icons.verified_user_rounded,
+                  ),
                 ),
-                child: Icon(
-                  list.enabled == true
-                    ? Icons.gpp_bad_rounded
-                    : Icons.verified_user_rounded,
-                ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       );
     }

@@ -11,6 +11,7 @@ class CustomListTile extends StatelessWidget {
   final void Function()? onLongPress;
   final bool? disabled;
   final void Function(bool)? onHover;
+  final Color? color;
 
   const CustomListTile({
     Key? key,
@@ -24,12 +25,13 @@ class CustomListTile extends StatelessWidget {
     this.onLongPress,
     this.disabled,
     this.onHover,
+    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: color ?? Colors.transparent,
       child: InkWell(
         onTap: onTap,
         onHover: onHover,

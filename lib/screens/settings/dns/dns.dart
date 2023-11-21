@@ -63,7 +63,7 @@ class _DnsSettingsState extends State<DnsSettings> {
 
     void clearCache() async {
       final result = await clearDnsCache(context, serversProvider.selectedServer!);
-      if (result == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheCleared, 

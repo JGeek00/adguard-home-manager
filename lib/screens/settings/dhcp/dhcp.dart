@@ -192,10 +192,9 @@ class _DhcpScreenState extends State<DhcpScreen> {
     final width = MediaQuery.of(context).size.width;
 
     void saveSettings() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingSettings);
-
-      final result = await serversProvider.apiClient!.saveDhcpConfig(
+      final result = await serversProvider.apiClient2!.saveDhcpConfig(
         data: {
           "enabled": enabled,
           "interface_name": selectedInterface!.name,
@@ -213,10 +212,9 @@ class _DhcpScreenState extends State<DhcpScreen> {
           }
         }
       );
-
+      if (!mounted) return;
       processModal.close();
-
-      if (result['result'] == 'success') {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.settingsSaved, 
@@ -234,16 +232,13 @@ class _DhcpScreenState extends State<DhcpScreen> {
 
     void restoreConfig() async {
       Future.delayed(const Duration(seconds: 0), () async {
-        ProcessModal processModal = ProcessModal(context: context);
+        ProcessModal processModal = ProcessModal();
         processModal.open(AppLocalizations.of(context)!.restoringConfig);
-
-        final result = await serversProvider.apiClient!.resetDhcpConfig();
-
+        final result = await serversProvider.apiClient2!.resetDhcpConfig();
+        if (!mounted) return;
         processModal.close();
-
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           clearAll();
-
           showSnacbkar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.configRestored, 
@@ -262,14 +257,14 @@ class _DhcpScreenState extends State<DhcpScreen> {
 
     void restoreLeases() async {
       Future.delayed(const Duration(seconds: 0), () async {
-        ProcessModal processModal = ProcessModal(context: context);
+        ProcessModal processModal = ProcessModal();
         processModal.open(AppLocalizations.of(context)!.restoringLeases);
 
-        final result = await serversProvider.apiClient!.restoreAllLeases();
+        final result = await serversProvider.apiClient2!.restoreAllLeases();
 
         processModal.close();
 
-        if (result['result'] == 'success') {
+        if (result.successful == true) {
           DhcpModel data = dhcpProvider.dhcp!;
           data.dhcpStatus.staticLeases = [];
           data.dhcpStatus.leases = [];

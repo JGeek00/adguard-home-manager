@@ -11,105 +11,38 @@ import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 
 class AccessSettings extends StatefulWidget {
-  const AccessSettings({Key? key}) : super(key: key);
+  const AccessSettings({super.key});
 
   @override
   State<AccessSettings> createState() => _AccessSettingsState();
 }
 
 class _AccessSettingsState extends State<AccessSettings> with TickerProviderStateMixin {
-  final ScrollController scrollController = ScrollController();
-  late TabController tabController;
+  late ScrollController _scrollController;
+  late TabController _tabController;
 
   @override
   void initState() {
     Provider.of<ClientsProvider>(context, listen: false).fetchClients(updateLoading: true);
     super.initState();
-    tabController = TabController(
+    _tabController = TabController(
       initialIndex: 0,
       length: 3,
       vsync: this,
     );
+    _scrollController = ScrollController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final clientsProvider = Provider.of<ClientsProvider>(context);
-
     final width = MediaQuery.of(context).size.width;
-
-    Widget body() {
-      return TabBarView(
-        controller: tabController,
-        children: [
-          ClientsList(
-            type: 'allowed',
-            scrollController: scrollController, 
-            loadStatus: clientsProvider.loadStatus, 
-            data: clientsProvider.loadStatus == LoadStatus.loaded
-              ? clientsProvider.clients!.clientsAllowedBlocked!.allowedClients : [], 
-          ),
-          ClientsList(
-            type: 'disallowed',
-            scrollController: scrollController, 
-            loadStatus: clientsProvider.loadStatus, 
-            data: clientsProvider.loadStatus == LoadStatus.loaded
-              ? clientsProvider.clients!.clientsAllowedBlocked!.disallowedClients : [], 
-          ),
-          ClientsList(
-            type: 'domains',
-            scrollController: scrollController, 
-            loadStatus: clientsProvider.loadStatus, 
-            data: clientsProvider.loadStatus == LoadStatus.loaded
-              ? clientsProvider.clients!.clientsAllowedBlocked!.blockedHosts : [], 
-          ),
-        ]
-      );
-    }
-
-    PreferredSizeWidget tabBar() {
-      return TabBar(
-        controller: tabController,
-        isScrollable: true,
-        unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-        tabs: [
-          Tab(
-            child: Row(
-              children: [
-                const Icon(Icons.check),
-                const SizedBox(width: 8),
-                Text(AppLocalizations.of(context)!.allowedClients)
-              ],
-            ),
-          ),
-          Tab(
-            child: Row(
-              children: [
-                const Icon(Icons.block),
-                const SizedBox(width: 8),
-                Text(AppLocalizations.of(context)!.disallowedClients)
-              ],
-            ),
-          ),
-          Tab(
-            child: Row(
-              children: [
-                const Icon(Icons.link_rounded),
-                const SizedBox(width: 8),
-                Text(AppLocalizations.of(context)!.disallowedDomains)
-              ],
-            ),
-          ),
-        ]
-      );
-    }
 
     if (Platform.isAndroid || Platform.isIOS) {
       return Scaffold(
         body: DefaultTabController(
           length: 3,
           child: NestedScrollView(
-            controller: scrollController,
+            controller: _scrollController,
             headerSliverBuilder: ((context, innerBoxIsScrolled) {
               return [
                 SliverOverlapAbsorber(
@@ -123,13 +56,19 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
                       centerTitle: false,
                       forceElevated: innerBoxIsScrolled,
                       surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
-                      bottom: tabBar()
+                      bottom: PreferredSize(
+                        preferredSize: const Size(double.maxFinite, 50), 
+                        child: _Tabs(tabController: _tabController)
+                      )
                     ),
                   ),
                 )
               ];
             }), 
-            body: body()
+            body: _TabsView(
+              tabController: _tabController, 
+              scrollController: _scrollController
+            )
           )
         ),
       );
@@ -139,10 +78,105 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.accessSettings),
           centerTitle: false,
-          bottom: tabBar()
+          bottom: PreferredSize(
+            preferredSize: const Size(double.maxFinite, 50), 
+            child: _Tabs(tabController: _tabController)
+          )
         ),
-        body: body(),
+        body: _TabsView(
+          tabController: _tabController, 
+          scrollController: _scrollController
+        )
       );
     }
+  }
+}
+
+class _Tabs extends StatelessWidget {
+  final TabController tabController;
+
+  const _Tabs({
+    required this.tabController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TabBar(
+      controller: tabController,
+      isScrollable: true,
+      unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+      tabAlignment: TabAlignment.start,
+      tabs: [
+        Tab(
+          child: Row(
+            children: [
+              const Icon(Icons.check),
+              const SizedBox(width: 8),
+              Text(AppLocalizations.of(context)!.allowedClients)
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            children: [
+              const Icon(Icons.block),
+              const SizedBox(width: 8),
+              Text(AppLocalizations.of(context)!.disallowedClients)
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            children: [
+              const Icon(Icons.link_rounded),
+              const SizedBox(width: 8),
+              Text(AppLocalizations.of(context)!.disallowedDomains)
+            ],
+          ),
+        ),
+      ]
+    );
+  }
+}
+
+class _TabsView extends StatelessWidget {
+  final TabController tabController;
+  final ScrollController scrollController;
+
+  const _TabsView({
+    required this.tabController,
+    required this.scrollController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final clientsProvider = Provider.of<ClientsProvider>(context);
+
+    return TabBarView(
+      controller: tabController,
+      children: [
+        ClientsList(
+          type: AccessSettingsList.allowed,
+          scrollController: scrollController, 
+          loadStatus: clientsProvider.loadStatus, 
+          data: clientsProvider.loadStatus == LoadStatus.loaded
+            ? clientsProvider.clients!.clientsAllowedBlocked!.allowedClients : [], 
+        ),
+        ClientsList(
+          type: AccessSettingsList.disallowed,
+          scrollController: scrollController, 
+          loadStatus: clientsProvider.loadStatus, 
+          data: clientsProvider.loadStatus == LoadStatus.loaded
+            ? clientsProvider.clients!.clientsAllowedBlocked!.disallowedClients : [], 
+        ),
+        ClientsList(
+          type: AccessSettingsList.domains,
+          scrollController: scrollController, 
+          loadStatus: clientsProvider.loadStatus, 
+          data: clientsProvider.loadStatus == LoadStatus.loaded
+            ? clientsProvider.clients!.clientsAllowedBlocked!.blockedHosts : [], 
+        ),
+      ]
+    );
   }
 }

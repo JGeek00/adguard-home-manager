@@ -24,6 +24,7 @@ class AdvancedSettings extends StatelessWidget {
       required Future Function(bool) function
     }) async {
       final result = await function(newStatus);
+      if (!context.mounted) return;
       if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider, 

@@ -1,6 +1,6 @@
 class Filtering {
-  final List<Filter> filters;
-  final List<Filter> whitelistFilters;
+  List<Filter> filters;
+  List<Filter> whitelistFilters;
   List<String> userRules;
   List<String> blockedServices;
   int interval;
@@ -40,7 +40,7 @@ class Filter {
   final DateTime? lastUpdated;
   final int id;
   final int rulesCount;
-  final bool enabled;
+  bool enabled;
 
   Filter({
     required this.url,
@@ -68,4 +68,14 @@ class Filter {
     "rules_count": rulesCount,
     "enabled": enabled,
   };
+}
+
+class ProcessedList {
+  final Filter list;
+  final bool successful;
+
+  const ProcessedList({
+    required this.list,
+    required this.successful
+  });
 }

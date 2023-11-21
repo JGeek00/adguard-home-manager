@@ -39,26 +39,26 @@ dependencies:
   flutter_localizations:
     sdk: flutter   
   intl: any
-  provider: ^6.0.3
+  provider: ^6.1.1
   sqflite: ^2.3.0
-  package_info_plus: ^4.0.1
+  package_info_plus: ^4.2.0
   flutter_displaymode: ^0.6.0 
-  dynamic_color: ^1.6.5
-  animations: ^2.0.5
-  device_info_plus: ^9.0.1
-  uuid: ^3.0.6
+  dynamic_color: ^1.6.8
+  animations: ^2.0.8
+  device_info_plus: ^9.1.0
+  uuid: ^4.2.1
   expandable: ^5.0.1
-  fl_chart: ^0.62.0
+  fl_chart: ^0.64.0
   flutter_web_browser: ^0.17.1
-  flutter_svg: ^1.1.5
-  percent_indicator: ^4.2.2
-  store_checker: ^1.2.0
-  flutter_markdown: ^0.6.14
-  markdown: ^7.0.2
-  html: ^0.15.2
-  flutter_html: ^3.0.0-alpha.6
-  sqlite3_flutter_libs: ^0.5.16
-  sqflite_common_ffi: ^2.3.0+2
+  flutter_svg: ^2.0.9
+  percent_indicator: ^4.2.3
+  store_checker: ^1.4.0
+  flutter_markdown: ^0.6.18+2
+  markdown: ^7.1.1
+  html: ^0.15.4
+  flutter_html: ^3.0.0-beta.2
+  sqlite3_flutter_libs: ^0.5.18
+  sqflite_common_ffi: ^2.3.0+4
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding
@@ -69,12 +69,11 @@ dependencies:
       ref: master-alt
   url_launcher: ^6.1.11
   contextmenu: ^3.0.0
-  async: ^2.10.0
-  sentry_flutter: ^7.9.0
-  flutter_dotenv: ^5.0.2
+  async: ^2.11.0
+  sentry_flutter: ^7.13.1
+  flutter_dotenv: ^5.1.0
   flutter_reorderable_list: ^1.3.1
-  pie_chart: ^5.3.2
-  flutter_hooks: ^0.20.3
+  pie_chart: ^5.4.0
   segmented_button_slide: ^1.0.4
 
 dev_dependencies:
@@ -86,7 +85,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.10+1
 

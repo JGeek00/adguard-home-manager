@@ -25,7 +25,7 @@ class ClientsFab extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     void confirmAddClient(Client client) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
       final result = await clientsProvider.addClient(client);

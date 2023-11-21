@@ -81,10 +81,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
         newStatus: value,
         time: time
       );
-      if (mounted && result != null) {
-        if (result != false) {
-          appConfigProvider.addLog(result);
-        }
+      if (mounted && result == false) {
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.invalidUsernamePassword, 

@@ -88,10 +88,10 @@ class FilteringProvider with ChangeNotifier {
     _blockedServicesLoadStatus = LoadStatus.loading;
     if (showLoader == true) notifyListeners(); 
 
-    final result = await _serversProvider!.apiClient!.getBlockedServices();
-    if (result['result'] == 'success') {
+    final result = await _serversProvider!.apiClient2!.getBlockedServices();
+    if (result.successful == true) {
       _blockedServicesLoadStatus = LoadStatus.loaded;
-      _blockedServicesList = BlockedServices(services: result['data']);
+      _blockedServicesList = BlockedServices(services: result.content as List<BlockedService>);
       
       notifyListeners();
       return true;
@@ -112,9 +112,9 @@ class FilteringProvider with ChangeNotifier {
       _loadStatus = LoadStatus.loading;
     }
 
-    final result = await _serversProvider!.apiClient!.getFiltering();
-    if (result['result'] == 'success') {
-      _filtering = result['data'];
+    final result = await _serversProvider!.apiClient2!.getFiltering();
+    if (result.successful == true) {
+      _filtering = result.content as Filtering;
       _loadStatus = LoadStatus.loaded;
       notifyListeners();
       return true;
@@ -127,15 +127,16 @@ class FilteringProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> updateLists() async {
-    final result = await _serversProvider!.apiClient!.updateLists();
-    if (result['result'] == 'success') {
-      final result2 = await _serversProvider!.apiClient!.getFiltering();
-      if (result2['result'] == 'success') {
-        _filtering = result2['data'];
+    final result = await _serversProvider!.apiClient2!.updateLists();
+    if (result.successful == true) {
+      final result2 = await _serversProvider!.apiClient2!.getFiltering();
+      if (result2.successful == true) {
+        _filtering = result2.content as Filtering;
         notifyListeners();
+        print(result.content);
         return {
           "success": true,
-          "data": result['data']
+          "data": result.content
         };
       }
       else {
@@ -151,10 +152,10 @@ class FilteringProvider with ChangeNotifier {
 
   Future<bool> enableDisableFiltering() async {
     final newValue = !_statusProvider!.serverStatus!.filteringEnabled;
-    final result = await _serversProvider!.apiClient!.updateFiltering(
+    final result = await _serversProvider!.apiClient2!.updateFiltering(
       enable: newValue
     );
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       setFilteringProtectionStatus(newValue, false);
       notifyListeners();
       return true;
@@ -166,13 +167,13 @@ class FilteringProvider with ChangeNotifier {
   }
 
   Future<bool> changeUpdateFrequency(int value) async {
-    final result = await _serversProvider!.apiClient!.requestChangeUpdateFrequency(
+    final result = await _serversProvider!.apiClient2!.requestChangeUpdateFrequency(
       data: {
         "enabled": filtering!.enabled,
         "interval": value
       }
     );
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       setFiltersUpdateFrequency(value);
       return true;
     }
@@ -185,9 +186,9 @@ class FilteringProvider with ChangeNotifier {
   Future<bool> removeCustomRule(String rule) async {
     final List<String> newRules = filtering!.userRules.where((r) => r != rule).toList();
 
-    final result = await _serversProvider!.apiClient!.setCustomRules(rules: newRules);
+    final result = await _serversProvider!.apiClient2!.setCustomRules(rules: newRules);
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       Filtering filteringData = filtering!;
       filteringData.userRules = newRules;
       _filtering = filteringData;
@@ -205,18 +206,18 @@ class FilteringProvider with ChangeNotifier {
   required String listUrl,
   required String type
   }) async {        
-    final result1 = await _serversProvider!.apiClient!.deleteFilterList(
+    final result1 = await _serversProvider!.apiClient2!.deleteFilterList(
       data: {
         "url": listUrl,
         "whitelist": type == 'whitelist' ? true : false
       }
     );
         
-    if (result1['result'] == 'success') {
-      final result2 = await _serversProvider!.apiClient!.getFiltering();
+    if (result1.successful == true) {
+      final result2 = await _serversProvider!.apiClient2!.getFiltering();
           
-      if (result2['result'] == 'success') {
-        _filtering = result2['data'];
+      if (result2.successful == true) {
+        _filtering = result2.content as Filtering;
         notifyListeners();
         return true;
       }
@@ -236,7 +237,7 @@ class FilteringProvider with ChangeNotifier {
     required String type,
     required FilteringListActions action
   }) async {        
-    final result1 = await _serversProvider!.apiClient!.updateFilterList(
+    final result1 = await _serversProvider!.apiClient2!.updateFilterList(
       data: {
         "data": {
           "enabled": action == FilteringListActions.disable || action == FilteringListActions.enable
@@ -250,11 +251,11 @@ class FilteringProvider with ChangeNotifier {
       }
     );
         
-    if (result1['result'] == 'success') {
-      final result2 = await _serversProvider!.apiClient!.getFiltering();
+    if (result1.successful == true) {
+      final result2 = await _serversProvider!.apiClient2!.getFiltering();
           
-      if (result2['result'] == 'success') {
-        _filtering = result2['data'];
+      if (result2.successful == true) {
+        _filtering = result2.content as Filtering;
         notifyListeners();
         return true;
       }
@@ -273,9 +274,9 @@ class FilteringProvider with ChangeNotifier {
     final List<String> newRules = filtering!.userRules;
     newRules.add(rule);
 
-    final result = await _serversProvider!.apiClient!.setCustomRules(rules: newRules);
-
-    if (result['result'] == 'success') {
+    final result = await _serversProvider!.apiClient2!.setCustomRules(rules: newRules);
+    
+    if (result.successful == true) {
       Filtering filteringData = filtering!;
       filteringData.userRules = newRules;
       _filtering = filteringData;
@@ -287,8 +288,9 @@ class FilteringProvider with ChangeNotifier {
       return false;
     }
   }
+  
   Future<Map<String, dynamic>> addList({required String name, required String url, required String type}) async {
-    final result1 = await _serversProvider!.apiClient!.addFilteringList(
+    final result1 = await _serversProvider!.apiClient2!.addFilteringList(
       data: {
         'name': name,
         'url': url,
@@ -296,13 +298,13 @@ class FilteringProvider with ChangeNotifier {
       }
     );
 
-    if (result1['result'] == 'success') {
-      if (result1['data'].toString().contains("OK")) {
-        final result2 = await _serversProvider!.apiClient!.getFiltering();
-        final items = result1['data'].toString().split(' ')[1];
+    if (result1.successful == true) {
+      if (result1.content.toString().contains("OK")) {
+        final result2 = await _serversProvider!.apiClient2!.getFiltering();
+        final items = result1.content.toString().split(' ')[1];
 
-        if (result2['result'] == 'success') {
-          _filtering = result2['data'];
+        if (result2.successful == true) {
+          _filtering = result2.content as Filtering;
           notifyListeners();
           return { 
             'success': true,
@@ -325,14 +327,14 @@ class FilteringProvider with ChangeNotifier {
         };
       }
     }
-    else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains("data is HTML, not plain text")) {
+    else if (result1.successful == false && result1.statusCode == 400 && result1.content.toString().contains("data is HTML, not plain text")) {
       notifyListeners();
       return {
         'success': false,
         'error': 'invalid_url'
       };
     }
-    else if (result1['result'] == 'error' && result1['log'].statusCode == '400' && result1['log'].resBody.toString().contains('url already exists')) {
+    else if (result1.successful == false && result1.statusCode == 400 && result1.content.toString().contains('url already exists')) {
       notifyListeners();
       return {
         'success': false,
@@ -355,9 +357,9 @@ class FilteringProvider with ChangeNotifier {
       _blockedServicesLoadStatus = LoadStatus.loading;
     } 
 
-    final result = await _serversProvider!.apiClient!.getBlockedServices();
-    if (result['result'] == 'success') {
-      _blockedServicesList = BlockedServices(services: result['data']);
+    final result = await _serversProvider!.apiClient2!.getBlockedServices();
+    if (result.successful == true) {
+      _blockedServicesList = BlockedServices(services: result.content as List<BlockedService>);
       _blockedServicesLoadStatus = LoadStatus.loaded;
 
       notifyListeners();
@@ -371,11 +373,11 @@ class FilteringProvider with ChangeNotifier {
   }
 
   Future<bool> updateBlockedServices(List<String> values) async {
-    final result = await _serversProvider!.apiClient!.setBlockedServices(
+    final result = await _serversProvider!.apiClient2!.setBlockedServices(
       data: values
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       setBlockedServices(values); 
       return true;
     }
@@ -383,5 +385,76 @@ class FilteringProvider with ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  Future<List<ProcessedList>> deleteMultipleLists({
+    required List<Filter> blacklists,
+    required List<Filter> whitelists
+  }) async {
+    Future<ProcessedList> deleteList({
+      required Filter list,
+      required bool isWhitelist,
+    }) async {
+      final result = await _serversProvider!.apiClient2!.deleteFilterList(
+        data: {
+          "url": list.url,
+          "whitelist": isWhitelist
+        }
+      );
+      if (result.successful == true) {
+        return ProcessedList(list: list, successful: true);
+      }
+      else {
+        return ProcessedList(list: list, successful: false);
+      }
+    }
+
+    final resultWhitelists = await Future.wait(whitelists.map((e) => deleteList(list: e, isWhitelist: true)));
+    final resultBlacklists = await Future.wait(blacklists.map((e) => deleteList(list: e, isWhitelist: false)));
+
+    await fetchFilters();
+
+    return [
+      ...resultWhitelists,
+      ...resultBlacklists,
+    ];
+  }
+
+  Future<List<ProcessedList>> enableDisableMultipleLists({
+    required List<Filter> blacklists,
+    required List<Filter> whitelists
+  }) async {
+    Future<ProcessedList> enableDisableList({
+      required Filter list,
+      required bool isWhitelist,
+    }) async {
+        final result = await _serversProvider!.apiClient2!.updateFilterList(
+        data: {
+          "data": {
+            "enabled": !list.enabled,
+            "name": list.name,
+            "url": list.url
+          },
+          "url": list.url,
+          "whitelist": isWhitelist
+        }
+      );
+      if (result.successful == true) {
+        return ProcessedList(list: list, successful: true);
+      }
+      else {
+        return ProcessedList(list: list, successful: false);
+      }
+    }
+
+    final resultWhitelists = await Future.wait(whitelists.map((e) => enableDisableList(list: e, isWhitelist: true)));
+    final resultBlacklists = await Future.wait(blacklists.map((e) => enableDisableList(list: e, isWhitelist: false)));
+
+    await fetchFilters();
+
+    return [
+      ...resultWhitelists,
+      ...resultBlacklists,
+    ];
   }
 }

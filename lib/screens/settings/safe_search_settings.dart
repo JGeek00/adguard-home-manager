@@ -74,7 +74,7 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
     final width = MediaQuery.of(context).size.width;
 
     void saveConfig() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingSettings);
 
       final result = await statusProvider.updateSafeSearchConfig({

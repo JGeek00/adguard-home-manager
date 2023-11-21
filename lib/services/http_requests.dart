@@ -4,12 +4,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
-import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -19,8 +20,6 @@ import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/server.dart';
-import 'package:adguard_home_manager/constants/urls.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 
 Future<Map<String, dynamic>> apiRequest({
@@ -1330,55 +1329,68 @@ class ApiClient {
   }
 
   Future getDhcpData() async {
-    final result = await Future.wait([
-      apiRequest(
-        urlPath: '/dhcp/interfaces', 
-        method: 'get',
-        server: server, 
-        type: 'get_dhcp_data'
-      ),
-      apiRequest(
-        urlPath: '/dhcp/status', 
-        method: 'get',
-        server: server, 
-        type: 'get_dhcp_data'
-      ),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(
+          urlPath: '/dhcp/interfaces', 
+          method: 'get',
+          server: server, 
+          type: 'get_dhcp_data'
+        ),
+        apiRequest(
+          urlPath: '/dhcp/status', 
+          method: 'get',
+          server: server, 
+          type: 'get_dhcp_data'
+        ),
+      ]);
 
-    if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
-      if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
-        List<NetworkInterface> interfaces = List<NetworkInterface>.from(jsonDecode(result[0]['body']).entries.map((entry) => NetworkInterface.fromJson(entry.value)));
+      if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
+        if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
+          List<NetworkInterface> interfaces = List<NetworkInterface>.from(jsonDecode(result[0]['body']).entries.map((entry) => NetworkInterface.fromJson(entry.value)));
 
-        return {
-          'result': 'success',
-          'data': DhcpModel(
-            networkInterfaces: interfaces, 
-            dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
-          )
-        };
+          return {
+            'result': 'success',
+            'data': DhcpModel(
+              networkInterfaces: interfaces, 
+              dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
+            )
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_dhcp_data', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+              resBody: result.map((res) => res['body'] ?? 'null').toString(),
+            )
+          };
+        }
       }
       else {
         return {
           'result': 'error',
           'log': AppLog(
-            type: 'get_dhcp_data', 
+            type: 'get_dhpc_data', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
+            message: [result[0]['log'].message, result[1]['log'].message].toString(),
             statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
             resBody: result.map((res) => res['body'] ?? 'null').toString(),
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
         'result': 'error',
         'log': AppLog(
           type: 'get_dhpc_data', 
           dateTime: DateTime.now(), 
-          message: [result[0]['log'].message, result[1]['log'].message].toString(),
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+          message: 'error_code_not_expected',
+          resBody: e.toString(),
         )
       };
     }
@@ -2152,79 +2164,6 @@ class ApiClient {
     }
   }
 
-  Future getUpdateChangelog({
-    required String releaseTag
-  }) async {
-    try {
-      HttpClient httpClient = HttpClient();
-      HttpClientRequest request = await httpClient.getUrl(Uri.parse("${Urls.adGuardHomeReleasesTags}/$releaseTag"));
-      HttpClientResponse response = await request.close();
-      String reply = await response.transform(utf8.decoder).join();
-      httpClient.close();
-      if (response.statusCode == 200) {
-        return {
-          'result': 'success',
-          'hasResponse': true,
-          'error': false,
-          'statusCode': response.statusCode,
-          'body': jsonDecode(reply)['body']
-        };
-      }
-      else {
-        return {
-          'result': 'error',
-          'log': AppLog(
-            type: 'update_encryption_settings', 
-            dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
-            statusCode: response.statusCode.toString(),
-            resBody: reply,
-          )
-        };
-      }    
-    } on SocketException {
-      return {
-        'result': 'no_connection', 
-        'message': 'SocketException',
-        'log': AppLog(
-          type: 'check_latest_release_github', 
-          dateTime: DateTime.now(), 
-          message: 'SocketException'
-        )
-      };
-    } on TimeoutException {
-      return {
-        'result': 'no_connection', 
-        'message': 'TimeoutException',
-        'log': AppLog(
-          type: 'check_latest_release_github', 
-          dateTime: DateTime.now(), 
-          message: 'TimeoutException'
-        )
-      };
-    } on HandshakeException {
-      return {
-        'result': 'ssl_error', 
-        'message': 'HandshakeException',
-        'log': AppLog(
-          type: 'check_latest_release_github', 
-          dateTime: DateTime.now(), 
-          message: 'HandshakeException'
-        )
-      };
-    } catch (e) {
-      return {
-        'result': 'error', 
-        'message': e.toString(),
-        'log': AppLog(
-          type: 'check_latest_release_github', 
-          dateTime: DateTime.now(), 
-          message: e.toString()
-        )
-      };
-    } 
-  }
-
   Future requestUpdateServer() async {
     final result = await apiRequest(
       urlPath: '/update', 
@@ -2320,146 +2259,4 @@ class ApiClient {
       return result;
     }
   }
-}
-
-Future getReleasesGitHub() async {
-  try {
-    HttpClient httpClient = HttpClient();
-    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.getReleasesGitHub));
-    HttpClientResponse response = await request.close();
-    String reply = await response.transform(utf8.decoder).join();
-    httpClient.close();
-    if (response.statusCode == 200) {
-      return {
-        'result': 'success',
-        'hasResponse': true,
-        'error': false,
-        'statusCode': response.statusCode,
-        'body': List<GitHubRelease>.from(jsonDecode(reply).map((entry) => GitHubRelease.fromJson(entry)))
-      };
-    }
-    else {
-      return {
-        'result': 'error',
-        'log': AppLog(
-          type: 'update_encryption_settings', 
-          dateTime: DateTime.now(), 
-          message: 'error_code_not_expected',
-          statusCode: response.statusCode.toString(),
-          resBody: reply,
-        )
-      };
-    }    
-  } on SocketException {
-    return {
-      'result': 'no_connection', 
-      'message': 'SocketException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'SocketException'
-      )
-    };
-  } on TimeoutException {
-    return {
-      'result': 'no_connection', 
-      'message': 'TimeoutException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'TimeoutException'
-      )
-    };
-  } on HandshakeException {
-    return {
-      'result': 'ssl_error', 
-      'message': 'HandshakeException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'HandshakeException'
-      )
-    };
-  } catch (e) {
-    return {
-      'result': 'error', 
-      'message': e.toString(),
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: e.toString()
-      )
-    };
-  } 
-}
-
-Future getLatestReleaseGitHub() async {
-  try {
-    HttpClient httpClient = HttpClient();
-    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.getLatestReleaseGitHub));
-    HttpClientResponse response = await request.close();
-    String reply = await response.transform(utf8.decoder).join();
-    httpClient.close();
-    if (response.statusCode == 200) {
-      return {
-        'result': 'success',
-        'hasResponse': true,
-        'error': false,
-        'statusCode': response.statusCode,
-        'body': GitHubRelease.fromJson(jsonDecode(reply))
-      };
-    }
-    else {
-      return {
-        'result': 'error',
-        'log': AppLog(
-          type: 'update_encryption_settings', 
-          dateTime: DateTime.now(), 
-          message: 'error_code_not_expected',
-          statusCode: response.statusCode.toString(),
-          resBody: reply,
-        )
-      };
-    }    
-  } on SocketException {
-    return {
-      'result': 'no_connection', 
-      'message': 'SocketException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'SocketException'
-      )
-    };
-  } on TimeoutException {
-    return {
-      'result': 'no_connection', 
-      'message': 'TimeoutException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'TimeoutException'
-      )
-    };
-  } on HandshakeException {
-    return {
-      'result': 'ssl_error', 
-      'message': 'HandshakeException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'HandshakeException'
-      )
-    };
-  } catch (e) {
-    return {
-      'result': 'error', 
-      'message': e.toString(),
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: e.toString()
-      )
-    };
-  } 
 }

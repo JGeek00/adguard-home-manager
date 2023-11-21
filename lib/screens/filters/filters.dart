@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/check_host_modal.dart';
+import 'package:adguard_home_manager/screens/filters/details/check_host_modal.dart';
 import 'package:adguard_home_manager/screens/filters/filters_tabs_view.dart';
 import 'package:adguard_home_manager/screens/filters/filters_triple_column.dart';
-import 'package:adguard_home_manager/screens/filters/list_details_screen.dart';
-import 'package:adguard_home_manager/screens/filters/remove_custom_rule_modal.dart';
-import 'package:adguard_home_manager/screens/filters/blocked_services_screen.dart';
-import 'package:adguard_home_manager/screens/filters/update_interval_lists_modal.dart';
+import 'package:adguard_home_manager/screens/filters/details/list_details_screen.dart';
+import 'package:adguard_home_manager/screens/filters/modals/remove_custom_rule_modal.dart';
+import 'package:adguard_home_manager/screens/filters/modals/blocked_services_screen.dart';
+import 'package:adguard_home_manager/screens/filters/modals/update_interval_lists_modal.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
@@ -51,13 +51,11 @@ class _FiltersState extends State<Filters> {
     final width = MediaQuery.of(context).size.width;
 
     void updateLists() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.updatingLists);
-
       final result = await filteringProvider.updateLists();
-
+      if (!mounted) return;
       processModal.close();
-
       if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
@@ -99,7 +97,7 @@ class _FiltersState extends State<Filters> {
     }
 
     void enableDisableFiltering() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(
         statusProvider.serverStatus!.filteringEnabled == true
           ? AppLocalizations.of(context)!.disableFiltering
@@ -127,7 +125,7 @@ class _FiltersState extends State<Filters> {
     }
 
     void setUpdateFrequency(int value) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.changingUpdateFrequency);
 
       final result = await filteringProvider.changeUpdateFrequency(value);
@@ -157,7 +155,7 @@ class _FiltersState extends State<Filters> {
     }
 
     void removeCustomRule(String rule) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.deletingRule);
 
       final result = await filteringProvider.removeCustomRule(rule);
@@ -190,28 +188,31 @@ class _FiltersState extends State<Filters> {
     }
 
     void openListDetails(Filter filter, String type) {
-      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
-        showDialog(
-          context: context,
-          builder: (context) => ListDetailsScreen(
-            listId: filter.id, 
-            type: type,
-            dialog: true,
-          ),
-          barrierDismissible: false
-        );
-      }
-      else {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ListDetailsScreen(
-              listId: filter.id, 
-              type: type,
-              dialog: false,
-            )
-          )
-        );
-      }
+      showGeneralDialog(
+        context: context, 
+        barrierColor: !(width > 900 || !(Platform.isAndroid | Platform.isIOS))
+          ?Colors.transparent 
+          : Colors.black54,
+        transitionBuilder: (context, anim1, anim2, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 1), 
+              end: const Offset(0, 0)
+            ).animate(
+              CurvedAnimation(
+                parent: anim1, 
+                curve: Curves.easeInOutCubicEmphasized
+              )
+            ),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) => ListDetailsScreen(
+          listId: filter.id, 
+          type: type,
+          dialog: width > 900 || !(Platform.isAndroid | Platform.isIOS),
+        ),
+      );
     }
 
     List<Widget> actions() {

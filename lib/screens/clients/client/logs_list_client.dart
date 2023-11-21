@@ -67,7 +67,7 @@ class _LogsListClientState extends State<LogsListClient> {
     if (cancelableRequest != null) cancelableRequest!.cancel(); 
 
     cancelableRequest = CancelableOperation.fromFuture(
-      serversProvider.apiClient!.getLogs(
+      serversProvider.apiClient2!.getLogs(
         count: logsQuantity, 
         offset: offst,
         search: '"${widget.ip}"'

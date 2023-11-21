@@ -6,10 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/clients/client/client_form.dart';
 import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
 
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/models/safe_search.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
-import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ControllerListItem {
@@ -75,8 +73,6 @@ class _ClientScreenState extends State<ClientScreen> {
 
   List<ControllerListItem> upstreamServers = [];
 
-  bool version = false;
-
   void enableDisableGlobalSettingsFiltering() {
     if (useGlobalSettingsFiltering == true) {
       setState(() {
@@ -104,12 +100,6 @@ class _ClientScreenState extends State<ClientScreen> {
 
   @override
   void initState() {
-    version = serverVersionIsAhead(
-      currentVersion: Provider.of<StatusProvider>(context, listen: false).serverStatus!.serverVersion, 
-      referenceVersion: 'v0.107.28',
-      referenceVersionBeta: 'v0.108.0-b.33'
-    );
-
     if (widget.client != null) {
       validValues = true;
 
@@ -123,12 +113,7 @@ class _ClientScreenState extends State<ClientScreen> {
       enableFiltering = widget.client!.filteringEnabled;
       enableParentalControl = widget.client!.parentalEnabled;
       enableSafeBrowsing = widget.client!.safebrowsingEnabled;
-      if (version == true) {
-        safeSearch = widget.client!.safeSearch;
-      }
-      else {
-        enableSafeSearch = widget.client!.safesearchEnabled ?? false;
-      }
+      safeSearch = widget.client!.safeSearch;
       useGlobalSettingsServices = widget.client!.useGlobalBlockedServices;
       blockedServices = widget.client!.blockedServices;
       upstreamServers = widget.client!.upstreams.map((e) => ControllerListItem(
@@ -151,8 +136,7 @@ class _ClientScreenState extends State<ClientScreen> {
         filteringEnabled: enableFiltering ?? false, 
         parentalEnabled: enableParentalControl ?? false, 
         safebrowsingEnabled: enableSafeBrowsing ?? false, 
-        safesearchEnabled: version == false ? enableSafeSearch : null, 
-        safeSearch: version == true ? safeSearch : null, 
+        safeSearch: safeSearch,
         useGlobalBlockedServices: useGlobalSettingsServices, 
         blockedServices: blockedServices, 
         upstreams: List<String>.from(upstreamServers.map((e) => e.controller.text)), 

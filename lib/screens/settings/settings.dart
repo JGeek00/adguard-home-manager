@@ -26,7 +26,6 @@ import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/constants/strings.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
@@ -167,14 +166,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     if (
                       serversProvider.selectedServer != null && 
                       statusProvider.serverStatus != null && 
-                      serversProvider.apiClient != null
+                      serversProvider.apiClient2 != null
                     ) ...[
                       SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
-                      if (serverVersionIsAhead(
-                        currentVersion: statusProvider.serverStatus!.serverVersion, 
-                        referenceVersion: 'v0.107.28',
-                        referenceVersionBeta: 'v0.108.0-b.33'
-                      ) == true) settingsTile(
+                      settingsTile(
                         icon: Icons.search_rounded,
                         title: AppLocalizations.of(context)!.safeSearch,
                         subtitle: AppLocalizations.of(context)!.safeSearchSettings,

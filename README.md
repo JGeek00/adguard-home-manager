@@ -121,8 +121,7 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 - [flutter dotenv](https://pub.dev/packages/flutter_dotenv)
 - [flutter reorderable list](https://pub.dev/packages/flutter_reorderable_list)
 - [pie chart](https://pub.dev/packages/pie_chart)
-- [go router](https://pub.dev/packages/go_router)
-- [flutter hooks](https://pub.dev/packages/flutter_hooks)
+- [segmented button slide](https://pub.dev/packages/segmented_button_slide)
 
 <br>
 

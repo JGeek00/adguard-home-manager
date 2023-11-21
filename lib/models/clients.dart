@@ -84,7 +84,6 @@ class Client {
   final bool filteringEnabled;
   final bool parentalEnabled;
   final bool safebrowsingEnabled;
-  final bool? safesearchEnabled;
   final bool useGlobalBlockedServices;
   final bool useGlobalSettings;
   final SafeSearch? safeSearch;
@@ -98,7 +97,6 @@ class Client {
     required this.filteringEnabled,
     required this.parentalEnabled,
     required this.safebrowsingEnabled,
-    required this.safesearchEnabled,
     required this.useGlobalBlockedServices,
     required this.useGlobalSettings,
     required this.safeSearch,
@@ -113,7 +111,6 @@ class Client {
     filteringEnabled: json["filtering_enabled"],
     parentalEnabled: json["parental_enabled"],
     safebrowsingEnabled: json["safebrowsing_enabled"],
-    safesearchEnabled: json["safesearch_enabled"],
     useGlobalBlockedServices: json["use_global_blocked_services"],
     useGlobalSettings: json["use_global_settings"],
     safeSearch: json["safe_search"] != null
@@ -130,7 +127,6 @@ class Client {
     "filtering_enabled": filteringEnabled,
     "parental_enabled": parentalEnabled,
     "safebrowsing_enabled": safebrowsingEnabled,
-    "safesearch_enabled": safesearchEnabled,
     "safe_search": safeSearch,
     "use_global_blocked_services": useGlobalBlockedServices,
     "use_global_settings": useGlobalSettings,

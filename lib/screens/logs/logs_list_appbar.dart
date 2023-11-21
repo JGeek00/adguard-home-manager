@@ -11,7 +11,6 @@ import 'package:adguard_home_manager/screens/logs/configuration/logs_config_moda
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
@@ -25,10 +24,10 @@ class LogsListAppBar extends StatelessWidget {
   final bool showDivider;
 
   const LogsListAppBar({
-    Key? key,
+    super.key,
     required this.innerBoxIsScrolled,
     required this.showDivider,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,20 +39,14 @@ class LogsListAppBar extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     void updateConfig(Map<String, dynamic> data) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
 
-      final result = serverVersionIsAhead(
-        currentVersion: statusProvider.serverStatus!.serverVersion, 
-        referenceVersion: 'v0.107.28',
-        referenceVersionBeta: 'v0.108.0-b.33'
-      ) == true 
-        ? await serversProvider.apiClient!.updateQueryLogParameters(data: data)
-        : await serversProvider.apiClient!.updateQueryLogParametersLegacy(data: data);
-
+      final result = await serversProvider.apiClient2!.updateQueryLogParameters(data: data);
+      
       processModal.close();
 
-      if (result['result'] == 'success') {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsConfigUpdated, 
@@ -61,8 +54,6 @@ class LogsListAppBar extends StatelessWidget {
         );
       }
       else {
-        appConfigProvider.addLog(result['log']);
-
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsConfigNotUpdated, 
@@ -72,14 +63,14 @@ class LogsListAppBar extends StatelessWidget {
     }
 
     void clearQueries() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.updatingSettings);
 
-      final result = await serversProvider.apiClient!.clearLogs();
+      final result = await serversProvider.apiClient2!.clearLogs();
 
       processModal.close();
 
-      if (result['result'] == 'success') {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsCleared, 
@@ -159,6 +150,7 @@ class LogsListAppBar extends StatelessWidget {
               showDialog(
                 context: context, 
                 builder: (context) => LogsConfigModal(
+                  context: context,
                   onConfirm: updateConfig,
                   onClear: clearQueries,
                   dialog: true,
@@ -172,6 +164,7 @@ class LogsListAppBar extends StatelessWidget {
                 context: context,
                 useRootNavigator: true, 
                 builder: (context) => LogsConfigModal(
+                  context: context,
                   onConfirm: updateConfig,
                   onClear: clearQueries,
                   dialog: false,

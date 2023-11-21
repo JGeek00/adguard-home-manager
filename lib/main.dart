@@ -235,13 +235,16 @@ class _MainState extends State<Main> {
           Locale('tr', '')
         ],
         scaffoldMessengerKey: scaffoldMessengerKey,
+        navigatorKey: globalNavigatorKey,
         builder: (context, child) {
           return CustomMenuBar(
             child: MediaQuery(
               data: MediaQuery.of(context).copyWith(
-                textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
-                  ? 0.9
-                  : 1.0
+                textScaler: TextScaler.linear(
+                  !(Platform.isAndroid || Platform.isIOS) 
+                    ? 0.9
+                    : 1.0
+                )
               ),
               child: child!,
             ),
@@ -252,4 +255,3 @@ class _MainState extends State<Main> {
     );
   }
 }
-

@@ -13,7 +13,6 @@ import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/classes/process_modal.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
@@ -21,7 +20,7 @@ import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 
 class SearchClients extends StatefulWidget {
-  const SearchClients({Key? key}) : super(key: key);
+  const SearchClients({super.key});
 
   @override
   State<SearchClients> createState() => _SearchClientsState();
@@ -87,7 +86,7 @@ class _SearchClientsState extends State<SearchClients> {
     final width = MediaQuery.of(context).size.width;
 
     void deleteClient(Client client) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.removingClient);
       
       final result = await clientsProvider.deleteClient(client);
@@ -111,7 +110,7 @@ class _SearchClientsState extends State<SearchClients> {
     }  
 
     void confirmEditClient(Client client) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
       final result = await clientsProvider.editClient(client);
@@ -290,25 +289,13 @@ class _SearchClientsState extends State<SearchClients> {
                             Icon(
                               Icons.search_rounded,
                               size: 19,
-                              color: serverVersionIsAhead(
-                                currentVersion: statusProvider.serverStatus!.serverVersion, 
-                                referenceVersion: 'v0.107.28',
-                                referenceVersionBeta: 'v0.108.0-b.33'
-                              ) == true 
-                                ? clientsScreen[index].safeSearch != null && clientsScreen[index].safeSearch!.enabled == true 
-                                  ? appConfigProvider.useThemeColorForStatus == true
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.green
-                                  : appConfigProvider.useThemeColorForStatus == true
-                                    ? Colors.grey
-                                    : Colors.red
-                                : clientsScreen[index].safesearchEnabled == true
-                                  ? appConfigProvider.useThemeColorForStatus == true
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.green
-                                  : appConfigProvider.useThemeColorForStatus == true
-                                    ? Colors.grey
-                                    : Colors.red,
+                              color: clientsScreen[index].safeSearch != null && clientsScreen[index].safeSearch!.enabled == true 
+                                ? appConfigProvider.useThemeColorForStatus == true
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.green
+                                : appConfigProvider.useThemeColorForStatus == true
+                                  ? Colors.grey
+                                  : Colors.red
                             )
                           ],
                         )
