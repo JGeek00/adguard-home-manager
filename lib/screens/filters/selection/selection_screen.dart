@@ -339,19 +339,28 @@ class _Tab extends StatelessWidget {
           Text(text),
           const SizedBox(width: 8),
           Container(
-            width: 18,
-            height: 18,
+            height: 22,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 2
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               color: Theme.of(context).colorScheme.primaryContainer
             ),
-            child: Text(
-              quantity.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: Theme.of(context).colorScheme.onPrimaryContainer
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minWidth: 18
+              ),
+              child: Center(
+                child: Text(
+                  quantity.toString(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer
+                  ),
+                ),
               ),
             ),
           )
