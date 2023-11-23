@@ -2,6 +2,8 @@ name: Compile and release beta build
 
 on:
   workflow_dispatch:
+    branches:
+      - beta
 
 jobs:
   build-android:
