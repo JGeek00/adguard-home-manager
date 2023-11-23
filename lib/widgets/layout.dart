@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,7 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
     super.initState();
       
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (kDebugMode) return;   // Don't check for app updates on debug mode
       final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
       final result = await checkAppUpdates(
         currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber,

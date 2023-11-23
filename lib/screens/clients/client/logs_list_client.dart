@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
 import 'package:adguard_home_manager/screens/logs/details/log_details_screen.dart';
 
+import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -21,13 +22,13 @@ class LogsListClient extends StatefulWidget {
   final bool splitView;
 
   const LogsListClient({
-    Key? key,
+    super.key,
     required this.ip,
     this.name,
     required this.serversProvider,
     required this.appConfigProvider,
     required this.splitView,
-  }) : super(key: key);
+  });
 
   @override
   State<LogsListClient> createState() => _LogsListClientState();
@@ -74,32 +75,28 @@ class _LogsListClientState extends State<LogsListClient> {
       )
     );
 
-    final result = await cancelableRequest?.value;
+    final result = await cancelableRequest?.value as ApiResponse;
+    if (!mounted) return;
 
-    if (result != null) {
-      if (loadingMore != null && loadingMore == true && mounted) {
-        setState(() => isLoadingMore = false);
-      }
+    if (loadingMore != null && loadingMore == true && mounted) {
+      setState(() => isLoadingMore = false);
+    }
 
-      if (mounted) {
-        if (result['result'] == 'success') {
-          setState(() => offset = inOffset != null ? inOffset+logsQuantity : offset+logsQuantity);
-          if (loadingMore != null && loadingMore == true && logsData != null) {
-            LogsData newLogsData = result['data'];
-            newLogsData.data = [...logsData!.data, ...result['data'].data];
-            setState(() => logsData = newLogsData);
-          }
-          else {
-            LogsData newLogsData = result['data'];
-            setState(() => logsData = newLogsData);
-          }
-          setState(() => loadStatus = 1);
-        }
-        else {
-          setState(() => loadStatus = 2);
-          widget.appConfigProvider.addLog(result['log']);
-        }
+    if (result.successful == true) {
+      setState(() => offset = inOffset != null ? inOffset+logsQuantity : offset+logsQuantity);
+      if (loadingMore != null && loadingMore == true && logsData != null) {
+        LogsData newLogsData = result.content;
+        newLogsData.data = [...logsData!.data, ...result.content.data];
+        setState(() => logsData = newLogsData);
       }
+      else {
+        LogsData newLogsData = result.content;
+        setState(() => logsData = newLogsData);
+      }
+      setState(() => loadStatus = 1);
+    }
+    else {
+      setState(() => loadStatus = 2);
     }
   }
 

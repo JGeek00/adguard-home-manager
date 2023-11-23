@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/services/external_requests.dart';
 import 'package:adguard_home_manager/models/server.dart';
@@ -188,9 +189,9 @@ class ServersProvider with ChangeNotifier {
     final result = await client!.checkServerUpdates();
     if (result.successful == true) {
       UpdateAvailableData data = UpdateAvailableData.fromJson(result.content);
-      final gitHubResult = await ExternalRequests.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
+      final gitHubResult = await ExternalRequests.getReleaseData(releaseTag: data.newVersion ?? data.currentVersion);
       if (gitHubResult.successful == true) {
-        data.changelog = gitHubResult.content;
+        data.changelog = (gitHubResult.content as GitHubRelease).body;
       }
       setUpdateAvailableData(data);
       setUpdateAvailableLoadStatus(LoadStatus.loaded, true);
@@ -262,7 +263,7 @@ class ServersProvider with ChangeNotifier {
             if (result.successful == true) {
               UpdateAvailableData data = UpdateAvailableData.fromJsonUpdate(result.content);
               if (data.currentVersion == data.newVersion) {
-                final gitHubResult = await ExternalRequests.getUpdateChangelog(releaseTag: data.newVersion ?? data.currentVersion);
+                final gitHubResult = await ExternalRequests.getReleaseData(releaseTag: data.newVersion ?? data.currentVersion);
                 if (gitHubResult.successful == true) {
                   data.changelog = gitHubResult.content;
                 }

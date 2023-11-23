@@ -689,10 +689,15 @@ class ApiClientV2 {
       server: server,
       body: data,
     );
-    return ApiResponse(
-      successful: result.successful,
-      content: result.body != null ? jsonDecode(result.body!) : null
-    );
+    try {
+      return ApiResponse(
+        successful: result.successful,
+        content: result.body != null ? jsonDecode(result.body!) : null
+      );
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
+      return const ApiResponse(successful: false);
+    }
   }
 
   Future<ApiResponse> saveEncryptionSettings({
