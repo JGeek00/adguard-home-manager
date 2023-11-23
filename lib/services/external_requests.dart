@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/constants/urls.dart';

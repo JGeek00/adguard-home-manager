@@ -23,11 +23,11 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: jbutcher5/read-yaml@1.6
+        uses: christian-ci/action-yaml-github-output@v2
         id: read_pubspec
         with:
-          file: './pubspec.yaml'
-          key-path: '["version"]'
+          file_path: './pubspec.yaml'
+          main_key: version
       - name: Save version on env variable
         id: save_version
         run: |
@@ -80,11 +80,11 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: jbutcher5/read-yaml@1.6
+        uses: christian-ci/action-yaml-github-output@v2
         id: read_pubspec
         with:
-          file: './pubspec.yaml'
-          key-path: '["version"]'
+          file_path: './pubspec.yaml'
+          main_key: version
       - name: Save version on env variable
         id: save_version
         run: |
@@ -140,11 +140,11 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: jbutcher5/read-yaml@1.6
+        uses: christian-ci/action-yaml-github-output@v2
         id: read_pubspec
         with:
-          file: './pubspec.yaml'
-          key-path: '["version"]'
+          file_path: './pubspec.yaml'
+          main_key: version
       - name: Save version on env variable
         id: save_version
         run: |
@@ -203,11 +203,11 @@ jobs:
         run: |
           [IO.File]::WriteAllBytes('.env', [Convert]::FromBase64String('${{ secrets.ENV }}'))
       - name: Read pubspec.yaml
-        uses: jbutcher5/read-yaml@1.6
+        uses: christian-ci/action-yaml-github-output@v2
         id: read_pubspec
         with:
-          file: './pubspec.yaml'
-          key-path: '["version"]'
+          file_path: './pubspec.yaml'
+          main_key: version
       - name: Save version on env variable
         shell: bash
         id: save_version
