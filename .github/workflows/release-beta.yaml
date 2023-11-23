@@ -35,7 +35,10 @@ jobs:
           msg: "${{ steps.read_pubspec.outputs.data }}"
           separator: "+"
       - name: Save version on env variable
-        run: echo "VERSION_NAME=$(echo ${{ steps.splitted_version.outputs._0 }})" >> $GITHUB_ENV
+        run: |
+          echo "VERSION_NAME=$(echo ${{ steps.splitted_version.outputs._0 }})" >> $GITHUB_ENV
+          echo "::set-output name=version_name::${{ steps.splitted_version.outputs._0 }}"
+          echo "::set-output name=version_number::${{ steps.splitted_version.outputs._1 }}"
       - name: Update KeyStore password in gradle properties
         run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
       - name: Update KeyStore key password in gradle properties
@@ -70,8 +73,9 @@ jobs:
     name: Release beta build to GitHub
     runs-on: ubuntu-latest
     needs: [build-android]
-    env:
-      VERSION_NAME: ${{ github.event.inputs.version }}-beta.${{ github.event.inputs.beta-number }}
+    env: 
+      VERSION_NAME: ${{ needs.build-android.outputs.version_name }}
+      VERSION_NUMBER: ${{ needs.build-android.outputs.version_number }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -88,7 +92,7 @@ jobs:
         with:
           artifacts: "releases/*"
           token: ${{ secrets.GH_TOKEN }}
-          tag: '${{ env.VERSION_NAME }}_(${{ github.event.inputs.number }})'
+          tag: '${{ env.VERSION_NAME }}_(${{ env.VERSION_NUMBER }})'
           name: v${{ env.VERSION_NAME }}
           draft: true
           prerelease: true
@@ -98,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-android]
     env:
-      VERSION_NAME: ${{ github.event.inputs.version }}-beta.${{ github.event.inputs.beta-number }}
+      VERSION_NAME: ${{ needs.build-android.outputs.version_name }}
     steps:
       - uses: actions/checkout@v3
         with:
