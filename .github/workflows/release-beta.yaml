@@ -26,11 +26,11 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: christian-ci/action-yaml-github-output@v2
+        uses: adore-me/read-yaml@v1.0.0
         id: read_pubspec
         with:
-          file_path: ./pubspec.yaml
-          main_key: version
+          file: './pubspec.yaml'
+          key-path: '["version"]'
       - name: Save version on env variable
         id: save_version
         run: |
