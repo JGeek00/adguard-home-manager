@@ -2,19 +2,9 @@ name: Compile and release beta build
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version"
-        required: true
-        default: "1.0.0"
-      beta-number:
-        description: "Beta number"
-        required: true
-        default: "1"
-      number:
-        description: "Build number"
-        required: true
-        default: "1"
+    branches:
+      - beta
+
 jobs:
   build-android:
     name: Build Android .apk and .aab
@@ -22,7 +12,6 @@ jobs:
     env:
       ANDROID_AAB_RELEASE_PATH: build/app/outputs/bundle/release
       ANDROID_APK_RELEASE_PATH: build/app/outputs/apk/release
-      VERSION_NAME: ${{ github.event.inputs.version }}-beta.${{ github.event.inputs.beta-number }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,8 +22,23 @@ jobs:
         run: echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
-      - name: Update version in YAML
-        run: sed -i 's/99.99.99+99/${{ env.VERSION_NAME }}+${{ github.event.inputs.number }}/g' pubspec.yaml
+      - name: Read pubspec.yaml
+        uses: jbutcher5/read-yaml@1.6
+        id: read_pubspec
+        with:
+          file: './pubspec.yaml'
+          key-path: '["version"]'
+      - name: Split version string
+        uses: winterjung/split@v2
+        id: splitted_version
+        with:
+          msg: "${{ steps.read_pubspec.outputs.data }}"
+          separator: "+"
+      - name: Save version on env variable
+        run: |
+          echo "VERSION_NAME=$(echo ${{ steps.splitted_version.outputs._0 }})" >> $GITHUB_ENV
+          echo "::set-output name=version_name::${{ steps.splitted_version.outputs._0 }}"
+          echo "::set-output name=version_number::${{ steps.splitted_version.outputs._1 }}"
       - name: Update KeyStore password in gradle properties
         run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
       - name: Update KeyStore key password in gradle properties
@@ -69,8 +73,9 @@ jobs:
     name: Release beta build to GitHub
     runs-on: ubuntu-latest
     needs: [build-android]
-    env:
-      VERSION_NAME: ${{ github.event.inputs.version }}-beta.${{ github.event.inputs.beta-number }}
+    env: 
+      VERSION_NAME: ${{ needs.build-android.outputs.version_name }}
+      VERSION_NUMBER: ${{ needs.build-android.outputs.version_number }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -87,7 +92,7 @@ jobs:
         with:
           artifacts: "releases/*"
           token: ${{ secrets.GH_TOKEN }}
-          tag: '${{ env.VERSION_NAME }}_(${{ github.event.inputs.number }})'
+          tag: '${{ env.VERSION_NAME }}_(${{ env.VERSION_NUMBER }})'
           name: v${{ env.VERSION_NAME }}
           draft: true
           prerelease: true
@@ -97,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-android]
     env:
-      VERSION_NAME: ${{ github.event.inputs.version }}-beta.${{ github.event.inputs.beta-number }}
+      VERSION_NAME: ${{ needs.build-android.outputs.version_name }}
     steps:
       - uses: actions/checkout@v3
         with:

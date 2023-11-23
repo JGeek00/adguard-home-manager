@@ -14,7 +14,7 @@ Future<GitHubRelease?> checkAppUpdates({
 }) async {
   var result = isBeta 
     ? await ExternalRequests.getReleasesGitHub() 
-    : await ExternalRequests.getLatestReleaseGitHub();
+    : await ExternalRequests.getReleaseData();
 
   if (result.successful == true) {
     late GitHubRelease gitHubRelease;
@@ -30,7 +30,7 @@ Future<GitHubRelease?> checkAppUpdates({
       gitHubRelease: gitHubRelease,
       isBeta: isBeta
     );
-
+print(update);
     if (update == true) {
       setUpdateAvailable(gitHubRelease);
         
