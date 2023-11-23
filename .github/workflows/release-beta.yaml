@@ -26,14 +26,16 @@ jobs:
         with:
           file: './pubspec.yaml'
           key-path: '["version"]'
+      - uses: winterjung/split@v2
+        id: split
+        with:
+          msg: "${{ steps.read_pubspec.outputs.data }}"
+          separator: "+"
       - name: Save version on env variable
-        run: |
-          version="${{ steps.read_pubspec.outputs.data }}"
-          echo ${version}
-          split=$((${version//+/ }))
-          echo "${split[0]}__${split[1]}"
-          name=${split[0]}
-          number=${split[1]}
+        run: | 
+          echo "${{ steps.split.outputs._0 }}__${{ steps.split.outputs._1 }}"
+          name=${{ steps.split.outputs._0 }}
+          number=${{ steps.split.outputs._1 }}
           echo "VERSION_NAME=$(echo ${name}_\(${number}\))"
           echo "VERSION_NAME=$(echo ${name}_\(${number}\))" >> $GITHUB_ENV
       - name: Update KeyStore password in gradle properties
