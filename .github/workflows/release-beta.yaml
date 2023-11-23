@@ -2,19 +2,7 @@ name: Compile and release beta build
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version"
-        required: true
-        default: "1.0.0"
-      beta-number:
-        description: "Beta number"
-        required: true
-        default: "1"
-      number:
-        description: "Build number"
-        required: true
-        default: "1"
+
 jobs:
   build-android:
     name: Build Android .apk and .aab
@@ -22,7 +10,6 @@ jobs:
     env:
       ANDROID_AAB_RELEASE_PATH: build/app/outputs/bundle/release
       ANDROID_APK_RELEASE_PATH: build/app/outputs/apk/release
-      VERSION_NAME: ${{ github.event.inputs.version }}-beta.${{ github.event.inputs.beta-number }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,8 +20,21 @@ jobs:
         run: echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
-      - name: Update version in YAML
-        run: sed -i 's/99.99.99+99/${{ env.VERSION_NAME }}+${{ github.event.inputs.number }}/g' pubspec.yaml
+      - name: Read pubspec.yaml
+        uses: pietrobolcato/action-read-yaml@1.0.0
+        id: read_pubspec
+        with:
+          config: ${{ github.workspace }}/pubspec.yaml
+      - name: Save version on env variable
+        run: |
+          version="${{ steps.read_pubspec.outputs['version'] }}"
+          echo ${version}
+          split=$((${version//+// }))
+          echo ${spliy}
+          name=${split[0]}
+          number=${split[1]}
+          echo "VERSION_NAME=$(echo ${name}_\(${number}\))"
+          echo "VERSION_NAME=$(echo ${name}_\(${number}\))" >> $GITHUB_ENV
       - name: Update KeyStore password in gradle properties
         run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
       - name: Update KeyStore key password in gradle properties
