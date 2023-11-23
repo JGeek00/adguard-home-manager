@@ -12,6 +12,9 @@ jobs:
     env:
       ANDROID_AAB_RELEASE_PATH: build/app/outputs/bundle/release
       ANDROID_APK_RELEASE_PATH: build/app/outputs/apk/release
+    outputs:
+      VERSION_NAME: ${{ steps.save_version.outputs.version_name }}
+      VERSION_NUMBER: ${{ steps.save_version.outputs.version_number }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,13 +32,14 @@ jobs:
           file: './pubspec.yaml'
           key-path: '["version"]'
       - name: Save version on env variable
+        id: save_version
         run: |
           version=${{ steps.read_pubspec.outputs.data }}
           IFS='+' 
           read -r -a split <<< "$version"
           echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_ENV
-          echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_OUTPUT
-          echo "VERSION_NUMBER=$(echo ${split[1]})" >> $GITHUB_OUTPUT
+          echo "version_name=${split[0]}" >> $GITHUB_OUTPUT
+          echo "version_number=${split[1]}" >> $GITHUB_OUTPUT
       - name: Update KeyStore password in gradle properties
         run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
       - name: Update KeyStore key password in gradle properties
@@ -71,8 +75,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-android]
     env: 
-      VERSION_NAME: ${{ needs.build-android.outputs.version_name }}
-      VERSION_NUMBER: ${{ needs.build-android.outputs.version_number }}
+      VERSION_NAME: ${{ needs.build-android.outputs.VERSION_NAME }}
+      VERSION_NUMBER: ${{ needs.build-android.outputs.VERSION_NUMBER }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -99,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-android]
     env:
-      VERSION_NAME: ${{ needs.build-android.outputs.version_name }}
+      VERSION_NAME: ${{ needs.build-android.outputs.VERSION_NAME }}
     steps:
       - uses: actions/checkout@v3
         with:
