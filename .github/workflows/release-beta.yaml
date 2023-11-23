@@ -31,7 +31,7 @@ jobs:
           version="${{ steps.read_pubspec.outputs.data }}"
           echo ${version}
           split=$((${version//+/ }))
-          echo ${spliy}
+          echo "${split[0]}__${split[1]}"
           name=${split[0]}
           number=${split[1]}
           echo "VERSION_NAME=$(echo ${name}_\(${number}\))"
