@@ -21,13 +21,14 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: pietrobolcato/action-read-yaml@1.0.0
+        uses: jbutcher5/read-yaml@1.6
         id: read_pubspec
         with:
-          config: ${{ github.workspace }}/pubspec.yaml
+          file: './pubspec.yaml'
+          key-path: '["version"]'
       - name: Save version on env variable
         run: |
-          version="${{ steps.read_pubspec.outputs['version'] }}"
+          version="${{ steps.read_pubspec.outputs.data }}"
           echo ${version}
           split=$((${version//+// }))
           echo ${spliy}
