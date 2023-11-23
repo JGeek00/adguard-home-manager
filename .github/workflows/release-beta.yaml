@@ -33,8 +33,7 @@ jobs:
           msg: "${{ steps.read_pubspec.outputs.data }}"
           separator: "+"
       - name: Save version on env variable
-        run: | 
-          echo "VERSION_NAME=$(echo ${{ steps.splitted_version.outputs._0 }}" >> $GITHUB_ENV
+        run: echo "VERSION_NAME=$(echo ${{ steps.splitted_version.outputs._0 }})" >> $GITHUB_ENV
       - name: Update KeyStore password in gradle properties
         run: sed -i 's/#{KEYSTORE_PASS}#/${{ secrets.KEYSTORE_PASS }}/g' android/key.properties
       - name: Update KeyStore key password in gradle properties
