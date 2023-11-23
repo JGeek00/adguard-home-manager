@@ -59,24 +59,30 @@ class ApiClientV2 {
       HttpRequestClient.get(urlPath: "/parental/status", server: server),
       HttpRequestClient.get(urlPath: "/clients", server: server),
     ]);
-    
     if (
       results.map((e) => e.successful).every((e) => e == true) &&
       results.map((e) => e.body).every((e) => e != null)
     ) {
-      final Map<String, dynamic> mappedData = {
-        'stats': jsonDecode(results[0].body!),
-        'clients': jsonDecode(results[6].body!)['clients'],
-        'status': jsonDecode(results[1].body!),
-        'filtering': jsonDecode(results[2].body!),
-        'safeSearch': jsonDecode(results[3].body!),
-        'safeBrowsingEnabled': jsonDecode(results[4].body!),
-        'parentalControlEnabled': jsonDecode(results[5].body!),
-      };
-      return ApiResponse(
-        successful: true,
-        content: ServerStatus.fromJson(mappedData)
-      );
+      try {
+        final Map<String, dynamic> mappedData = {
+          'stats': jsonDecode(results[0].body!),
+          'clients': jsonDecode(results[6].body!)['clients'],
+          'status': jsonDecode(results[1].body!),
+          'filtering': jsonDecode(results[2].body!),
+          'safeSearch': jsonDecode(results[3].body!),
+          'safeBrowsingEnabled': jsonDecode(results[4].body!),
+          'parentalControlEnabled': jsonDecode(results[5].body!),
+        };
+        return ApiResponse(
+          successful: true,
+          content: ServerStatus.fromJson(mappedData)
+        );
+      } on FormatException {
+        return const ApiResponse(successful: false);
+      } catch (e, stackTrace) {
+        Sentry.captureException(e, stackTrace: stackTrace);
+        return const ApiResponse(successful: false);
+      }
     }
     else {
       return const ApiResponse(successful: false);
