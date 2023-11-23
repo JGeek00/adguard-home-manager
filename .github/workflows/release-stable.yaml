@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     branches:
       - master
+
 jobs:
   build-android:
     name: Build Android .apk and .aab
@@ -22,7 +23,7 @@ jobs:
         run: echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
-     - name: Read pubspec.yaml
+      - name: Read pubspec.yaml
         uses: adore-me/read-yaml@v1.0.0
         id: read_pubspec
         with:
@@ -139,7 +140,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
-     - name: Read pubspec.yaml
+      - name: Read pubspec.yaml
         uses: adore-me/read-yaml@v1.0.0
         id: read_pubspec
         with:
