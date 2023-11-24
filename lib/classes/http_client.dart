@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:sentry_flutter/sentry_flutter.dart';
-
 import 'package:adguard_home_manager/models/server.dart';
 
 enum ExceptionType { socket, timeout, handshake, http, unknown }
