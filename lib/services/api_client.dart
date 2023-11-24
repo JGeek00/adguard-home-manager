@@ -698,9 +698,18 @@ class ApiClientV2 {
     try {
       return ApiResponse(
         successful: result.successful,
-        content: result.body != null 
-          ? EncyptionValidation.fromJson(jsonDecode(result.body!))
-          : null
+        content: result.body != null ? EncryptionValidationResult(
+          isObject: false,
+          encryptionValidation: EncryptionValidation.fromJson(jsonDecode(result.body!))
+        ) : null
+      );
+    } on FormatException {
+      return ApiResponse(
+        successful: result.successful,
+        content: result.body != null ? EncryptionValidationResult(
+          isObject: false,
+          message: result.body
+        ) : null
       );
     } catch (e, stackTrace) {
       Sentry.captureException(e, stackTrace: stackTrace);

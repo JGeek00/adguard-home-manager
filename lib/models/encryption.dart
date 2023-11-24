@@ -124,12 +124,19 @@ class EncryptionData {
 }
 
 
+class EncryptionValidationResult {
+  final bool isObject;
+  final EncryptionValidation? encryptionValidation;
+  final String? message;
 
-EncyptionValidation encyptionValidationFromJson(String str) => EncyptionValidation.fromJson(json.decode(str));
+  const EncryptionValidationResult({
+    required this.isObject,
+    this.encryptionValidation,
+    this.message
+  });
+}
 
-String encyptionValidationToJson(EncyptionValidation data) => json.encode(data.toJson());
-
-class EncyptionValidation {
+class EncryptionValidation {
   final String? subject;
   final String? issuer;
   final String? keyType;
@@ -156,7 +163,7 @@ class EncyptionValidation {
   final String? privateKeyPath;
   final bool? privateKeySaved;
 
-  EncyptionValidation({
+  EncryptionValidation({
     this.subject,
     this.issuer,
     this.keyType,
@@ -184,7 +191,7 @@ class EncyptionValidation {
     this.privateKeySaved,
   });
 
-  factory EncyptionValidation.fromJson(Map<String, dynamic> json) => EncyptionValidation(
+  factory EncryptionValidation.fromJson(Map<String, dynamic> json) => EncryptionValidation(
     subject: json["subject"],
     issuer: json["issuer"],
     keyType: json["key_type"],

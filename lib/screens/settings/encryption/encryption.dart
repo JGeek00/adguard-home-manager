@@ -72,7 +72,8 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
   String? validDataError;
   int certKeyValidApi = 0;
 
-  EncyptionValidation? certKeyValid;
+  EncryptionValidation? certKeyValid;
+  String? encryptionResultMessage;
 
   bool formEdited = false;
 
@@ -140,20 +141,27 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
 
     if (!mounted) return;
     if (result.successful == true) {
-      final data = result.content as EncyptionValidation;
-      setState(() {
-        if (data.warningValidation != null && data.warningValidation != '') {
+      final data = result.content as EncryptionValidationResult;
+      if (data.isObject == true) {
+        final object = data.encryptionValidation!;
+        setState(() {
+          if (object.warningValidation != null && object.warningValidation != '') {
+            certKeyValidApi = 2;
+            validDataError = object.warningValidation;
+          }
+          else {
+            certKeyValidApi = 1;
+            validDataError = null;
+          }
+          certKeyValid = object;
+        });
+      }
+      else {
+        setState(() {
+          encryptionResultMessage = data.message;
           certKeyValidApi = 2;
-          validDataError = data.warningValidation;
-        }
-        else {
-          certKeyValidApi = 1;
-          validDataError = null;
-        }
-        certKeyValid = data;
-      });
-    }
-    else {
+        });
+      }
     }
   }
 
@@ -253,11 +261,13 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
         centerTitle: false,
         actions: [
           IconButton(
-            onPressed: certKeyValidApi == 2 && validDataError != null
+            onPressed: certKeyValidApi == 2 && (validDataError != null || encryptionResultMessage != null)
               ? () => {
                 showDialog(
                   context: context, 
-                  builder: (context) => EncryptionErrorModal(error: validDataError!)
+                  builder: (context) => EncryptionErrorModal(
+                    error: validDataError ?? encryptionResultMessage ?? AppLocalizations.of(context)!.unknownError
+                  )
                 )
               } : null, 
             icon: generateStatus(context, appConfigProvider, localValidationValid, certKeyValidApi, formEdited),
