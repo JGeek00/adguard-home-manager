@@ -72,7 +72,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
   String? validDataError;
   int certKeyValidApi = 0;
 
-  Map<String, dynamic>? certKeyValid;
+  EncyptionValidation? certKeyValid;
 
   bool formEdited = false;
 
@@ -150,7 +150,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           certKeyValidApi = 1;
           validDataError = null;
         }
-        certKeyValid = result.content;
+        certKeyValid = data;
       });
     }
     else {
@@ -475,40 +475,40 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                   ),
                   if (certKeyValid != null && (certificateContentController.text != '' || certificatePathController.text != '')) ...[
                     const SizedBox(height: 20),
-                    if (certKeyValid!['valid_chain'] != null) ...[
+                    if (certKeyValid!.validChain != null) ...[
                       Status(
-                        valid: certKeyValid!['valid_chain'], 
-                        label: certKeyValid!['valid_chain'] == true
+                        valid: certKeyValid!.validChain ?? false, 
+                        label: certKeyValid!.validChain == true
                           ? AppLocalizations.of(context)!.validCertificateChain
                           : AppLocalizations.of(context)!.invalidCertificateChain,
                       ),
                       const SizedBox(height: 10),
                     ],
-                    if (certKeyValid!['subject'] != null) ...[
+                    if (certKeyValid!.subject != null) ...[
                       Status(
                         valid: true, 
-                        label: "${AppLocalizations.of(context)!.subject}: ${certKeyValid!['subject']}"
+                        label: "${AppLocalizations.of(context)!.subject}: ${certKeyValid?.subject}"
                       ),
                       const SizedBox(height: 10),
                     ],
-                    if (certKeyValid!['issuer'] != null) ...[
+                    if (certKeyValid!.issuer != null) ...[
                       Status(
                       valid: true, 
-                      label: "${AppLocalizations.of(context)!.issuer}: ${certKeyValid!['issuer']}"
+                      label: "${AppLocalizations.of(context)!.issuer}: ${certKeyValid?.issuer}"
                     ),
                       const SizedBox(height: 10),
                     ],
-                    if (certKeyValid!['not_after'] != null) ...[
+                    if (certKeyValid!.notAfter != null) ...[
                       Status(
                         valid: true, 
-                        label: "${AppLocalizations.of(context)!.expirationDate}: ${certKeyValid!['not_after']}"
+                        label: "${AppLocalizations.of(context)!.expirationDate}: ${certKeyValid?.notAfter}"
                       ),
                       const SizedBox(height: 10),
                     ],
-                    if (certKeyValid!['dns_names'] != null) ...[
+                    if (certKeyValid!.dnsNames != null) ...[
                       Status(
                         valid: true, 
-                        label: "${AppLocalizations.of(context)!.hostNames}: ${certKeyValid!['dns_names'].join(', ')}"
+                        label: "${AppLocalizations.of(context)!.hostNames}: ${certKeyValid?.dnsNames?.join(', ')}"
                       ),
                       const SizedBox(height: 10),
                     ],
@@ -586,26 +586,26 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                   ),
                   const SizedBox(height: 20),
                   if (certKeyValid != null && (privateKeyPathController.text != '' || pastePrivateKeyController.text != '' || usePreviouslySavedKey == true)) ...[
-                    if (certKeyValid!['valid_key'] != null) ...[
+                    if (certKeyValid!.validKey != null) ...[
                       Status(
-                        valid: certKeyValid!['valid_key'], 
-                        label: certKeyValid!['valid_key'] == true
+                        valid: certKeyValid!.validKey ?? false, 
+                        label: certKeyValid!.validKey == true
                           ? AppLocalizations.of(context)!.validPrivateKey
                           : AppLocalizations.of(context)!.invalidPrivateKey,
                       ),
                       const SizedBox(height: 10)
                     ],
-                    if (certKeyValid!['valid_pair'] != null && certKeyValid!['valid_pair'] == false) ...[
+                    if (certKeyValid!.validPair != null && certKeyValid!.validPair == false) ...[
                       Status(
                         valid: false, 
                         label: AppLocalizations.of(context)!.keysNotMatch,
                       ),
                       const SizedBox(height: 10)
                     ],
-                    if (certKeyValid!['key_type'] != null) ...[
+                    if (certKeyValid!.keyType != null) ...[
                       Status(
                         valid: true, 
-                        label: "${AppLocalizations.of(context)!.keyType}: ${certKeyValid!['key_type']}"
+                        label: "${AppLocalizations.of(context)!.keyType}: ${certKeyValid!.keyType}"
                       ),
                       const SizedBox(height: 10),
                     ],
