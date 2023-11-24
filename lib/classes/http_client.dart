@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:sentry_flutter/sentry_flutter.dart';
-
 import 'package:adguard_home_manager/models/server.dart';
 
-enum ExceptionType { socket, timeout, handshake, unknown }
+enum ExceptionType { socket, timeout, handshake, http, unknown }
 
 class HttpResponse {
   final bool successful;
@@ -73,8 +71,14 @@ class HttpRequestClient {
         statusCode: null,
         exception: ExceptionType.handshake
       );  
-    } catch (e, stackTrace) {
-      Sentry.captureException(e, stackTrace: stackTrace);
+    } on HttpException {
+      return const HttpResponse(
+        successful: false, 
+        body: null, 
+        statusCode: null,
+        exception: ExceptionType.http
+      );  
+    } catch (e) {
       return const HttpResponse(
         successful: false, 
         body: null, 
@@ -123,6 +127,13 @@ class HttpRequestClient {
         statusCode: null,
         exception: ExceptionType.timeout
       );  
+    } on HttpException {
+      return const HttpResponse(
+        successful: false, 
+        body: null, 
+        statusCode: null,
+        exception: ExceptionType.http
+      );  
     } on HandshakeException {
       return const HttpResponse(
         successful: false, 
@@ -130,8 +141,7 @@ class HttpRequestClient {
         statusCode: null,
         exception: ExceptionType.handshake
       );  
-    } catch (e, stackTrace) {
-      Sentry.captureException(e, stackTrace: stackTrace);
+    } catch (e) {
       return const HttpResponse(
         successful: false, 
         body: null, 
@@ -180,6 +190,13 @@ class HttpRequestClient {
         statusCode: null,
         exception: ExceptionType.timeout
       );  
+    } on HttpException {
+      return const HttpResponse(
+        successful: false, 
+        body: null, 
+        statusCode: null,
+        exception: ExceptionType.http
+      );  
     } on HandshakeException {
       return const HttpResponse(
         successful: false, 
@@ -187,8 +204,7 @@ class HttpRequestClient {
         statusCode: null,
         exception: ExceptionType.handshake
       );  
-    } catch (e, stackTrace) {
-      Sentry.captureException(e, stackTrace: stackTrace);
+    } catch (e) {
       return const HttpResponse(
         successful: false, 
         body: null, 

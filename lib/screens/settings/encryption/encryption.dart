@@ -138,23 +138,22 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       }
     );
 
-    if (mounted) {
-      if (result.successful == true) {
-        setState(() {
-          if (result.content['warning_validation'] != null && result.content['warning_validation'] != '') {
-            certKeyValidApi = 2;
-            validDataError = result.content['warning_validation'];
-          }
-          else {
-            certKeyValidApi = 1;
-            validDataError = null;
-          }
-          certKeyValid = result.content;
-        });
-      }
-      else {
-        setState(() => certKeyValidApi = 2);
-      }
+    if (!mounted) return;
+    if (result.successful == true) {
+      final data = result.content as EncyptionValidation;
+      setState(() {
+        if (data.warningValidation != null && data.warningValidation != '') {
+          certKeyValidApi = 2;
+          validDataError = data.warningValidation;
+        }
+        else {
+          certKeyValidApi = 1;
+          validDataError = null;
+        }
+        certKeyValid = result.content;
+      });
+    }
+    else {
     }
   }
 

@@ -265,7 +265,7 @@ class ServersProvider with ChangeNotifier {
               if (data.currentVersion == data.newVersion) {
                 final gitHubResult = await ExternalRequests.getReleaseData(releaseTag: data.newVersion ?? data.currentVersion);
                 if (gitHubResult.successful == true) {
-                  data.changelog = gitHubResult.content;
+                  data.changelog = (gitHubResult.content as GitHubRelease).body;
                 }
                 setUpdateAvailableData(data);
                 timer.cancel();
