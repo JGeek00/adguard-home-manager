@@ -32,8 +32,11 @@ class _HomeState extends State<Home> {
   late bool isVisible;
 
   @override
-  initState(){
-    Provider.of<StatusProvider>(context, listen: false).getServerStatus();
+  initState() {
+    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
+    statusProvider.getServerStatus(
+      withLoadingIndicator: statusProvider.serverStatus != null ? false : true
+    );
 
     super.initState();
 
@@ -239,9 +242,9 @@ class TopItemsLists extends StatelessWidget {
   final List<HomeTopItems> order;
   
   const TopItemsLists({
-    Key? key, 
+    super.key, 
     required this.order,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -266,8 +269,7 @@ class TopItemsLists extends StatelessWidget {
               children: [
                 TopItems(
                   label: AppLocalizations.of(context)!.topQueriedDomains, 
-                  data: statusProvider.serverStatus!.stats.topQueriedDomains,
-                  type: 'topQueriedDomains',
+                  type: HomeTopItems.queriedDomains,
                 ),
                 if (item.key < order.length - 1) ...bottom
               ],
@@ -278,8 +280,7 @@ class TopItemsLists extends StatelessWidget {
               children: [
                 TopItems(
                   label: AppLocalizations.of(context)!.topBlockedDomains, 
-                  data: statusProvider.serverStatus!.stats.topBlockedDomains,
-                  type: 'topBlockedDomains',
+                  type: HomeTopItems.blockedDomains,
                 ),
                 if (item.key < order.length - 1) ...bottom
               ],
@@ -290,13 +291,37 @@ class TopItemsLists extends StatelessWidget {
               children: [
                 TopItems(
                   label: AppLocalizations.of(context)!.topClients, 
-                  data: statusProvider.serverStatus!.stats.topClients,
-                  type: 'topClients',
-                  clients: true,
+                  type: HomeTopItems.recurrentClients,
                 ),
                 if (item.key < order.length - 1) ...bottom
               ],
             );
+
+          case HomeTopItems.topUpstreams:
+            return statusProvider.serverStatus!.stats.topUpstreamResponses != null
+              ? Column(
+                  children: [
+                    TopItems(
+                      label: AppLocalizations.of(context)!.topUpstreams, 
+                      type: HomeTopItems.topUpstreams,
+                    ),
+                    if (item.key < order.length - 1) ...bottom
+                  ],
+                )
+              : const SizedBox();
+
+          case HomeTopItems.avgUpstreamResponseTime:
+            return statusProvider.serverStatus!.stats.topUpstreamsAvgTime != null 
+              ? Column(
+                  children: [
+                    TopItems(
+                      label: AppLocalizations.of(context)!.averageUpstreamResponseTime, 
+                      type: HomeTopItems.avgUpstreamResponseTime,
+                    ),
+                    if (item.key < order.length - 1) ...bottom
+                  ],
+                ) 
+              : const SizedBox();
                 
           default:
             return const SizedBox();

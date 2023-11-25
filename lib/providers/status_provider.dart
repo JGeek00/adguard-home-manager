@@ -237,7 +237,7 @@ class StatusProvider with ChangeNotifier {
   }
 
   Future<bool> getServerStatus({
-    bool? withLoadingIndicator,
+    bool? withLoadingIndicator = true,
     bool? overrideCheckServerVersion
   }) async {
     if (withLoadingIndicator == true) {

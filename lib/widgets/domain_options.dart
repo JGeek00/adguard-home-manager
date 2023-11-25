@@ -17,21 +17,21 @@ import 'package:adguard_home_manager/models/menu_option.dart';
 
 class DomainOptions extends StatelessWidget {
   final bool isBlocked;
-  final bool? isClient;
+  final bool? isDomain;
   final String? item;
   final Widget child;
   final void Function() onTap;
   final BorderRadius? borderRadius;
 
   const DomainOptions({
-    Key? key,
+    super.key,
     required this.isBlocked,
-    this.isClient,
+    this.isDomain,
     required this.item,
     required this.child,
     required this.onTap,
     this.borderRadius
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +80,12 @@ class DomainOptions extends StatelessWidget {
 
     List<MenuOption> generateOptions() {
       return [
-        if (isClient != true && isBlocked == true) MenuOption(
+        if (isDomain == true && isBlocked == true) MenuOption(
           title: AppLocalizations.of(context)!.unblock, 
           icon: Icons.check,
           action: () => blockUnblock(item!, 'unblock')
         ),
-        if (isClient != true && isBlocked == false) MenuOption(
+        if (isDomain == true && isBlocked == false) MenuOption(
           title: AppLocalizations.of(context)!.block, 
           icon: Icons.block,
           action: () => blockUnblock(item!, 'block')

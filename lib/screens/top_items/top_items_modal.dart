@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/domain_options.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
@@ -17,18 +18,22 @@ import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class TopItemsModal extends StatefulWidget {
-  final String type;
+  final HomeTopItems type;
   final String title;
   final bool? isClient;
   final List<Map<String, dynamic>> data;
+  final bool withProgressBar;
+  final String? unit;
 
   const TopItemsModal({
-    Key? key,
+    super.key,
     required this.type,
     required this.title,
     this.isClient,
     required this.data,
-  }) : super(key: key);
+    required this.withProgressBar,
+    this.unit,
+  });
 
   @override
   State<TopItemsModal> createState() => _TopItemsModalState();
@@ -59,9 +64,9 @@ class _TopItemsModalState extends State<TopItemsModal> {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
-    int total = 0;
+    double total = 0;
     for (var element in data) {
-      total = total + int.parse(element.values.toList()[0].toString());
+      total = total + double.parse(element.values.toList()[0].toString());
     }
     
     return Dialog(
@@ -129,11 +134,11 @@ class _TopItemsModalState extends State<TopItemsModal> {
                   }
             
                   return DomainOptions(
-                    isBlocked: widget.type == 'topBlockedDomains',
-                    isClient: widget.type == 'topClients',
+                    isBlocked: widget.type == HomeTopItems.blockedDomains,
+                    isDomain: widget.type == HomeTopItems.queriedDomains || widget.type == HomeTopItems.blockedDomains,
                     item: screenData[index].keys.toList()[0],
                     onTap: () {
-                      if (widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains') {
+                      if (widget.type == HomeTopItems.queriedDomains || widget.type == HomeTopItems.blockedDomains) {
                         logsProvider.setSearchText(screenData[index].keys.toList()[0]);
                         logsProvider.setSelectedClients(null);
                         logsProvider.setAppliedFilters(
@@ -146,7 +151,7 @@ class _TopItemsModalState extends State<TopItemsModal> {
                         appConfigProvider.setSelectedScreen(2);
                         Navigator.pop(context);
                       }
-                      else if (widget.type == 'topClients') {
+                      else if (widget.type == HomeTopItems.recurrentClients) {
                         logsProvider.setSearchText(null);
                         logsProvider.setSelectedClients([screenData[index].keys.toList()[0]]);
                         logsProvider.setAppliedFilters(
@@ -163,7 +168,9 @@ class _TopItemsModalState extends State<TopItemsModal> {
                     child: CustomListTile(
                       title: screenData[index].keys.toList()[0],
                       trailing: Text(
-                        screenData[index].values.toList()[0].toString(),
+                        screenData[index].values.toList()[0].runtimeType == double
+                          ? "${screenData[index].values.toList()[0].toStringAsFixed(2)}${widget.unit != null ? ' ${widget.unit}' : ''}"
+                          : "${screenData[index].values.toList()[0].toString()}${widget.unit != null ? ' ${widget.unit}' : ''}",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant
                         ),
@@ -181,7 +188,7 @@ class _TopItemsModalState extends State<TopItemsModal> {
                             ),
                             const SizedBox(height: 5),
                           ],
-                          Row(
+                          if (widget.withProgressBar == true) Row(
                             children: [
                               SizedBox(
                                 width: 50,

@@ -4,28 +4,31 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/domain_options.dart';
 
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 
 class RowItem extends StatefulWidget {
-  final String type;
+  final HomeTopItems type;
   final Color chartColor;
   final String domain;
   final String number;
   final bool clients;
   final bool showColor;
+  final String? unit;
 
   const RowItem({
-    Key? key,
+    super.key,
     required this.type,
     required this.chartColor,
     required this.domain,
     required this.number,
     required this.clients,
     required this.showColor,
-  }) : super(key: key);
+    this.unit,
+  });
 
   @override
   State<RowItem> createState() => _RowItemState();
@@ -93,10 +96,10 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
       color: Colors.transparent,
       child: DomainOptions(
         item: widget.domain,
-        isClient: widget.type == 'topClients',
-        isBlocked: widget.type == 'topBlockedDomains',
+        isDomain: widget.type == HomeTopItems.queriedDomains || widget.type == HomeTopItems.blockedDomains,
+        isBlocked: widget.type == HomeTopItems.blockedDomains,
         onTap: () {
-          if (widget.type == 'topQueriedDomains' || widget.type == 'topBlockedDomains') {
+          if (widget.type == HomeTopItems.queriedDomains || widget.type == HomeTopItems.blockedDomains) {
             logsProvider.setSearchText(widget.domain);
             logsProvider.setSelectedClients(null);
             logsProvider.setAppliedFilters(
@@ -108,7 +111,7 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
             );
             appConfigProvider.setSelectedScreen(2);
           }
-          else if (widget.type == 'topClients') {
+          else if (widget.type == HomeTopItems.recurrentClients) {
             logsProvider.setSearchText(null);
             logsProvider.setSelectedClients([widget.domain]);
             logsProvider.setAppliedFilters(
@@ -195,10 +198,10 @@ class OthersRowItem extends StatefulWidget {
   final bool showColor;
 
   const OthersRowItem({
-    Key? key,
+    super.key,
     required this.items,
     required this.showColor,
-  }) : super(key: key);
+  });
 
   @override
   State<OthersRowItem> createState() => _OthersRowItemState();

@@ -7,26 +7,24 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/top_items/row_item.dart';
-import 'package:adguard_home_manager/widgets/custom_pie_chart.dart';
+import 'package:adguard_home_manager/screens/home/top_items/top_item_expansion_panel.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
+import 'package:adguard_home_manager/widgets/custom_pie_chart.dart';
 
+import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class TopItems extends StatefulWidget {
-  final String type;
+  final HomeTopItems type;
   final String label;
-  final List<Map<String, dynamic>> data;
-  final bool? clients;
 
   const TopItems({
-    Key? key,
+    super.key,
     required this.type,
     required this.label,
-    required this.data,
-    this.clients
-  }) : super(key: key);
+  });
 
   @override
   State<TopItems> createState() => _TopItemsState();
@@ -58,31 +56,41 @@ class _TopItemsState extends State<TopItems> {
 
     List<Map<String, dynamic>> generateData() {
       switch (widget.type) {
-        case 'topQueriedDomains':
+        case HomeTopItems.queriedDomains:
           return statusProvider.serverStatus!.stats.topQueriedDomains;
           
-        case 'topBlockedDomains':
+        case HomeTopItems.blockedDomains:
           return statusProvider.serverStatus!.stats.topBlockedDomains;
 
-        case 'topClients':
+        case HomeTopItems.recurrentClients:
           return statusProvider.serverStatus!.stats.topClients;
+
+        case HomeTopItems.topUpstreams:
+          return statusProvider.serverStatus!.stats.topUpstreamResponses ?? [];
+
+        case HomeTopItems.avgUpstreamResponseTime:
+          return statusProvider.serverStatus!.stats.topUpstreamsAvgTime ?? [];
 
         default:
           return [];
       }
     }
 
+    final data = generateData();
+
+    final withChart = widget.type != HomeTopItems.avgUpstreamResponseTime;
+
     Map<String, double> chartData() {
       Map<String, double> values = {};
-      widget.data.sublist(0, widget.data.length > 5 ? 5 : widget.data.length).forEach((element) {
+      data.sublist(0, data.length > 5 ? 5 : data.length).forEach((element) {
         values = {
           ...values,
           element.keys.first: element.values.first.toDouble()
         };
       });
-      if (widget.data.length > 5) {
+      if (data.length > 5) {
         final int rest = List<int>.from(
-          widget.data.sublist(5, widget.data.length).map((e) => e.values.first.toInt())
+          data.sublist(5, data.length).map((e) => e.values.first.toInt())
         ).reduce((a, b) => a + b);
         values = {
           ...values,
@@ -109,108 +117,71 @@ class _TopItemsState extends State<TopItems> {
     return SizedBox(
       child: Column(
         children: [
-          if (widget.data.isEmpty) noItems,
-          if (widget.data.isNotEmpty && width > 700) Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                flex: 1,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxHeight: 250
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: CustomPieChart(
-                      data: chartData(), 
-                      colors: colors
-                    )
-                  ),
-                )
-              ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    ItemsList(
-                      colors: colors, 
-                      data: widget.data, 
-                      clients: widget.clients, 
-                      type: widget.type, 
-                      showChart: _showChart
-                    ),
-                    OthersRowItem(
-                      items: widget.data,
-                      showColor: true,
-                    )
-                  ]
-                ),
-              )
-            ],
-          ),
-          if (widget.data.isNotEmpty && width <= 700) ...[
-            ExpansionPanelList(
-              expandedHeaderPadding: const EdgeInsets.all(0),
-              elevation: 0,
-              expansionCallback: (_, isExpanded) => setState(() => _showChart = isExpanded),
-              animationDuration: const Duration(milliseconds: 250),
+          if (data.isEmpty) noItems,
+          if (data.isNotEmpty && width > 700) Padding(
+            padding: EdgeInsets.only(bottom: withChart == false ? 16 : 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ExpansionPanel(
-                  headerBuilder: (context, isExpanded) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      mainAxisAlignment: width <= 700
-                        ? MainAxisAlignment.spaceBetween
-                        : MainAxisAlignment.center,
-                      children: [
-                        Text(
+                if (withChart == true) Expanded(
+                  flex: 1,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxHeight: 250
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: CustomPieChart(
+                        data: chartData(), 
+                        colors: colors
+                      )
+                    ),
+                  )
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 8,
+                          bottom: 16
+                        ),
+                        child: Text(
                           widget.label,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Theme.of(context).colorScheme.onSurface
+                            fontWeight: FontWeight.w500
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      _ItemsList(
+                        colors: colors, 
+                        data: data, 
+                        clients: widget.type == HomeTopItems.recurrentClients, 
+                        type: widget.type, 
+                        showChart: withChart == true ?  _showChart : false,
+                        unit: widget.type == HomeTopItems.avgUpstreamResponseTime ? 'ms' : null,
+                      ),
+                      if (withChart == true) OthersRowItem(
+                        items: data,
+                        showColor: true,
+                      )
+                    ]
                   ),
-                  body: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 150,
-                          child: CustomPieChart(
-                            data: chartData(), 
-                            colors: colors
-                          )
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                    ),
-                  ),
-                  isExpanded: _showChart
-                ),
+                )
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: ItemsList(
-                colors: colors, 
-                data: widget.data, 
-                clients: widget.clients, 
-                type: widget.type, 
-                showChart: _showChart
-              ),
-            ),
-            OthersRowItem(
-              items: widget.data,
-              showColor: _showChart,
-            ),
-            const SizedBox(height: 16),
-          ],
+          ),
+          if (data.isNotEmpty && width <= 700) TopItemExpansionPanel(
+            type: widget.type, 
+            label: widget.label, 
+            data: data, 
+            chartData: chartData(),
+            withChart: withChart
+          ),
           
-          if (widget.data.length > 5) ...[            
+          if (data.length > 5) ...[            
             Padding(
               padding: const EdgeInsets.only(right: 20),
               child: Row(
@@ -225,8 +196,10 @@ class _TopItemsState extends State<TopItems> {
                           builder: (context) => TopItemsModal(
                             type: widget.type,
                             title: widget.label,
-                            isClient: widget.clients,
+                            isClient: widget.type == HomeTopItems.recurrentClients, 
                             data: generateData(),
+                            withProgressBar: widget.type != HomeTopItems.avgUpstreamResponseTime,
+                            unit: widget.type == HomeTopItems.avgUpstreamResponseTime ? 'ms' : null,
                           )
                         )
                       }
@@ -236,8 +209,10 @@ class _TopItemsState extends State<TopItems> {
                             builder: (context) => TopItemsScreen(
                               type: widget.type,
                               title: widget.label,
-                              isClient: widget.clients,
+                              isClient: widget.type == HomeTopItems.recurrentClients, 
                               data: generateData(),
+                              withProgressBar: widget.type != HomeTopItems.avgUpstreamResponseTime,
+                              unit: widget.type == HomeTopItems.avgUpstreamResponseTime ? 'ms' : null,
                             )
                           )
                         )
@@ -266,21 +241,22 @@ class _TopItemsState extends State<TopItems> {
   }
 }
 
-class ItemsList extends StatelessWidget {
+class _ItemsList extends StatelessWidget {
   final List<Color> colors;
   final List<Map<String, dynamic>> data;
   final bool? clients;
-  final String type;
+  final HomeTopItems type;
   final bool showChart;
+  final String? unit;
     
-  const ItemsList({
-    Key? key,
+  const _ItemsList({
     required this.colors,
     required this.data,
     required this.clients,
     required this.type,
     required this.showChart,
-  }) : super(key: key);
+    this.unit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -290,7 +266,9 @@ class ItemsList extends StatelessWidget {
       ).asMap().entries.map((e) => RowItem(
         clients: clients ?? false,
         domain: e.value.keys.toList()[0],
-        number: e.value.values.toList()[0].toString(),
+        number: e.value.values.toList()[0].runtimeType == double
+          ? "${e.value.values.toList()[0].toStringAsFixed(2)}${unit != null ? ' $unit' : ''}"
+          : "${e.value.values.toList()[0].toString()}${unit != null ? ' $unit' : ''}",
         type: type,
         chartColor: colors[e.key],
         showColor: showChart,
