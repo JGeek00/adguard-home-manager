@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/options_modal.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile_dialog.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/models/menu_option.dart';
@@ -29,7 +30,7 @@ class OptionsMenu extends StatelessWidget {
     void openOptionsModal() {
       showDialog(
         context: context, 
-        builder: (context) => OptionsModal(
+        builder: (context) => _OptionsModal(
           options: options,
           value: value
         )
@@ -58,6 +59,68 @@ class OptionsMenu extends StatelessWidget {
           child: child,
         ),
       ),
+    );
+  }
+}
+
+class _OptionsModal extends StatelessWidget {
+  final List<MenuOption> options;
+  final dynamic value;
+
+  const _OptionsModal({
+    super.key,
+    required this.options,
+    this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+      title: Column(
+        children: [
+          Icon(
+            Icons.more_horiz,
+            size: 24,
+            color: Theme.of(context).listTileTheme.iconColor
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.options,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface
+            ),
+          )
+        ],
+      ),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 400
+        ),
+        child: SingleChildScrollView(
+          child: Wrap(
+            children: options.map((opt) => CustomListTileDialog(
+              title: opt.title,
+              icon: opt.icon,
+              onTap: () {
+                Navigator.pop(context);
+                opt.action(value);
+              },
+            )).toList()
+          ),
+        ),
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () => Navigator.pop(context), 
+              child: Text(AppLocalizations.of(context)!.cancel)
+            )
+          ],
+        )
+      ],
     );
   }
 }

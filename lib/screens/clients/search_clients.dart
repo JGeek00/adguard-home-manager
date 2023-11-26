@@ -7,11 +7,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
-import 'package:adguard_home_manager/screens/clients/options_modal.dart';
+import 'package:adguard_home_manager/widgets/options_menu.dart';
 
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -151,15 +152,15 @@ class _SearchClientsState extends State<SearchClients> {
       );
     }
 
-    void openOptionsModal(Client client) {
-      showModal(
-        context: context, 
-        builder: (ctx) => OptionsModal(
-          onDelete: () => openDeleteModal(client),
-          onEdit: () => openClientModal(client),
-        )
-      );
-    }
+    // void openOptionsModal(Client client) {
+    //   showModal(
+    //     context: context, 
+    //     builder: (ctx) => OptionsModal(
+    //       onDelete: () => openDeleteModal(client),
+    //       onEdit: () => openClientModal(client),
+    //     )
+    //   );
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -224,82 +225,96 @@ class _SearchClientsState extends State<SearchClients> {
                   primary: false,
                   itemCount: clientsScreen.length,
                   padding: const EdgeInsets.only(bottom: 0),
-                  itemBuilder: (context, index) => ListTile(
-                    contentPadding: index == 0 
-                      ? const EdgeInsets.only(left: 20, right: 20, bottom: 15)
-                      : const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    isThreeLine: true,
-                    onLongPress: () => openOptionsModal(clientsScreen[index]),
-                    onTap: statusProvider.serverStatus != null
-                      ? () => openClientModal(clientsScreen[index])
-                      : null,
-                    title: Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Text(
-                        clientsScreen[index].name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.normal
+                  itemBuilder: (context, index) => OptionsMenu(
+                    options: [
+                      MenuOption(
+                        icon: Icons.edit_rounded,
+                        title: AppLocalizations.of(context)!.edit, 
+                        action: (v) => openClientModal(v)
+                      ),
+                      MenuOption(
+                        icon: Icons.delete_rounded,
+                        title: AppLocalizations.of(context)!.delete, 
+                        action: (v) => openDeleteModal(v)
+                      ),
+                    ],
+                    value: clientsScreen[index],
+                    child: ListTile(
+                      contentPadding: index == 0 
+                        ? const EdgeInsets.only(left: 20, right: 20, bottom: 15)
+                        : const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      isThreeLine: true,
+                      onTap: statusProvider.serverStatus != null
+                        ? () => openClientModal(clientsScreen[index])
+                        : null,
+                      title: Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Text(
+                          clientsScreen[index].name,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.normal
+                          ),
                         ),
                       ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(clientsScreen[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), '')),
-                        const SizedBox(height: 7),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.filter_list_rounded,
-                              size: 19,
-                              color: clientsScreen[index].filteringEnabled == true 
-                                ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.green
-                                : appConfigProvider.useThemeColorForStatus == true
-                                  ? Colors.grey
-                                  : Colors.red,
-                            ),
-                            const SizedBox(width: 10),
-                            Icon(
-                              Icons.vpn_lock_rounded,
-                              size: 18,
-                              color: clientsScreen[index].safebrowsingEnabled == true 
-                                ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.green
-                                : appConfigProvider.useThemeColorForStatus == true
-                                  ? Colors.grey
-                                  : Colors.red,
-                            ),
-                            const SizedBox(width: 10),
-                            Icon(
-                              Icons.block,
-                              size: 18,
-                              color: clientsScreen[index].parentalEnabled == true 
-                                ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.green
-                                : appConfigProvider.useThemeColorForStatus == true
-                                  ? Colors.grey
-                                  : Colors.red,
-                            ),
-                            const SizedBox(width: 10),
-                            Icon(
-                              Icons.search_rounded,
-                              size: 19,
-                              color: clientsScreen[index].safeSearch != null && clientsScreen[index].safeSearch!.enabled == true 
-                                ? appConfigProvider.useThemeColorForStatus == true
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.green
-                                : appConfigProvider.useThemeColorForStatus == true
-                                  ? Colors.grey
-                                  : Colors.red
-                            )
-                          ],
-                        )
-                      ],
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(clientsScreen[index].ids.toString().replaceAll(RegExp(r'^\[|\]$'), '')),
+                          const SizedBox(height: 7),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.filter_list_rounded,
+                                size: 19,
+                                color: clientsScreen[index].filteringEnabled == true 
+                                  ? appConfigProvider.useThemeColorForStatus == true
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.green
+                                  : appConfigProvider.useThemeColorForStatus == true
+                                    ? Colors.grey
+                                    : Colors.red,
+                              ),
+                              const SizedBox(width: 10),
+                              Icon(
+                                Icons.vpn_lock_rounded,
+                                size: 18,
+                                color: clientsScreen[index].safebrowsingEnabled == true 
+                                  ? appConfigProvider.useThemeColorForStatus == true
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.green
+                                  : appConfigProvider.useThemeColorForStatus == true
+                                    ? Colors.grey
+                                    : Colors.red,
+                              ),
+                              const SizedBox(width: 10),
+                              Icon(
+                                Icons.block,
+                                size: 18,
+                                color: clientsScreen[index].parentalEnabled == true 
+                                  ? appConfigProvider.useThemeColorForStatus == true
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.green
+                                  : appConfigProvider.useThemeColorForStatus == true
+                                    ? Colors.grey
+                                    : Colors.red,
+                              ),
+                              const SizedBox(width: 10),
+                              Icon(
+                                Icons.search_rounded,
+                                size: 19,
+                                color: clientsScreen[index].safeSearch != null && clientsScreen[index].safeSearch!.enabled == true 
+                                  ? appConfigProvider.useThemeColorForStatus == true
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.green
+                                  : appConfigProvider.useThemeColorForStatus == true
+                                    ? Colors.grey
+                                    : Colors.red
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   )
                 )

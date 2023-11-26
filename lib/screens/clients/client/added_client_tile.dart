@@ -13,7 +13,6 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 class AddedClientTile extends StatefulWidget {
   final Client client;
   final void Function(Client) onTap;
-  final void Function(Client) onLongPress;
   final void Function(Client)? onEdit;
   final void Function(Client) onDelete;
   final Client? selectedClient;
@@ -23,7 +22,6 @@ class AddedClientTile extends StatefulWidget {
     super.key,
     required this.client,
     required this.onTap,
-    required this.onLongPress,
     this.onEdit,
     required this.onDelete,
     this.selectedClient,
