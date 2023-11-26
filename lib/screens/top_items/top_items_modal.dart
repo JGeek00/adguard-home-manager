@@ -7,15 +7,13 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/domain_options.dart';
+import 'package:adguard_home_manager/widgets/options_menu.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/models/applied_filters.dart';
-import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class TopItemsModal extends StatefulWidget {
   final HomeTopItems type;
@@ -23,7 +21,9 @@ class TopItemsModal extends StatefulWidget {
   final bool? isClient;
   final List<Map<String, dynamic>> data;
   final bool withProgressBar;
-  final String? unit;
+  final String Function(dynamic) buildValue;
+  final List<MenuOption> options;
+  final void Function(dynamic)? onTapEntry;
 
   const TopItemsModal({
     super.key,
@@ -32,7 +32,9 @@ class TopItemsModal extends StatefulWidget {
     this.isClient,
     required this.data,
     required this.withProgressBar,
-    this.unit,
+    required this.buildValue,
+    required this.options,
+    this.onTapEntry,
   });
 
   @override
@@ -61,8 +63,6 @@ class _TopItemsModalState extends State<TopItemsModal> {
   @override
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    final logsProvider = Provider.of<LogsProvider>(context);
 
     double total = 0;
     for (var element in data) {
@@ -133,44 +133,19 @@ class _TopItemsModalState extends State<TopItemsModal> {
                     }
                   }
             
-                  return DomainOptions(
-                    isBlocked: widget.type == HomeTopItems.blockedDomains,
-                    isDomain: widget.type == HomeTopItems.queriedDomains || widget.type == HomeTopItems.blockedDomains,
-                    item: screenData[index].keys.toList()[0],
-                    onTap: () {
-                      if (widget.type == HomeTopItems.queriedDomains || widget.type == HomeTopItems.blockedDomains) {
-                        logsProvider.setSearchText(screenData[index].keys.toList()[0]);
-                        logsProvider.setSelectedClients(null);
-                        logsProvider.setAppliedFilters(
-                          AppliedFiters(
-                            selectedResultStatus: 'all', 
-                            searchText: screenData[index].keys.toList()[0],
-                            clients: null
-                          )
-                        );
-                        appConfigProvider.setSelectedScreen(2);
-                        Navigator.pop(context);
-                      }
-                      else if (widget.type == HomeTopItems.recurrentClients) {
-                        logsProvider.setSearchText(null);
-                        logsProvider.setSelectedClients([screenData[index].keys.toList()[0]]);
-                        logsProvider.setAppliedFilters(
-                          AppliedFiters(
-                            selectedResultStatus: 'all', 
-                            searchText: null,
-                            clients: [screenData[index].keys.toList()[0]]
-                          )
-                        );
-                        appConfigProvider.setSelectedScreen(2);
-                        Navigator.pop(context);
-                      }
-                    },
+                  return OptionsMenu(
+                    options: widget.options,
+                    value: screenData[index].keys.toList()[0],
+                    onTap: widget.onTapEntry != null
+                      ? (v) {
+                          widget.onTapEntry!(v);
+                          Navigator.pop(context);
+                        }
+                      : null,
                     child: CustomListTile(
                       title: screenData[index].keys.toList()[0],
                       trailing: Text(
-                        screenData[index].values.toList()[0].runtimeType == double
-                          ? "${screenData[index].values.toList()[0].toStringAsFixed(2)}${widget.unit != null ? ' ${widget.unit}' : ''}"
-                          : "${screenData[index].values.toList()[0].toString()}${widget.unit != null ? ' ${widget.unit}' : ''}",
+                        widget.buildValue(screenData[index].values.toList()[0]),
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant
                         ),

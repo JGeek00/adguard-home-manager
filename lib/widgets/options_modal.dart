@@ -6,10 +6,12 @@ import 'package:adguard_home_manager/widgets/custom_list_tile_dialog.dart';
 
 class OptionsModal extends StatelessWidget {
   final List<MenuOption> options;
+  final dynamic value;
 
   const OptionsModal({
     super.key,
     required this.options,
+    this.value,
   });
 
   @override
@@ -43,7 +45,7 @@ class OptionsModal extends StatelessWidget {
               icon: opt.icon,
               onTap: () {
                 Navigator.pop(context);
-                opt.action();
+                opt.action(value);
               },
             )).toList()
           ),

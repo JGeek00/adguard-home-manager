@@ -290,7 +290,7 @@ class FiltersTripleColumn extends StatelessWidget {
                                       MenuOption(
                                         title: AppLocalizations.of(context)!.copyClipboard,
                                         icon: Icons.copy_rounded,
-                                        action: () => copyToClipboard(
+                                        action: (_) => copyToClipboard(
                                           value: filteringProvider.filtering!.userRules[index],
                                           successMessage: AppLocalizations.of(context)!.copiedClipboard,
                                         )

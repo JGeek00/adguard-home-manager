@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/options_menu.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
-import 'package:adguard_home_manager/widgets/options_modal.dart';
 
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
@@ -16,54 +15,29 @@ class ActiveClientTile extends StatelessWidget {
   final AutoClient? selectedClient;
 
   const ActiveClientTile({
-    Key? key,
+    super.key,
     required this.client,
     required this.onTap,
     required this.splitView,
     this.selectedClient
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    void openOptionsModal() {
-      showDialog(
-        context: context, 
-        builder: (context) => OptionsModal(
-          options: [
-            MenuOption(
-              title: AppLocalizations.of(context)!.copyClipboard,
-              icon: Icons.copy_rounded,
-              action: () {
-                copyToClipboard(
-                  value: client.name != '' 
-                    ? client.name!
-                    : client.ip,
-                  successMessage: AppLocalizations.of(context)!.copiedClipboard,
-                );
-              },
-            )
-          ]
-        ),
-      );
-    }
-
     if (splitView == true) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: ContextMenuArea(
-          builder: (context) => [
-            CustomListTile(
-              title: AppLocalizations.of(context)!.copyClipboard,
+        child: OptionsMenu(
+          options: [
+            MenuOption(
               icon: Icons.copy_rounded,
-              onTap: () {
-                copyToClipboard(
-                  value: client.name != '' 
-                    ? client.name!
-                    : client.ip,
-                  successMessage: AppLocalizations.of(context)!.copiedClipboard,
-                );
-                Navigator.pop(context);
-              },
+              title: AppLocalizations.of(context)!.copyClipboard, 
+              action: (_) => copyToClipboard(
+                value: client.name != '' 
+                  ? client.name!
+                  : client.ip,
+                successMessage: AppLocalizations.of(context)!.copiedClipboard,
+              )
             )
           ],
           child: Material(
@@ -72,10 +46,6 @@ class ActiveClientTile extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(28),
               onTap: () => onTap(client),
-              onLongPress: () {
-                Navigator.pop(context);
-                openOptionsModal();
-              },
               child: Container(
                 width: double.maxFinite,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -128,20 +98,17 @@ class ActiveClientTile extends StatelessWidget {
       );
     }
     else {
-      return ContextMenuArea(
-        builder: (context) => [
-          CustomListTile(
-            title: AppLocalizations.of(context)!.copyClipboard,
+      return OptionsMenu(
+        options: [
+          MenuOption(
             icon: Icons.copy_rounded,
-            onTap: () {
-              copyToClipboard(
-                value: client.name != '' 
-                  ? client.name!
-                  : client.ip,
-                successMessage: AppLocalizations.of(context)!.copiedClipboard,
-              );
-              Navigator.pop(context);
-            },
+            title: AppLocalizations.of(context)!.copyClipboard, 
+            action: (_) => copyToClipboard(
+              value: client.name != '' 
+                ? client.name!
+                : client.ip,
+              successMessage: AppLocalizations.of(context)!.copiedClipboard,
+            )
           )
         ],
         child: CustomListTile(
@@ -158,7 +125,6 @@ class ActiveClientTile extends StatelessWidget {
             ),
           ),
           onTap: () => onTap(client),
-          onLongPress: openOptionsModal,
         ),
       );
     }

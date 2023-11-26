@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/domain_options.dart';
+import 'package:adguard_home_manager/widgets/options_menu.dart';
 
+import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/models/applied_filters.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 
 class RowItem extends StatefulWidget {
@@ -18,6 +16,8 @@ class RowItem extends StatefulWidget {
   final bool clients;
   final bool showColor;
   final String? unit;
+  final List<MenuOption> options;
+  final void Function(dynamic)? onTapEntry;
 
   const RowItem({
     super.key,
@@ -27,6 +27,8 @@ class RowItem extends StatefulWidget {
     required this.number,
     required this.clients,
     required this.showColor,
+    required this.options,
+    this.onTapEntry,
     this.unit,
   });
 
@@ -80,8 +82,6 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    final logsProvider = Provider.of<LogsProvider>(context);
 
     String? name;
     if (widget.clients == true) {
@@ -94,36 +94,10 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
 
     return Material(
       color: Colors.transparent,
-      child: DomainOptions(
-        item: widget.domain,
-        isDomain: widget.type == HomeTopItems.queriedDomains || widget.type == HomeTopItems.blockedDomains,
-        isBlocked: widget.type == HomeTopItems.blockedDomains,
-        onTap: () {
-          if (widget.type == HomeTopItems.queriedDomains || widget.type == HomeTopItems.blockedDomains) {
-            logsProvider.setSearchText(widget.domain);
-            logsProvider.setSelectedClients(null);
-            logsProvider.setAppliedFilters(
-              AppliedFiters(
-                selectedResultStatus: 'all', 
-                searchText: widget.domain,
-                clients: null
-              )
-            );
-            appConfigProvider.setSelectedScreen(2);
-          }
-          else if (widget.type == HomeTopItems.recurrentClients) {
-            logsProvider.setSearchText(null);
-            logsProvider.setSelectedClients([widget.domain]);
-            logsProvider.setAppliedFilters(
-              AppliedFiters(
-                selectedResultStatus: 'all', 
-                searchText: null,
-                clients: [widget.domain]
-              )
-            );
-            appConfigProvider.setSelectedScreen(2);
-          }
-        },
+      child: OptionsMenu(
+        value: widget.domain,
+        options: widget.options,
+        onTap: widget.onTapEntry,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,

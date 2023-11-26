@@ -7,23 +7,34 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/top_items/row_item.dart';
-import 'package:adguard_home_manager/screens/home/top_items/top_item_expansion_panel.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
 import 'package:adguard_home_manager/screens/top_items/top_items.dart';
 import 'package:adguard_home_manager/widgets/custom_pie_chart.dart';
 
+import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class TopItems extends StatefulWidget {
   final HomeTopItems type;
   final String label;
+  final List<Map<String, dynamic>> data;
+  final bool withChart;
+  final bool withProgressBar;
+  final String Function(dynamic) buildValue;
+  final List<MenuOption> menuOptions;
+  final void Function(dynamic)? onTapEntry;
 
   const TopItems({
     super.key,
     required this.type,
     required this.label,
+    required this.data,
+    required this.withChart,
+    required this.withProgressBar,
+    required this.buildValue,
+    required this.menuOptions,
+    this.onTapEntry,
   });
 
   @override
@@ -50,47 +61,21 @@ class _TopItemsState extends State<TopItems> {
 
   @override
   Widget build(BuildContext context) {
-    final statusProvider = Provider.of<StatusProvider>(context);
-
     final width = MediaQuery.of(context).size.width;
-
-    List<Map<String, dynamic>> generateData() {
-      switch (widget.type) {
-        case HomeTopItems.queriedDomains:
-          return statusProvider.serverStatus!.stats.topQueriedDomains;
-          
-        case HomeTopItems.blockedDomains:
-          return statusProvider.serverStatus!.stats.topBlockedDomains;
-
-        case HomeTopItems.recurrentClients:
-          return statusProvider.serverStatus!.stats.topClients;
-
-        case HomeTopItems.topUpstreams:
-          return statusProvider.serverStatus!.stats.topUpstreamResponses ?? [];
-
-        case HomeTopItems.avgUpstreamResponseTime:
-          return statusProvider.serverStatus!.stats.topUpstreamsAvgTime ?? [];
-
-        default:
-          return [];
-      }
-    }
-
-    final data = generateData();
 
     final withChart = widget.type != HomeTopItems.avgUpstreamResponseTime;
 
     Map<String, double> chartData() {
       Map<String, double> values = {};
-      data.sublist(0, data.length > 5 ? 5 : data.length).forEach((element) {
+      widget.data.sublist(0, widget.data.length > 5 ? 5 : widget.data.length).forEach((element) {
         values = {
           ...values,
           element.keys.first: element.values.first.toDouble()
         };
       });
-      if (data.length > 5) {
+      if (widget.data.length > 5) {
         final int rest = List<int>.from(
-          data.sublist(5, data.length).map((e) => e.values.first.toInt())
+          widget.data.sublist(5, widget.data.length).map((e) => e.values.first.toInt())
         ).reduce((a, b) => a + b);
         values = {
           ...values,
@@ -117,8 +102,8 @@ class _TopItemsState extends State<TopItems> {
     return SizedBox(
       child: Column(
         children: [
-          if (data.isEmpty) noItems,
-          if (data.isNotEmpty && width > 700) Padding(
+          if (widget.data.isEmpty) noItems,
+          if (widget.data.isNotEmpty && width > 700) Padding(
             padding: EdgeInsets.only(bottom: withChart == false ? 16 : 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -157,14 +142,16 @@ class _TopItemsState extends State<TopItems> {
                       ),
                       _ItemsList(
                         colors: colors, 
-                        data: data, 
+                        data: widget.data, 
                         clients: widget.type == HomeTopItems.recurrentClients, 
                         type: widget.type, 
                         showChart: withChart == true ?  _showChart : false,
-                        unit: widget.type == HomeTopItems.avgUpstreamResponseTime ? 'ms' : null,
+                        buildValue: widget.buildValue,
+                        menuOptions: widget.menuOptions,
+                        onTapEntry: widget.onTapEntry,
                       ),
                       if (withChart == true) OthersRowItem(
-                        items: data,
+                        items: widget.data,
                         showColor: true,
                       )
                     ]
@@ -173,15 +160,128 @@ class _TopItemsState extends State<TopItems> {
               ],
             ),
           ),
-          if (data.isNotEmpty && width <= 700) TopItemExpansionPanel(
-            type: widget.type, 
-            label: widget.label, 
-            data: data, 
-            chartData: chartData(),
-            withChart: withChart
+          if (widget.data.isNotEmpty && width <= 700) Builder(
+            builder: (context) {
+              if (widget.withChart == true) {
+                return Column(
+                  children: [
+                    ExpansionPanelList(
+                      expandedHeaderPadding: const EdgeInsets.all(0),
+                      elevation: 0,
+                      expansionCallback: (_, isExpanded) => setState(() => _showChart = isExpanded),
+                      animationDuration: const Duration(milliseconds: 250),
+                      children: [
+                        ExpansionPanel(
+                          headerBuilder: (context, isExpanded) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment: width <= 700
+                                ? MainAxisAlignment.spaceBetween
+                                : MainAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    widget.label,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(context).colorScheme.onSurface
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          body: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 150,
+                                  child: CustomPieChart(
+                                    data: chartData(),
+                                    colors: colors
+                                  )
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                            ),
+                          ),
+                          isExpanded: _showChart
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: _ItemsList(
+                        colors: colors, 
+                        data: widget.data, 
+                        clients: widget.type == HomeTopItems.recurrentClients,
+                        type: widget.type, 
+                        showChart: _showChart,
+                        buildValue: widget.buildValue,
+                        menuOptions: widget.menuOptions,
+                        onTapEntry: widget.onTapEntry,
+                      ),
+                    ),
+                    if (widget.withChart == true) OthersRowItem(
+                      items: widget.data,
+                      showColor: _showChart,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              }
+              else {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: Row(
+                        mainAxisAlignment: width <= 700
+                          ? MainAxisAlignment.spaceBetween
+                          : MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              widget.label,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onSurface
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: _ItemsList(
+                        colors: colors, 
+                        data: widget.data, 
+                        clients: widget.type == HomeTopItems.recurrentClients,
+                        type: widget.type, 
+                        showChart: false,
+                        buildValue: widget.buildValue,
+                        menuOptions: widget.menuOptions,
+                        onTapEntry: widget.onTapEntry,
+                      ),
+                    ),
+                    if (widget.withChart == true) OthersRowItem(
+                      items: widget.data,
+                      showColor: false,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              }
+            },
           ),
           
-          if (data.length > 5) ...[            
+          if (widget.data.length > 5) ...[            
             Padding(
               padding: const EdgeInsets.only(right: 20),
               child: Row(
@@ -197,9 +297,11 @@ class _TopItemsState extends State<TopItems> {
                             type: widget.type,
                             title: widget.label,
                             isClient: widget.type == HomeTopItems.recurrentClients, 
-                            data: generateData(),
-                            withProgressBar: widget.type != HomeTopItems.avgUpstreamResponseTime,
-                            unit: widget.type == HomeTopItems.avgUpstreamResponseTime ? 'ms' : null,
+                            data: widget.data,
+                            withProgressBar: widget.withProgressBar,
+                            buildValue: widget.buildValue,
+                            options: widget.menuOptions,
+                            onTapEntry: widget.onTapEntry,
                           )
                         )
                       }
@@ -210,9 +312,11 @@ class _TopItemsState extends State<TopItems> {
                               type: widget.type,
                               title: widget.label,
                               isClient: widget.type == HomeTopItems.recurrentClients, 
-                              data: generateData(),
-                              withProgressBar: widget.type != HomeTopItems.avgUpstreamResponseTime,
-                              unit: widget.type == HomeTopItems.avgUpstreamResponseTime ? 'ms' : null,
+                              data: widget.data,
+                              withProgressBar: widget.withProgressBar,
+                              buildValue: widget.buildValue,
+                              menuOptions: widget.menuOptions,
+                              onTapEntry: widget.onTapEntry,
                             )
                           )
                         )
@@ -247,7 +351,9 @@ class _ItemsList extends StatelessWidget {
   final bool? clients;
   final HomeTopItems type;
   final bool showChart;
-  final String? unit;
+  final String Function(dynamic) buildValue;
+  final List<MenuOption> menuOptions;
+  final void Function(dynamic)? onTapEntry;
     
   const _ItemsList({
     required this.colors,
@@ -255,7 +361,9 @@ class _ItemsList extends StatelessWidget {
     required this.clients,
     required this.type,
     required this.showChart,
-    this.unit,
+    required this.buildValue,
+    required this.menuOptions,
+    this.onTapEntry,
   });
 
   @override
@@ -266,12 +374,12 @@ class _ItemsList extends StatelessWidget {
       ).asMap().entries.map((e) => RowItem(
         clients: clients ?? false,
         domain: e.value.keys.toList()[0],
-        number: e.value.values.toList()[0].runtimeType == double
-          ? "${e.value.values.toList()[0].toStringAsFixed(2)}${unit != null ? ' $unit' : ''}"
-          : "${e.value.values.toList()[0].toString()}${unit != null ? ' $unit' : ''}",
+        number: buildValue(e.value.values.toList()[0]),
         type: type,
         chartColor: colors[e.key],
         showColor: showChart,
+        options: menuOptions,
+        onTapEntry: onTapEntry,
       )).toList() 
     );
   }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:contextmenu/contextmenu.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/options_menu.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
-class AddedClientTile extends StatelessWidget {
+class AddedClientTile extends StatefulWidget {
   final Client client;
   final void Function(Client) onTap;
   final void Function(Client) onLongPress;
@@ -30,59 +31,47 @@ class AddedClientTile extends StatelessWidget {
   });
 
   @override
+  State<AddedClientTile> createState() => _AddedClientTileState();
+}
+
+class _AddedClientTileState extends State<AddedClientTile> {
+  bool _isHover = false;
+
+  @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    if (splitView == true) {
+    if (widget.splitView == true) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Material(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(28),
-          child: ContextMenuArea(
-            builder: (context) => [
-              if (onEdit != null) CustomListTile(
-                title: AppLocalizations.of(context)!.edit,
-                icon: Icons.edit_rounded,
-                onTap: () {
-                  Navigator.pop(context);
-                  onEdit!(client);
-                }
-              ),
-              CustomListTile(
-                title: AppLocalizations.of(context)!.delete,
-                icon: Icons.delete_rounded,
-                onTap: () {
-                  Navigator.pop(context);
-                  onDelete(client);
-                }
-              ),
-              CustomListTile(
-                title: AppLocalizations.of(context)!.copyClipboard,
+          child: OptionsMenu(
+            options: [
+              MenuOption(
                 icon: Icons.copy_rounded,
-                onTap: () {
-                  copyToClipboard(
-                    value: client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''), 
-                    successMessage: AppLocalizations.of(context)!.copiedClipboard,
-                  );
-                  Navigator.pop(context);
-                }
+                title: AppLocalizations.of(context)!.copyClipboard, 
+                action: (_) => copyToClipboard(
+                  value: widget.client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''), 
+                  successMessage: AppLocalizations.of(context)!.copiedClipboard,
+                )
               ),
             ],
             child: InkWell(
               borderRadius: BorderRadius.circular(28),
-              onTap: () => onTap(client),
-              onLongPress: () => onLongPress(client),
+              onTap: () => widget.onTap(widget.client),
+              onHover: (v) => setState(() => _isHover = v),
               child: Container(
                 width: double.maxFinite,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(28),
-                  color: client == selectedClient 
+                  color: widget.client == widget.selectedClient 
                     ? Theme.of(context).colorScheme.primaryContainer
                     : null
                 ),
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
@@ -94,7 +83,7 @@ class AddedClientTile extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
+                                  widget.client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
@@ -107,7 +96,7 @@ class AddedClientTile extends StatelessWidget {
                                     Icon(
                                       Icons.filter_list_rounded,
                                       size: 19,
-                                      color: client.filteringEnabled == true 
+                                      color: widget.client.filteringEnabled == true 
                                         ? appConfigProvider.useThemeColorForStatus == true
                                           ? Theme.of(context).colorScheme.primary
                                           : Colors.green
@@ -119,7 +108,7 @@ class AddedClientTile extends StatelessWidget {
                                     Icon(
                                       Icons.vpn_lock_rounded,
                                       size: 18,
-                                      color: client.safebrowsingEnabled == true 
+                                      color: widget.client.safebrowsingEnabled == true 
                                         ? appConfigProvider.useThemeColorForStatus == true
                                           ? Theme.of(context).colorScheme.primary
                                           : Colors.green
@@ -131,7 +120,7 @@ class AddedClientTile extends StatelessWidget {
                                     Icon(
                                       Icons.block,
                                       size: 18,
-                                      color: client.parentalEnabled == true 
+                                      color: widget.client.parentalEnabled == true 
                                         ? appConfigProvider.useThemeColorForStatus == true
                                           ? Theme.of(context).colorScheme.primary
                                           : Colors.green
@@ -143,7 +132,7 @@ class AddedClientTile extends StatelessWidget {
                                     Icon(
                                       Icons.search_rounded,
                                       size: 19,
-                                      color: client.safeSearch != null && client.safeSearch!.enabled == true 
+                                      color: widget.client.safeSearch != null && widget.client.safeSearch!.enabled == true 
                                         ? appConfigProvider.useThemeColorForStatus == true
                                           ? Theme.of(context).colorScheme.primary
                                           : Colors.green
@@ -159,6 +148,14 @@ class AddedClientTile extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (widget.onEdit != null && _isHover == true) ...[
+                      const SizedBox(width: 8),
+                      IconButton(
+                        onPressed: () => widget.onEdit!(widget.client), 
+                        icon: const Icon(Icons.file_open_rounded),
+                        tooltip: AppLocalizations.of(context)!.seeDetails,
+                      )
+                    ]
                   ],
                 )
               ),
@@ -168,37 +165,30 @@ class AddedClientTile extends StatelessWidget {
       );
     }
     else {
-      return ContextMenuArea(
-        builder: (context) => [
-          if (onEdit != null) CustomListTile(
+      return OptionsMenu(
+        options: [
+          if (widget.onEdit != null) MenuOption(
             title: AppLocalizations.of(context)!.seeDetails,
             icon: Icons.file_open_rounded,
-            onTap: () {
-              Navigator.pop(context);
-              onEdit!(client);
-            }
+            action: (_) => widget.onEdit!(widget.client)
           ),
-          CustomListTile(
-            title: AppLocalizations.of(context)!.copyClipboard,
+          MenuOption(
             icon: Icons.copy_rounded,
-            onTap: () {
-              copyToClipboard(
-                value: client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''), 
-                successMessage: AppLocalizations.of(context)!.copiedClipboard,
-              );
-              Navigator.pop(context);
-            }
+            title: AppLocalizations.of(context)!.copyClipboard, 
+            action: (_) => copyToClipboard(
+              value: widget.client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''), 
+              successMessage: AppLocalizations.of(context)!.copiedClipboard,
+            )
           ),
         ],
         child: CustomListTile(
-          onLongPress: () => onLongPress(client),
-          onTap: () => onTap(client),
-          title: client.name,
+          onTap: () => widget.onTap(widget.client),
+          title: widget.client.name,
           subtitleWidget: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
+                widget.client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''),
                 style: TextStyle(
                   color: Theme.of(context).listTileTheme.textColor
                 ),
@@ -209,7 +199,7 @@ class AddedClientTile extends StatelessWidget {
                   Icon(
                     Icons.filter_list_rounded,
                     size: 19,
-                    color: client.filteringEnabled == true 
+                    color: widget.client.filteringEnabled == true 
                       ? appConfigProvider.useThemeColorForStatus == true
                         ? Theme.of(context).colorScheme.primary
                         : Colors.green
@@ -221,7 +211,7 @@ class AddedClientTile extends StatelessWidget {
                   Icon(
                     Icons.vpn_lock_rounded,
                     size: 18,
-                    color: client.safebrowsingEnabled == true 
+                    color: widget.client.safebrowsingEnabled == true 
                       ? appConfigProvider.useThemeColorForStatus == true
                         ? Theme.of(context).colorScheme.primary
                         : Colors.green
@@ -233,7 +223,7 @@ class AddedClientTile extends StatelessWidget {
                   Icon(
                     Icons.block,
                     size: 18,
-                    color: client.parentalEnabled == true 
+                    color: widget.client.parentalEnabled == true 
                       ? appConfigProvider.useThemeColorForStatus == true
                         ? Theme.of(context).colorScheme.primary
                         : Colors.green
@@ -245,7 +235,7 @@ class AddedClientTile extends StatelessWidget {
                   Icon(
                     Icons.search_rounded,
                     size: 19,
-                    color: client.safeSearch != null && client.safeSearch!.enabled == true 
+                    color: widget.client.safeSearch != null && widget.client.safeSearch!.enabled == true 
                       ? appConfigProvider.useThemeColorForStatus == true
                         ? Theme.of(context).colorScheme.primary
                         : Colors.green

@@ -2,9 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/domain_options.dart';
+import 'package:adguard_home_manager/widgets/options_menu.dart';
 
+import 'package:adguard_home_manager/providers/status_provider.dart';
+import 'package:adguard_home_manager/classes/process_modal.dart';
+import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/functions/copy_clipboard.dart';
+import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
 import 'package:adguard_home_manager/models/logs.dart';
@@ -20,7 +26,7 @@ class LogTile extends StatelessWidget {
   final bool twoColumns;
 
   const LogTile({
-    Key? key,
+    super.key,
     required this.log,
     required this.length,
     required this.index,
@@ -28,11 +34,12 @@ class LogTile extends StatelessWidget {
     required this.onLogTap,
     this.useAlwaysNormalTile,
     required this.twoColumns,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
 
     Widget logStatusWidget({
       required IconData icon, 
@@ -83,16 +90,63 @@ class LogTile extends StatelessWidget {
       }
     }
 
+    void blockUnblock({required String domain, required String newStatus}) async {
+      final ProcessModal processModal = ProcessModal();
+      processModal.open(AppLocalizations.of(context)!.savingUserFilters);
+
+      final rules = await statusProvider.blockUnblockDomain(
+        domain: domain,
+        newStatus: newStatus
+      );
+
+      processModal.close();
+
+      if (!context.mounted) return;
+      if (rules == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.userFilteringRulesUpdated, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.userFilteringRulesNotUpdated, 
+          color: Colors.red
+        );
+      }
+    }
+
+    final domainBlocked = isDomainBlocked(log.reason);
+
     if (twoColumns && !(useAlwaysNormalTile == true)) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: InkWell(
           borderRadius: BorderRadius.circular(28),
-          child: DomainOptions(
-            onTap: () => onLogTap(log),
+          child: OptionsMenu(
+            onTap: (_) => onLogTap(log),
             borderRadius: BorderRadius.circular(28),
-            item: log.question.name,
-            isBlocked: isDomainBlocked(log.reason),
+            options: [
+              if (log.question.name != null) MenuOption(
+                title: domainBlocked == true
+                  ? AppLocalizations.of(context)!.unblockDomain
+                  : AppLocalizations.of(context)!.blockDomain,
+                icon: domainBlocked == true
+                  ? Icons.check_rounded
+                  : Icons.block_rounded, 
+                action: (_) => blockUnblock(
+                  domain: log.question.name!, 
+                  newStatus: domainBlocked == true ? 'unblock' : 'block'
+                )
+              ),
+              MenuOption(
+                title: AppLocalizations.of(context)!.copyClipboard,
+                icon: Icons.copy_rounded, 
+                action: (v) => copyToClipboard(value: v, successMessage: AppLocalizations.of(context)!.copiedClipboard)
+              )
+            ],
             child: Container(
               width: double.maxFinite,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -250,10 +304,27 @@ class LogTile extends StatelessWidget {
     else {
       return Material(
         color: Colors.transparent,
-        child: DomainOptions(
-          onTap: () => onLogTap(log),
-          item: log.question.name,
-          isBlocked: isDomainBlocked(log.reason),
+        child: OptionsMenu(
+          onTap: (_) => onLogTap(log),
+          options: [
+            if (log.question.name != null) MenuOption(
+              title: domainBlocked == true
+                ? AppLocalizations.of(context)!.unblockDomain
+                : AppLocalizations.of(context)!.blockDomain,
+              icon: domainBlocked == true
+                ? Icons.check_rounded
+                : Icons.block_rounded, 
+              action: (_) => blockUnblock(
+                domain: log.question.name!, 
+                newStatus: domainBlocked == true ? 'unblock' : 'block'
+              )
+            ),
+            MenuOption(
+              title: AppLocalizations.of(context)!.copyClipboard,
+              icon: Icons.copy_rounded, 
+              action: (v) => copyToClipboard(value: v, successMessage: AppLocalizations.of(context)!.copiedClipboard)
+            )
+          ],
           child: Container(
             width: double.maxFinite,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -1,10 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/models/logs.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/screens/logs/logs_list.dart';
 import 'package:adguard_home_manager/screens/logs/details/log_details_screen.dart';
+
+import 'package:adguard_home_manager/models/logs.dart';
 
 class Logs extends StatefulWidget {
   const Logs({Key? key}) : super(key: key);

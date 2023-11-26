@@ -8,10 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/server_status.dart';
+import 'package:adguard_home_manager/screens/home/top_items/top_items_lists.dart';
 import 'package:adguard_home_manager/screens/home/combined_chart.dart';
 import 'package:adguard_home_manager/screens/home/appbar.dart';
 import 'package:adguard_home_manager/screens/home/fab.dart';
-import 'package:adguard_home_manager/screens/home/top_items/top_items.dart';
 import 'package:adguard_home_manager/screens/home/chart.dart';
 
 import 'package:adguard_home_manager/functions/number_format.dart';
@@ -21,7 +21,7 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -234,99 +234,6 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class TopItemsLists extends StatelessWidget {
-  final List<HomeTopItems> order;
-  
-  const TopItemsLists({
-    super.key, 
-    required this.order,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final statusProvider = Provider.of<StatusProvider>(context);
-
-    List<Widget> bottom = [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Divider(
-          thickness: 1,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-        ),
-      ),
-      const SizedBox(height: 16),
-    ];
-
-    return Column(
-      children: order.asMap().entries.map((item) {
-        switch (item.value) {
-          case HomeTopItems.queriedDomains:
-            return Column(
-              children: [
-                TopItems(
-                  label: AppLocalizations.of(context)!.topQueriedDomains, 
-                  type: HomeTopItems.queriedDomains,
-                ),
-                if (item.key < order.length - 1) ...bottom
-              ],
-            );
-             
-          case HomeTopItems.blockedDomains:
-            return Column(
-              children: [
-                TopItems(
-                  label: AppLocalizations.of(context)!.topBlockedDomains, 
-                  type: HomeTopItems.blockedDomains,
-                ),
-                if (item.key < order.length - 1) ...bottom
-              ],
-            );
-                  
-          case HomeTopItems.recurrentClients:
-            return Column(
-              children: [
-                TopItems(
-                  label: AppLocalizations.of(context)!.topClients, 
-                  type: HomeTopItems.recurrentClients,
-                ),
-                if (item.key < order.length - 1) ...bottom
-              ],
-            );
-
-          case HomeTopItems.topUpstreams:
-            return statusProvider.serverStatus!.stats.topUpstreamResponses != null
-              ? Column(
-                  children: [
-                    TopItems(
-                      label: AppLocalizations.of(context)!.topUpstreams, 
-                      type: HomeTopItems.topUpstreams,
-                    ),
-                    if (item.key < order.length - 1) ...bottom
-                  ],
-                )
-              : const SizedBox();
-
-          case HomeTopItems.avgUpstreamResponseTime:
-            return statusProvider.serverStatus!.stats.topUpstreamsAvgTime != null 
-              ? Column(
-                  children: [
-                    TopItems(
-                      label: AppLocalizations.of(context)!.averageUpstreamResponseTime, 
-                      type: HomeTopItems.avgUpstreamResponseTime,
-                    ),
-                    if (item.key < order.length - 1) ...bottom
-                  ],
-                ) 
-              : const SizedBox();
-                
-          default:
-            return const SizedBox();
-        }
-      }).toList(),
     );
   }
 }

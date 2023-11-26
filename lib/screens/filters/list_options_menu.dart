@@ -155,12 +155,12 @@ class ListOptionsMenu extends StatelessWidget {
                   icon: list.enabled == true
                     ? Icons.gpp_bad_rounded
                     : Icons.verified_user_rounded,
-                  action: enableDisable
+                  action: (_) => enableDisable()
                 ),
                 MenuOption(
                   title: AppLocalizations.of(context)!.copyListUrl,
                   icon: Icons.copy_rounded,
-                  action: () => copyToClipboard(
+                  action: (_) => copyToClipboard(
                     value: list.url, 
                     successMessage: AppLocalizations.of(context)!.listUrlCopied
                   )
@@ -168,12 +168,12 @@ class ListOptionsMenu extends StatelessWidget {
                 MenuOption(
                   title: AppLocalizations.of(context)!.openListUrl,
                   icon: Icons.open_in_browser_rounded,
-                  action: () => openUrl(list.url)
+                  action: (_) => openUrl(list.url)
                 ),
                 MenuOption(
                   title: AppLocalizations.of(context)!.selectionMode,
                   icon: Icons.check_rounded,
-                  action: openSelectionMode
+                  action: (_) => openSelectionMode()
                 ),
               ]
             )
