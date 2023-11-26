@@ -11,7 +11,6 @@ import 'package:adguard_home_manager/screens/clients/client/client_screen_functi
 import 'package:adguard_home_manager/screens/clients/client/added_client_tile.dart';
 import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
-import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -143,16 +142,11 @@ class _AddedListState extends State<AddedList> {
         )
       );
     }
-
-    void openOptionsModal(Client client) {
-      showModal(
-        context: context, 
-        builder: (ctx) => OptionsModal(
-          onDelete: () => openDeleteModal(client),
-          onEdit: () => openClientModal(client),
-        )
-      );
-    }
+    final clientsDisplay = clientsProvider.searchTermClients != null && clientsProvider.searchTermClients != ""
+      ? widget.data.where(
+          (c) => c.name.toLowerCase().contains(clientsProvider.searchTermClients.toString()) || c.ids.where((id) => id.contains(clientsProvider.searchTermClients.toString())).isNotEmpty
+        ).toList()
+      : widget.data;
 
     return CustomTabContentList(
       listPadding: widget.splitView == true 
@@ -177,12 +171,11 @@ class _AddedListState extends State<AddedList> {
           ],
         ),
       ), 
-      itemsCount: widget.data.length,
+      itemsCount: clientsDisplay.length,
       contentWidget: (index) => AddedClientTile(
         selectedClient: widget.selectedClient,
-        client: widget.data[index], 
+        client: clientsDisplay[index], 
         onTap: widget.onClientSelected,
-        onLongPress: openOptionsModal,
         onEdit: statusProvider.serverStatus != null
           ? (c) => openClientModal(c)
           : null,

@@ -16,12 +16,12 @@ class ClientsList extends StatelessWidget {
   final bool splitView;
 
   const ClientsList({
-    Key? key,
+    super.key,
     required this.data,
     required this.onClientSelected,
     this.selectedClient,
     required this.splitView,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

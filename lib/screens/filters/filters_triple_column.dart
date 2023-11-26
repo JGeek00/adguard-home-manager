@@ -7,10 +7,10 @@ import 'package:contextmenu/contextmenu.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/options_menu.dart';
 import 'package:adguard_home_manager/screens/filters/add_button.dart';
 import 'package:adguard_home_manager/screens/filters/list_options_menu.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
-import 'package:adguard_home_manager/widgets/options_modal.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
@@ -28,11 +28,11 @@ class FiltersTripleColumn extends StatelessWidget {
   final List<Widget> actions;
 
   const FiltersTripleColumn({
-    Key? key,
+    super.key,
     required this.onRemoveCustomRule,
     required this.onOpenDetailsModal,
     required this.actions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -282,28 +282,25 @@ class FiltersTripleColumn extends StatelessWidget {
                                   }
                                 ),
                               ],
-                              child: CustomListTile(
-                                onLongPress: () => showDialog(
-                                  context: context, 
-                                  builder: (context) => OptionsModal(
-                                    options: [
-                                      MenuOption(
-                                        title: AppLocalizations.of(context)!.copyClipboard,
-                                        icon: Icons.copy_rounded,
-                                        action: () => copyToClipboard(
-                                          value: filteringProvider.filtering!.userRules[index],
-                                          successMessage: AppLocalizations.of(context)!.copiedClipboard,
-                                        )
-                                      )
-                                    ]
+                              child: OptionsMenu(
+                                options: [
+                                  MenuOption(
+                                    title: AppLocalizations.of(context)!.copyClipboard,
+                                    icon: Icons.copy_rounded,
+                                    action: (_) => copyToClipboard(
+                                      value: filteringProvider.filtering!.userRules[index],
+                                      successMessage: AppLocalizations.of(context)!.copiedClipboard,
+                                    )
                                   )
-                                ),
-                                title: filteringProvider.filtering!.userRules[index],
-                                subtitleWidget: generateSubtitle(filteringProvider.filtering!.userRules[index]),
-                                trailing: IconButton(
-                                  onPressed: () => onRemoveCustomRule(filteringProvider.filtering!.userRules[index]),
-                                  icon: const Icon(Icons.delete),
-                                  tooltip: AppLocalizations.of(context)!.delete,
+                                ],
+                                child: CustomListTile(
+                                  title: filteringProvider.filtering!.userRules[index],
+                                  subtitleWidget: generateSubtitle(filteringProvider.filtering!.userRules[index]),
+                                  trailing: IconButton(
+                                    onPressed: () => onRemoveCustomRule(filteringProvider.filtering!.userRules[index]),
+                                    icon: const Icon(Icons.delete),
+                                    tooltip: AppLocalizations.of(context)!.delete,
+                                  ),
                                 ),
                               ),
                             ),  

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
-import 'package:adguard_home_manager/widgets/options_modal.dart';
+import 'package:adguard_home_manager/widgets/options_menu.dart';
 import 'package:adguard_home_manager/screens/filters/selection/selection_screen.dart';
 
 import 'package:adguard_home_manager/functions/open_url.dart';
@@ -144,41 +144,41 @@ class ListOptionsMenu extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onLongPress: Platform.isAndroid || Platform.isIOS ? () => showDialog(
-            context: context, 
-            builder: (context) => OptionsModal(
-              options: [
-                MenuOption(
-                  title: list.enabled == true
-                    ? AppLocalizations.of(context)!.disable
-                    : AppLocalizations.of(context)!.enable,
-                  icon: list.enabled == true
-                    ? Icons.gpp_bad_rounded
-                    : Icons.verified_user_rounded,
-                  action: enableDisable
-                ),
-                MenuOption(
-                  title: AppLocalizations.of(context)!.copyListUrl,
-                  icon: Icons.copy_rounded,
-                  action: () => copyToClipboard(
-                    value: list.url, 
-                    successMessage: AppLocalizations.of(context)!.listUrlCopied
-                  )
-                ),
-                MenuOption(
-                  title: AppLocalizations.of(context)!.openListUrl,
-                  icon: Icons.open_in_browser_rounded,
-                  action: () => openUrl(list.url)
-                ),
-                MenuOption(
-                  title: AppLocalizations.of(context)!.selectionMode,
-                  icon: Icons.check_rounded,
-                  action: openSelectionMode
-                ),
-              ]
-            )
-          ) : null,
-          child: child
+          child: OptionsMenu(
+            options: [
+              MenuOption(
+                title: list.enabled == true
+                  ? AppLocalizations.of(context)!.disable
+                  : AppLocalizations.of(context)!.enable,
+                icon: list.enabled == true
+                  ? Icons.gpp_bad_rounded
+                  : Icons.verified_user_rounded,
+                action: (_) => enableDisable()
+              ),
+              MenuOption(
+                title: AppLocalizations.of(context)!.copyListUrl,
+                icon: Icons.copy_rounded,
+                action: (_) => copyToClipboard(
+                  value: list.url, 
+                  successMessage: AppLocalizations.of(context)!.listUrlCopied
+                )
+              ),
+              MenuOption(
+                title: AppLocalizations.of(context)!.openListUrl,
+                icon: Icons.open_in_browser_rounded,
+                action: (_) => openUrl(list.url)
+              ),
+              MenuOption(
+                title: AppLocalizations.of(context)!.selectionMode,
+                icon: Icons.check_rounded,
+                action: (_) => Future.delayed(
+                  const Duration(milliseconds: 0), 
+                  () => openSelectionMode()
+                )
+              ),
+            ],
+            child: child
+          )
         ),
       ), 
     );

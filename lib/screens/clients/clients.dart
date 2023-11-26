@@ -7,7 +7,7 @@ import 'package:adguard_home_manager/screens/clients/clients_lists.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class Clients extends StatefulWidget {
-  const Clients({Key? key}) : super(key: key);
+  const Clients({super.key});
 
   @override
   State<Clients> createState() => _ClientsState();
@@ -20,36 +20,38 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth > 1000) {
-          return SplitView.material(
-            hideDivider: true,
-            flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
-            placeholder: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  AppLocalizations.of(context)!.selectClientLeftColumn,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth > 1000) {
+            return SplitView.material(
+              hideDivider: true,
+              flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
+              placeholder: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    AppLocalizations.of(context)!.selectClientLeftColumn,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                    ),
                   ),
                 ),
               ),
-            ),
-            child: const ClientsLists(
-              splitView: true,
-            )
-          );
-        }
-        else {
-          return const ClientsLists(
-            splitView: false,
-          );
-        }
-      },
+              child: const ClientsLists(
+                splitView: true,
+              )
+            );
+          }
+          else {
+            return const ClientsLists(
+              splitView: false,
+            );
+          }
+        },
+      ),
     );
   }
 }

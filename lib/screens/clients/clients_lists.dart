@@ -18,9 +18,9 @@ class ClientsLists extends StatefulWidget {
   final bool splitView;
 
   const ClientsLists({
-    Key? key,
+    super.key,
     required this.splitView,
-  }) : super(key: key);
+  });
 
   @override
   State<ClientsLists> createState() => _ClientsListsState();

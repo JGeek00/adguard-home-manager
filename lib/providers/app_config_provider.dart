@@ -449,7 +449,7 @@ class AppConfigProvider with ChangeNotifier {
     _showTopItemsChart = dbData['showTopItemsChart'];
     if (dbData['homeTopItemsOrder'] != null) {
       try {
-        _homeTopItemsOrder = List<HomeTopItems>.from(
+        final itemsOrder = List<HomeTopItems>.from(
           List<String>.from(jsonDecode(dbData['homeTopItemsOrder'])).map((e) {
             switch (e) {
               case 'queriedDomains':
@@ -461,11 +461,22 @@ class AppConfigProvider with ChangeNotifier {
               case 'recurrentClients':
                 return HomeTopItems.recurrentClients;
 
+              case 'topUpstreams':
+                return HomeTopItems.topUpstreams;
+
+              case 'avgUpstreamResponseTime':
+                return HomeTopItems.avgUpstreamResponseTime;
+
               default:
                 return null;
             }
           }).where((e) => e != null).toList()
         );
+        final missingItems = homeTopItemsDefaultOrder.where((e) => !itemsOrder.contains(e));
+        _homeTopItemsOrder = [
+          ...itemsOrder,
+          ...missingItems
+        ];
       } catch (e) {
         Sentry.captureException(e);
         _homeTopItemsOrder = homeTopItemsDefaultOrder;

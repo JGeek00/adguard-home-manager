@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,15 +8,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
-class ItemData {
+class _ItemData {
   final HomeTopItems title;
   final Key key;
 
-  const ItemData({
+  const _ItemData({
     required this.title, 
     required this.key
   });
@@ -29,7 +29,7 @@ enum DraggingMode {
 }
 
 class ReorderableTopItemsHome extends StatefulWidget {
-  const ReorderableTopItemsHome({Key? key}) : super(key: key);
+  const ReorderableTopItemsHome({super.key});
 
   @override
   State<ReorderableTopItemsHome> createState() => _ReorderableTopItemsHomeState();
@@ -38,10 +38,10 @@ class ReorderableTopItemsHome extends StatefulWidget {
 class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
   List<HomeTopItems> homeTopItemsList = [];
   List<HomeTopItems> persistHomeTopItemsList = [];
-  List<ItemData> renderItems = [];
+  List<_ItemData> renderItems = [];
 
   int _indexOfKey(Key key) {
-    return renderItems.indexWhere((ItemData d) => d.key == key);
+    return renderItems.indexWhere((_ItemData d) => d.key == key);
   }
 
   bool _reorderCallback(Key item, Key newPosition) {
@@ -79,7 +79,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
     homeTopItemsList = appConfigProvider.homeTopItemsOrder;
     persistHomeTopItemsList = appConfigProvider.homeTopItemsOrder;
     renderItems = appConfigProvider.homeTopItemsOrder.asMap().entries.map(
-      (e) => ItemData(
+      (e) => _ItemData(
         key: ValueKey(e.key),
         title: e.value, 
       )
@@ -117,16 +117,31 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
              padding: const EdgeInsets.all(16)
           );
 
+        case HomeTopItems.topUpstreams:
+          return CustomListTile(
+            title: AppLocalizations.of(context)!.topUpstreams,
+            icon: Icons.upload_file_rounded,
+             padding: const EdgeInsets.all(16)
+          );
+
+        case HomeTopItems.avgUpstreamResponseTime:
+          return CustomListTile(
+            title: AppLocalizations.of(context)!.averageUpstreamResponseTime,
+            icon: Icons.timer_rounded,
+             padding: const EdgeInsets.all(16)
+          );
+
         default:
           return const SizedBox();
       }
     }
 
-    Future<bool> onWillPopScope() async {
+    Future<bool> onWillPopScope(bool popInvoked) async {
       if (!listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList)) {
-        showDialog(
+        await showDialog(
           context: context, 
-          builder: (dialogContext) => AlertDialog(
+          useRootNavigator: false,
+          builder: (ctx) => AlertDialog(
             title: Text(AppLocalizations.of(context)!.discardChanges),
             content: Text(AppLocalizations.of(context)!.discardChangesDescription),
             actions: [
@@ -135,14 +150,14 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(dialogContext);
+                      Navigator.pop(context);
                       Navigator.pop(context);
                     }, 
                     child: Text(AppLocalizations.of(context)!.confirm)
                   ),
                   const SizedBox(width: 8),
                   TextButton(
-                    onPressed: () => Navigator.pop(dialogContext), 
+                    onPressed: () => Navigator.pop(context), 
                     child: Text(AppLocalizations.of(context)!.cancel)
                   ),
                 ],
@@ -175,8 +190,9 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
       }
     }
 
-    return WillPopScope(
-      onWillPop: onWillPopScope,
+    return PopScope(
+      canPop: listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList),
+      onPopInvoked: onWillPopScope,
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.topItemsOrder),
@@ -219,7 +235,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
                 child: ListView.builder(
                   itemBuilder: (context, index) => reorderable_list_library.ReorderableItem(
                     key: renderItems[index].key,
-                    childBuilder: (context, state) => Item(
+                    childBuilder: (context, state) => _Item(
                       tileWidget: tile(renderItems[index].title), 
                       isFirst: index == 0,
                       isLast: index == renderItems.length - 1,
@@ -237,19 +253,18 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
   }
 }
 
-class Item extends StatelessWidget {
+class _Item extends StatelessWidget {
   final Widget tileWidget;
   final bool isFirst;
   final bool isLast;
   final reorderable_list_library.ReorderableItemState state;
 
-  const Item({
-    Key? key,
+  const _Item({
     required this.tileWidget,
     required this.isFirst,
     required this.isLast,
     required this.state,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

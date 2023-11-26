@@ -8,10 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/server_status.dart';
+import 'package:adguard_home_manager/screens/home/top_items/top_items_lists.dart';
 import 'package:adguard_home_manager/screens/home/combined_chart.dart';
 import 'package:adguard_home_manager/screens/home/appbar.dart';
 import 'package:adguard_home_manager/screens/home/fab.dart';
-import 'package:adguard_home_manager/screens/home/top_items/top_items.dart';
 import 'package:adguard_home_manager/screens/home/chart.dart';
 
 import 'package:adguard_home_manager/functions/number_format.dart';
@@ -21,7 +21,7 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -32,8 +32,11 @@ class _HomeState extends State<Home> {
   late bool isVisible;
 
   @override
-  initState(){
-    Provider.of<StatusProvider>(context, listen: false).getServerStatus();
+  initState() {
+    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
+    statusProvider.getServerStatus(
+      withLoadingIndicator: statusProvider.serverStatus != null ? false : true
+    );
 
     super.initState();
 
@@ -231,77 +234,6 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class TopItemsLists extends StatelessWidget {
-  final List<HomeTopItems> order;
-  
-  const TopItemsLists({
-    Key? key, 
-    required this.order,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final statusProvider = Provider.of<StatusProvider>(context);
-
-    List<Widget> bottom = [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Divider(
-          thickness: 1,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-        ),
-      ),
-      const SizedBox(height: 16),
-    ];
-
-    return Column(
-      children: order.asMap().entries.map((item) {
-        switch (item.value) {
-          case HomeTopItems.queriedDomains:
-            return Column(
-              children: [
-                TopItems(
-                  label: AppLocalizations.of(context)!.topQueriedDomains, 
-                  data: statusProvider.serverStatus!.stats.topQueriedDomains,
-                  type: 'topQueriedDomains',
-                ),
-                if (item.key < order.length - 1) ...bottom
-              ],
-            );
-             
-          case HomeTopItems.blockedDomains:
-            return Column(
-              children: [
-                TopItems(
-                  label: AppLocalizations.of(context)!.topBlockedDomains, 
-                  data: statusProvider.serverStatus!.stats.topBlockedDomains,
-                  type: 'topBlockedDomains',
-                ),
-                if (item.key < order.length - 1) ...bottom
-              ],
-            );
-                  
-          case HomeTopItems.recurrentClients:
-            return Column(
-              children: [
-                TopItems(
-                  label: AppLocalizations.of(context)!.topClients, 
-                  data: statusProvider.serverStatus!.stats.topClients,
-                  type: 'topClients',
-                  clients: true,
-                ),
-                if (item.key < order.length - 1) ...bottom
-              ],
-            );
-                
-          default:
-            return const SizedBox();
-        }
-      }).toList(),
     );
   }
 }

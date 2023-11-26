@@ -686,5 +686,7 @@
     "unsupportedServerVersion": "Versión del servidor no soportada",
     "unsupportedServerVersionMessage": "La versión de tu servidor AdGuard Home es demasiado antigua y no está soportada por AdGuard Home Manager. Necesitarás actualizar tu servidor AdGuard Home a una versión más actual para utilizar esta aplicación.",
     "yourVersion": "Tu versión: {version}",
-    "minimumRequiredVersion": "Versión mínima requerida: {version}"
+    "minimumRequiredVersion": "Versión mínima requerida: {version}",
+    "topUpstreams": "DNS de subida más frecuentes",
+    "averageUpstreamResponseTime": "Tiempo promedio de respuesta upstream"
 }

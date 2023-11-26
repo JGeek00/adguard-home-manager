@@ -6,11 +6,11 @@ class CustomListTileDialog extends StatelessWidget {
   final void Function()? onTap;
 
   const CustomListTileDialog({
-    Key? key,
+    super.key,
     required this.title,
     this.icon,
     this.onTap
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
