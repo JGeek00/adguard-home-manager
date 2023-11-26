@@ -68,7 +68,6 @@ class _OptionsModal extends StatelessWidget {
   final dynamic value;
 
   const _OptionsModal({
-    super.key,
     required this.options,
     this.value,
   });
