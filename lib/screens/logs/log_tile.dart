@@ -319,10 +319,13 @@ class LogTile extends StatelessWidget {
                 newStatus: domainBlocked == true ? 'unblock' : 'block'
               )
             ),
-            MenuOption(
+            if (log.question.name != null) MenuOption(
               title: AppLocalizations.of(context)!.copyClipboard,
               icon: Icons.copy_rounded, 
-              action: (v) => copyToClipboard(value: v, successMessage: AppLocalizations.of(context)!.copiedClipboard)
+              action: (_) => copyToClipboard(
+                value: log.question.name!, 
+                successMessage: AppLocalizations.of(context)!.copiedClipboard
+              )
             )
           ],
           child: Container(

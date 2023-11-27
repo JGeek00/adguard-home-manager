@@ -166,7 +166,11 @@ class ApiClientV2 {
           content: clients
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": results.map((e) => e.statusCode.toString()) })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -210,7 +214,11 @@ class ApiClientV2 {
           content: LogsData.fromJson(jsonDecode(result.body!))
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -228,7 +236,11 @@ class ApiClientV2 {
           content: FilteringStatus.fromJson(jsonDecode(result.body!))
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -298,7 +310,11 @@ class ApiClientV2 {
           })
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": results.map((e) => e.statusCode.toString()) })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -364,7 +380,11 @@ class ApiClientV2 {
           content: ServerInfoData.fromJson(jsonDecode(result.body!))
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -398,7 +418,11 @@ class ApiClientV2 {
           content: {'updated': jsonDecode(results[0].body!)['updated']+jsonDecode(results[1].body!)['updated']} 
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": results.map((e) => e.statusCode.toString()) })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -463,7 +487,11 @@ class ApiClientV2 {
           )
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": results.map((e) => e.statusCode.toString()) })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -549,7 +577,11 @@ class ApiClientV2 {
           content: data
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -622,7 +654,11 @@ class ApiClientV2 {
           content: DnsInfo.fromJson(jsonDecode(result.body!))
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -658,7 +694,11 @@ class ApiClientV2 {
           content: EncryptionData.fromJson(jsonDecode(result.body!))
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -678,7 +718,11 @@ class ApiClientV2 {
           )
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
         return const ApiResponse(successful: false);
       }
     }
@@ -712,7 +756,11 @@ class ApiClientV2 {
         ) : null
       );
     } catch (e, stackTrace) {
-      Sentry.captureException(e, stackTrace: stackTrace);
+      Sentry.captureException(
+        e, 
+        stackTrace: stackTrace, 
+        hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+      );
       return const ApiResponse(successful: false);
     }
   }
@@ -758,7 +806,11 @@ class ApiClientV2 {
           content: obj
         );
       } catch (e, stackTrace) {
-        Sentry.captureException(e, stackTrace: stackTrace);
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": results.map((e) => e.statusCode.toString()) })
+        );
         return const ApiResponse(successful: false);
       }
     }
