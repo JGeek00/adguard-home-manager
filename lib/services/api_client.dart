@@ -743,7 +743,7 @@ class ApiClientV2 {
       return ApiResponse(
         successful: result.successful,
         content: result.body != null ? EncryptionValidationResult(
-          isObject: false,
+          isObject: true,
           encryptionValidation: EncryptionValidation.fromJson(jsonDecode(result.body!))
         ) : null
       );
