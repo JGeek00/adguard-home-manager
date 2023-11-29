@@ -175,7 +175,7 @@ class _BottomRowState extends State<_BottomRow> {
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
 
-    final textScale = MediaQuery.of(context).textScaleFactor;
+    final textScale = MediaQuery.of(context).textScaler.scale(1);
 
     return Container(
       height: Platform.isMacOS || Platform.isLinux || Platform.isWindows 

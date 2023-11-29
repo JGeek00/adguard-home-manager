@@ -16,31 +16,7 @@ class ServerStatusWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
-
-    double boxSize() {
-      if (textScaleFactor < 1 || (textScaleFactor >= 1 && textScaleFactor < 1.15)) {
-        return 65;
-      }
-      else if (textScaleFactor >= 1.15 && textScaleFactor < 1.3) {
-        return 75;
-      }
-      else if (textScaleFactor >= 1.3 && textScaleFactor < 1.45) {
-        return 80;
-      }
-      else if (textScaleFactor >= 1.45 && textScaleFactor < 1.6) {
-        return 85;
-      }
-      else if (textScaleFactor >= 1.6 && textScaleFactor < 1.85) {
-        return 100;
-      }
-      else if (textScaleFactor >= 1.85) {
-        return 110;
-      }
-      else {
-        return 65;
-      }
-    }
+    final textScaleFactor = MediaQuery.of(context).textScaler.scale(1);
 
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
@@ -65,7 +41,7 @@ class ServerStatusWidget extends StatelessWidget {
               crossAxisCount: width > 700 ? 4 : 2,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
-              mainAxisExtent: boxSize()
+              mainAxisExtent: 70*textScaleFactor
             ),
             children: [
               StatusBox(
