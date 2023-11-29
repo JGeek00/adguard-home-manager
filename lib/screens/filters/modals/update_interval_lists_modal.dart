@@ -12,11 +12,11 @@ class UpdateIntervalListsModal extends StatefulWidget {
   final bool dialog;
 
   const UpdateIntervalListsModal({
-    Key? key,
+    super.key,
     required this.interval,
     required this.onChange,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   State<UpdateIntervalListsModal> createState() => _UpdateIntervalListsModalState();
@@ -25,7 +25,7 @@ class UpdateIntervalListsModal extends StatefulWidget {
 class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
   int? selectedOption;
 
-  void _updateRadioValue(value) {
+  void _updateRadioValue(int value) {
     setState(() {
       selectedOption = value;
     });
@@ -41,18 +41,67 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
   Widget build(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);  
 
-    Widget content() {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: SingleChildScrollView(
-              child: Wrap(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
+    if (widget.dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500
+          ),
+          child: _Content(
+            selectedOption: selectedOption,
+            onUpdateValue: _updateRadioValue,
+            onConfirm: () => widget.onChange(selectedOption!),
+          )
+        ),
+      );
+    }
+    else {
+      return Padding(
+        padding: mediaQueryData.viewInsets,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).dialogBackgroundColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28)
+            ),
+          ),
+          child: _Content(
+            selectedOption: selectedOption,
+            onUpdateValue: _updateRadioValue,
+            onConfirm: () => widget.onChange(selectedOption!),
+          )
+        ),
+      );
+    }
+  }
+}
+
+class _Content extends StatelessWidget {
+  final int? selectedOption;
+  final void Function(int) onUpdateValue;
+  final void Function() onConfirm;
+
+  const _Content({
+    required this.selectedOption,
+    required this.onUpdateValue,
+    required this.onConfirm,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Column(
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(top: 24),
@@ -62,7 +111,7 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                               color: Theme.of(context).listTileTheme.iconColor
                             ),
                           ),
-                          Container(
+                          Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,
                               vertical: 16
@@ -78,157 +127,128 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
                             ),
                           ),
                         ],
-                      )
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Wrap(
+                    runSpacing: 16,
+                    children: [
+                      FractionallySizedBox(
+                        widthFactor: 0.5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: OptionBox(
+                            optionsValue: selectedOption,
+                            itemValue: 0,
+                            onTap: (v) => onUpdateValue(v as int),
+                            label: AppLocalizations.of(context)!.never,
+                          ),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: 0.5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 6),
+                          child: OptionBox(
+                            optionsValue: selectedOption,
+                            itemValue: 1,
+                            onTap: (v) => onUpdateValue(v as int),
+                            label: AppLocalizations.of(context)!.hour1,
+                          ),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: 0.5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: OptionBox(
+                            optionsValue: selectedOption,
+                            itemValue: 12,
+                            onTap: (v) => onUpdateValue(v as int),
+                            label: AppLocalizations.of(context)!.hours12,
+                          ),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: 0.5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 6),
+                          child: OptionBox(
+                            optionsValue: selectedOption,
+                            itemValue: 24,
+                            onTap: (v) => onUpdateValue(v as int),
+                            label: AppLocalizations.of(context)!.hours24,
+                          ),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: 0.5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: OptionBox(
+                            optionsValue: selectedOption,
+                            itemValue: 72,
+                            onTap: (v) => onUpdateValue(v as int),
+                            label: AppLocalizations.of(context)!.days3,
+                          ),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: 0.5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 6),
+                          child: OptionBox(
+                            optionsValue: selectedOption,
+                            itemValue: 168,
+                            onTap: (v) => onUpdateValue(v as int),
+                            label: AppLocalizations.of(context)!.days7,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Wrap(
-                      runSpacing: 16,
-                      children: [
-                        FractionallySizedBox(
-                          widthFactor: 0.5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 6),
-                            child: OptionBox(
-                              optionsValue: selectedOption,
-                              itemValue: 0,
-                              onTap: _updateRadioValue,
-                              label: AppLocalizations.of(context)!.never,
-                            ),
-                          ),
-                        ),
-                        FractionallySizedBox(
-                          widthFactor: 0.5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: OptionBox(
-                              optionsValue: selectedOption,
-                              itemValue: 1,
-                              onTap: _updateRadioValue,
-                              label: AppLocalizations.of(context)!.hour1,
-                            ),
-                          ),
-                        ),
-                        FractionallySizedBox(
-                          widthFactor: 0.5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 6),
-                            child: OptionBox(
-                              optionsValue: selectedOption,
-                              itemValue: 12,
-                              onTap: _updateRadioValue,
-                              label: AppLocalizations.of(context)!.hours12,
-                            ),
-                          ),
-                        ),
-                        FractionallySizedBox(
-                          widthFactor: 0.5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: OptionBox(
-                              optionsValue: selectedOption,
-                              itemValue: 24,
-                              onTap: _updateRadioValue,
-                              label: AppLocalizations.of(context)!.hours24,
-                              
-                            ),
-                          ),
-                        ),
-                        FractionallySizedBox(
-                          widthFactor: 0.5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 6),
-                            child: OptionBox(
-                              optionsValue: selectedOption,
-                              itemValue: 72,
-                              onTap: _updateRadioValue,
-                              label: AppLocalizations.of(context)!.days3,
-                              
-                            ),
-                          ),
-                        ),
-                        FractionallySizedBox(
-                          widthFactor: 0.5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: OptionBox(
-                              optionsValue: selectedOption,
-                              itemValue: 168,
-                              onTap: _updateRadioValue,
-                              label: AppLocalizations.of(context)!.days7,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context), 
-                  child: Text(AppLocalizations.of(context)!.cancel),
-                ),
-                const SizedBox(width: 20),
-                TextButton(
-                  onPressed: selectedOption != null
-                    ? () {
-                      Navigator.pop(context);
-                      widget.onChange(selectedOption!);
-                    }
-                    : null,
-                  style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(
-                      Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                    ),
-                    foregroundColor: MaterialStateProperty.all(
-                      selectedOption != null
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey,
-                    ),
-                  ), 
-                  child: Text(AppLocalizations.of(context)!.confirm),
-                ),
+                )
               ],
             ),
           ),
-          if (Platform.isIOS) const SizedBox(height: 16)
-        ],
-      );
-    } 
-
-    if (widget.dialog == true) {
-      return Dialog(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 500
-          ),
-          child: content()
         ),
-      );
-    }
-    else {
-      return Padding(
-        padding: mediaQueryData.viewInsets,
-        child: Container(
-          height: Platform.isIOS ? 406 : 390,
-          decoration: BoxDecoration(
-            color: Theme.of(context).dialogBackgroundColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(28),
-              topRight: Radius.circular(28)
-            ),
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.pop(context), 
+                child: Text(AppLocalizations.of(context)!.cancel),
+              ),
+              const SizedBox(width: 20),
+              TextButton(
+                onPressed: selectedOption != null
+                  ? () {
+                    Navigator.pop(context);
+                    onConfirm();
+                  }
+                  : null,
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                  ),
+                  foregroundColor: MaterialStateProperty.all(
+                    selectedOption != null
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey,
+                  ),
+                ), 
+                child: Text(AppLocalizations.of(context)!.confirm),
+              ),
+            ],
           ),
-          child: content()
         ),
-      );
-    }
+        if (Platform.isIOS) const SizedBox(height: 16)
+      ],
+    );
   }
 }

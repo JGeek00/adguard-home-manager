@@ -197,7 +197,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                           ),
                           _Tab(
                             icon: Icons.gpp_bad_rounded, 
-                            text: AppLocalizations.of(context)!.blacklist, 
+                            text: AppLocalizations.of(context)!.blacklists, 
                             quantity: _selectedBlacklists.length
                           ),
                         ]
@@ -263,7 +263,7 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
                             ),
                             _Tab(
                               icon: Icons.gpp_bad_rounded, 
-                              text: AppLocalizations.of(context)!.blacklist, 
+                              text: AppLocalizations.of(context)!.blacklists, 
                               quantity: _selectedBlacklists.length
                             ),
                           ]
@@ -336,7 +336,12 @@ class _Tab extends StatelessWidget {
         children: [
           Icon(icon),
           const SizedBox(width: 8),
-          Text(text),
+          Flexible(
+            child: Text(
+              text,
+              overflow: TextOverflow.ellipsis,
+            )
+          ),
           const SizedBox(width: 8),
           Container(
             height: 22,

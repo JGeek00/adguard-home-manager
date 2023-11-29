@@ -177,10 +177,12 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  AppLocalizations.of(context)!.enableSafeSearch,
-                                  style: const TextStyle(
-                                    fontSize: 18
+                                Flexible(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.enableSafeSearch,
+                                    style: const TextStyle(
+                                      fontSize: 18
+                                    ),
                                   ),
                                 ),
                                 Switch(

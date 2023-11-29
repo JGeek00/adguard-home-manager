@@ -143,7 +143,6 @@ class _LogsConfigModalState extends State<LogsConfigModal> {
     }
     else {
       return Container(
-        height: Platform.isIOS ? 436 : 420,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(28),

@@ -8,10 +8,10 @@ class AddStaticLeaseModal extends StatefulWidget {
   final bool dialog;
 
   const AddStaticLeaseModal({
-    Key? key,
+    super.key,
     required this.onConfirm,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   State<AddStaticLeaseModal> createState() => _AddStaticLeaseModalState();
@@ -80,26 +80,28 @@ class _AddStaticLeaseModalState extends State<AddStaticLeaseModal> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 24),
-                              child: Icon(
-                                Icons.add,
-                                size: 24,
-                                color: Theme.of(context).listTileTheme.iconColor
+                        Flexible(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 24),
+                                child: Icon(
+                                  Icons.add,
+                                  size: 24,
+                                  color: Theme.of(context).listTileTheme.iconColor
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              AppLocalizations.of(context)!.addStaticLease,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: Theme.of(context).colorScheme.onSurface
+                              const SizedBox(height: 16),
+                              Text(
+                                AppLocalizations.of(context)!.addStaticLease,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Theme.of(context).colorScheme.onSurface
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),

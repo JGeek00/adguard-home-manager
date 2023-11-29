@@ -7,11 +7,11 @@ class TagsModal extends StatefulWidget {
   final void Function(List<String>) onConfirm;
 
   const TagsModal({
-    Key? key,
+    super.key,
     required this.selectedTags,
     required this.tags,
     required this.onConfirm,
-  }) : super(key: key);
+  });
 
   @override
   State<TagsModal> createState() => _TagsModalState();
@@ -82,12 +82,14 @@ class _TagsModalState extends State<TagsModal> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      widget.tags[index],
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.onSurface,
+                    Flexible(
+                      child: Text(
+                        widget.tags[index],
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
                       ),
                     ),
                     Checkbox(

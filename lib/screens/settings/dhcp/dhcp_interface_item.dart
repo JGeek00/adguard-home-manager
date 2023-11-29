@@ -8,10 +8,10 @@ class DhcpInterfaceItem extends StatelessWidget {
   final void Function(NetworkInterface) onSelect;
 
   const DhcpInterfaceItem({
-    Key? key,
+    super.key,
     required this.networkInterface,
     required this.onSelect
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +56,7 @@ class DhcpInterfaceItem extends StatelessWidget {
               const SizedBox(height: 5),
               if (networkInterface.flags.isNotEmpty) ...[
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Flags: ",
@@ -64,11 +65,13 @@ class DhcpInterfaceItem extends StatelessWidget {
                         color: Theme.of(context).colorScheme.onSurfaceVariant
                       ),
                     ),
-                    Text(
-                      networkInterface.flags.join(', '),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                    Flexible(
+                      child: Text(
+                        networkInterface.flags.join(', '),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant
+                        ),
                       ),
                     ),
                   ],

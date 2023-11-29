@@ -47,7 +47,7 @@ class ClientForm extends StatelessWidget {
   final void Function(bool) updateUseGlobalSettingsServices;
 
   const ClientForm({
-    Key? key,
+    super.key,
     required this.isFullScreen,
     required this.client,
     required this.nameController,
@@ -75,7 +75,7 @@ class ClientForm extends StatelessWidget {
     required this.updateEnableSafeSearch,
     required this.updateSafeSearch,
     required this.updateUseGlobalSettingsServices,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -154,11 +154,13 @@ class ClientForm extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      AppLocalizations.of(context)!.useGlobalSettings,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.onSurface
+                    Flexible(
+                      child: Text(
+                        AppLocalizations.of(context)!.useGlobalSettings,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface
+                        ),
                       ),
                     ),
                     Switch(

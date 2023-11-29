@@ -13,11 +13,11 @@ class SelectInterfaceModal extends StatelessWidget {
   final bool dialog;
 
   const SelectInterfaceModal({
-    Key? key,
+    super.key,
     required this.interfaces,
     required this.onSelect,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

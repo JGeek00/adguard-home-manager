@@ -14,14 +14,14 @@ class HomeChart extends StatelessWidget {
   final int hoursInterval;
 
   const HomeChart({
-    Key? key,
+    super.key,
     required this.data,
     required this.label,
     required this.primaryValue,
     required this.secondaryValue,
     required this.color,
     required this.hoursInterval
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
