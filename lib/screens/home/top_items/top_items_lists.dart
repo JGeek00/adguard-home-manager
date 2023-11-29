@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/home/top_items/top_items.dart';
+import 'package:adguard_home_manager/screens/home/top_items/top_items_section.dart';
 
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -106,7 +106,7 @@ class TopItemsLists extends StatelessWidget {
           case HomeTopItems.queriedDomains:
             return Column(
               children: [
-                TopItems(
+                TopItemsSection(
                   label: AppLocalizations.of(context)!.topQueriedDomains, 
                   type: HomeTopItems.queriedDomains,
                   data: statusProvider.serverStatus?.stats.topQueriedDomains ?? [],
@@ -134,7 +134,7 @@ class TopItemsLists extends StatelessWidget {
           case HomeTopItems.blockedDomains:
             return Column(
               children: [
-                TopItems(
+                TopItemsSection(
                   label: AppLocalizations.of(context)!.topBlockedDomains, 
                   type: HomeTopItems.blockedDomains,
                   data: statusProvider.serverStatus?.stats.topBlockedDomains ?? [],
@@ -162,7 +162,7 @@ class TopItemsLists extends StatelessWidget {
           case HomeTopItems.recurrentClients:
             return Column(
               children: [
-                TopItems(
+                TopItemsSection(
                   label: AppLocalizations.of(context)!.topClients, 
                   type: HomeTopItems.recurrentClients,
                   data: statusProvider.serverStatus?.stats.topClients ?? [],
@@ -186,7 +186,7 @@ class TopItemsLists extends StatelessWidget {
             return statusProvider.serverStatus!.stats.topUpstreamResponses != null
               ? Column(
                   children: [
-                    TopItems(
+                    TopItemsSection(
                       label: AppLocalizations.of(context)!.topUpstreams, 
                       type: HomeTopItems.topUpstreams,
                       data: statusProvider.serverStatus?.stats.topUpstreamResponses ?? [],
@@ -210,7 +210,7 @@ class TopItemsLists extends StatelessWidget {
             return statusProvider.serverStatus!.stats.topUpstreamsAvgTime != null 
               ? Column(
                   children: [
-                    TopItems(
+                    TopItemsSection(
                       label: AppLocalizations.of(context)!.averageUpstreamResponseTime, 
                       type: HomeTopItems.avgUpstreamResponseTime,
                       data: statusProvider.serverStatus?.stats.topUpstreamsAvgTime ?? [],

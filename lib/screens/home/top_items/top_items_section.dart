@@ -7,15 +7,14 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/top_items/row_item.dart';
-import 'package:adguard_home_manager/screens/top_items/top_items_modal.dart';
-import 'package:adguard_home_manager/screens/top_items/top_items.dart';
+import 'package:adguard_home_manager/screens/home/top_items/top_items_screen.dart';
 import 'package:adguard_home_manager/widgets/custom_pie_chart.dart';
 
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
-class TopItems extends StatefulWidget {
+class TopItemsSection extends StatefulWidget {
   final HomeTopItems type;
   final String label;
   final List<Map<String, dynamic>> data;
@@ -25,7 +24,7 @@ class TopItems extends StatefulWidget {
   final List<MenuOption> menuOptions;
   final void Function(dynamic)? onTapEntry;
 
-  const TopItems({
+  const TopItemsSection({
     super.key,
     required this.type,
     required this.label,
@@ -38,10 +37,10 @@ class TopItems extends StatefulWidget {
   });
 
   @override
-  State<TopItems> createState() => _TopItemsState();
+  State<TopItemsSection> createState() => _TopItemsState();
 }
 
-class _TopItemsState extends State<TopItems> {
+class _TopItemsState extends State<TopItemsSection> {
   bool _showChart = true;
 
   final colors = [
@@ -289,38 +288,37 @@ class _TopItemsState extends State<TopItems> {
                 children: [
                   TextButton(
                     onPressed: () => {
-                      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => TopItemsModal(
-                            type: widget.type,
-                            title: widget.label,
-                            isClient: widget.type == HomeTopItems.recurrentClients, 
-                            data: widget.data,
-                            withProgressBar: widget.withProgressBar,
-                            buildValue: widget.buildValue,
-                            options: widget.menuOptions,
-                            onTapEntry: widget.onTapEntry,
-                          )
+                      showGeneralDialog(
+                        context: context, 
+                        barrierColor: !(width > 700 || !(Platform.isAndroid | Platform.isIOS))
+                          ?Colors.transparent 
+                          : Colors.black54,
+                        transitionBuilder: (context, anim1, anim2, child) {
+                          return SlideTransition(
+                            position: Tween(
+                              begin: const Offset(0, 1), 
+                              end: const Offset(0, 0)
+                            ).animate(
+                              CurvedAnimation(
+                                parent: anim1, 
+                                curve: Curves.easeInOutCubicEmphasized
+                              )
+                            ),
+                            child: child,
+                          );
+                        },
+                        pageBuilder: (context, animation, secondaryAnimation) => TopItemsScreen(
+                          type: widget.type,
+                          title: widget.label,
+                          isClient: widget.type == HomeTopItems.recurrentClients, 
+                          data: widget.data,
+                          withProgressBar: widget.withProgressBar,
+                          buildValue: widget.buildValue,
+                          options: widget.menuOptions,
+                          onTapEntry: widget.onTapEntry,
+                          isFullscreen: !(width > 700 || !(Platform.isAndroid | Platform.isIOS)),
                         )
-                      }
-                      else {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => TopItemsScreen(
-                              type: widget.type,
-                              title: widget.label,
-                              isClient: widget.type == HomeTopItems.recurrentClients, 
-                              data: widget.data,
-                              withProgressBar: widget.withProgressBar,
-                              buildValue: widget.buildValue,
-                              menuOptions: widget.menuOptions,
-                              onTapEntry: widget.onTapEntry,
-                            )
-                          )
-                        )
-                      }
+                      )
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
