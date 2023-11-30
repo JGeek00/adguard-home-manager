@@ -10,12 +10,12 @@ class BlockedServicesSection extends StatelessWidget {
   final void Function(bool) onUpdateServicesGlobalSettings;
 
   const BlockedServicesSection({
-    Key? key,
+    super.key,
     required this.useGlobalSettingsServices,
     required this.blockedServices,
     required this.onUpdatedBlockedServices,
     required this.onUpdateServicesGlobalSettings
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +37,13 @@ class BlockedServicesSection extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      AppLocalizations.of(context)!.useGlobalSettings,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.onSurface
+                    Flexible(
+                      child: Text(
+                        AppLocalizations.of(context)!.useGlobalSettings,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface
+                        ),
                       ),
                     ),
                     Switch(
@@ -78,30 +80,32 @@ class BlockedServicesSection extends StatelessWidget {
                       : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
                   ),
                   const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.selectBlockedServices,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: useGlobalSettingsServices == false
-                            ? Theme.of(context).colorScheme.onSurface
-                            : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
-                        ),
-                      ),
-                      if (useGlobalSettingsServices == false) ...[
-                        const SizedBox(height: 5),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          blockedServices.isNotEmpty
-                            ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
-                            :  AppLocalizations.of(context)!.noBlockedServicesSelected,
+                          AppLocalizations.of(context)!.selectBlockedServices,
                           style: TextStyle(
-                            color: Theme.of(context).listTileTheme.iconColor  
+                            fontSize: 16,
+                            color: useGlobalSettingsServices == false
+                              ? Theme.of(context).colorScheme.onSurface
+                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
                           ),
-                        )
-                      ]
-                    ],
+                        ),
+                        if (useGlobalSettingsServices == false) ...[
+                          const SizedBox(height: 5),
+                          Text(
+                            blockedServices.isNotEmpty
+                              ? "${blockedServices.length} ${AppLocalizations.of(context)!.servicesBlocked}"
+                              :  AppLocalizations.of(context)!.noBlockedServicesSelected,
+                            style: TextStyle(
+                              color: Theme.of(context).listTileTheme.iconColor  
+                            ),
+                          )
+                        ]
+                      ],
+                    ),
                   )
                 ],
               ),

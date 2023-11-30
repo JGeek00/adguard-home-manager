@@ -15,12 +15,12 @@ class MainSwitch extends StatelessWidget {
   final Animation<double> animation;
 
   const MainSwitch({
-    Key? key,
+    super.key,
     required this.expandableController,
     required this.updateBlocking,
     required this.disableWithCountdown,
     required this.animation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -88,12 +88,11 @@ class _TopRow extends StatelessWidget {
   final Animation<double> animation;
 
   const _TopRow({
-    Key? key,
     required this.legacyMode,
     required this.expandableController,
     required this.updateBlocking,
     required this.animation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -102,9 +101,9 @@ class _TopRow extends StatelessWidget {
     return  Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            if (legacyMode == false) ...[
+        Expanded(
+          child: Row(
+            children: [
               RotationTransition(
                 turns: animation,
                 child: Icon(
@@ -116,26 +115,30 @@ class _TopRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-            ],
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.allProtections,
-                  style: const TextStyle(
-                    fontSize: 18,
-                  ),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.allProtections,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    if (statusProvider.serverStatus!.timeGeneralDisabled > 0) ...[
+                      const SizedBox(height: 2),
+                      if (statusProvider.currentDeadline != null) Text(
+                        "${AppLocalizations.of(context)!.remainingTime}: ${formatRemainingSeconds(statusProvider.remainingTime)}"
+                      )
+                    ]
+                  ],
                 ),
-                if (statusProvider.serverStatus!.timeGeneralDisabled > 0) ...[
-                  const SizedBox(height: 2),
-                  if (statusProvider.currentDeadline != null) Text(
-                    "${AppLocalizations.of(context)!.remainingTime}: ${formatRemainingSeconds(statusProvider.remainingTime)}"
-                  )
-                ]
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 8),
         Switch(
           value: statusProvider.serverStatus!.generalEnabled, 
           onChanged: statusProvider.protectionsManagementProcess.contains('general') == false
@@ -145,7 +148,7 @@ class _TopRow extends StatelessWidget {
               }
               updateBlocking(
                 value: value, 
-                filter: legacyMode == true ? 'general_legacy' : 'general'
+                filter: 'general'
               );
             } : null,
         )
@@ -158,9 +161,8 @@ class _BottomRow extends StatefulWidget {
   final void Function(int) disableWithCountdown;
   
   const _BottomRow({
-    Key? key,
     required this.disableWithCountdown,
-  }) : super(key: key);
+  });
 
   @override
   State<_BottomRow> createState() => _BottomRowState();
@@ -173,8 +175,12 @@ class _BottomRowState extends State<_BottomRow> {
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
 
+    final textScale = MediaQuery.of(context).textScaler.scale(1);
+
     return Container(
-      height: Platform.isMacOS || Platform.isLinux || Platform.isWindows ? 50 : 40,
+      height: Platform.isMacOS || Platform.isLinux || Platform.isWindows 
+        ? 50 * textScale
+        : 40 * textScale,
       margin: const EdgeInsets.only(top: 8),
       child: Scrollbar(
         controller: _chipsScrollController,

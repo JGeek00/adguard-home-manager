@@ -181,12 +181,11 @@ class _Modal extends StatelessWidget {
   final Animation<double> animation;
 
   const _Modal({
-    Key? key,
     required this.expandableController,
     required this.updateBlocking,
     required this.disableWithCountdown,
     required this.animation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

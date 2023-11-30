@@ -19,7 +19,7 @@ import 'package:adguard_home_manager/models/rewrite_rules.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 
 class DnsRewritesScreen extends StatefulWidget {
-  const DnsRewritesScreen({Key? key}) : super(key: key);
+  const DnsRewritesScreen({super.key});
 
   @override
   State<DnsRewritesScreen> createState() => _DnsRewritesScreenState();
@@ -152,6 +152,7 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
                         const SizedBox(height: 30),
                         Text(
                           AppLocalizations.of(context)!.loadingRewriteRules,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 22,
                             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -305,6 +306,7 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
                         const SizedBox(height: 30),
                         Text(
                           AppLocalizations.of(context)!.rewriteRulesNotLoaded,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 22,
                             color: Theme.of(context).colorScheme.onSurfaceVariant,

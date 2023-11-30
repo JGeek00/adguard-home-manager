@@ -17,7 +17,7 @@ class LogsConfigOptions extends StatelessWidget {
   final void Function() onConfirm;
 
   const LogsConfigOptions({
-    Key? key,
+    super.key,
     required this.generalSwitch,
     required this.updateGeneralSwitch,
     required this.anonymizeClientIp,
@@ -27,10 +27,12 @@ class LogsConfigOptions extends StatelessWidget {
     required this.updateRetentionTime,
     required this.onClear,
     required this.onConfirm
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -111,10 +113,12 @@ class LogsConfigOptions extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  AppLocalizations.of(context)!.anonymizeClientIp,
-                                  style: const TextStyle(
-                                    fontSize: 16
+                                Flexible(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.anonymizeClientIp,
+                                    style: const TextStyle(
+                                      fontSize: 16
+                                    ),
                                   ),
                                 ),
                                 Switch(
@@ -159,12 +163,20 @@ class LogsConfigOptions extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton(
+              if (width > 500) TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   onClear();
                 }, 
                 child: Text(AppLocalizations.of(context)!.clearLogs)
+              ),
+              if (width <= 500) IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  onClear();
+                }, 
+                icon: const Icon(Icons.delete_rounded),
+                tooltip: AppLocalizations.of(context)!.clearLogs,
               ),
               Row(
                 children: [
@@ -174,7 +186,7 @@ class LogsConfigOptions extends StatelessWidget {
                   ),
                   const SizedBox(width: 20),
                   TextButton(
-                    onPressed: retentionTime != ''
+                    onPressed: retentionTime != null
                       ? () {
                         Navigator.pop(context);
                         onConfirm();
@@ -183,7 +195,7 @@ class LogsConfigOptions extends StatelessWidget {
                     child: Text(
                       AppLocalizations.of(context)!.confirm,
                       style: TextStyle(
-                        color: retentionTime != ''
+                        color: retentionTime != null
                           ? Theme.of(context).colorScheme.primary
                           : Colors.grey
                       ),
@@ -201,7 +213,7 @@ class LogsConfigOptions extends StatelessWidget {
 }
 
 class ConfigLogsLoading extends StatelessWidget {
-  const ConfigLogsLoading({Key? key}) : super(key: key);
+  const ConfigLogsLoading({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +244,7 @@ class ConfigLogsLoading extends StatelessWidget {
 }
 
 class ConfigLogsError extends StatelessWidget {
-  const ConfigLogsError({Key? key}) : super(key: key);
+  const ConfigLogsError({super.key});
 
   @override
   Widget build(BuildContext context) {

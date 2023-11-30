@@ -414,6 +414,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
                     const SizedBox(height: 30),
                     Text(
                       AppLocalizations.of(context)!.loadingDhcp,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 22,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,

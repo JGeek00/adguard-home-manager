@@ -12,10 +12,10 @@ class ClientsModal extends StatefulWidget {
   final bool dialog;
 
   const ClientsModal({
-    Key? key,
+    super.key,
     required this.value,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   State<ClientsModal> createState() => _ClientsModalState();
@@ -75,10 +75,9 @@ class _ModalContent extends StatelessWidget {
   final void Function(List<String>) onClientsSelected;
 
   const _ModalContent({
-    Key? key,
     required this.selectedClients,
     required this.onClientsSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -188,11 +187,10 @@ class _ListItem extends StatelessWidget {
   final void Function(bool) onChanged;
 
   const _ListItem({
-    Key? key,
     required this.label,
     required this.checkboxActive,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

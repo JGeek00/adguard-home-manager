@@ -27,12 +27,12 @@ class ClientScreen extends StatefulWidget {
   final bool fullScreen;
 
   const ClientScreen({
-    Key? key,
+    super.key,
     this.client,
     required this.onConfirm,
     this.onDelete,
     required this.fullScreen
-  }) : super(key: key);
+  });
 
   @override
   State<ClientScreen> createState() => _ClientScreenState();
