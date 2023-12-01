@@ -1,9 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable_list_library;
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable_list;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
@@ -138,6 +138,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
 
     void saveSettings() async {
       final result = await appConfigProvider.setHomeTopItemsOrder(homeTopItemsList);
+      if (!mounted) return;
       if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
@@ -153,6 +154,10 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
         );
       }
     }
+    
+    final draggingMode = Platform.isAndroid
+      ? DraggingMode.android
+      : DraggingMode.iOS;
 
     return Scaffold(
       appBar: AppBar(
@@ -190,18 +195,34 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
             ),
           ),
           Expanded(
-            child: reorderable_list_library.ReorderableList(
+            child: reorderable_list.ReorderableList(
               onReorder: _reorderCallback,
               onReorderDone: _reorderDone,
               child: ListView.builder(
-                itemBuilder: (context, index) => reorderable_list_library.ReorderableItem(
+                itemBuilder: (context, index) => reorderable_list.ReorderableItem(
                   key: renderItems[index].key,
-                  childBuilder: (context, state) => _Item(
-                    tileWidget: tile(renderItems[index].title), 
-                    isFirst: index == 0,
-                    isLast: index == renderItems.length - 1,
-                    state: state
-                  ),
+                  childBuilder: (context, state) {
+                    if (draggingMode == DraggingMode.android) {
+                      return reorderable_list.DelayedReorderableListener(
+                        child: _Tile(
+                          draggingMode: draggingMode,
+                          isFirst: index == 0,
+                          isLast: index == renderItems.length - 1,
+                          state: state,
+                          tileWidget: tile(renderItems[index].title), 
+                        ),
+                      );
+                    }
+                    else {
+                      return _Tile(
+                        draggingMode: draggingMode,
+                        isFirst: index == 0,
+                        isLast: index == renderItems.length - 1,
+                        state: state,
+                        tileWidget: tile(renderItems[index].title), 
+                      );
+                    }
+                  },
                 ),
                 itemCount: renderItems.length,
               )
@@ -213,68 +234,79 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
   }
 }
 
-class _Item extends StatelessWidget {
+class _Tile extends StatelessWidget {
   final Widget tileWidget;
   final bool isFirst;
   final bool isLast;
-  final reorderable_list_library.ReorderableItemState state;
+  final reorderable_list.ReorderableItemState state;
+  final DraggingMode draggingMode;
 
-  const _Item({
+  const _Tile({
     required this.tileWidget,
     required this.isFirst,
     required this.isLast,
     required this.state,
+    required this.draggingMode
   });
 
   @override
   Widget build(BuildContext context) {
-    BoxDecoration decoration;
-
-    if (
-      state == reorderable_list_library.ReorderableItemState.dragProxy ||
-      state == reorderable_list_library.ReorderableItemState.dragProxyFinished
-    ) {
-      decoration = BoxDecoration(
-        color: Theme.of(context).colorScheme.surface.withOpacity(0.7)
-      );
-    } 
-    else {
-      bool placeholder = state == reorderable_list_library.ReorderableItemState.placeholder;
-      decoration = BoxDecoration(
-        border: Border(
-          top: isFirst && !placeholder ? BorderSide(
-            width: 1,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
-          ) : BorderSide.none,
-          bottom: isLast && placeholder ? BorderSide.none : BorderSide(
-            width: 1,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
-          ),
-        ),
-      );
-    }
-
-    return reorderable_list_library.DelayedReorderableListener(
-      child: Container(
-        decoration: decoration,
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: Opacity(
-            opacity: state == reorderable_list_library.ReorderableItemState.placeholder ? 0.0 : 1.0,
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Expanded(
-                    child: tileWidget
-                  ),
-                ],
-              ),
+    BoxDecoration getDecoration() {
+      if (
+        state == reorderable_list.ReorderableItemState.dragProxy ||
+        state == reorderable_list.ReorderableItemState.dragProxyFinished
+      ) {
+        return BoxDecoration(
+          color: Theme.of(context).colorScheme.surface.withOpacity(0.7)
+        );
+      } 
+      else {
+        bool placeholder = state == reorderable_list.ReorderableItemState.placeholder;
+        return BoxDecoration(
+          border: Border(
+            top: isFirst && !placeholder ? BorderSide(
+              width: 1,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
+            ) : BorderSide.none,
+            bottom: isLast && placeholder ? BorderSide.none : BorderSide(
+              width: 1,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
             ),
-          )
-        ),
-      )
+          ),
+        );
+      }
+    }
+    
+    return Container(
+      decoration: getDecoration(),
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Opacity(
+          opacity: state == reorderable_list.ReorderableItemState.placeholder ? 0.0 : 1.0,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  child: tileWidget
+                ),
+                if (draggingMode == DraggingMode.iOS) reorderable_list.ReorderableListener(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Center(
+                      child: Icon(
+                        Icons.reorder,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
+      ),
     );
   }
 }
