@@ -32,7 +32,7 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class Settings extends StatelessWidget {
-  const Settings({Key? key}) : super(key: key);
+  const Settings({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,13 +55,13 @@ class Settings extends StatelessWidget {
                 ),
               ),
             ),
-            child: const SettingsWidget(
+            child: const _SettingsWidget(
               twoColumns: true,
             ),
           );
         }
         else {
-          return const SettingsWidget(
+          return const _SettingsWidget(
             twoColumns: false,
           );
         }
@@ -69,19 +69,18 @@ class Settings extends StatelessWidget {
     );
   }
 }
-class SettingsWidget extends StatefulWidget {
+class _SettingsWidget extends StatefulWidget {
   final bool twoColumns;
 
-  const SettingsWidget({
-    Key? key,
+  const _SettingsWidget({
     required this.twoColumns,
-  }) : super(key: key);
+  });
 
   @override
-  State<SettingsWidget> createState() => _SettingsWidgetState();
+  State<_SettingsWidget> createState() => _SettingsWidgetState();
 }
 
-class _SettingsWidgetState extends State<SettingsWidget> {
+class _SettingsWidgetState extends State<_SettingsWidget> {
   @override
   void initState() {
     Provider.of<AppConfigProvider>(context, listen: false).setSelectedSettingsScreen(screen: null);
@@ -98,43 +97,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
     if (!widget.twoColumns && appConfigProvider.selectedSettingsScreen != null) {
       appConfigProvider.setSelectedSettingsScreen(screen: null);
-    }
-
-    Widget settingsTile({
-      required String title,
-      required String subtitle,
-      required IconData icon,
-      Widget? trailing,
-      required Widget screenToNavigate,
-      required int thisItem
-    }) {
-      if (widget.twoColumns) {
-        return CustomSettingsTile(
-          title: title, 
-          subtitle: subtitle,
-          icon: icon,
-          trailing: trailing,
-          thisItem: thisItem, 
-          selectedItem: appConfigProvider.selectedSettingsScreen,
-          onTap: () {
-            appConfigProvider.setSelectedSettingsScreen(screen: thisItem, notify: true);
-            SplitView.of(context).setSecondary(screenToNavigate);
-          },
-        );
-      }
-      else {
-        return CustomListTile(
-          title: title,
-          subtitle: subtitle,
-          icon: icon,
-          trailing: trailing,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => screenToNavigate)
-            );
-          },
-        );
-      }
     }
 
     return Scaffold(
@@ -169,28 +131,31 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       serversProvider.apiClient2 != null
                     ) ...[
                       SectionLabel(label: AppLocalizations.of(context)!.serverSettings),
-                      settingsTile(
+                      _SettingsTile(
                         icon: Icons.search_rounded,
                         title: AppLocalizations.of(context)!.safeSearch,
                         subtitle: AppLocalizations.of(context)!.safeSearchSettings,
                         thisItem: 0,
                         screenToNavigate: const SafeSearchSettingsScreen(),
+                        twoColumns: widget.twoColumns,
                       ),
-                      settingsTile(
+                      _SettingsTile(
                         icon: Icons.lock_rounded,
                         title: AppLocalizations.of(context)!.accessSettings,
                         subtitle: AppLocalizations.of(context)!.accessSettingsDescription,
                         thisItem: 1,
                         screenToNavigate: const AccessSettings(),
+                        twoColumns: widget.twoColumns,
                       ),
-                      settingsTile(
+                      _SettingsTile(
                         icon: Icons.install_desktop_rounded,
                         title: AppLocalizations.of(context)!.dhcpSettings,
                         subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
                         thisItem: 2,
                         screenToNavigate: const DhcpScreen(),
+                        twoColumns: widget.twoColumns,
                       ),
-                      settingsTile(
+                      _SettingsTile(
                         icon: Icons.dns_rounded,
                         title: AppLocalizations.of(context)!.dnsSettings,
                         subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
@@ -198,22 +163,25 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                         screenToNavigate: DnsSettings(
                           splitView: widget.twoColumns,
                         ),
+                        twoColumns: widget.twoColumns,
                       ),
-                      settingsTile(
+                      _SettingsTile(
                         icon: Icons.security_rounded,
                         title: AppLocalizations.of(context)!.encryptionSettings,
                         subtitle: AppLocalizations.of(context)!.encryptionSettingsDescription,
                         thisItem: 4,
                         screenToNavigate: const EncryptionSettings(),
+                        twoColumns: widget.twoColumns,
                       ),
-                      settingsTile(
+                      _SettingsTile(
                         icon: Icons.route_rounded,
                         title: AppLocalizations.of(context)!.dnsRewrites,
                         subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
                         thisItem: 5,
                         screenToNavigate: const DnsRewritesScreen(),
+                        twoColumns: widget.twoColumns,
                       ),
-                      if (serversProvider.updateAvailable.data != null) settingsTile(
+                      if (serversProvider.updateAvailable.data != null) _SettingsTile(
                         icon: Icons.system_update_rounded,
                         title: AppLocalizations.of(context)!.updates,
                         subtitle: AppLocalizations.of(context)!.updatesDescription,
@@ -231,24 +199,27 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                             : null,
                         thisItem: 6,
                         screenToNavigate: const UpdateScreen(),
+                        twoColumns: widget.twoColumns,
                       ),
-                      settingsTile(
+                      _SettingsTile(
                         icon: Icons.info_rounded,
                         title: AppLocalizations.of(context)!.serverInformation,
                         subtitle: AppLocalizations.of(context)!.serverInformationDescription,
                         thisItem: 7,
                         screenToNavigate: const ServerInformation(),
+                        twoColumns: widget.twoColumns,
                       ),
                     ],
                     SectionLabel(label: AppLocalizations.of(context)!.appSettings),
-                    settingsTile(
+                    _SettingsTile(
                       icon: Icons.palette_rounded,
                       title: AppLocalizations.of(context)!.customization, 
                       subtitle: AppLocalizations.of(context)!.customizationDescription,
                       thisItem: 8,
                       screenToNavigate: const Customization(),
+                      twoColumns: widget.twoColumns,
                     ),
-                    settingsTile(
+                    _SettingsTile(
                       icon: Icons.storage_rounded,
                       title: AppLocalizations.of(context)!.servers,
                       subtitle: serversProvider.selectedServer != null
@@ -258,20 +229,23 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                         : AppLocalizations.of(context)!.noServerSelected,
                       thisItem: 9,
                       screenToNavigate: const Servers(),
+                      twoColumns: widget.twoColumns,
                     ),
-                    settingsTile(
+                    _SettingsTile(
                       icon: Icons.settings,
                       title: AppLocalizations.of(context)!.generalSettings,
                       subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
                       thisItem: 10,
-                      screenToNavigate: const GeneralSettings(),
+                      screenToNavigate: GeneralSettings(splitView: widget.twoColumns),
+                      twoColumns: widget.twoColumns,
                     ),
-                    settingsTile(
+                    _SettingsTile(
                       icon: Icons.build_outlined,
                       title: AppLocalizations.of(context)!.advancedSettings,
                       subtitle: AppLocalizations.of(context)!.advancedSetupDescription,
                       thisItem: 11,
                       screenToNavigate: const AdvancedSettings(),
+                      twoColumns: widget.twoColumns,
                     ),
                     SectionLabel(label: AppLocalizations.of(context)!.aboutApp),
                     CustomListTile(
@@ -318,5 +292,58 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         ),
       )
     );
+  }
+}
+
+class _SettingsTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Widget? trailing;
+  final Widget screenToNavigate;
+  final int thisItem;
+  final bool twoColumns;
+
+  const _SettingsTile({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    this.trailing,
+    required this.screenToNavigate,
+    required this.thisItem,
+    required this.twoColumns
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    if (twoColumns) {
+      return CustomSettingsTile(
+        title: title, 
+        subtitle: subtitle,
+        icon: icon,
+        trailing: trailing,
+        thisItem: thisItem, 
+        selectedItem: appConfigProvider.selectedSettingsScreen,
+        onTap: () {
+          appConfigProvider.setSelectedSettingsScreen(screen: thisItem, notify: true);
+          SplitView.of(context).setSecondary(screenToNavigate);
+        },
+      );
+    }
+    else {
+      return CustomListTile(
+        title: title,
+        subtitle: subtitle,
+        icon: icon,
+        trailing: trailing,
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => screenToNavigate)
+          );
+        },
+      );
+    }
   }
 }
