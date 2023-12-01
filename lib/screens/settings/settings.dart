@@ -236,7 +236,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                       title: AppLocalizations.of(context)!.generalSettings,
                       subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
                       thisItem: 10,
-                      screenToNavigate: const GeneralSettings(),
+                      screenToNavigate: GeneralSettings(splitView: widget.twoColumns),
                       twoColumns: widget.twoColumns,
                     ),
                     _SettingsTile(

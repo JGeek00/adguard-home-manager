@@ -136,42 +136,6 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
       }
     }
 
-    Future<bool> onWillPopScope(bool popInvoked) async {
-      if (!listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList)) {
-        await showDialog(
-          context: context, 
-          useRootNavigator: false,
-          builder: (ctx) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.discardChanges),
-            content: Text(AppLocalizations.of(context)!.discardChangesDescription),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    }, 
-                    child: Text(AppLocalizations.of(context)!.confirm)
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context), 
-                    child: Text(AppLocalizations.of(context)!.cancel)
-                  ),
-                ],
-              )
-            ],
-          )
-        );
-        return false;
-      }
-      else {
-        return true;
-      }
-    }
-
     void saveSettings() async {
       final result = await appConfigProvider.setHomeTopItemsOrder(homeTopItemsList);
       if (result == true) {
@@ -190,64 +154,60 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
       }
     }
 
-    return PopScope(
-      canPop: listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList),
-      onPopInvoked: onWillPopScope,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.topItemsOrder),
-          surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
-          actions: [
-            IconButton(
-              onPressed: !listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList)
-                ? () => saveSettings()
-                : null, 
-              icon: const Icon(Icons.save_rounded),
-              tooltip: AppLocalizations.of(context)!.save,
-            ),
-            const SizedBox(width: 8)
-          ],
-        ),
-        body: Column(
-          children: [
-            Card(
-              margin: const EdgeInsets.all(16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info_rounded,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 16),
-                    Flexible(
-                      child: Text(AppLocalizations.of(context)!.topItemsReorderInfo)
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: reorderable_list_library.ReorderableList(
-                onReorder: _reorderCallback,
-                onReorderDone: _reorderDone,
-                child: ListView.builder(
-                  itemBuilder: (context, index) => reorderable_list_library.ReorderableItem(
-                    key: renderItems[index].key,
-                    childBuilder: (context, state) => _Item(
-                      tileWidget: tile(renderItems[index].title), 
-                      isFirst: index == 0,
-                      isLast: index == renderItems.length - 1,
-                      state: state
-                    ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.topItemsOrder),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
+        actions: [
+          IconButton(
+            onPressed: !listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList)
+              ? () => saveSettings()
+              : null, 
+            icon: const Icon(Icons.save_rounded),
+            tooltip: AppLocalizations.of(context)!.save,
+          ),
+          const SizedBox(width: 8)
+        ],
+      ),
+      body: Column(
+        children: [
+          Card(
+            margin: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_rounded,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-                  itemCount: renderItems.length,
-                )
+                  const SizedBox(width: 16),
+                  Flexible(
+                    child: Text(AppLocalizations.of(context)!.topItemsReorderInfo)
+                  )
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: reorderable_list_library.ReorderableList(
+              onReorder: _reorderCallback,
+              onReorderDone: _reorderDone,
+              child: ListView.builder(
+                itemBuilder: (context, index) => reorderable_list_library.ReorderableItem(
+                  key: renderItems[index].key,
+                  childBuilder: (context, state) => _Item(
+                    tileWidget: tile(renderItems[index].title), 
+                    isFirst: index == 0,
+                    isLast: index == renderItems.length - 1,
+                    state: state
+                  ),
+                ),
+                itemCount: renderItems.length,
+              )
+            ),
+          ),
+        ],
       ),
     );
   }

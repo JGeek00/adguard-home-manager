@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,7 +21,12 @@ import 'package:adguard_home_manager/functions/app_update_download_link.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class GeneralSettings extends StatefulWidget {
-  const GeneralSettings({Key? key}) : super(key: key);
+  final bool splitView;
+
+  const GeneralSettings({
+    super.key,
+    required this.splitView,
+  });
 
   @override
   State<GeneralSettings> createState() => _GeneralSettingsState();
@@ -191,11 +197,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             icon: Icons.reorder_rounded,
             title: AppLocalizations.of(context)!.topItemsOrder,
             subtitle: AppLocalizations.of(context)!.topItemsOrderDescription,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const ReorderableTopItemsHome()
-              )
-            )
+            onTap: () => widget.splitView == true 
+              ? SplitView.of(context).push(const ReorderableTopItemsHome())
+              : Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ReorderableTopItemsHome()
+                  )
+                ) 
           ),
           CustomListTile(
             icon: Icons.donut_large_rounded,
