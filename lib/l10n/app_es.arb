@@ -688,5 +688,7 @@
     "yourVersion": "Tu versión: {version}",
     "minimumRequiredVersion": "Versión mínima requerida: {version}",
     "topUpstreams": "DNS de subida más frecuentes",
-    "averageUpstreamResponseTime": "Tiempo promedio de respuesta upstream"
+    "averageUpstreamResponseTime": "Tiempo promedio de respuesta upstream",
+    "dhcpNotAvailable": "El servidor DHCP no está disponible.",
+    "osServerInstalledIncompatible": "El SO donde el servidor está instalado no es compatible con esta característica."
 }

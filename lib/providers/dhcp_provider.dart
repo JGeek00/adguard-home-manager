@@ -69,7 +69,7 @@ class DhcpProvider with ChangeNotifier {
 
     if (result.successful == true) {
       DhcpModel data = dhcp!;
-      data.dhcpStatus.staticLeases = data.dhcpStatus.staticLeases.where((l) => l.mac != lease.mac).toList();
+      data.dhcpStatus!.staticLeases = data.dhcpStatus!.staticLeases.where((l) => l.mac != lease.mac).toList();
       setDhcpData(data);
       return true;
     }
@@ -90,7 +90,7 @@ class DhcpProvider with ChangeNotifier {
 
     if (result.successful == true) {
       DhcpModel data = dhcp!;
-      data.dhcpStatus.staticLeases.add(lease);
+      data.dhcpStatus!.staticLeases.add(lease);
       setDhcpData(data);
       return result;
     }
