@@ -82,10 +82,10 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
 
     final result = await Provider.of<ServersProvider>(context, listen: false).apiClient2!.getEncryptionSettings();
     if (!mounted) return;
-
-    final data = result.content as EncryptionData;
     
     if (result.successful == true) {
+      final data = result.content as EncryptionData;
+      
       await checkValidDataApi(data: data.toJson());
       if (!mounted) return;
 
