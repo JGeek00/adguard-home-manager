@@ -25,9 +25,9 @@ class DnsSettings extends StatefulWidget {
   final bool splitView;
 
   const DnsSettings({
-    Key? key,
+    super.key,
     required this.splitView,
-  }) : super(key: key);
+  });
 
   @override
   State<DnsSettings> createState() => _DnsSettingsState();
@@ -118,95 +118,97 @@ class _DnsSettingsState extends State<DnsSettings> {
           const SizedBox(width: 10)
         ],
       ),
-      body: Builder(
-        builder: (context) {
-          switch (dnsProvider.loadStatus) {
-            case LoadStatus.loading:
-              return SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            switch (dnsProvider.loadStatus) {
+              case LoadStatus.loading:
+                return SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.loadingDnsConfig,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    ],
+                  )
+                );
+        
+              case LoadStatus.loaded:
+                return ListView(
                   children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.loadingDnsConfig,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    )
-                  ],
-                )
-              );
-
-            case LoadStatus.loaded:
-              return ListView(
-                children: [
-                  CustomListTile(
-                    title: AppLocalizations.of(context)!.upstreamDns,
-                    subtitle: AppLocalizations.of(context)!.upstreamDnsDescription,
-                    onTap: () => navigate(const UpstreamDnsScreen()),
-                    icon: Icons.upload_rounded,
-                  ),
-                  CustomListTile(
-                    title: AppLocalizations.of(context)!.bootstrapDns,
-                    subtitle: AppLocalizations.of(context)!.bootstrapDnsDescription,
-                    onTap: () => navigate(const BootstrapDnsScreen()),
-                    icon: Icons.dns_rounded,
-                  ),
-                  CustomListTile(
-                    title: AppLocalizations.of(context)!.privateReverseDnsServers,
-                    subtitle: AppLocalizations.of(context)!.privateReverseDnsDescription,
-                    onTap: () => navigate(const PrivateReverseDnsServersScreen()),
-                    icon: Icons.person_rounded,
-                  ),
-                  CustomListTile(
-                    title: AppLocalizations.of(context)!.dnsServerSettings,
-                    subtitle: AppLocalizations.of(context)!.dnsServerSettingsDescription,
-                    onTap: () => navigate(const DnsServerSettingsScreen()),
-                    icon: Icons.settings,
-                  ),
-                  CustomListTile(
-                    title: AppLocalizations.of(context)!.dnsCacheConfig,
-                    subtitle: AppLocalizations.of(context)!.dnsCacheConfigDescription,
-                    onTap: () => navigate(const CacheConfigDnsScreen()),
-                    icon: Icons.storage_rounded,
-                  ),
-                ],
-              );
-
-            case LoadStatus.error:
-              return SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                      size: 50,
+                    CustomListTile(
+                      title: AppLocalizations.of(context)!.upstreamDns,
+                      subtitle: AppLocalizations.of(context)!.upstreamDnsDescription,
+                      onTap: () => navigate(const UpstreamDnsScreen()),
+                      icon: Icons.upload_rounded,
                     ),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.dnsConfigNotLoaded,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    )
+                    CustomListTile(
+                      title: AppLocalizations.of(context)!.bootstrapDns,
+                      subtitle: AppLocalizations.of(context)!.bootstrapDnsDescription,
+                      onTap: () => navigate(const BootstrapDnsScreen()),
+                      icon: Icons.dns_rounded,
+                    ),
+                    CustomListTile(
+                      title: AppLocalizations.of(context)!.privateReverseDnsServers,
+                      subtitle: AppLocalizations.of(context)!.privateReverseDnsDescription,
+                      onTap: () => navigate(const PrivateReverseDnsServersScreen()),
+                      icon: Icons.person_rounded,
+                    ),
+                    CustomListTile(
+                      title: AppLocalizations.of(context)!.dnsServerSettings,
+                      subtitle: AppLocalizations.of(context)!.dnsServerSettingsDescription,
+                      onTap: () => navigate(const DnsServerSettingsScreen()),
+                      icon: Icons.settings,
+                    ),
+                    CustomListTile(
+                      title: AppLocalizations.of(context)!.dnsCacheConfig,
+                      subtitle: AppLocalizations.of(context)!.dnsCacheConfigDescription,
+                      onTap: () => navigate(const CacheConfigDnsScreen()),
+                      icon: Icons.storage_rounded,
+                    ),
                   ],
-                ),
-              );
-
-            default:
-              return const SizedBox();
-          }
-        },
+                );
+        
+              case LoadStatus.error:
+                return SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.dnsConfigNotLoaded,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+        
+              default:
+                return const SizedBox();
+            }
+          },
+        ),
       )
     );
   }

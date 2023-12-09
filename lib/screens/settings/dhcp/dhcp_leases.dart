@@ -22,10 +22,10 @@ class DhcpLeases extends StatelessWidget {
   final bool staticLeases;
 
   const DhcpLeases({
-    Key? key,
+    super.key,
     required this.items,
     required this.staticLeases,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -130,32 +130,34 @@ class DhcpLeases extends StatelessWidget {
         ),
       ),
       body: items.isNotEmpty
-        ? ListView.builder(
-            padding: const EdgeInsets.only(top: 0),
-            itemCount: items.length,
-            itemBuilder: (context, index) => ListTile(
-              isThreeLine: true,
-              title: Text(items[index].ip),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(items[index].mac),
-                  Text(items[index].hostname),
-                ],
+        ? SafeArea(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(top: 0),
+              itemCount: items.length,
+              itemBuilder: (context, index) => ListTile(
+                isThreeLine: true,
+                title: Text(items[index].ip),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(items[index].mac),
+                    Text(items[index].hostname),
+                  ],
+                ),
+                trailing: staticLeases == true
+                  ? IconButton(
+                      onPressed: () {
+                        showModal(
+                          context: context,
+                          builder: (context) => DeleteStaticLeaseModal(
+                            onConfirm: () => deleteLease(items[index])
+                          )
+                        );
+                      }, 
+                      icon: const Icon(Icons.delete)
+                    )
+                  : null,
               ),
-              trailing: staticLeases == true
-                ? IconButton(
-                    onPressed: () {
-                      showModal(
-                        context: context,
-                        builder: (context) => DeleteStaticLeaseModal(
-                          onConfirm: () => deleteLease(items[index])
-                        )
-                      );
-                    }, 
-                    icon: const Icon(Icons.delete)
-                  )
-                : null,
             ),
           )
         : Center(

@@ -1352,6 +1352,7 @@ class ApiClient {
           return {
             'result': 'success',
             'data': DhcpModel(
+              dhcpAvailable: true,
               networkInterfaces: interfaces, 
               dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
             )

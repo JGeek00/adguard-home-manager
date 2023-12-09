@@ -25,11 +25,11 @@ class ListDetailsScreen extends StatefulWidget {
   final bool dialog;
 
   const ListDetailsScreen({
-    Key? key,
+    super.key,
     required this.listId,
     required this.type,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   State<ListDetailsScreen> createState() => _ListDetailsScreenState();
@@ -367,42 +367,44 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
             title: Text(AppLocalizations.of(context)!.listDetails),
             actions: list != null ? actions() : null,
           ),
-          body: Stack(
-            children: [
-              if (list != null) ListView(
-                children: content(),
-              ),
-              if (list == null) Center(
-                child: Text(
-                  AppLocalizations.of(context)!.listNotAvailable,
-                  style: const TextStyle(
-                    fontSize: 24,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                if (list != null) ListView(
+                  children: content(),
+                ),
+                if (list == null) Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.listNotAvailable,
+                    style: const TextStyle(
+                      fontSize: 24,
+                    ),
                   ),
                 ),
-              ),
-              if (list != null) AnimatedPositioned(
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.easeInOut,
-                bottom: fabVisible ?
-                  appConfigProvider.showingSnackbar
-                    ? 70 : (Platform.isIOS ? 40 : 20)
-                  : -70,
-                right: 20,
-                child: FloatingActionButton(
-                  onPressed: () => updateList(
-                    action: list!.enabled == true
-                      ? FilteringListActions.disable
-                      : FilteringListActions.enable,
-                    filterList: list
+                if (list != null) AnimatedPositioned(
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeInOut,
+                  bottom: fabVisible ?
+                    appConfigProvider.showingSnackbar
+                      ? 70 : (Platform.isIOS ? 40 : 20)
+                    : -70,
+                  right: 20,
+                  child: FloatingActionButton(
+                    onPressed: () => updateList(
+                      action: list!.enabled == true
+                        ? FilteringListActions.disable
+                        : FilteringListActions.enable,
+                      filterList: list
+                    ),
+                    child: Icon(
+                      list.enabled == true
+                        ? Icons.gpp_bad_rounded
+                        : Icons.verified_user_rounded,
+                    ),
                   ),
-                  child: Icon(
-                    list.enabled == true
-                      ? Icons.gpp_bad_rounded
-                      : Icons.verified_user_rounded,
-                  ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       );

@@ -44,9 +44,11 @@ class AddClientModal extends StatelessWidget {
               topRight: Radius.circular(28)
             )
           ),
-          child: _Content(
-            type: type,
-            onConfirm: onConfirm,
+          child: SafeArea(
+            child: _Content(
+              type: type,
+              onConfirm: onConfirm,
+            ),
           )
         ),
       );

@@ -66,10 +66,12 @@ class _UpdateIntervalListsModalState extends State<UpdateIntervalListsModal> {
               topRight: Radius.circular(28)
             ),
           ),
-          child: _Content(
-            selectedOption: selectedOption,
-            onUpdateValue: _updateRadioValue,
-            onConfirm: () => widget.onChange(selectedOption!),
+          child: SafeArea(
+            child: _Content(
+              selectedOption: selectedOption,
+              onUpdateValue: _updateRadioValue,
+              onConfirm: () => widget.onChange(selectedOption!),
+            ),
           )
         ),
       );

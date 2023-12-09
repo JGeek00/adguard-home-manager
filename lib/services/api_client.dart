@@ -482,8 +482,13 @@ class ApiClientV2 {
         return ApiResponse(
           successful: true,
           content: DhcpModel(
+            dhcpAvailable: jsonDecode(results[1].body!)['message'] != null
+              ? false
+              : true,
             networkInterfaces: interfaces, 
-            dhcpStatus: DhcpStatus.fromJson(jsonDecode(results[1].body!))
+            dhcpStatus: jsonDecode(results[1].body!)['message'] != null
+              ? null
+              : DhcpStatus.fromJson(jsonDecode(results[1].body!))
           )
         );
       } catch (e, stackTrace) {

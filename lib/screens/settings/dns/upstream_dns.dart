@@ -189,129 +189,131 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
           const SizedBox(width: 10)
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 10),
-        children: [
-          if (dnsServers.isEmpty) Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noUpstreamDns,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontSize: 16
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 10),
+          children: [
+            if (dnsServers.isEmpty) Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.noUpstreamDns,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 16
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-          ...dnsServers.map((item) => Padding(
-            padding: const EdgeInsets.only(
-              left: 16, right: 6, bottom: 24
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (item['controller'] != null) Expanded(
-                  child: TextFormField(
-                    controller: item['controller'],
-                    onChanged: (_) => checkValidValues(),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.dns_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
-                      ),
-                      labelText: AppLocalizations.of(context)!.dnsServer,
-                    )
-                  ),
-                ),
-                const SizedBox(width: 8),
-                if (item['comment'] != null) Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        item['comment'],
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).listTileTheme.iconColor
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => openEditCommentModal(item, dnsServers.indexOf(item)), 
-                        icon: const Icon(Icons.edit),
-                        tooltip:  AppLocalizations.of(context)!.edit,
-                      )
-                    ],
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() => dnsServers = dnsServers.where((i) => i != item).toList());
-                    checkValidValues();
-                  }, 
-                  icon: const Icon(Icons.remove_circle_outline),
-                  tooltip:  AppLocalizations.of(context)!.remove,
-                ),
-                const SizedBox(width: 4),
+                const SizedBox(height: 20),
               ],
             ),
-          )).toList(),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: openAddCommentModal, 
-                icon: const Icon(Icons.add), 
-                label: Text(AppLocalizations.of(context)!.comment)
+            ...dnsServers.map((item) => Padding(
+              padding: const EdgeInsets.only(
+                left: 16, right: 6, bottom: 24
               ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  setState(() => dnsServers.add({
-                    'controller': TextEditingController()
-                  }));
-                  checkValidValues();
-                }, 
-                icon: const Icon(Icons.add), 
-                label: Text(AppLocalizations.of(context)!.address)
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (item['controller'] != null) Expanded(
+                    child: TextFormField(
+                      controller: item['controller'],
+                      onChanged: (_) => checkValidValues(),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.dns_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        labelText: AppLocalizations.of(context)!.dnsServer,
+                      )
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  if (item['comment'] != null) Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item['comment'],
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).listTileTheme.iconColor
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => openEditCommentModal(item, dnsServers.indexOf(item)), 
+                          icon: const Icon(Icons.edit),
+                          tooltip:  AppLocalizations.of(context)!.edit,
+                        )
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() => dnsServers = dnsServers.where((i) => i != item).toList());
+                      checkValidValues();
+                    }, 
+                    icon: const Icon(Icons.remove_circle_outline),
+                    tooltip:  AppLocalizations.of(context)!.remove,
+                  ),
+                  const SizedBox(width: 4),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SectionLabel(label: AppLocalizations.of(context)!.dnsMode),
-          CustomRadioListTile(
-            groupValue: upstreamMode, 
-            value: "", 
-            radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
-            title: AppLocalizations.of(context)!.loadBalancing,
-            subtitle: AppLocalizations.of(context)!.loadBalancingDescription,
-            onChanged: (value) => setState(() => upstreamMode = value),
-          ),
-          CustomRadioListTile(
-            groupValue: upstreamMode, 
-            value: "parallel", 
-            radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
-            title: AppLocalizations.of(context)!.parallelRequests,
-            subtitle: AppLocalizations.of(context)!.parallelRequestsDescription,
-            onChanged: (value) => setState(() => upstreamMode = value),
-          ),
-          CustomRadioListTile(
-            groupValue: upstreamMode, 
-            value: "fastest_addr", 
-            radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
-            title: AppLocalizations.of(context)!.fastestIpAddress,
-            subtitle: AppLocalizations.of(context)!.fastestIpAddressDescription,
-            onChanged: (value) => setState(() => upstreamMode = value),
-          ),
-        ],
+            )).toList(),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: openAddCommentModal, 
+                  icon: const Icon(Icons.add), 
+                  label: Text(AppLocalizations.of(context)!.comment)
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() => dnsServers.add({
+                      'controller': TextEditingController()
+                    }));
+                    checkValidValues();
+                  }, 
+                  icon: const Icon(Icons.add), 
+                  label: Text(AppLocalizations.of(context)!.address)
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SectionLabel(label: AppLocalizations.of(context)!.dnsMode),
+            CustomRadioListTile(
+              groupValue: upstreamMode, 
+              value: "", 
+              radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
+              title: AppLocalizations.of(context)!.loadBalancing,
+              subtitle: AppLocalizations.of(context)!.loadBalancingDescription,
+              onChanged: (value) => setState(() => upstreamMode = value),
+            ),
+            CustomRadioListTile(
+              groupValue: upstreamMode, 
+              value: "parallel", 
+              radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
+              title: AppLocalizations.of(context)!.parallelRequests,
+              subtitle: AppLocalizations.of(context)!.parallelRequestsDescription,
+              onChanged: (value) => setState(() => upstreamMode = value),
+            ),
+            CustomRadioListTile(
+              groupValue: upstreamMode, 
+              value: "fastest_addr", 
+              radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
+              title: AppLocalizations.of(context)!.fastestIpAddress,
+              subtitle: AppLocalizations.of(context)!.fastestIpAddressDescription,
+              onChanged: (value) => setState(() => upstreamMode = value),
+            ),
+          ],
+        ),
       ),
     );
   }

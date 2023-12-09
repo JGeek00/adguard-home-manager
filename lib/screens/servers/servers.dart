@@ -16,9 +16,9 @@ class Servers extends StatefulWidget {
   final double? breakingWidth;
 
   const Servers({
-    Key? key,
+    super.key,
     this.breakingWidth
-  }) : super(key: key);
+  });
 
   @override
   State<Servers> createState() => _ServersState();
@@ -77,29 +77,31 @@ class _ServersState extends State<Servers> {
         title: Text(AppLocalizations.of(context)!.servers),
         centerTitle: false,
       ),
-      body: Stack(
-        children: [
-          ServersList(
-            context: context, 
-            controllers: expandableControllerList, 
-            onChange: expandOrContract,
-            scrollController: scrollController,
-            breakingWidth: widget.breakingWidth ?? 700,
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeInOut,
-            bottom: isVisible ?
-              appConfigProvider.showingSnackbar
-                ? 70 : (Platform.isIOS ? 40 : 20)
-              : -70,
-            right: 20,
-            child: FloatingActionButton(
-              onPressed: openAddServerModal,
-              child: const Icon(Icons.add),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            ServersList(
+              context: context, 
+              controllers: expandableControllerList, 
+              onChange: expandOrContract,
+              scrollController: scrollController,
+              breakingWidth: widget.breakingWidth ?? 700,
             ),
-          ),
-        ],
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              bottom: isVisible ?
+                appConfigProvider.showingSnackbar
+                  ? 70 : (Platform.isIOS ? 40 : 20)
+                : -70,
+              right: 20,
+              child: FloatingActionButton(
+                onPressed: openAddServerModal,
+                child: const Icon(Icons.add),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -19,9 +19,9 @@ class LogsFiltersModal extends StatefulWidget {
   final bool dialog;
 
   const LogsFiltersModal({
-    Key? key,
+    super.key,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   State<LogsFiltersModal> createState() => _LogsFiltersModalState();
@@ -65,9 +65,11 @@ class _LogsFiltersModalState extends State<LogsFiltersModal> {
               topRight: Radius.circular(28)
             )
           ),
-          child: _FiltersList(
-            searchController: searchController, 
-            onClearSearch: () => setState(() => searchController.text = "")
+          child: SafeArea(
+            child: _FiltersList(
+              searchController: searchController, 
+              onClearSearch: () => setState(() => searchController.text = "")
+            ),
           )
         ),
       );

@@ -10,10 +10,10 @@ class AddCustomRule extends StatefulWidget {
   final bool fullScreen;
 
   const AddCustomRule({
-    Key? key,
+    super.key,
     required this.onConfirm,
     required this.fullScreen
-  }) : super(key: key);
+  });
 
   @override
   State<AddCustomRule> createState() => _AddCustomRuleState();
@@ -349,8 +349,10 @@ class _AddCustomRuleState extends State<AddCustomRule> {
               const SizedBox(width: 10)
             ],
           ),
-          body: ListView(
-            children: content(),
+          body: SafeArea(
+            child: ListView(
+              children: content(),
+            ),
           )
         ),
       );

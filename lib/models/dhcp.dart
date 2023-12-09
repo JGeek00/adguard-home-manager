@@ -1,9 +1,11 @@
 import 'dart:convert';
 class DhcpModel {
+  bool dhcpAvailable;
   List<NetworkInterface> networkInterfaces;
-  DhcpStatus dhcpStatus;
+  DhcpStatus? dhcpStatus;
 
   DhcpModel({
+    required this.dhcpAvailable,
     required this.networkInterfaces,
     required this.dhcpStatus,
   });

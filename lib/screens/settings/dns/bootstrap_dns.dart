@@ -117,105 +117,107 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
           const SizedBox(width: 10)
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 10),
-        children: [
-          Card(
-            margin: const EdgeInsets.only(
-              left: 16, right: 16, bottom: 20
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_rounded,
-                    color: Theme.of(context).listTileTheme.iconColor,
-                  ),
-                  const SizedBox(width: 20),
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.bootstrapDnsServersInfo,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface
-                      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 10),
+          children: [
+            Card(
+              margin: const EdgeInsets.only(
+                left: 16, right: 16, bottom: 20
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_rounded,
+                      color: Theme.of(context).listTileTheme.iconColor,
+                    ),
+                    const SizedBox(width: 20),
+                    Flexible(
+                      child: Text(
+                        AppLocalizations.of(context)!.bootstrapDnsServersInfo,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface
+                        ),
+                      )
                     )
-                  )
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          if (bootstrapControllers.isEmpty) Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noBootstrapDns,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontSize: 16
+            const SizedBox(height: 10),
+            if (bootstrapControllers.isEmpty) Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.noBootstrapDns,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 16
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-          ...bootstrapControllers.map((c) => Padding(
-            padding: const EdgeInsets.only(
-              left: 16, right: 6, bottom: 20
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: c['controller'],
-                    onChanged: (value) => validateIp(c, value),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.dns_rounded),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10)
-                        )
-                      ),
-                      errorText: c['error'],
-                      labelText: AppLocalizations.of(context)!.dnsServer,
-                    )
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  onPressed: () {
-                    setState(() => bootstrapControllers = bootstrapControllers.where((con) => con != c).toList());
-                    checkValidValues();
-                  }, 
-                  icon: const Icon(Icons.remove_circle_outline)
-                )
+                const SizedBox(height: 20),
               ],
             ),
-          )).toList(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  setState(() => bootstrapControllers.add({
-                    'controller': TextEditingController(),
-                    'error': null
-                  }));
-                  checkValidValues();
-                }, 
-                icon: const Icon(Icons.add), 
-                label: Text(AppLocalizations.of(context)!.addItem)
+            ...bootstrapControllers.map((c) => Padding(
+              padding: const EdgeInsets.only(
+                left: 16, right: 6, bottom: 20
               ),
-            ],
-          ),
-          const SizedBox(height: 20)
-        ],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: c['controller'],
+                      onChanged: (value) => validateIp(c, value),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.dns_rounded),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10)
+                          )
+                        ),
+                        errorText: c['error'],
+                        labelText: AppLocalizations.of(context)!.dnsServer,
+                      )
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    onPressed: () {
+                      setState(() => bootstrapControllers = bootstrapControllers.where((con) => con != c).toList());
+                      checkValidValues();
+                    }, 
+                    icon: const Icon(Icons.remove_circle_outline)
+                  )
+                ],
+              ),
+            )).toList(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() => bootstrapControllers.add({
+                      'controller': TextEditingController(),
+                      'error': null
+                    }));
+                    checkValidValues();
+                  }, 
+                  icon: const Icon(Icons.add), 
+                  label: Text(AppLocalizations.of(context)!.addItem)
+                ),
+              ],
+            ),
+            const SizedBox(height: 20)
+          ],
+        ),
       ),
     );
   }

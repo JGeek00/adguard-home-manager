@@ -5,12 +5,14 @@ class OverlayStyle extends StatelessWidget {
   final Widget child;
 
   const OverlayStyle({
-    Key? key,
+    super.key,
     required this.child
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    final systemGestureInsets = MediaQuery.of(context).systemGestureInsets;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -20,7 +22,13 @@ class OverlayStyle extends StatelessWidget {
         statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.dark
           : Brightness.light,
-        systemNavigationBarColor: Theme.of(context).colorScheme.background,
+        systemNavigationBarColor: systemGestureInsets.left > 0  // If true gestures navigation
+          ? Colors.transparent
+          : ElevationOverlay.applySurfaceTint(
+              Theme.of(context).colorScheme.surface, 
+              Theme.of(context).colorScheme.surfaceTint, 
+              3
+            ),
         systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.dark
           : Brightness.light,

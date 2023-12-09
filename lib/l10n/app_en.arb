@@ -688,5 +688,7 @@
     "yourVersion": "Your version: {version}",
     "minimumRequiredVersion": "Minimum required version: {version}",
     "topUpstreams": "Top upstreams",
-    "averageUpstreamResponseTime": "Average upstream response time"
+    "averageUpstreamResponseTime": "Average upstream response time",
+    "dhcpNotAvailable": "The DHCP server is not available.",
+    "osServerInstalledIncompatible": "The OS where the server is installed is not compatible with this feature."
 }

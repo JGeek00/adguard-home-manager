@@ -169,81 +169,83 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
           const SizedBox(width: 10)
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 10),
-        children: [
-          numericField(
-            controller: cacheSizeController, 
-            label: AppLocalizations.of(context)!.cacheSize, 
-            helper: AppLocalizations.of(context)!.inBytes, 
-            error: cacheSizeError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => cacheSizeError = null);
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 10),
+          children: [
+            numericField(
+              controller: cacheSizeController, 
+              label: AppLocalizations.of(context)!.cacheSize, 
+              helper: AppLocalizations.of(context)!.inBytes, 
+              error: cacheSizeError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => cacheSizeError = null);
+                }
+                else {
+                  setState(() => cacheSizeError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
               }
-              else {
-                setState(() => cacheSizeError = AppLocalizations.of(context)!.valueNotNumber);
+            ),
+            const SizedBox(height: 30),
+            numericField(
+              controller: overrideMinTtlController, 
+              label: AppLocalizations.of(context)!.overrideMinimumTtl, 
+              helper: AppLocalizations.of(context)!.overrideMinimumTtlDescription, 
+              error: overrideMinTtlError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => overrideMinTtlError = null);
+                }
+                else {
+                  setState(() => overrideMinTtlError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
               }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 30),
-          numericField(
-            controller: overrideMinTtlController, 
-            label: AppLocalizations.of(context)!.overrideMinimumTtl, 
-            helper: AppLocalizations.of(context)!.overrideMinimumTtlDescription, 
-            error: overrideMinTtlError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => overrideMinTtlError = null);
+            ),
+            const SizedBox(height: 30),
+            numericField(
+              controller: overrideMaxTtlController, 
+              label: AppLocalizations.of(context)!.overrideMaximumTtl, 
+              helper: AppLocalizations.of(context)!.overrideMaximumTtlDescription, 
+              error: overrideMaxTtlError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => overrideMaxTtlError = null);
+                }
+                else {
+                  setState(() => overrideMaxTtlError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
               }
-              else {
-                setState(() => overrideMinTtlError = AppLocalizations.of(context)!.valueNotNumber);
-              }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 30),
-          numericField(
-            controller: overrideMaxTtlController, 
-            label: AppLocalizations.of(context)!.overrideMaximumTtl, 
-            helper: AppLocalizations.of(context)!.overrideMaximumTtlDescription, 
-            error: overrideMaxTtlError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => overrideMaxTtlError = null);
-              }
-              else {
-                setState(() => overrideMaxTtlError = AppLocalizations.of(context)!.valueNotNumber);
-              }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 10),
-          CustomSwitchListTile(
-            value: optimisticCache, 
-            onChanged: (value) => setState(() => optimisticCache = value), 
-            title: AppLocalizations.of(context)!.optimisticCaching,
-            subtitle: AppLocalizations.of(context)!.optimisticCachingDescription,
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () => showDialog(
-                  context: context, 
-                  builder: (context) => ClearDnsCacheDialog(
-                    onConfirm: clearCache
-                  )
-                ), 
-                icon: const Icon(Icons.delete_rounded),
-                label: Text(AppLocalizations.of(context)!.clearDnsCache),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16)
-        ],
+            ),
+            const SizedBox(height: 10),
+            CustomSwitchListTile(
+              value: optimisticCache, 
+              onChanged: (value) => setState(() => optimisticCache = value), 
+              title: AppLocalizations.of(context)!.optimisticCaching,
+              subtitle: AppLocalizations.of(context)!.optimisticCachingDescription,
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => showDialog(
+                    context: context, 
+                    builder: (context) => ClearDnsCacheDialog(
+                      onConfirm: clearCache
+                    )
+                  ), 
+                  icon: const Icon(Icons.delete_rounded),
+                  label: Text(AppLocalizations.of(context)!.clearDnsCache),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16)
+          ],
+        ),
       ),
     );
   }

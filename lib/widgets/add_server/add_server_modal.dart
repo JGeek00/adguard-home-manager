@@ -550,8 +550,10 @@ class _AddServerModalState extends State<AddServerModal> {
               const SizedBox(width: 8)
             ],
           ),
-          body: ListView(
-            children: form()
+          body: SafeArea(
+            child: ListView(
+              children: form()
+            ),
           ),
         ),
       );

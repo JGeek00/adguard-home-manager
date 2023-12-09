@@ -149,125 +149,127 @@ class _LogsListClientState extends State<LogsListClient> {
           ]
         ],
       ),
-      body: Builder(
-        builder: (context) {
-          switch (loadStatus) {
-            case 0:
-              return SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.loadingLogs,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    )
-                  ],
-                ),
-              );
-
-            case 1:
-              if (logsData!.data.isNotEmpty) {
-                return RefreshIndicator(
-                  onRefresh: fetchLogs,
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.only(top: 0),
-                    itemCount: isLoadingMore == true 
-                      ? logsData!.data.length+1
-                      : logsData!.data.length,
-                    itemBuilder: (context, index) {
-                      if (isLoadingMore == true && index == logsData!.data.length) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                      else {
-                        return LogTile(
-                          log: logsData!.data[index],
-                          index: index,
-                          length: logsData!.data.length,
-                          useAlwaysNormalTile: true,
-                          onLogTap: (log) => {
-                            if (width > 700) {
-                              showDialog(
-                                context: context, 
-                                builder: (context) => LogDetailsScreen(
-                                  log: log, 
-                                  dialog: true
-                                )
-                              )
-                            }
-                            else {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            switch (loadStatus) {
+              case 0:
+                return SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.loadingLogs,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+        
+              case 1:
+                if (logsData!.data.isNotEmpty) {
+                  return RefreshIndicator(
+                    onRefresh: fetchLogs,
+                    child: ListView.builder(
+                      controller: scrollController,
+                      padding: const EdgeInsets.only(top: 0),
+                      itemCount: isLoadingMore == true 
+                        ? logsData!.data.length+1
+                        : logsData!.data.length,
+                      itemBuilder: (context, index) {
+                        if (isLoadingMore == true && index == logsData!.data.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        else {
+                          return LogTile(
+                            log: logsData!.data[index],
+                            index: index,
+                            length: logsData!.data.length,
+                            useAlwaysNormalTile: true,
+                            onLogTap: (log) => {
+                              if (width > 700) {
+                                showDialog(
+                                  context: context, 
                                   builder: (context) => LogDetailsScreen(
                                     log: log, 
-                                    dialog: false
+                                    dialog: true
                                   )
                                 )
-                              )
-                            }
-                          },
-                          twoColumns: widget.splitView,
-                        );
+                              }
+                              else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => LogDetailsScreen(
+                                      log: log, 
+                                      dialog: false
+                                    )
+                                  )
+                                )
+                              }
+                            },
+                            twoColumns: widget.splitView,
+                          );
+                        }
                       }
-                    }
-                  ),
-                );
-              }
-              else {
-                return Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noLogsDisplay,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                  ),
-                );
-              }
-            
-            case 2:
-              return SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                      size: 50,
-                    ),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.logsNotLoaded,
+                  );
+                }
+                else {
+                  return Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.noLogsDisplay,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 22,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
-                    )
-                  ],
-                ),
-              );
-
-            default:
-              return const SizedBox();
-          }
-        },
+                    ),
+                  );
+                }
+              
+              case 2:
+                return SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.logsNotLoaded,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+        
+              default:
+                return const SizedBox();
+            }
+          },
+        ),
       )
     );
   }

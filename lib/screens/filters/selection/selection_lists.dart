@@ -72,19 +72,18 @@ class SelectionSliverList extends StatelessWidget {
   final void Function() unselectAll;
 
   const SelectionSliverList({
-    Key? key,
+    super.key,
     required this.lists,
     required this.selectedLists,
     required this.onSelect,
     required this.selectAll,
     required this.unselectAll,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      bottom: false,
       child: Builder(
         builder: (BuildContext context) {
           return CustomScrollView(

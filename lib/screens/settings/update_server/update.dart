@@ -17,7 +17,7 @@ import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
 class UpdateScreen extends StatelessWidget {
-  const UpdateScreen({Key? key}) : super(key: key);
+  const UpdateScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -166,33 +166,38 @@ class UpdateScreen extends StatelessWidget {
       );
     }
 
-    final changelog = serversProvider.updateAvailable.loadStatus == LoadStatus.loaded && serversProvider.updateAvailable.data!.changelog != null
-      ? ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Changelog ${serversProvider.updateAvailable.data!.canAutoupdate == true 
-                ? serversProvider.updateAvailable.data!.newVersion
-                : serversProvider.updateAvailable.data!.currentVersion}",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurfaceVariant
+    final SafeArea? changelog;
+    if (serversProvider.updateAvailable.loadStatus == LoadStatus.loaded && serversProvider.updateAvailable.data!.changelog != null) {
+      changelog = SafeArea(
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                "Changelog ${serversProvider.updateAvailable.data!.canAutoupdate == true 
+                  ? serversProvider.updateAvailable.data!.newVersion
+                  : serversProvider.updateAvailable.data!.currentVersion}",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Html(
-              data: html.parse(md.markdownToHtml(serversProvider.updateAvailable.data!.changelog!)).outerHtml,
-              onLinkTap: (url, context, attributes) => url != null ? openUrl(url) : null,
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Html(
+                data: html.parse(md.markdownToHtml(serversProvider.updateAvailable.data!.changelog!)).outerHtml,
+                onLinkTap: (url, context, attributes) => url != null ? openUrl(url) : null,
+              )
             )
-          )
-        ],
-      )
-      : null;
+          ],
+        ),
+      );
+    } else {
+      changelog = null;
+    }
 
     return Scaffold(
       body: Column(

@@ -19,7 +19,7 @@ class CustomTabContentList extends StatelessWidget {
   final EdgeInsets? listPadding;
 
   const CustomTabContentList({
-    Key? key,
+    super.key,
     required this.loadingGenerator,
     required this.itemsCount,
     required this.contentWidget,
@@ -32,7 +32,7 @@ class CustomTabContentList extends StatelessWidget {
     this.fabVisible, 
     this.noSliver,
     this.listPadding
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,6 @@ class CustomTabContentList extends StatelessWidget {
         else {
           return SafeArea(
             top: false,
-            bottom: false,
             child: Builder(
               builder: (BuildContext context) => CustomScrollView(
                 slivers: [
@@ -72,41 +71,45 @@ class CustomTabContentList extends StatelessWidget {
       case LoadStatus.loaded:
         if (noSliver == true) {
           if (itemsCount > 0) {
-            return Stack(
-              children: [
-                ListView.builder(
-                  padding: listPadding,
-                  itemCount: itemsCount,
-                  itemBuilder: (context, index) => contentWidget(index),
-                ),
-                if (fab != null) AnimatedPositioned(
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeInOut,
-                  bottom: fabVisible != null && fabVisible == true ?
-                    appConfigProvider.showingSnackbar
-                      ? 70 : 20
-                    : -70,
-                  right: 20,
-                  child: fab!
-                ),
-              ],
+            return SafeArea(
+              child: Stack(
+                children: [
+                  ListView.builder(
+                    padding: listPadding,
+                    itemCount: itemsCount,
+                    itemBuilder: (context, index) => contentWidget(index),
+                  ),
+                  if (fab != null) AnimatedPositioned(
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeInOut,
+                    bottom: fabVisible != null && fabVisible == true ?
+                      appConfigProvider.showingSnackbar
+                        ? 70 : 20
+                      : -70,
+                    right: 20,
+                    child: fab!
+                  ),
+                ],
+              ),
             );
           }
           else {
-            return Stack(
-              children: [
-                noData,
-                if (fab != null) AnimatedPositioned(
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeInOut,
-                  bottom: fabVisible != null && fabVisible == true ?
-                    appConfigProvider.showingSnackbar
-                      ? 70 : 20
-                    : -70,
-                  right: 20,
-                  child: fab!
-                ),
-              ],
+            return SafeArea(
+              child: Stack(
+                children: [
+                  noData,
+                  if (fab != null) AnimatedPositioned(
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeInOut,
+                    bottom: fabVisible != null && fabVisible == true ?
+                      appConfigProvider.showingSnackbar
+                        ? 70 : 20
+                      : -70,
+                    right: 20,
+                    child: fab!
+                  ),
+                ],
+              ),
             );
           }
         }
@@ -146,10 +149,10 @@ class CustomTabContentList extends StatelessWidget {
                 curve: Curves.easeInOut,
                 bottom: fabVisible != null && fabVisible == true ?
                   appConfigProvider.showingSnackbar
-                    ? 70 : 20
-                  : -70,
+                    ? 90 : 20
+                  : -90,
                 right: 20,
-                child: fab!
+                child: SafeArea(child: fab!)
               ),
             ],
           );
@@ -169,7 +172,6 @@ class CustomTabContentList extends StatelessWidget {
         else {
           return SafeArea(
             top: false,
-            bottom: false,
             child: Builder(
               builder: (BuildContext context) => CustomScrollView(
                 slivers: [
