@@ -167,141 +167,143 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
           const SizedBox(width: 10)
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 10),
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TextFormField(
-              controller: limitRequestsController,
-              onChanged: (value) {
-                if (int.tryParse(value) != null) {
-                  setState(() => limitRequestsError = null);
-                }
-                else {
-                  setState(() => limitRequestsError = AppLocalizations.of(context)!.valueNotNumber);
-                }
-                validateData();
-              },
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.looks_one_rounded),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10)
-                  )
-                ),
-                labelText: AppLocalizations.of(context)!.limitRequestsSecond,
-                errorText: limitRequestsError
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ),
-          const SizedBox(height: 10),
-          CustomSwitchListTile(
-            value: enableEdns, 
-            onChanged: (value) => setState(() => enableEdns = value), 
-            title: AppLocalizations.of(context)!.enableEdns,
-            subtitle: AppLocalizations.of(context)!.enableEdnsDescription,
-          ),
-          CustomSwitchListTile(
-            value: enableDnssec, 
-            onChanged: (value) => setState(() => enableDnssec = value), 
-            title: AppLocalizations.of(context)!.enableDnssec,
-            subtitle: AppLocalizations.of(context)!.enableDnssecDescription,
-          ),
-          CustomSwitchListTile(
-            value: disableIpv6Resolving, 
-            onChanged: (value) => setState(() => disableIpv6Resolving = value), 
-            title: AppLocalizations.of(context)!.disableResolvingIpv6,
-            subtitle: AppLocalizations.of(context)!.disableResolvingIpv6Description,
-          ),
-          SectionLabel(label: AppLocalizations.of(context)!.blockingMode),
-          CustomRadioListTile(
-            groupValue: blockingMode, 
-            value: "default", 
-            radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
-            title: AppLocalizations.of(context)!.defaultMode,
-            subtitle: AppLocalizations.of(context)!.defaultDescription,
-            onChanged: updateBlockingMode,
-          ),
-          CustomRadioListTile(
-            groupValue: blockingMode, 
-            value: "refused", 
-            radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
-            title: "REFUSED",
-            subtitle: AppLocalizations.of(context)!.refusedDescription,
-            onChanged: updateBlockingMode,
-          ),
-          CustomRadioListTile(
-            groupValue: blockingMode, 
-            value: "nxdomain", 
-            radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
-            title: "NXDOMAIN",
-            subtitle: AppLocalizations.of(context)!.nxdomainDescription,
-            onChanged: updateBlockingMode,
-          ),
-          CustomRadioListTile(
-            groupValue: blockingMode, 
-            value: "null_ip", 
-            radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
-            title: AppLocalizations.of(context)!.nullIp,
-            subtitle: AppLocalizations.of(context)!.nullIpDescription,
-            onChanged: updateBlockingMode,
-          ),
-          CustomRadioListTile(
-            groupValue: blockingMode, 
-            value: "custom_ip", 
-            radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
-            title: AppLocalizations.of(context)!.customIp,
-            subtitle: AppLocalizations.of(context)!.customIpDescription,
-            onChanged: updateBlockingMode,
-          ),
-          const SizedBox(height: 10),
-          if (blockingMode == 'custom_ip') ...[
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 10),
+          children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
-                controller: ipv4controller,
-                onChanged: validateIpv4,
+                controller: limitRequestsController,
+                onChanged: (value) {
+                  if (int.tryParse(value) != null) {
+                    setState(() => limitRequestsError = null);
+                  }
+                  else {
+                    setState(() => limitRequestsError = AppLocalizations.of(context)!.valueNotNumber);
+                  }
+                  validateData();
+                },
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.link_rounded),
+                  prefixIcon: const Icon(Icons.looks_one_rounded),
                   border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(10)
                     )
                   ),
-                  errorText: ipv4error,
-                  helperText: AppLocalizations.of(context)!.blockingIpv4Description,
-                  helperMaxLines: 10,
-                  labelText: AppLocalizations.of(context)!.blockingIpv4,
+                  labelText: AppLocalizations.of(context)!.limitRequestsSecond,
+                  errorText: limitRequestsError
                 ),
                 keyboardType: TextInputType.number,
               ),
             ),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: TextFormField(
-                controller: ipv6controller,
-                onChanged: validateIpv6,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.link_rounded),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10)
-                    )
+            const SizedBox(height: 10),
+            CustomSwitchListTile(
+              value: enableEdns, 
+              onChanged: (value) => setState(() => enableEdns = value), 
+              title: AppLocalizations.of(context)!.enableEdns,
+              subtitle: AppLocalizations.of(context)!.enableEdnsDescription,
+            ),
+            CustomSwitchListTile(
+              value: enableDnssec, 
+              onChanged: (value) => setState(() => enableDnssec = value), 
+              title: AppLocalizations.of(context)!.enableDnssec,
+              subtitle: AppLocalizations.of(context)!.enableDnssecDescription,
+            ),
+            CustomSwitchListTile(
+              value: disableIpv6Resolving, 
+              onChanged: (value) => setState(() => disableIpv6Resolving = value), 
+              title: AppLocalizations.of(context)!.disableResolvingIpv6,
+              subtitle: AppLocalizations.of(context)!.disableResolvingIpv6Description,
+            ),
+            SectionLabel(label: AppLocalizations.of(context)!.blockingMode),
+            CustomRadioListTile(
+              groupValue: blockingMode, 
+              value: "default", 
+              radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
+              title: AppLocalizations.of(context)!.defaultMode,
+              subtitle: AppLocalizations.of(context)!.defaultDescription,
+              onChanged: updateBlockingMode,
+            ),
+            CustomRadioListTile(
+              groupValue: blockingMode, 
+              value: "refused", 
+              radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
+              title: "REFUSED",
+              subtitle: AppLocalizations.of(context)!.refusedDescription,
+              onChanged: updateBlockingMode,
+            ),
+            CustomRadioListTile(
+              groupValue: blockingMode, 
+              value: "nxdomain", 
+              radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
+              title: "NXDOMAIN",
+              subtitle: AppLocalizations.of(context)!.nxdomainDescription,
+              onChanged: updateBlockingMode,
+            ),
+            CustomRadioListTile(
+              groupValue: blockingMode, 
+              value: "null_ip", 
+              radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
+              title: AppLocalizations.of(context)!.nullIp,
+              subtitle: AppLocalizations.of(context)!.nullIpDescription,
+              onChanged: updateBlockingMode,
+            ),
+            CustomRadioListTile(
+              groupValue: blockingMode, 
+              value: "custom_ip", 
+              radioBackgroundColor: Theme.of(context).dialogBackgroundColor, 
+              title: AppLocalizations.of(context)!.customIp,
+              subtitle: AppLocalizations.of(context)!.customIpDescription,
+              onChanged: updateBlockingMode,
+            ),
+            const SizedBox(height: 10),
+            if (blockingMode == 'custom_ip') ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: TextFormField(
+                  controller: ipv4controller,
+                  onChanged: validateIpv4,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.link_rounded),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10)
+                      )
+                    ),
+                    errorText: ipv4error,
+                    helperText: AppLocalizations.of(context)!.blockingIpv4Description,
+                    helperMaxLines: 10,
+                    labelText: AppLocalizations.of(context)!.blockingIpv4,
                   ),
-                  errorText: ipv6error,
-                  helperText: AppLocalizations.of(context)!.blockingIpv6Description,
-                  helperMaxLines: 10,
-                  labelText: AppLocalizations.of(context)!.blockingIpv6,
+                  keyboardType: TextInputType.number,
                 ),
-                keyboardType: TextInputType.number,
               ),
-            ),
-            const SizedBox(height: 30)
-          ]
-        ],
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: TextFormField(
+                  controller: ipv6controller,
+                  onChanged: validateIpv6,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.link_rounded),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10)
+                      )
+                    ),
+                    errorText: ipv6error,
+                    helperText: AppLocalizations.of(context)!.blockingIpv6Description,
+                    helperMaxLines: 10,
+                    labelText: AppLocalizations.of(context)!.blockingIpv6,
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              const SizedBox(height: 30)
+            ]
+          ],
+        ),
       ),
     );
   }

@@ -46,10 +46,12 @@ class DnsRewriteModal extends StatelessWidget {
             ),
             color: Theme.of(context).dialogBackgroundColor,
           ),
-          child: _Content(
-            onConfirm: onConfirm,
-            onDelete: onDelete,
-            rule: rule,
+          child: SafeArea(
+            child: _Content(
+              onConfirm: onConfirm,
+              onDelete: onDelete,
+              rule: rule,
+            ),
           )
         ),
       );

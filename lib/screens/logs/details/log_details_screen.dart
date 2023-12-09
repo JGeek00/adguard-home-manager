@@ -25,10 +25,10 @@ class LogDetailsScreen extends StatelessWidget {
   final bool dialog;
 
   const LogDetailsScreen({
-    Key? key,
+    super.key,
     required this.log,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -322,7 +322,6 @@ class LogDetailsScreen extends StatelessWidget {
           ],
           body: SafeArea(
             top: false,
-            bottom: false,
             child: Builder(
               builder: (context) => CustomScrollView(
                 slivers: [

@@ -136,239 +136,241 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
         surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         centerTitle: false,
       ),
-      body: Stack(
-        children: [
-          Builder(
-            builder: (context) {
-              switch (rewriteRulesProvider.loadStatus) {
-                case LoadStatus.loading:
-                  return SizedBox(
-                    width: double.maxFinite,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 30),
-                        Text(
-                          AppLocalizations.of(context)!.loadingRewriteRules,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                
-                case LoadStatus.loaded:
-                  if (rewriteRulesProvider.rewriteRules!.isNotEmpty) {
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        final result = await rewriteRulesProvider.fetchRules();
-                        if (result == false) {
-                          showSnacbkar(
-                            appConfigProvider: appConfigProvider,
-                            label: AppLocalizations.of(context)!.rewriteRulesNotLoaded, 
-                            color: Colors.red
-                          );
-                        }
-                      },
-                      child: ListView.builder(
-                        controller: scrollController,
-                        padding: const EdgeInsets.only(top: 0),
-                        itemCount: rewriteRulesProvider.rewriteRules!.length,
-                        itemBuilder: (context, index) => Card(
-                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: InkWell(
-                            onTap: () => {
-                              if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
-                                showDialog(
-                                  context: context, 
-                                  builder: (context) => DnsRewriteModal(
-                                    onConfirm: updateRewriteRule,
-                                    dialog: true,
-                                    rule: rewriteRulesProvider.rewriteRules![index],
-                                    onDelete: (rule) => showDialog(
-                                      context: context, 
-                                      builder: (context) => DeleteDnsRewrite(
-                                        onConfirm: () => deleteDnsRewrite(rule)
-                                      )
-                                    ),
-                                  ),
-                                )
-                              }
-                              else {
-                                showModalBottomSheet(
-                                  context: context, 
-                                  useRootNavigator: true,
-                                  builder: (context) => DnsRewriteModal(
-                                    onConfirm: updateRewriteRule,
-                                    dialog: false,
-                                    rule: rewriteRulesProvider.rewriteRules![index],
-                                    onDelete: (rule) => showDialog(
-                                      context: context, 
-                                      builder: (context) => DeleteDnsRewrite(
-                                        onConfirm: () => deleteDnsRewrite(rule)
-                                      )
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.transparent,
-                                  isScrollControlled: true,
-                                )
-                              }
-                            },
-                            borderRadius: BorderRadius.circular(10),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 16, top: 16, bottom: 16, right: 8
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "${AppLocalizations.of(context)!.domain}: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              color: Theme.of(context).colorScheme.onSurface
-                                            ),
-                                          ),
-                                          Text(
-                                            rewriteRulesProvider.rewriteRules![index].domain,
-                                            style: TextStyle(
-                                              color: Theme.of(context).colorScheme.onSurface
-                                            ),
-                                          ),
-                                        ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Builder(
+              builder: (context) {
+                switch (rewriteRulesProvider.loadStatus) {
+                  case LoadStatus.loading:
+                    return SizedBox(
+                      width: double.maxFinite,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 30),
+                          Text(
+                            AppLocalizations.of(context)!.loadingRewriteRules,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  
+                  case LoadStatus.loaded:
+                    if (rewriteRulesProvider.rewriteRules!.isNotEmpty) {
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          final result = await rewriteRulesProvider.fetchRules();
+                          if (result == false) {
+                            showSnacbkar(
+                              appConfigProvider: appConfigProvider,
+                              label: AppLocalizations.of(context)!.rewriteRulesNotLoaded, 
+                              color: Colors.red
+                            );
+                          }
+                        },
+                        child: ListView.builder(
+                          controller: scrollController,
+                          padding: const EdgeInsets.only(top: 0),
+                          itemCount: rewriteRulesProvider.rewriteRules!.length,
+                          itemBuilder: (context, index) => Card(
+                            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: InkWell(
+                              onTap: () => {
+                                if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                                  showDialog(
+                                    context: context, 
+                                    builder: (context) => DnsRewriteModal(
+                                      onConfirm: updateRewriteRule,
+                                      dialog: true,
+                                      rule: rewriteRulesProvider.rewriteRules![index],
+                                      onDelete: (rule) => showDialog(
+                                        context: context, 
+                                        builder: (context) => DeleteDnsRewrite(
+                                          onConfirm: () => deleteDnsRewrite(rule)
+                                        )
                                       ),
-                                      const SizedBox(height: 3),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "${AppLocalizations.of(context)!.answer}: ",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              color: Theme.of(context).colorScheme.onSurface
-                                            ),
-                                          ),
-                                          Text(
-                                            rewriteRulesProvider.rewriteRules![index].answer,
-                                            style: TextStyle(
-                                              color: Theme.of(context).colorScheme.onSurface
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Icon(
-                                    Icons.keyboard_arrow_right_rounded,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
                                   )
-                                ],
+                                }
+                                else {
+                                  showModalBottomSheet(
+                                    context: context, 
+                                    useRootNavigator: true,
+                                    builder: (context) => DnsRewriteModal(
+                                      onConfirm: updateRewriteRule,
+                                      dialog: false,
+                                      rule: rewriteRulesProvider.rewriteRules![index],
+                                      onDelete: (rule) => showDialog(
+                                        context: context, 
+                                        builder: (context) => DeleteDnsRewrite(
+                                          onConfirm: () => deleteDnsRewrite(rule)
+                                        )
+                                      ),
+                                    ),
+                                    backgroundColor: Colors.transparent,
+                                    isScrollControlled: true,
+                                  )
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(10),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 16, top: 16, bottom: 16, right: 8
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "${AppLocalizations.of(context)!.domain}: ",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Theme.of(context).colorScheme.onSurface
+                                              ),
+                                            ),
+                                            Text(
+                                              rewriteRulesProvider.rewriteRules![index].domain,
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onSurface
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 3),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "${AppLocalizations.of(context)!.answer}: ",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Theme.of(context).colorScheme.onSurface
+                                              ),
+                                            ),
+                                            Text(
+                                              rewriteRulesProvider.rewriteRules![index].answer,
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onSurface
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Icon(
+                                      Icons.keyboard_arrow_right_rounded,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      ),
-                    );
-                  }
-                  else {
-                    return Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.noRewriteRules,
-                        style: TextStyle(
-                          fontSize: 22,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          )
                         ),
-                      ),
-                    );
-                  }
-
-                case LoadStatus.error:
-                  return SizedBox(
-                    width: double.maxFinite,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error,
-                          color: Colors.red,
-                          size: 50,
-                        ),
-                        const SizedBox(height: 30),
-                        Text(
-                          AppLocalizations.of(context)!.rewriteRulesNotLoaded,
-                          textAlign: TextAlign.center,
+                      );
+                    }
+                    else {
+                      return Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.noRewriteRules,
                           style: TextStyle(
                             fontSize: 22,
                             color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
-                        )
-                      ],
-                    ),
-                  );
-
-                default:
-                  return const SizedBox();
-              }
-            },
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeInOut,
-            bottom: isVisible ?
-              appConfigProvider.showingSnackbar
-                ? 70 : 20
-                : -70,
-              right: 20,
-              child: FloatingActionButton(
-                onPressed: () => {
-                  if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
-                    showDialog(
-                      context: context, 
-                      builder: (context) => DnsRewriteModal(
-                        onConfirm: addDnsRewrite,
-                        dialog: true,
-                        onDelete: (rule) => showDialog(
-                          context: context, 
-                          builder: (context) => DeleteDnsRewrite(
-                            onConfirm: () => deleteDnsRewrite(rule)
-                          )
                         ),
-                      ),
-                    )
-                  }
-                  else {
-                    showModalBottomSheet(
-                      context: context, 
-                      useRootNavigator: true,
-                      builder: (context) => DnsRewriteModal(
-                        onConfirm: addDnsRewrite,
-                        dialog: false,
-                        onDelete: (rule) => showDialog(
-                          context: context, 
-                          builder: (context) => DeleteDnsRewrite(
-                            onConfirm: () => deleteDnsRewrite(rule)
+                      );
+                    }
+        
+                  case LoadStatus.error:
+                    return SizedBox(
+                      width: double.maxFinite,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                            size: 50,
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            AppLocalizations.of(context)!.rewriteRulesNotLoaded,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
                           )
-                        ),
+                        ],
                       ),
-                      backgroundColor: Colors.transparent,
-                      isScrollControlled: true
-                    )
-                  }
-                },
-                child: const Icon(Icons.add),
-              ),
-          )
-        ],
+                    );
+        
+                  default:
+                    return const SizedBox();
+                }
+              },
+            ),
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              bottom: isVisible ?
+                appConfigProvider.showingSnackbar
+                  ? 70 : 20
+                  : -70,
+                right: 20,
+                child: FloatingActionButton(
+                  onPressed: () => {
+                    if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+                      showDialog(
+                        context: context, 
+                        builder: (context) => DnsRewriteModal(
+                          onConfirm: addDnsRewrite,
+                          dialog: true,
+                          onDelete: (rule) => showDialog(
+                            context: context, 
+                            builder: (context) => DeleteDnsRewrite(
+                              onConfirm: () => deleteDnsRewrite(rule)
+                            )
+                          ),
+                        ),
+                      )
+                    }
+                    else {
+                      showModalBottomSheet(
+                        context: context, 
+                        useRootNavigator: true,
+                        builder: (context) => DnsRewriteModal(
+                          onConfirm: addDnsRewrite,
+                          dialog: false,
+                          onDelete: (rule) => showDialog(
+                            context: context, 
+                            builder: (context) => DeleteDnsRewrite(
+                              onConfirm: () => deleteDnsRewrite(rule)
+                            )
+                          ),
+                        ),
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true
+                      )
+                    }
+                  },
+                  child: const Icon(Icons.add),
+                ),
+            )
+          ],
+        ),
       ),
     );
   }

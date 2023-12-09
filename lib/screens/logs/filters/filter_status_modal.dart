@@ -62,10 +62,12 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
           ),
           color: Theme.of(context).dialogBackgroundColor
         ),
-        child: _Content(
-          onApply: apply,
-          updateSelectedResultStatus: (v) => setState(() => selectedResultStatus = v),
-          selectedResultStatus: selectedResultStatus,
+        child: SafeArea(
+          child: _Content(
+            onApply: apply,
+            updateSelectedResultStatus: (v) => setState(() => selectedResultStatus = v),
+            selectedResultStatus: selectedResultStatus,
+          ),
         )
       );
     }

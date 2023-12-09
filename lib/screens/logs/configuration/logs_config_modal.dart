@@ -148,36 +148,38 @@ class _LogsConfigModalState extends State<LogsConfigModal> {
           ),
           color: Theme.of(context).dialogBackgroundColor
         ),
-        child: Builder(
-          builder: (context) {
-            switch (loadStatus) {
-              case LoadStatus.loading:
-                return const ConfigLogsLoading();
-
-              case LoadStatus.loaded:
-                return LogsConfigOptions(
-                  generalSwitch: generalSwitch, 
-                  updateGeneralSwitch: (v) => setState(() => generalSwitch = v), 
-                  anonymizeClientIp: anonymizeClientIp, 
-                  updateAnonymizeClientIp: (v) => setState(() => anonymizeClientIp = v), 
-                  retentionItems: retentionItems, 
-                  retentionTime: retentionTime, 
-                  updateRetentionTime: (v) => setState(() => retentionTime = v), 
-                  onClear: () => widget.onClear(), 
-                  onConfirm: () => widget.onConfirm({
-                    "enabled": generalSwitch,
-                    "interval": retentionTime,
-                    "anonymize_client_ip": anonymizeClientIp
-                  })
-                );
-
-              case LoadStatus.error:
-                return const ConfigLogsError();
-
-              default:
-                return const SizedBox();
-            }
-          },
+        child: SafeArea(
+          child: Builder(
+            builder: (context) {
+              switch (loadStatus) {
+                case LoadStatus.loading:
+                  return const ConfigLogsLoading();
+          
+                case LoadStatus.loaded:
+                  return LogsConfigOptions(
+                    generalSwitch: generalSwitch, 
+                    updateGeneralSwitch: (v) => setState(() => generalSwitch = v), 
+                    anonymizeClientIp: anonymizeClientIp, 
+                    updateAnonymizeClientIp: (v) => setState(() => anonymizeClientIp = v), 
+                    retentionItems: retentionItems, 
+                    retentionTime: retentionTime, 
+                    updateRetentionTime: (v) => setState(() => retentionTime = v), 
+                    onClear: () => widget.onClear(), 
+                    onConfirm: () => widget.onConfirm({
+                      "enabled": generalSwitch,
+                      "interval": retentionTime,
+                      "anonymize_client_ip": anonymizeClientIp
+                    })
+                  );
+          
+                case LoadStatus.error:
+                  return const ConfigLogsError();
+          
+                default:
+                  return const SizedBox();
+              }
+            },
+          ),
         )
       );
     }

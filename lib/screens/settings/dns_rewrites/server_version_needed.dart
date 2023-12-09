@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ServerVersionNeeded extends StatelessWidget {
   final String version;
 
+  // ignore: use_super_parameters
   const ServerVersionNeeded({
     Key? key,
     required this.version

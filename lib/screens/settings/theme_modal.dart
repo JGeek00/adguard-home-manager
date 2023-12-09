@@ -14,10 +14,10 @@ class ThemeModal extends StatefulWidget {
   final int selectedTheme;
 
   const ThemeModal({
-    Key? key,
+    super.key,
     required this.statusBarHeight,
     required this.selectedTheme,
-  }) : super(key: key);
+  });
 
   @override
   State<ThemeModal> createState() => _ThemeModalState();

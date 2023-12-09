@@ -60,9 +60,11 @@ class _ClientsModalState extends State<ClientsModal> {
             ),
             color: Theme.of(context).dialogBackgroundColor
           ),
-          child: _ModalContent(
-            selectedClients: selectedClients,
-            onClientsSelected: (v) => setState(() => selectedClients = v),
+          child: SafeArea(
+            child: _ModalContent(
+              selectedClients: selectedClients,
+              onClientsSelected: (v) => setState(() => selectedClients = v),
+            ),
           )
         ),
       );

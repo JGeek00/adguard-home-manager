@@ -14,7 +14,7 @@ import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class SafeSearchSettingsScreen extends StatefulWidget {    
-  const SafeSearchSettingsScreen({Key? key}) : super(key: key);
+  const SafeSearchSettingsScreen({super.key});
 
   @override
   State<SafeSearchSettingsScreen> createState() => _SafeSearchSettingsScreenState();
@@ -123,166 +123,168 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
           const SizedBox(width: 8)
         ],
       ),
-      body: Builder(
-        builder: (context) {
-          switch (statusProvider.loadStatus) {
-            case LoadStatus.loading:
-              return SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.loadingSafeSearchSettings,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    )
-                  ],
-                ),
-              );
-              
-            case LoadStatus.loaded: 
-              return RefreshIndicator(
-                onRefresh: requestSafeSearchSettings,
-                child: ListView(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 16,
-                        left: 16,
-                        right: 16,
-                        bottom: 8
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(28),
-                        child: InkWell(
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            switch (statusProvider.loadStatus) {
+              case LoadStatus.loading:
+                return SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.loadingSafeSearchSettings,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+                
+              case LoadStatus.loaded: 
+                return RefreshIndicator(
+                  onRefresh: requestSafeSearchSettings,
+                  child: ListView(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          left: 16,
+                          right: 16,
+                          bottom: 8
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
                           borderRadius: BorderRadius.circular(28),
-                          onTap: () => setState(() => generalEnabled = !generalEnabled),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12
-                            ),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(28)
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    AppLocalizations.of(context)!.enableSafeSearch,
-                                    style: const TextStyle(
-                                      fontSize: 18
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(28),
+                            onTap: () => setState(() => generalEnabled = !generalEnabled),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(28)
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.enableSafeSearch,
+                                      style: const TextStyle(
+                                        fontSize: 18
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Switch(
-                                  value: generalEnabled, 
-                                  onChanged: (value) => setState(() => generalEnabled = value)
-                                )
-                              ],
+                                  Switch(
+                                    value: generalEnabled, 
+                                    onChanged: (value) => setState(() => generalEnabled = value)
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    CustomCheckboxListTile(
-                      value: bingEnabled, 
-                      onChanged: (value) => setState(() => bingEnabled = value), 
-                      title: "Bing",
-                      padding: const EdgeInsets.only(
-                        top: 8, left: 40, right: 40, bottom: 8
+                      CustomCheckboxListTile(
+                        value: bingEnabled, 
+                        onChanged: (value) => setState(() => bingEnabled = value), 
+                        title: "Bing",
+                        padding: const EdgeInsets.only(
+                          top: 8, left: 40, right: 40, bottom: 8
+                        ),
+                        disabled: !generalEnabled,
                       ),
-                      disabled: !generalEnabled,
-                    ),
-                    CustomCheckboxListTile(
-                      value: duckduckgoEnabled, 
-                      onChanged: (value) => setState(() => duckduckgoEnabled = value), 
-                      title: "DuckDuckGo",
-                      padding: const EdgeInsets.only(
-                        top: 8, left: 40, right: 40, bottom: 8
+                      CustomCheckboxListTile(
+                        value: duckduckgoEnabled, 
+                        onChanged: (value) => setState(() => duckduckgoEnabled = value), 
+                        title: "DuckDuckGo",
+                        padding: const EdgeInsets.only(
+                          top: 8, left: 40, right: 40, bottom: 8
+                        ),
+                        disabled: !generalEnabled,
                       ),
-                      disabled: !generalEnabled,
-                    ),
-                    CustomCheckboxListTile(
-                      value: googleEnabled, 
-                      onChanged: (value) => setState(() => googleEnabled = value), 
-                      title: "Google",
-                      padding: const EdgeInsets.only(
-                        top: 8, left: 40, right: 40, bottom: 8
+                      CustomCheckboxListTile(
+                        value: googleEnabled, 
+                        onChanged: (value) => setState(() => googleEnabled = value), 
+                        title: "Google",
+                        padding: const EdgeInsets.only(
+                          top: 8, left: 40, right: 40, bottom: 8
+                        ),
+                        disabled: !generalEnabled,
                       ),
-                      disabled: !generalEnabled,
-                    ),
-                    CustomCheckboxListTile(
-                      value: pixabayEnabled, 
-                      onChanged: (value) => setState(() => pixabayEnabled = value), 
-                      title: "Pixabay",
-                      padding: const EdgeInsets.only(
-                        top: 8, left: 40, right: 40, bottom: 8
+                      CustomCheckboxListTile(
+                        value: pixabayEnabled, 
+                        onChanged: (value) => setState(() => pixabayEnabled = value), 
+                        title: "Pixabay",
+                        padding: const EdgeInsets.only(
+                          top: 8, left: 40, right: 40, bottom: 8
+                        ),
+                        disabled: !generalEnabled,
                       ),
-                      disabled: !generalEnabled,
-                    ),
-                    CustomCheckboxListTile(
-                      value: yandexEnabled, 
-                      onChanged: (value) => setState(() => yandexEnabled = value), 
-                      title: "Yandex",
-                      padding: const EdgeInsets.only(
-                        top: 8, left: 40, right: 40, bottom: 8
+                      CustomCheckboxListTile(
+                        value: yandexEnabled, 
+                        onChanged: (value) => setState(() => yandexEnabled = value), 
+                        title: "Yandex",
+                        padding: const EdgeInsets.only(
+                          top: 8, left: 40, right: 40, bottom: 8
+                        ),
+                        disabled: !generalEnabled,
                       ),
-                      disabled: !generalEnabled,
-                    ),
-                    CustomCheckboxListTile(
-                      value: youtubeEnabled, 
-                      onChanged: (value) => setState(() => youtubeEnabled = value), 
-                      title: "YouTube",
-                      padding: const EdgeInsets.only(
-                        top: 8, left: 40, right: 40, bottom: 8
+                      CustomCheckboxListTile(
+                        value: youtubeEnabled, 
+                        onChanged: (value) => setState(() => youtubeEnabled = value), 
+                        title: "YouTube",
+                        padding: const EdgeInsets.only(
+                          top: 8, left: 40, right: 40, bottom: 8
+                        ),
+                        disabled: !generalEnabled,
                       ),
-                      disabled: !generalEnabled,
-                    ),
-                  ],
-                ),
-              );
-
-            case LoadStatus.error:
-              return SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                      size: 50,
-                    ),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.safeSearchSettingsNotLoaded,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ],
+                  ),
+                );
+        
+              case LoadStatus.error:
+                return SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
                       ),
-                    )
-                  ],
-                ),
-              );
-
-
-            default:
-              return const SizedBox();
-          }
-        },
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.safeSearchSettingsNotLoaded,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+        
+        
+              default:
+                return const SizedBox();
+            }
+          },
+        ),
       )
     );
   }

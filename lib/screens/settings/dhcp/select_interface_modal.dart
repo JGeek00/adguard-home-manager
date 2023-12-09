@@ -137,16 +137,17 @@ class SelectInterfaceModal extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      controller: controller,
-                      itemCount: interfaces.length,
-                      itemBuilder: (context, index) => DhcpInterfaceItem(
-                        networkInterface: interfaces[index], 
-                        onSelect: onSelect
-                      )
+                    child: SafeArea(
+                      child: ListView.builder(
+                        controller: controller,
+                        itemCount: interfaces.length,
+                        itemBuilder: (context, index) => DhcpInterfaceItem(
+                          networkInterface: interfaces[index], 
+                          onSelect: onSelect
+                        )
+                      ),
                     )
                   ),
-                  const SizedBox(height: 16)
                 ],
               ),
             );

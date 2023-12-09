@@ -5,9 +5,9 @@ class DeleteListModal extends StatelessWidget {
   final void Function() onConfirm;
 
   const DeleteListModal({
-    Key? key,
+    super.key,
     required this.onConfirm
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

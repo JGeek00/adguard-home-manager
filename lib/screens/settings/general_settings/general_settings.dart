@@ -124,173 +124,175 @@ class _GeneralSettingsState extends State<GeneralSettings> {
         title: Text(AppLocalizations.of(context)!.generalSettings),
         surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
       ),
-      body: ListView(
-        children: [
-          SectionLabel(label: AppLocalizations.of(context)!.home),
-          CustomListTile(
-            icon: Icons.exposure_zero_rounded,
-            title: AppLocalizations.of(context)!.hideZeroValues,
-            subtitle: AppLocalizations.of(context)!.hideZeroValuesDescription,
-            trailing: Switch(
-              value: appConfigProvider.hideZeroValues, 
-              onChanged: (value) => updateSettings(
-                newStatus: value, 
+      body: SafeArea(
+        child: ListView(
+          children: [
+            SectionLabel(label: AppLocalizations.of(context)!.home),
+            CustomListTile(
+              icon: Icons.exposure_zero_rounded,
+              title: AppLocalizations.of(context)!.hideZeroValues,
+              subtitle: AppLocalizations.of(context)!.hideZeroValuesDescription,
+              trailing: Switch(
+                value: appConfigProvider.hideZeroValues, 
+                onChanged: (value) => updateSettings(
+                  newStatus: value, 
+                  function: appConfigProvider.setHideZeroValues
+                ),
+              ),
+              onTap: () => updateSettings(
+                newStatus: !appConfigProvider.hideZeroValues, 
                 function: appConfigProvider.setHideZeroValues
               ),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 16,
+                right: 10
+              )
             ),
-            onTap: () => updateSettings(
-              newStatus: !appConfigProvider.hideZeroValues, 
-              function: appConfigProvider.setHideZeroValues
-            ),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 16,
-              right: 10
-            )
-          ),
-          CustomListTile(
-            icon: Icons.show_chart_rounded,
-            title: AppLocalizations.of(context)!.combinedChart,
-            subtitle: AppLocalizations.of(context)!.combinedChartDescription,
-            trailing: Switch(
-              value: appConfigProvider.combinedChartHome, 
-              onChanged: (value) => updateSettings(
-                newStatus: value, 
+            CustomListTile(
+              icon: Icons.show_chart_rounded,
+              title: AppLocalizations.of(context)!.combinedChart,
+              subtitle: AppLocalizations.of(context)!.combinedChartDescription,
+              trailing: Switch(
+                value: appConfigProvider.combinedChartHome, 
+                onChanged: (value) => updateSettings(
+                  newStatus: value, 
+                  function: appConfigProvider.setCombinedChartHome
+                ),
+              ),
+              onTap: () => updateSettings(
+                newStatus: !appConfigProvider.combinedChartHome, 
                 function: appConfigProvider.setCombinedChartHome
               ),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 16,
+                right: 10
+              )
             ),
-            onTap: () => updateSettings(
-              newStatus: !appConfigProvider.combinedChartHome, 
-              function: appConfigProvider.setCombinedChartHome
-            ),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 16,
-              right: 10
-            )
-          ),
-          CustomListTile(
-            icon: Icons.remove_red_eye_rounded,
-            title: AppLocalizations.of(context)!.hideServerAddress,
-            subtitle: AppLocalizations.of(context)!.hideServerAddressDescription,
-            trailing: Switch(
-              value: appConfigProvider.hideServerAddress, 
-              onChanged: (value) => updateSettings(
-                newStatus: value, 
+            CustomListTile(
+              icon: Icons.remove_red_eye_rounded,
+              title: AppLocalizations.of(context)!.hideServerAddress,
+              subtitle: AppLocalizations.of(context)!.hideServerAddressDescription,
+              trailing: Switch(
+                value: appConfigProvider.hideServerAddress, 
+                onChanged: (value) => updateSettings(
+                  newStatus: value, 
+                  function: appConfigProvider.setHideServerAddress
+                ),
+              ),
+              onTap: () => updateSettings(
+                newStatus: !appConfigProvider.hideServerAddress, 
                 function: appConfigProvider.setHideServerAddress
               ),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 16,
+                right: 10
+              )
             ),
-            onTap: () => updateSettings(
-              newStatus: !appConfigProvider.hideServerAddress, 
-              function: appConfigProvider.setHideServerAddress
+            CustomListTile(
+              icon: Icons.reorder_rounded,
+              title: AppLocalizations.of(context)!.topItemsOrder,
+              subtitle: AppLocalizations.of(context)!.topItemsOrderDescription,
+              onTap: () => widget.splitView == true 
+                ? SplitView.of(context).push(const ReorderableTopItemsHome())
+                : Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ReorderableTopItemsHome()
+                    )
+                  ) 
             ),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 16,
-              right: 10
-            )
-          ),
-          CustomListTile(
-            icon: Icons.reorder_rounded,
-            title: AppLocalizations.of(context)!.topItemsOrder,
-            subtitle: AppLocalizations.of(context)!.topItemsOrderDescription,
-            onTap: () => widget.splitView == true 
-              ? SplitView.of(context).push(const ReorderableTopItemsHome())
-              : Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ReorderableTopItemsHome()
-                  )
-                ) 
-          ),
-          CustomListTile(
-            icon: Icons.donut_large_rounded,
-            title: AppLocalizations.of(context)!.showTopItemsChart,
-            subtitle: AppLocalizations.of(context)!.showTopItemsChartDescription,
-            trailing: Switch(
-              value: appConfigProvider.showTopItemsChart, 
-              onChanged: (value) => updateSettings(
-                newStatus: value, 
+            CustomListTile(
+              icon: Icons.donut_large_rounded,
+              title: AppLocalizations.of(context)!.showTopItemsChart,
+              subtitle: AppLocalizations.of(context)!.showTopItemsChartDescription,
+              trailing: Switch(
+                value: appConfigProvider.showTopItemsChart, 
+                onChanged: (value) => updateSettings(
+                  newStatus: value, 
+                  function: appConfigProvider.setShowTopItemsChart
+                ),
+              ),
+              onTap: () => updateSettings(
+                newStatus: !appConfigProvider.showTopItemsChart, 
                 function: appConfigProvider.setShowTopItemsChart
               ),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 16,
+                right: 10
+              )
             ),
-            onTap: () => updateSettings(
-              newStatus: !appConfigProvider.showTopItemsChart, 
-              function: appConfigProvider.setShowTopItemsChart
-            ),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 16,
-              right: 10
-            )
-          ),
-          SectionLabel(label: AppLocalizations.of(context)!.logs),
-          CustomListTile(
-            icon: Icons.timer_rounded,
-            title: AppLocalizations.of(context)!.timeLogs,
-            subtitle: AppLocalizations.of(context)!.timeLogsDescription,
-            trailing: Switch(
-              value: appConfigProvider.showTimeLogs, 
-              onChanged: (value) => updateSettings(
-                newStatus: value, 
+            SectionLabel(label: AppLocalizations.of(context)!.logs),
+            CustomListTile(
+              icon: Icons.timer_rounded,
+              title: AppLocalizations.of(context)!.timeLogs,
+              subtitle: AppLocalizations.of(context)!.timeLogsDescription,
+              trailing: Switch(
+                value: appConfigProvider.showTimeLogs, 
+                onChanged: (value) => updateSettings(
+                  newStatus: value, 
+                  function: appConfigProvider.setshowTimeLogs
+                ),
+              ),
+              onTap: () => updateSettings(
+                newStatus: !appConfigProvider.showTimeLogs, 
                 function: appConfigProvider.setshowTimeLogs
               ),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 16,
+                right: 10
+              )
             ),
-            onTap: () => updateSettings(
-              newStatus: !appConfigProvider.showTimeLogs, 
-              function: appConfigProvider.setshowTimeLogs
-            ),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 16,
-              right: 10
-            )
-          ),
-          CustomListTile(
-            icon: Icons.more,
-            title: AppLocalizations.of(context)!.ipLogs,
-            subtitle: AppLocalizations.of(context)!.ipLogsDescription,
-            trailing: Switch(
-              value: appConfigProvider.showIpLogs, 
-              onChanged: (value) => updateSettings(
-                newStatus: value, 
+            CustomListTile(
+              icon: Icons.more,
+              title: AppLocalizations.of(context)!.ipLogs,
+              subtitle: AppLocalizations.of(context)!.ipLogsDescription,
+              trailing: Switch(
+                value: appConfigProvider.showIpLogs, 
+                onChanged: (value) => updateSettings(
+                  newStatus: value, 
+                  function: appConfigProvider.setShowIpLogs
+                ),
+              ),
+              onTap: () => updateSettings(
+                newStatus: !appConfigProvider.showIpLogs, 
                 function: appConfigProvider.setShowIpLogs
               ),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 10,
+                left: 16,
+                right: 10
+              )
             ),
-            onTap: () => updateSettings(
-              newStatus: !appConfigProvider.showIpLogs, 
-              function: appConfigProvider.setShowIpLogs
-            ),
-            padding: const EdgeInsets.only(
-              top: 10,
-              bottom: 10,
-              left: 16,
-              right: 10
-            )
-          ),
-          if (
-            !(Platform.isAndroid || Platform.isIOS) || 
-            (Platform.isAndroid && (
-              appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE ||
-              appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
-              appConfigProvider.installationSource == Source.UNKNOWN
-            ))
-          ) ...[
-            SectionLabel(label: AppLocalizations.of(context)!.application),
-            CustomListTile(
-              icon: Icons.system_update_rounded,
-              title: AppLocalizations.of(context)!.appUpdates,
-              subtitle: appConfigProvider.appUpdatesAvailable != null
-                ? AppLocalizations.of(context)!.updateAvailable
-                : AppLocalizations.of(context)!.usingLatestVersion,
-              trailing: generateAppUpdateStatus()
-            )
-          ]
-        ],
+            if (
+              !(Platform.isAndroid || Platform.isIOS) || 
+              (Platform.isAndroid && (
+                appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE ||
+                appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
+                appConfigProvider.installationSource == Source.UNKNOWN
+              ))
+            ) ...[
+              SectionLabel(label: AppLocalizations.of(context)!.application),
+              CustomListTile(
+                icon: Icons.system_update_rounded,
+                title: AppLocalizations.of(context)!.appUpdates,
+                subtitle: appConfigProvider.appUpdatesAvailable != null
+                  ? AppLocalizations.of(context)!.updateAvailable
+                  : AppLocalizations.of(context)!.usingLatestVersion,
+                trailing: generateAppUpdateStatus()
+              )
+            ]
+          ],
+        ),
       )
     );  
   }

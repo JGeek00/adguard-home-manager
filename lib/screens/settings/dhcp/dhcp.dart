@@ -411,328 +411,330 @@ class _DhcpScreenState extends State<DhcpScreen> {
           const SizedBox(width: 10)
         ] : null,
       ),
-      body: Builder(
-        builder: (context) {
-          switch (dhcpProvider.loadStatus) {
-            case LoadStatus.loading:
-              return SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.loadingDhcp,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    )
-                  ],
-                ),
-              );
-            
-            case LoadStatus.loaded:
-              if (selectedInterface != null) {
-                return SingleChildScrollView(
-                  child: Wrap(
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            switch (dhcpProvider.loadStatus) {
+              case LoadStatus.loading:
+                return SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      DhcpMainButton(
-                        selectedInterface: selectedInterface, 
-                        enabled: enabled, 
-                        setEnabled: (v) => setState(() => enabled = v)
-                      ),
-                      if (selectedInterface!.ipv4Addresses.isNotEmpty) ...[
-                        SectionLabel(
-                          label: AppLocalizations.of(context)!.ipv4settings,
-                          padding: const EdgeInsets.only(
-                            top: 24, left: 16, right: 16, bottom: 8
-                          )
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.loadingDhcp,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
-                        _DhcpField(
-                          icon: Icons.skip_previous_rounded,
-                          label: AppLocalizations.of(context)!.startOfRange,
-                          controller: ipv4StartRangeController, 
-                          onChanged: (value) => validateIpV4(value, 'ipv4StartRangeError', AppLocalizations.of(context)!.ipNotValid),
-                          error: ipv4StartRangeError
-                        ),
-                        _DhcpField(
-                          icon: Icons.skip_next_rounded,
-                          label: AppLocalizations.of(context)!.endOfRange,
-                          controller: ipv4EndRangeController, 
-                          onChanged: (value) => validateIpV4(value, 'ipv4EndRangeError', AppLocalizations.of(context)!.ipNotValid),
-                          error: ipv4EndRangeError
-                        ),
-                        _DhcpField(
-                          icon: Icons.hub_rounded,
-                          label: AppLocalizations.of(context)!.subnetMask,
-                          controller: ipv4SubnetMaskController, 
-                          onChanged: (value) => validateIpV4(value, 'ipv4SubnetMaskError', AppLocalizations.of(context)!.subnetMaskNotValid),
-                          error: ipv4SubnetMaskError
-                        ),
-                        _DhcpField(
-                          icon: Icons.router_rounded,
-                          label: AppLocalizations.of(context)!.gateway,
-                          controller: ipv4GatewayController, 
-                          onChanged: (value) => validateIpV4(value, 'ipv4GatewayError', AppLocalizations.of(context)!.gatewayNotValid),
-                          error: ipv4GatewayError
-                        ),
-                        _DhcpField(
-                          icon: Icons.timer,
-                          label: AppLocalizations.of(context)!.leaseTime,
-                          controller: ipv4LeaseTimeController, 
-                          onChanged: (value) {
-                            if (int.tryParse(value).runtimeType == int) {
-                              setState(() => ipv4LeaseTimeError = null);
-                            }
-                            else {
-                              setState(() => ipv4LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
-                            }
-                          },
-                          error: ipv4LeaseTimeError
-                        ),
-                      ],
-                      if (selectedInterface!.ipv6Addresses.isNotEmpty) ...[
-                        SectionLabel(
-                          label: AppLocalizations.of(context)!.ipv6settings,
-                          padding: const EdgeInsets.all(16)
-                        ),
-                        _DhcpField(
-                          icon: Icons.skip_next_rounded,
-                          label: AppLocalizations.of(context)!.startOfRange,
-                          controller: ipv6StartRangeController, 
-                          onChanged: (value) => validateIpV6(value, 'ipv6StartRangeError', AppLocalizations.of(context)!.ipNotValid),
-                          error: ipv6StartRangeError
-                        ),
-                        _DhcpField(
-                          icon: Icons.skip_previous_rounded,
-                          label: AppLocalizations.of(context)!.endOfRange,
-                          controller: ipv6EndRangeController, 
-                          onChanged: (value) => validateIpV6(value, 'ipv6EndRangeError', AppLocalizations.of(context)!.ipNotValid),
-                          error: ipv6EndRangeError
-                        ),
-                        _DhcpField(
-                          icon: Icons.timer,
-                          label: AppLocalizations.of(context)!.leaseTime,
-                          controller: ipv6LeaseTimeController, 
-                          onChanged: (value) {
-                            if (int.tryParse(value).runtimeType == int) {
-                              setState(() => ipv6LeaseTimeError = null);
-                            }
-                            else {
-                              setState(() => ipv6LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
-                            }
-                          },
-                          error: ipv6LeaseTimeError
-                        )
-                      ],
-                      const SizedBox(height: 20),
-                      SectionLabel(
-                        label: AppLocalizations.of(context)!.dhcpLeases,
-                        padding: const EdgeInsets.all(16),
-                      ),
-                      if (width <= 900) Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DhcpLeases(
-                                  items: dhcpProvider.dhcp!.dhcpStatus!.leases,
-                                  staticLeases: false,
-                                )
-                              )
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.dhcpLeases,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.arrow_forward_rounded,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (width <= 900) Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DhcpLeases(
-                                  items: dhcpProvider.dhcp!.dhcpStatus!.staticLeases,
-                                  staticLeases: true,
-                                )
-                              )
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.dhcpStatic,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.arrow_forward_rounded,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (width > 900) Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if (!(Platform.isAndroid || Platform.isIOS)) {
-                                SplitView.of(context).push(
-                                  DhcpLeases(
-                                    items: dhcpProvider.dhcp!.dhcpStatus!.leases,
-                                    staticLeases: false,
-                                  )
-                                );
-                              }
-                              else {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => DhcpLeases(
-                                      items: dhcpProvider.dhcp!.dhcpStatus!.leases,
-                                      staticLeases: false,
-                                    )
-                                  )
-                                );
-                              }
-                            },
-                            child: Row(
-                              children: [
-                                Text(AppLocalizations.of(context)!.dhcpLeases),
-                                const SizedBox(width: 8),
-                                const Icon(Icons.arrow_forward_rounded)
-                              ],
-                            )
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (!(Platform.isAndroid || Platform.isIOS)) {
-                                SplitView.of(context).push(
-                                  DhcpLeases(
-                                    items: dhcpProvider.dhcp!.dhcpStatus!.staticLeases,
-                                    staticLeases: true,
-                                  )
-                                );
-                              }
-                              else {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => DhcpLeases(
-                                      items: dhcpProvider.dhcp!.dhcpStatus!.staticLeases,
-                                      staticLeases: true,
-                                    )
-                                  )
-                                );
-                              }
-                            }, 
-                            child: Row(
-                              children: [
-                                Text(AppLocalizations.of(context)!.dhcpStatic),
-                                const SizedBox(width: 8),
-                                const Icon(Icons.arrow_forward_rounded)
-                              ],
-                            )
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10)
+                      )
                     ],
                   ),
                 );
-              } 
-              else {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              AppLocalizations.of(context)!.neededSelectInterface,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 22,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)
+              
+              case LoadStatus.loaded:
+                if (selectedInterface != null) {
+                  return SingleChildScrollView(
+                    child: Wrap(
+                      children: [
+                        DhcpMainButton(
+                          selectedInterface: selectedInterface, 
+                          enabled: enabled, 
+                          setEnabled: (v) => setState(() => enabled = v)
+                        ),
+                        if (selectedInterface!.ipv4Addresses.isNotEmpty) ...[
+                          SectionLabel(
+                            label: AppLocalizations.of(context)!.ipv4settings,
+                            padding: const EdgeInsets.only(
+                              top: 24, left: 16, right: 16, bottom: 8
+                            )
+                          ),
+                          _DhcpField(
+                            icon: Icons.skip_previous_rounded,
+                            label: AppLocalizations.of(context)!.startOfRange,
+                            controller: ipv4StartRangeController, 
+                            onChanged: (value) => validateIpV4(value, 'ipv4StartRangeError', AppLocalizations.of(context)!.ipNotValid),
+                            error: ipv4StartRangeError
+                          ),
+                          _DhcpField(
+                            icon: Icons.skip_next_rounded,
+                            label: AppLocalizations.of(context)!.endOfRange,
+                            controller: ipv4EndRangeController, 
+                            onChanged: (value) => validateIpV4(value, 'ipv4EndRangeError', AppLocalizations.of(context)!.ipNotValid),
+                            error: ipv4EndRangeError
+                          ),
+                          _DhcpField(
+                            icon: Icons.hub_rounded,
+                            label: AppLocalizations.of(context)!.subnetMask,
+                            controller: ipv4SubnetMaskController, 
+                            onChanged: (value) => validateIpV4(value, 'ipv4SubnetMaskError', AppLocalizations.of(context)!.subnetMaskNotValid),
+                            error: ipv4SubnetMaskError
+                          ),
+                          _DhcpField(
+                            icon: Icons.router_rounded,
+                            label: AppLocalizations.of(context)!.gateway,
+                            controller: ipv4GatewayController, 
+                            onChanged: (value) => validateIpV4(value, 'ipv4GatewayError', AppLocalizations.of(context)!.gatewayNotValid),
+                            error: ipv4GatewayError
+                          ),
+                          _DhcpField(
+                            icon: Icons.timer,
+                            label: AppLocalizations.of(context)!.leaseTime,
+                            controller: ipv4LeaseTimeController, 
+                            onChanged: (value) {
+                              if (int.tryParse(value).runtimeType == int) {
+                                setState(() => ipv4LeaseTimeError = null);
+                              }
+                              else {
+                                setState(() => ipv4LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
+                              }
+                            },
+                            error: ipv4LeaseTimeError
+                          ),
+                        ],
+                        if (selectedInterface!.ipv6Addresses.isNotEmpty) ...[
+                          SectionLabel(
+                            label: AppLocalizations.of(context)!.ipv6settings,
+                            padding: const EdgeInsets.all(16)
+                          ),
+                          _DhcpField(
+                            icon: Icons.skip_next_rounded,
+                            label: AppLocalizations.of(context)!.startOfRange,
+                            controller: ipv6StartRangeController, 
+                            onChanged: (value) => validateIpV6(value, 'ipv6StartRangeError', AppLocalizations.of(context)!.ipNotValid),
+                            error: ipv6StartRangeError
+                          ),
+                          _DhcpField(
+                            icon: Icons.skip_previous_rounded,
+                            label: AppLocalizations.of(context)!.endOfRange,
+                            controller: ipv6EndRangeController, 
+                            onChanged: (value) => validateIpV6(value, 'ipv6EndRangeError', AppLocalizations.of(context)!.ipNotValid),
+                            error: ipv6EndRangeError
+                          ),
+                          _DhcpField(
+                            icon: Icons.timer,
+                            label: AppLocalizations.of(context)!.leaseTime,
+                            controller: ipv6LeaseTimeController, 
+                            onChanged: (value) {
+                              if (int.tryParse(value).runtimeType == int) {
+                                setState(() => ipv6LeaseTimeError = null);
+                              }
+                              else {
+                                setState(() => ipv6LeaseTimeError = AppLocalizations.of(context)!.leaseTimeNotValid);
+                              }
+                            },
+                            error: ipv6LeaseTimeError
+                          )
+                        ],
+                        const SizedBox(height: 20),
+                        SectionLabel(
+                          label: AppLocalizations.of(context)!.dhcpLeases,
+                          padding: const EdgeInsets.all(16),
+                        ),
+                        if (width <= 900) Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => DhcpLeases(
+                                    items: dhcpProvider.dhcp!.dhcpStatus!.leases,
+                                    staticLeases: false,
+                                  )
+                                )
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.dhcpLeases,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_rounded,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  )
+                                ],
                               ),
                             ),
                           ),
-                          const SizedBox(height: 30),
-                          ElevatedButton(
-                            onPressed: selectInterface, 
-                            child: Text(AppLocalizations.of(context)!.selectInterface)
+                        ),
+                        if (width <= 900) Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => DhcpLeases(
+                                    items: dhcpProvider.dhcp!.dhcpStatus!.staticLeases,
+                                    staticLeases: true,
+                                  )
+                                )
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.dhcpStatic,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_rounded,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                        if (width > 900) Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if (!(Platform.isAndroid || Platform.isIOS)) {
+                                  SplitView.of(context).push(
+                                    DhcpLeases(
+                                      items: dhcpProvider.dhcp!.dhcpStatus!.leases,
+                                      staticLeases: false,
+                                    )
+                                  );
+                                }
+                                else {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DhcpLeases(
+                                        items: dhcpProvider.dhcp!.dhcpStatus!.leases,
+                                        staticLeases: false,
+                                      )
+                                    )
+                                  );
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  Text(AppLocalizations.of(context)!.dhcpLeases),
+                                  const SizedBox(width: 8),
+                                  const Icon(Icons.arrow_forward_rounded)
+                                ],
+                              )
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (!(Platform.isAndroid || Platform.isIOS)) {
+                                  SplitView.of(context).push(
+                                    DhcpLeases(
+                                      items: dhcpProvider.dhcp!.dhcpStatus!.staticLeases,
+                                      staticLeases: true,
+                                    )
+                                  );
+                                }
+                                else {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DhcpLeases(
+                                        items: dhcpProvider.dhcp!.dhcpStatus!.staticLeases,
+                                        staticLeases: true,
+                                      )
+                                    )
+                                  );
+                                }
+                              }, 
+                              child: Row(
+                                children: [
+                                  Text(AppLocalizations.of(context)!.dhcpStatic),
+                                  const SizedBox(width: 8),
+                                  const Icon(Icons.arrow_forward_rounded)
+                                ],
+                              )
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10)
+                      ],
                     ),
-                  ],
+                  );
+                } 
+                else {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Text(
+                                AppLocalizations.of(context)!.neededSelectInterface,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            ElevatedButton(
+                              onPressed: selectInterface, 
+                              child: Text(AppLocalizations.of(context)!.selectInterface)
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                
+              case LoadStatus.error:
+                return SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        AppLocalizations.of(context)!.dhcpSettingsNotLoaded,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    ],
+                  ),
                 );
-              }
-              
-            case LoadStatus.error:
-              return SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                      size: 50,
-                    ),
-                    const SizedBox(height: 30),
-                    Text(
-                      AppLocalizations.of(context)!.dhcpSettingsNotLoaded,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    )
-                  ],
-                ),
-              );
-
-            default:
-              return const SizedBox();
-          }
-        },
+        
+              default:
+                return const SizedBox();
+            }
+          },
+        ),
       )
     );
   }

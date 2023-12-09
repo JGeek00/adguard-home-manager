@@ -19,9 +19,9 @@ class ManagementModal extends StatefulWidget {
   final bool dialog;
 
   const ManagementModal({
-    Key? key,
+    super.key,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   State<ManagementModal> createState() => _ManagementModalState();
@@ -141,33 +141,35 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
             topRight: Radius.circular(28)
           )
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: SingleChildScrollView(
-                child: _Modal(
-                  expandableController: expandableController,
-                  updateBlocking: updateBlocking,
-                  disableWithCountdown: disableWithCountdown,
-                  animation: animation,
-                )
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: SingleChildScrollView(
+                  child: _Modal(
+                    expandableController: expandableController,
+                    updateBlocking: updateBlocking,
+                    disableWithCountdown: disableWithCountdown,
+                    animation: animation,
+                  )
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context), 
-                    child: Text(AppLocalizations.of(context)!.close),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context), 
+                      child: Text(AppLocalizations.of(context)!.close),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if (Platform.isIOS) const SizedBox(height: 16)
-          ],
+              if (Platform.isIOS) const SizedBox(height: 16)
+            ],
+          ),
         ),
       );
     }
@@ -201,24 +203,24 @@ class _Modal extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                padding: const EdgeInsets.only(top: 24),
-                child: Icon(
-                  Icons.shield_rounded,
-                  size: 24,
-                  color: Theme.of(context).listTileTheme.iconColor
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  AppLocalizations.of(context)!.manageServer,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Theme.of(context).colorScheme.onSurface,
+                  padding: const EdgeInsets.only(top: 24),
+                  child: Icon(
+                    Icons.shield_rounded,
+                    size: 24,
+                    color: Theme.of(context).listTileTheme.iconColor
                   ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    AppLocalizations.of(context)!.manageServer,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

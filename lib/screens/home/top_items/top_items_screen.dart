@@ -122,14 +122,16 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
               const SizedBox(width: 8)
             ],
           ),
-          body: _Content(
-            buildValue: widget.buildValue,
-            isClient: widget.isClient,
-            onTapEntry: widget.onTapEntry,
-            options: widget.options,
-            screenData: screenData,
-            total: total,
-            withProgressBar: widget.withProgressBar,
+          body: SafeArea(
+            child: _Content(
+              buildValue: widget.buildValue,
+              isClient: widget.isClient,
+              onTapEntry: widget.onTapEntry,
+              options: widget.options,
+              screenData: screenData,
+              total: total,
+              withProgressBar: widget.withProgressBar,
+            ),
           ),
         ),
       );
