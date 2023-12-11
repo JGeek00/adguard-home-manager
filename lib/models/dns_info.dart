@@ -6,6 +6,8 @@ class DnsInfo {
   int ratelimit;
   String blockingMode;
   bool ednsCsEnabled;
+  bool? ednsCsUseCustom;
+  String? ednsCsCustomIp;
   bool dnssecEnabled;
   bool disableIpv6;
   String? upstreamMode;
@@ -28,6 +30,8 @@ class DnsInfo {
     required this.ratelimit,
     required this.blockingMode,
     required this.ednsCsEnabled,
+    required this.ednsCsUseCustom,
+    required this.ednsCsCustomIp,
     required this.dnssecEnabled,
     required this.disableIpv6,
     required this.upstreamMode,
@@ -51,6 +55,8 @@ class DnsInfo {
     ratelimit: json["ratelimit"],
     blockingMode: json["blocking_mode"],
     ednsCsEnabled: json["edns_cs_enabled"],
+    ednsCsUseCustom: json["edns_cs_use_custom"],
+    ednsCsCustomIp: json["edns_cs_custom_ip"],
     dnssecEnabled: json["dnssec_enabled"],
     disableIpv6: json["disable_ipv6"],
     upstreamMode: json["upstream_mode"],
@@ -74,6 +80,8 @@ class DnsInfo {
     "ratelimit": ratelimit,
     "blocking_mode": blockingMode,
     "edns_cs_enabled": ednsCsEnabled,
+    "edns_cs_use_custom": ednsCsUseCustom,
+    "edns_cs_custom_ip": ednsCsCustomIp,
     "dnssec_enabled": dnssecEnabled,
     "disable_ipv6": disableIpv6,
     "upstream_mode": upstreamMode,

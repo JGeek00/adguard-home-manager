@@ -697,5 +697,7 @@
     "configurationResetSuccessfully": "Configuration resetted successfully",
     "configurationResetError": "The configuration couldn't be resetted",
     "testUpstreamDnsServers": "Test upstream DNS servers",
-    "errorTestUpstreamDns": "Error when testing upstream DNS servers."
+    "errorTestUpstreamDns": "Error when testing upstream DNS servers.",
+    "useCustomIpEdns": "Use custom IP for EDNS",
+    "useCustomIpEdnsDescription": "Allow to use custom IP for EDNS"
 }

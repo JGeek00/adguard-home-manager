@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,7 +25,12 @@ class DnsServerSettingsScreen extends StatefulWidget {
 class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
   final TextEditingController limitRequestsController = TextEditingController();
   String? limitRequestsError;
+  final _expandableCustomEdns = ExpandableController();
+  final _expandableEdnsIp = ExpandableController();
   bool enableEdns = false;
+  bool useCustomIpEdns = false;
+  final _customIpEdnsController = TextEditingController();
+  String? ednsIpError;
   bool enableDnssec = false;
   bool disableIpv6Resolving = false;
 
@@ -44,6 +50,17 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
     }
     else {
       setState(() => ipv4error = AppLocalizations.of(context)!.invalidIp);
+    }
+    validateData();
+  }
+
+  void validateEdns(String value) {
+    RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
+    if (ipAddress.hasMatch(value) == true) {
+      setState(() => ednsIpError = null);
+    }
+    else {
+      setState(() => ednsIpError = AppLocalizations.of(context)!.ipNotValid);
     }
     validateData();
   }
@@ -72,7 +89,8 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
           ipv6controller.text != '' &&
           ipv6error == null
         )
-      ) == true
+      ) == true && 
+      ednsIpError == null
     ) {
       setState(() => isDataValid = true);
     }
@@ -87,6 +105,10 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
 
     limitRequestsController.text = dnsProvider.dnsInfo!.ratelimit.toString();
     enableEdns = dnsProvider.dnsInfo!.ednsCsEnabled;
+    useCustomIpEdns = dnsProvider.dnsInfo!.ednsCsUseCustom ?? false;
+    _customIpEdnsController.text = dnsProvider.dnsInfo!.ednsCsCustomIp ?? "";
+    if (dnsProvider.dnsInfo!.ednsCsEnabled == true) _expandableCustomEdns.toggle();
+    if (dnsProvider.dnsInfo!.ednsCsUseCustom == true) _expandableEdnsIp.toggle();
     enableDnssec = dnsProvider.dnsInfo!.dnssecEnabled;
     disableIpv6Resolving = dnsProvider.dnsInfo!.disableIpv6;
     blockingMode = dnsProvider.dnsInfo!.blockingMode;
@@ -109,6 +131,8 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
       final result = await dnsProvider.saveDnsServerConfig({
         "ratelimit": int.parse(limitRequestsController.text),
         "edns_cs_enabled": enableEdns,
+        "edns_cs_use_custom": useCustomIpEdns,
+        "edns_cs_custom_ip": _customIpEdnsController.text,
         "dnssec_enabled": enableDnssec,
         "disable_ipv6": disableIpv6Resolving,
         "blocking_mode": blockingMode,
@@ -200,9 +224,77 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
             const SizedBox(height: 10),
             CustomSwitchListTile(
               value: enableEdns, 
-              onChanged: (value) => setState(() => enableEdns = value), 
+              onChanged: (value) => setState(() {
+                enableEdns = value;
+                _expandableCustomEdns.toggle();
+                if (value == false) {
+                  useCustomIpEdns = false;
+                  if (_expandableEdnsIp.expanded == true) _expandableEdnsIp.toggle();
+                  _customIpEdnsController.text = "";
+                  ednsIpError = null;
+                }
+                validateData();
+              }), 
               title: AppLocalizations.of(context)!.enableEdns,
               subtitle: AppLocalizations.of(context)!.enableEdnsDescription,
+            ),
+            ExpandableNotifier(
+              controller: _expandableCustomEdns,
+              child: Expandable(
+                collapsed: const SizedBox(),
+                expanded: Column(
+                  children: [
+                    CustomSwitchListTile(
+                      padding: const EdgeInsets.only(
+                        left: 50,
+                        top: 12,
+                        bottom: 12,
+                        right: 16
+                      ),
+                      value: useCustomIpEdns, 
+                      onChanged: (value) => setState(() {
+                        useCustomIpEdns = value;
+                        _expandableEdnsIp.toggle();
+                        if (useCustomIpEdns == false) {
+                          _customIpEdnsController.text = "";
+                          ednsIpError = null;
+                        }
+                        validateData();
+                      }), 
+                      title: AppLocalizations.of(context)!.useCustomIpEdns,
+                      subtitle: AppLocalizations.of(context)!.useCustomIpEdnsDescription,
+                    ),
+                    ExpandableNotifier(
+                      controller: _expandableEdnsIp,
+                      child: Expandable(
+                        collapsed: const SizedBox(),
+                        expanded: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 16,
+                            bottom: 16,
+                            right: 16,
+                            left: 70
+                          ),
+                          child: TextFormField(
+                            controller: _customIpEdnsController,
+                            onChanged: validateEdns,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.link_rounded),
+                              border: const OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10)
+                                )
+                              ),
+                              errorText: ednsIpError,
+                              labelText: AppLocalizations.of(context)!.ipAddress,
+                            ),
+                          ),
+                        ),
+                      )
+                    ),
+                  ],
+                ),
+              )
             ),
             CustomSwitchListTile(
               value: enableDnssec, 
