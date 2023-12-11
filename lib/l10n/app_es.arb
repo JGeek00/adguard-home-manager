@@ -706,5 +706,9 @@
     "queryLogsAndStatistics": "Registro de consultas y estadísticas",
     "ignoreClientQueryLog": "Ignorar este cliente en el registro de consultas",
     "ignoreClientStatistics": "Ignorar este cliente en las estadísticas",
-    "savingChanges": "Guardando cambios..."
+    "savingChanges": "Guardando cambios...",
+    "fallbackDnsServers": "Servidores DNS alternativos",
+    "fallbackDnsServersDescription": "Configura los servidores DNS alternativos",
+    "fallbackDnsServersInfo": "Lista de servidores DNS alternativos utilizados cuando los servidores DNS de subida no responden. La sintaxis es la misma que en el campo de los principales DNS de subida anterior.",
+    "noFallbackDnsAdded": "No hay servidores DNS alternativos añadidos."
 }

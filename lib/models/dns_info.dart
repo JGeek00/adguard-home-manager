@@ -2,6 +2,7 @@ class DnsInfo {
   List<String> upstreamDns;
   String? upstreamDnsFile;
   List<String> bootstrapDns;
+  List<String>? fallbackDns;
   bool protectionEnabled;
   int ratelimit;
   String blockingMode;
@@ -26,6 +27,7 @@ class DnsInfo {
     required this.upstreamDns,
     required this.upstreamDnsFile,
     required this.bootstrapDns,
+    required this.fallbackDns,
     required this.protectionEnabled,
     required this.ratelimit,
     required this.blockingMode,
@@ -51,6 +53,7 @@ class DnsInfo {
     upstreamDns: json["upstream_dns"] != null ? List<String>.from(json["upstream_dns"].map((x) => x)) : [],
     upstreamDnsFile: json["upstream_dns_file"],
     bootstrapDns: json["bootstrap_dns"] != null ? List<String>.from(json["bootstrap_dns"].map((x) => x)) : [],
+    fallbackDns: json["fallback_dns"] != null ? List<String>.from(json["fallback_dns"].map((x) => x)) : [],
     protectionEnabled: json["protection_enabled"],
     ratelimit: json["ratelimit"],
     blockingMode: json["blocking_mode"],
@@ -76,6 +79,7 @@ class DnsInfo {
     "upstream_dns": List<dynamic>.from(upstreamDns.map((x) => x)),
     "upstream_dns_file": upstreamDnsFile,
     "bootstrap_dns": List<dynamic>.from(bootstrapDns.map((x) => x)),
+    "fallback_dns": List<dynamic>.from(bootstrapDns.map((x) => x)),
     "protection_enabled": protectionEnabled,
     "ratelimit": ratelimit,
     "blocking_mode": blockingMode,

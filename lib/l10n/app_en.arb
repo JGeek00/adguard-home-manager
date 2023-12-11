@@ -706,5 +706,9 @@
     "queryLogsAndStatistics": "Query logs and statistics",
     "ignoreClientQueryLog": "Ignore this client in query log",
     "ignoreClientStatistics": "Ignore this client in statistics",
-    "savingChanges": "Saving changes..."
+    "savingChanges": "Saving changes...",
+    "fallbackDnsServers": "Fallback DNS servers",
+    "fallbackDnsServersDescription": "Configure fallback DNS servers",
+    "fallbackDnsServersInfo": "List of fallback DNS servers used when upstream DNS servers are not responding. The syntax is the same as in the main upstreams field above.",
+    "noFallbackDnsAdded": "No fallback DNS servers added."
 }
