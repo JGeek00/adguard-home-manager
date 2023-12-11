@@ -699,5 +699,8 @@
     "testUpstreamDnsServers": "Test upstream DNS servers",
     "errorTestUpstreamDns": "Error when testing upstream DNS servers.",
     "useCustomIpEdns": "Use custom IP for EDNS",
-    "useCustomIpEdnsDescription": "Allow to use custom IP for EDNS"
+    "useCustomIpEdnsDescription": "Allow to use custom IP for EDNS",
+    "sortingOptions": "Sorting options",
+    "fromHighestToLowest": "From highest to lowest",
+    "fromLowestToHighest": "From lowest to highest"
 }

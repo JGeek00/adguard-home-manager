@@ -699,5 +699,8 @@
     "testUpstreamDnsServers": "Probar servidores DNS de subida",
     "errorTestUpstreamDns": "Error al probar los servidores DNS de subida.",
     "useCustomIpEdns": "Usar IP personalizada para EDNS",
-    "useCustomIpEdnsDescription": "Permitir usar IP personalizada para EDNS"
+    "useCustomIpEdnsDescription": "Permitir usar IP personalizada para EDNS",
+    "sortingOptions": "Opciones de ordenación",
+    "fromHighestToLowest": "De mayor a menor",
+    "fromLowestToHighest": "De menor a mayor"
 }
