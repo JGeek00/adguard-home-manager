@@ -186,7 +186,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
             icon: const Icon(Icons.save_rounded),
             tooltip: AppLocalizations.of(context)!.save,
           ),
-          const SizedBox(width: 10)
+          const SizedBox(width: 8)
         ],
       ),
       body: SafeArea(

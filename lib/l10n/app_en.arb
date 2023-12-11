@@ -695,5 +695,7 @@
     "resetEncryptionSettingsDescription": "Are you sure you want to reset to default values the encryption settings?",
     "resettingConfig": "Resetting configuration...",
     "configurationResetSuccessfully": "Configuration resetted successfully",
-    "configurationResetError": "The configuration couldn't be resetted"
+    "configurationResetError": "The configuration couldn't be resetted",
+    "testUpstreamDnsServers": "Test upstream DNS servers",
+    "errorTestUpstreamDns": "Error when testing upstream DNS servers."
 }
