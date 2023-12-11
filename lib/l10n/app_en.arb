@@ -690,5 +690,10 @@
     "topUpstreams": "Top upstreams",
     "averageUpstreamResponseTime": "Average upstream response time",
     "dhcpNotAvailable": "The DHCP server is not available.",
-    "osServerInstalledIncompatible": "The OS where the server is installed is not compatible with this feature."
+    "osServerInstalledIncompatible": "The OS where the server is installed is not compatible with this feature.",
+    "resetSettings": "Reset settings",
+    "resetEncryptionSettingsDescription": "Are you sure you want to reset to default values the encryption settings?",
+    "resettingConfig": "Resetting configuration...",
+    "configurationResetSuccessfully": "Configuration resetted successfully",
+    "configurationResetError": "The configuration couldn't be resetted"
 }

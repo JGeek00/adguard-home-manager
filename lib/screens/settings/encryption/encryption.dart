@@ -6,8 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
-import 'package:adguard_home_manager/screens/settings/encryption/config_error_modal.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/status.dart';
+import 'package:adguard_home_manager/screens/settings/encryption/reset_settings_modal.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/custom_text_field.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/master_switch.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/encryption_functions.dart';
@@ -254,6 +254,45 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       }
     }
 
+    void resetSettings() async {
+      ProcessModal processModal = ProcessModal();
+      processModal.open(AppLocalizations.of(context)!.resettingConfig);
+
+      final result = await serversProvider.apiClient2!.saveEncryptionSettings(
+        data: {
+          "enabled": false,
+          "server_name": "",
+          "force_https": false,
+          "port_https": 443,
+          "port_dns_over_tls": 853,
+          "port_dns_over_quic": 853,
+          "certificate_chain": "",
+          "private_key": "",
+          "private_key_saved": false,
+          "certificate_path": "",
+          "private_key_path": "",
+        }
+      );
+      if (!mounted) return;
+
+      processModal.close();
+
+      if (result.successful == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.configurationResetSuccessfully, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.configurationResetError, 
+          color: Colors.red
+        );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.encryptionSettings),
@@ -261,17 +300,12 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
         centerTitle: false,
         actions: [
           IconButton(
-            onPressed: certKeyValidApi == 2 && (validDataError != null || encryptionResultMessage != null)
-              ? () => {
-                showDialog(
-                  context: context, 
-                  builder: (context) => EncryptionErrorModal(
-                    error: validDataError ?? encryptionResultMessage ?? AppLocalizations.of(context)!.unknownError
-                  )
-                )
-              } : null, 
-            icon: generateStatus(context, appConfigProvider, localValidationValid, certKeyValidApi, formEdited),
-            tooltip: generateStatusString(context, localValidationValid, certKeyValidApi)
+            onPressed: () => showDialog(
+              context: context, 
+              builder: (ctx) => ResetSettingsModal(onConfirm: resetSettings)
+            ), 
+            icon: const Icon(Icons.restore_rounded),
+            tooltip: AppLocalizations.of(context)!.resetSettings,
           ),
           IconButton(
             onPressed: localValidationValid ?
@@ -311,6 +345,26 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
               case LoadStatus.loaded:
                 return ListView(
                   children: [
+                    if (certKeyValidApi == 2 && (validDataError != null || encryptionResultMessage != null)) Card(
+                      margin: const EdgeInsets.all(16),
+                      color: Colors.red.withOpacity(0.2),
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.error_rounded,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(validDataError ?? encryptionResultMessage ?? AppLocalizations.of(context)!.unknownError)
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                     EncryptionMasterSwitch(
                       value: enabled, 
                       onChange: (value) {

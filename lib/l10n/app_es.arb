@@ -690,5 +690,10 @@
     "topUpstreams": "DNS de subida más frecuentes",
     "averageUpstreamResponseTime": "Tiempo promedio de respuesta upstream",
     "dhcpNotAvailable": "El servidor DHCP no está disponible.",
-    "osServerInstalledIncompatible": "El SO donde el servidor está instalado no es compatible con esta característica."
+    "osServerInstalledIncompatible": "El SO donde el servidor está instalado no es compatible con esta característica.",
+    "resetSettings": "Resetear configuración",
+    "resetEncryptionSettingsDescription": "Estás seguro que deseas restaurar a valores por defecto la configuración de encriptación?",
+    "resettingConfig": "Reseteando configuración...",
+    "configurationResetSuccessfully": "Configuración reseteada correctamente",
+    "configurationResetError": "La configuración no ha podido ser reseteada"
 }
