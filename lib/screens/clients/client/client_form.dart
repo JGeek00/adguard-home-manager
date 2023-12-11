@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -45,6 +46,10 @@ class ClientForm extends StatelessWidget {
   final void Function(bool) updateEnableSafeSearch;
   final void Function(SafeSearch) updateSafeSearch;
   final void Function(bool) updateUseGlobalSettingsServices;
+  final bool ignoreClientQueryLog;
+  final void Function(bool) updateIgnoreClientQueryLog;
+  final bool ignoreClientStatistics;
+  final void Function(bool) updateIgnoreClientStatistics;
 
   const ClientForm({
     super.key,
@@ -75,6 +80,10 @@ class ClientForm extends StatelessWidget {
     required this.updateEnableSafeSearch,
     required this.updateSafeSearch,
     required this.updateUseGlobalSettingsServices,
+    required this.ignoreClientQueryLog,
+    required this.ignoreClientStatistics,
+    required this.updateIgnoreClientQueryLog,
+    required this.updateIgnoreClientStatistics,
   });
 
   @override
@@ -216,6 +225,28 @@ class ClientForm extends StatelessWidget {
                 onUpdateSafeSearch: updateSafeSearch
               )
             : null,
+        ),
+        SectionLabel(
+          label: AppLocalizations.of(context)!.queryLogsAndStatistics,
+          padding: const EdgeInsets.all(24),
+        ),
+        CustomSwitchListTile(
+          title: AppLocalizations.of(context)!.ignoreClientQueryLog,
+          value: ignoreClientQueryLog,
+          onChanged: updateIgnoreClientQueryLog,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 4
+          ),
+        ),
+        CustomSwitchListTile(
+          title: AppLocalizations.of(context)!.ignoreClientStatistics,
+          value: ignoreClientStatistics,
+          onChanged: updateIgnoreClientStatistics,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 4
+          ),
         ),
         SectionLabel(
           label: AppLocalizations.of(context)!.blockedServices,

@@ -702,5 +702,9 @@
     "useCustomIpEdnsDescription": "Allow to use custom IP for EDNS",
     "sortingOptions": "Sorting options",
     "fromHighestToLowest": "From highest to lowest",
-    "fromLowestToHighest": "From lowest to highest"
+    "fromLowestToHighest": "From lowest to highest",
+    "queryLogsAndStatistics": "Query logs and statistics",
+    "ignoreClientQueryLog": "Ignore this client in query log",
+    "ignoreClientStatistics": "Ignore this client in statistics",
+    "savingChanges": "Saving changes..."
 }
