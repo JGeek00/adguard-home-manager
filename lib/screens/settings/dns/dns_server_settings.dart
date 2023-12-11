@@ -41,6 +41,9 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
   final TextEditingController ipv6controller = TextEditingController();
   String? ipv6error;
 
+  final _ttlController = TextEditingController();
+  String? _ttlError;
+
   bool isDataValid = false;
 
   void validateIpv4(String value) {
@@ -90,13 +93,25 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
           ipv6error == null
         )
       ) == true && 
-      ednsIpError == null
+      ednsIpError == null && 
+      _ttlError == null
     ) {
       setState(() => isDataValid = true);
     }
     else {
       setState(() => isDataValid = false);
     }
+  }
+
+  void validateNumber(String value) {
+    final regex = RegExp(r'^(\d)+$');
+     if (regex.hasMatch(value) == true) {
+      setState(() => _ttlError = null);
+    }
+    else {
+      setState(() => _ttlError = AppLocalizations.of(context)!.invalidValue);
+    }
+    validateData();
   }
 
   @override
@@ -115,6 +130,9 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
     ipv4controller.text = dnsProvider.dnsInfo!.blockingIpv4;
     ipv6controller.text = dnsProvider.dnsInfo!.blockingIpv6;
     isDataValid = true;
+    _ttlController.text = dnsProvider.dnsInfo!.blockedResponseTtl != null
+      ? dnsProvider.dnsInfo!.blockedResponseTtl.toString()
+      : "";
     super.initState();
   }
 
@@ -137,7 +155,8 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
         "disable_ipv6": disableIpv6Resolving,
         "blocking_mode": blockingMode,
         "blocking_ipv4": ipv4controller.text,
-        "blocking_ipv6": ipv6controller.text
+        "blocking_ipv6": ipv6controller.text,
+        "blocked_response_ttl": int.parse(_ttlController.text)
       });
 
       processModal.close();
@@ -392,8 +411,28 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              const SizedBox(height: 30)
-            ]
+              const SizedBox(height: 30),
+            ],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextFormField(
+                controller: _ttlController,
+                onChanged: validateNumber,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.timer_rounded),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10)
+                    )
+                  ),
+                  errorText: _ttlError,
+                  labelText: AppLocalizations.of(context)!.blockedResponseTtl,
+                  helperText: AppLocalizations.of(context)!.blockedResponseTtlDescription,
+                  helperMaxLines: 2,
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ),
           ],
         ),
       ),

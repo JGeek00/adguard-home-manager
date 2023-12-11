@@ -710,5 +710,8 @@
     "fallbackDnsServers": "Servidores DNS alternativos",
     "fallbackDnsServersDescription": "Configura los servidores DNS alternativos",
     "fallbackDnsServersInfo": "Lista de servidores DNS alternativos utilizados cuando los servidores DNS de subida no responden. La sintaxis es la misma que en el campo de los principales DNS de subida anterior.",
-    "noFallbackDnsAdded": "No hay servidores DNS alternativos añadidos."
+    "noFallbackDnsAdded": "No hay servidores DNS alternativos añadidos.",
+    "blockedResponseTtl": "Respuesta TTL bloqueada",
+    "blockedResponseTtlDescription": "Especifica durante cuántos segundos los clientes deben almacenar en cache una respuesta filtrada",
+    "invalidValue": "Valor no válido"
 }
