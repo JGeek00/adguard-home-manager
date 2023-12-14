@@ -853,4 +853,18 @@ class ApiClientV2 {
     );
     return ApiResponse(successful: result.successful);
   }
+
+  Future<ApiResponse> testUpstreamDns({
+    required Map<String, dynamic> body
+  }) async {
+    final result = await HttpRequestClient.post(
+      urlPath: '/test_upstream_dns', 
+      server: server,
+      body: body
+    );
+    return ApiResponse(
+      successful: result.successful,
+      content: result.body != null ? jsonDecode(result.body!) : null
+    );
+  }
 }

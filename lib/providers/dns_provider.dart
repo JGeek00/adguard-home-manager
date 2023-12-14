@@ -112,6 +112,22 @@ class DnsProvider with ChangeNotifier {
     }
   }
 
+  Future<ApiResponse> saveFallbackDnsConfig(Map<String, dynamic> value) async {
+    final result = await _serversProvider!.apiClient2!.setDnsConfig(
+      data: value
+    );
+
+    if (result.successful == true) {
+      DnsInfo data = dnsInfo!;
+      data.bootstrapDns = List<String>.from(value['fallback_dns']);
+      setDnsInfoData(data);
+      return result;
+    }
+    else {
+      return result;
+    }
+  }
+
   Future<ApiResponse> saveCacheCacheConfig(Map<String, dynamic> value) async {
     final result = await _serversProvider!.apiClient2!.setDnsConfig(
       data: value
@@ -145,6 +161,7 @@ class DnsProvider with ChangeNotifier {
       data.blockingMode = value['blocking_mode'];
       data.blockingIpv4 = value['blocking_ipv4'];
       data.blockingIpv6 = value['blocking_ipv6'];
+      data.blockedResponseTtl = value['blocked_response_ttl'];
       setDnsInfoData(data);
       return result;
     }

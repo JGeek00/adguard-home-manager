@@ -29,13 +29,13 @@ class AddedList extends StatefulWidget {
   final bool splitView;
 
   const AddedList({
-    Key? key,
+    super.key,
     required this.scrollController,
     required this.data,
     required this.onClientSelected,
     this.selectedClient,
     required this.splitView
-  }) : super(key: key);
+  });
 
   @override
   State<AddedList> createState() => _AddedListState();
@@ -75,7 +75,7 @@ class _AddedListState extends State<AddedList> {
 
     void confirmEditClient(Client client) async {
       ProcessModal processModal = ProcessModal();
-      processModal.open(AppLocalizations.of(context)!.addingClient);
+      processModal.open(AppLocalizations.of(context)!.savingChanges);
       
       final result = await clientsProvider.editClient(client);
 

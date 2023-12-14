@@ -73,6 +73,9 @@ class _ClientScreenState extends State<ClientScreen> {
 
   List<ControllerListItem> upstreamServers = [];
 
+  bool _ignoreClientQueryLog = false;
+  bool _ignoreClientStatistics = false;
+
   void enableDisableGlobalSettingsFiltering() {
     if (useGlobalSettingsFiltering == true) {
       setState(() {
@@ -120,6 +123,8 @@ class _ClientScreenState extends State<ClientScreen> {
         id: uuid.v4(), 
         controller: TextEditingController(text: e)
       )).toList();
+      _ignoreClientQueryLog = widget.client!.ignoreQuerylog ?? false;
+      _ignoreClientStatistics = widget.client!.ignoreStatistics ?? false;
     }
     super.initState();
   }
@@ -140,7 +145,9 @@ class _ClientScreenState extends State<ClientScreen> {
         useGlobalBlockedServices: useGlobalSettingsServices, 
         blockedServices: blockedServices, 
         upstreams: List<String>.from(upstreamServers.map((e) => e.controller.text)), 
-        tags: selectedTags
+        tags: selectedTags,
+        ignoreQuerylog: _ignoreClientQueryLog,
+        ignoreStatistics: _ignoreClientStatistics
       );
       widget.onConfirm(client);
     }
@@ -214,6 +221,10 @@ class _ClientScreenState extends State<ClientScreen> {
               updateEnableSafeSearch: (v) => setState(() => enableSafeSearch = v), 
               updateSafeSearch: (v) => setState(() => safeSearch = v), 
               updateUseGlobalSettingsServices: (v) => setState(() => useGlobalSettingsServices = v), 
+              ignoreClientQueryLog: _ignoreClientQueryLog,
+              ignoreClientStatistics: _ignoreClientStatistics,
+              updateIgnoreClientQueryLog: (v) => setState(() => _ignoreClientQueryLog = v),
+              updateIgnoreClientStatistics: (v) => setState(() => _ignoreClientStatistics = v),
             ),
           ),
         ),
@@ -281,6 +292,10 @@ class _ClientScreenState extends State<ClientScreen> {
                   updateEnableSafeSearch: (v) => setState(() => enableSafeSearch = v), 
                   updateSafeSearch: (v) => setState(() => safeSearch = v), 
                   updateUseGlobalSettingsServices: (v) => setState(() => useGlobalSettingsServices = v), 
+                  ignoreClientQueryLog: _ignoreClientQueryLog,
+                  ignoreClientStatistics: _ignoreClientStatistics,
+                  updateIgnoreClientQueryLog: (v) => setState(() => _ignoreClientQueryLog = v),
+                  updateIgnoreClientStatistics: (v) => setState(() => _ignoreClientStatistics = v),
                 ),
               )
             ],

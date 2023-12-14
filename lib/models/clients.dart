@@ -87,6 +87,8 @@ class Client {
   final bool useGlobalBlockedServices;
   final bool useGlobalSettings;
   final SafeSearch? safeSearch;
+  final bool? ignoreQuerylog;
+  final bool? ignoreStatistics;
 
   Client({
     required this.name,
@@ -100,6 +102,8 @@ class Client {
     required this.useGlobalBlockedServices,
     required this.useGlobalSettings,
     required this.safeSearch,
+    required this.ignoreQuerylog,
+    required this.ignoreStatistics,
   });
 
   factory Client.fromJson(Map<String, dynamic> json) => Client(
@@ -115,7 +119,9 @@ class Client {
     useGlobalSettings: json["use_global_settings"],
     safeSearch: json["safe_search"] != null
       ? SafeSearch.fromJson(json["safe_search"]) 
-      : null
+      : null,
+    ignoreQuerylog: json["ignore_querylog"],
+    ignoreStatistics: json["ignore_statistics"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -130,5 +136,7 @@ class Client {
     "safe_search": safeSearch,
     "use_global_blocked_services": useGlobalBlockedServices,
     "use_global_settings": useGlobalSettings,
+    "ignore_querylog": ignoreQuerylog,
+    "ignore_statistics": ignoreStatistics,
   };
 }

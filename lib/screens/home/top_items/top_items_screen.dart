@@ -15,6 +15,8 @@ import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 
+enum _SortingOptions { highestToLowest, lowestToHighest }
+
 class TopItemsScreen extends StatefulWidget {
   final HomeTopItems type;
   final String title;
@@ -44,6 +46,7 @@ class TopItemsScreen extends StatefulWidget {
 }
 
 class _TopItemsScreenState extends State<TopItemsScreen> {
+  _SortingOptions _sortingOptions = _SortingOptions.highestToLowest;
   bool searchActive = false;
   final TextEditingController searchController = TextEditingController();
 
@@ -68,6 +71,10 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
     for (var element in data) {
       total = total + double.parse(element.values.toList()[0].toString());
     }
+
+    final sortedValues = _sortingOptions == _SortingOptions.lowestToHighest
+      ? screenData.reversed.toList()
+      : screenData.toList();
     
     if (widget.isFullscreen == true) {
       return Dialog.fullscreen(
@@ -119,6 +126,53 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                 icon: const Icon(Icons.clear_rounded),
                 tooltip: AppLocalizations.of(context)!.clearSearch,
               ),
+              PopupMenuButton(
+                icon: const Icon(Icons.sort_rounded),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    onTap: () => setState(() => _sortingOptions = _SortingOptions.highestToLowest),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.arrow_downward_rounded),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(AppLocalizations.of(context)!.fromHighestToLowest)
+                        ),
+                        const SizedBox(width: 16),
+                        Icon(
+                          _sortingOptions == _SortingOptions.highestToLowest
+                            ? Icons.radio_button_checked_rounded
+                            : Icons.radio_button_unchecked_rounded,
+                          color: _sortingOptions == _SortingOptions.highestToLowest
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                        )
+                      ],
+                    )
+                  ),
+                  PopupMenuItem(
+                    onTap: () => setState(() => _sortingOptions = _SortingOptions.lowestToHighest),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.arrow_upward_rounded),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(AppLocalizations.of(context)!.fromLowestToHighest)
+                        ),
+                        const SizedBox(width: 16),
+                        Icon(
+                          _sortingOptions == _SortingOptions.lowestToHighest
+                            ? Icons.radio_button_checked_rounded
+                            : Icons.radio_button_unchecked_rounded,
+                          color: _sortingOptions == _SortingOptions.lowestToHighest
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                        )
+                      ],
+                    )
+                  ),
+                ],
+              ),
               const SizedBox(width: 8)
             ],
           ),
@@ -128,7 +182,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
               isClient: widget.isClient,
               onTapEntry: widget.onTapEntry,
               options: widget.options,
-              screenData: screenData,
+              screenData: sortedValues,
               total: total,
               withProgressBar: widget.withProgressBar,
             ),
@@ -193,7 +247,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                   isClient: widget.isClient,
                   onTapEntry: widget.onTapEntry,
                   options: widget.options,
-                  screenData: screenData,
+                  screenData: sortedValues,
                   total: total,
                   withProgressBar: widget.withProgressBar,
                 ),

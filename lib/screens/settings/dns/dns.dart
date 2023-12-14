@@ -5,6 +5,8 @@ import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/dns/fallback_dns.dart';
+import 'package:adguard_home_manager/screens/settings/dns/test_upstream_dns_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dns/clear_dns_cache_dialog.dart';
 import 'package:adguard_home_manager/screens/settings/dns/cache_config.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns_server_settings.dart';
@@ -84,6 +86,14 @@ class _DnsSettingsState extends State<DnsSettings> {
         title:  Text(AppLocalizations.of(context)!.dnsSettings),
         surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         actions: [
+          IconButton(
+            onPressed: () => showDialog(
+              context: context, 
+              builder: (ctx) => const TestUpstreamDnsModal()
+            ),
+            icon: const Icon(Icons.upload_rounded),
+            tooltip: AppLocalizations.of(context)!.testUpstreamDnsServers,
+          ),
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -157,6 +167,12 @@ class _DnsSettingsState extends State<DnsSettings> {
                       subtitle: AppLocalizations.of(context)!.bootstrapDnsDescription,
                       onTap: () => navigate(const BootstrapDnsScreen()),
                       icon: Icons.dns_rounded,
+                    ),
+                    if (dnsProvider.dnsInfo!.fallbackDns != null) CustomListTile(
+                      title: AppLocalizations.of(context)!.fallbackDnsServers,
+                      subtitle: AppLocalizations.of(context)!.fallbackDnsServersDescription,
+                      onTap: () => navigate(const FallbackDnsScreen()),
+                      icon: Icons.alt_route_rounded,
                     ),
                     CustomListTile(
                       title: AppLocalizations.of(context)!.privateReverseDnsServers,

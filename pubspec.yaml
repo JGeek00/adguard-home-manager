@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.12.4+115
+version: 2.13.0+117
 
 environment:
   sdk: '>=2.18.1 <3.0.0'
@@ -44,7 +44,7 @@ dependencies:
   package_info_plus: ^5.0.1
   flutter_displaymode: ^0.6.0 
   dynamic_color: ^1.6.8
-  animations: ^2.0.8
+  animations: ^2.0.10
   device_info_plus: ^9.1.1
   uuid: ^4.2.1
   expandable: ^5.0.1
@@ -58,7 +58,7 @@ dependencies:
   html: ^0.15.4
   flutter_html: ^3.0.0-beta.2
   sqlite3_flutter_libs: ^0.5.18
-  sqflite_common_ffi: ^2.3.0+4
+  sqflite_common_ffi: ^2.3.1
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding
@@ -67,7 +67,7 @@ dependencies:
     git:
       url: https://github.com/JGeek00/flutter_split_view
       ref: master-alt
-  url_launcher: ^6.1.11
+  url_launcher: ^6.2.2
   contextmenu: ^3.0.0
   async: ^2.11.0
   sentry_flutter: ^7.13.2
@@ -75,7 +75,7 @@ dependencies:
   flutter_reorderable_list: ^1.3.1
   pie_chart: ^5.4.0
   segmented_button_slide: ^1.0.4
-  http: ^1.1.0
+  http: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -88,7 +88,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^3.0.1
   flutter_launcher_icons: ^0.13.1
-  flutter_native_splash: ^2.3.6
+  flutter_native_splash: ^2.3.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

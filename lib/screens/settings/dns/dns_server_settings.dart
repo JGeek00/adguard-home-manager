@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,7 +25,12 @@ class DnsServerSettingsScreen extends StatefulWidget {
 class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
   final TextEditingController limitRequestsController = TextEditingController();
   String? limitRequestsError;
+  final _expandableCustomEdns = ExpandableController();
+  final _expandableEdnsIp = ExpandableController();
   bool enableEdns = false;
+  bool useCustomIpEdns = false;
+  final _customIpEdnsController = TextEditingController();
+  String? ednsIpError;
   bool enableDnssec = false;
   bool disableIpv6Resolving = false;
 
@@ -35,6 +41,9 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
   final TextEditingController ipv6controller = TextEditingController();
   String? ipv6error;
 
+  final _ttlController = TextEditingController();
+  String? _ttlError;
+
   bool isDataValid = false;
 
   void validateIpv4(String value) {
@@ -44,6 +53,17 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
     }
     else {
       setState(() => ipv4error = AppLocalizations.of(context)!.invalidIp);
+    }
+    validateData();
+  }
+
+  void validateEdns(String value) {
+    RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
+    if (ipAddress.hasMatch(value) == true) {
+      setState(() => ednsIpError = null);
+    }
+    else {
+      setState(() => ednsIpError = AppLocalizations.of(context)!.ipNotValid);
     }
     validateData();
   }
@@ -72,7 +92,9 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
           ipv6controller.text != '' &&
           ipv6error == null
         )
-      ) == true
+      ) == true && 
+      ednsIpError == null && 
+      _ttlError == null
     ) {
       setState(() => isDataValid = true);
     }
@@ -81,18 +103,36 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
     }
   }
 
+  void validateNumber(String value) {
+    final regex = RegExp(r'^(\d)+$');
+     if (regex.hasMatch(value) == true) {
+      setState(() => _ttlError = null);
+    }
+    else {
+      setState(() => _ttlError = AppLocalizations.of(context)!.invalidValue);
+    }
+    validateData();
+  }
+
   @override
   void initState() {
     final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
 
     limitRequestsController.text = dnsProvider.dnsInfo!.ratelimit.toString();
     enableEdns = dnsProvider.dnsInfo!.ednsCsEnabled;
+    useCustomIpEdns = dnsProvider.dnsInfo!.ednsCsUseCustom ?? false;
+    _customIpEdnsController.text = dnsProvider.dnsInfo!.ednsCsCustomIp ?? "";
+    if (dnsProvider.dnsInfo!.ednsCsEnabled == true) _expandableCustomEdns.toggle();
+    if (dnsProvider.dnsInfo!.ednsCsUseCustom == true) _expandableEdnsIp.toggle();
     enableDnssec = dnsProvider.dnsInfo!.dnssecEnabled;
     disableIpv6Resolving = dnsProvider.dnsInfo!.disableIpv6;
     blockingMode = dnsProvider.dnsInfo!.blockingMode;
     ipv4controller.text = dnsProvider.dnsInfo!.blockingIpv4;
     ipv6controller.text = dnsProvider.dnsInfo!.blockingIpv6;
     isDataValid = true;
+    _ttlController.text = dnsProvider.dnsInfo!.blockedResponseTtl != null
+      ? dnsProvider.dnsInfo!.blockedResponseTtl.toString()
+      : "";
     super.initState();
   }
 
@@ -109,11 +149,14 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
       final result = await dnsProvider.saveDnsServerConfig({
         "ratelimit": int.parse(limitRequestsController.text),
         "edns_cs_enabled": enableEdns,
+        "edns_cs_use_custom": useCustomIpEdns,
+        "edns_cs_custom_ip": _customIpEdnsController.text,
         "dnssec_enabled": enableDnssec,
         "disable_ipv6": disableIpv6Resolving,
         "blocking_mode": blockingMode,
         "blocking_ipv4": ipv4controller.text,
-        "blocking_ipv6": ipv6controller.text
+        "blocking_ipv6": ipv6controller.text,
+        "blocked_response_ttl": int.parse(_ttlController.text)
       });
 
       processModal.close();
@@ -200,9 +243,77 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
             const SizedBox(height: 10),
             CustomSwitchListTile(
               value: enableEdns, 
-              onChanged: (value) => setState(() => enableEdns = value), 
+              onChanged: (value) => setState(() {
+                enableEdns = value;
+                _expandableCustomEdns.toggle();
+                if (value == false) {
+                  useCustomIpEdns = false;
+                  if (_expandableEdnsIp.expanded == true) _expandableEdnsIp.toggle();
+                  _customIpEdnsController.text = "";
+                  ednsIpError = null;
+                }
+                validateData();
+              }), 
               title: AppLocalizations.of(context)!.enableEdns,
               subtitle: AppLocalizations.of(context)!.enableEdnsDescription,
+            ),
+            ExpandableNotifier(
+              controller: _expandableCustomEdns,
+              child: Expandable(
+                collapsed: const SizedBox(),
+                expanded: Column(
+                  children: [
+                    CustomSwitchListTile(
+                      padding: const EdgeInsets.only(
+                        left: 50,
+                        top: 12,
+                        bottom: 12,
+                        right: 16
+                      ),
+                      value: useCustomIpEdns, 
+                      onChanged: (value) => setState(() {
+                        useCustomIpEdns = value;
+                        _expandableEdnsIp.toggle();
+                        if (useCustomIpEdns == false) {
+                          _customIpEdnsController.text = "";
+                          ednsIpError = null;
+                        }
+                        validateData();
+                      }), 
+                      title: AppLocalizations.of(context)!.useCustomIpEdns,
+                      subtitle: AppLocalizations.of(context)!.useCustomIpEdnsDescription,
+                    ),
+                    ExpandableNotifier(
+                      controller: _expandableEdnsIp,
+                      child: Expandable(
+                        collapsed: const SizedBox(),
+                        expanded: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 16,
+                            bottom: 16,
+                            right: 16,
+                            left: 70
+                          ),
+                          child: TextFormField(
+                            controller: _customIpEdnsController,
+                            onChanged: validateEdns,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.link_rounded),
+                              border: const OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10)
+                                )
+                              ),
+                              errorText: ednsIpError,
+                              labelText: AppLocalizations.of(context)!.ipAddress,
+                            ),
+                          ),
+                        ),
+                      )
+                    ),
+                  ],
+                ),
+              )
             ),
             CustomSwitchListTile(
               value: enableDnssec, 
@@ -300,8 +411,28 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              const SizedBox(height: 30)
-            ]
+              const SizedBox(height: 30),
+            ],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextFormField(
+                controller: _ttlController,
+                onChanged: validateNumber,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.timer_rounded),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10)
+                    )
+                  ),
+                  errorText: _ttlError,
+                  labelText: AppLocalizations.of(context)!.blockedResponseTtl,
+                  helperText: AppLocalizations.of(context)!.blockedResponseTtlDescription,
+                  helperMaxLines: 2,
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ),
           ],
         ),
       ),

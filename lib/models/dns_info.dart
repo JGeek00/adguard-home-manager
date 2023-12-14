@@ -2,10 +2,13 @@ class DnsInfo {
   List<String> upstreamDns;
   String? upstreamDnsFile;
   List<String> bootstrapDns;
+  List<String>? fallbackDns;
   bool protectionEnabled;
   int ratelimit;
   String blockingMode;
   bool ednsCsEnabled;
+  bool? ednsCsUseCustom;
+  String? ednsCsCustomIp;
   bool dnssecEnabled;
   bool disableIpv6;
   String? upstreamMode;
@@ -19,15 +22,19 @@ class DnsInfo {
   String blockingIpv4;
   String blockingIpv6;
   List<String> defaultLocalPtrUpstreams;
+  int? blockedResponseTtl;
 
   DnsInfo({
     required this.upstreamDns,
     required this.upstreamDnsFile,
     required this.bootstrapDns,
+    required this.fallbackDns,
     required this.protectionEnabled,
     required this.ratelimit,
     required this.blockingMode,
     required this.ednsCsEnabled,
+    required this.ednsCsUseCustom,
+    required this.ednsCsCustomIp,
     required this.dnssecEnabled,
     required this.disableIpv6,
     required this.upstreamMode,
@@ -41,16 +48,20 @@ class DnsInfo {
     required this.blockingIpv4,
     required this.blockingIpv6,
     required this.defaultLocalPtrUpstreams,
+    required this.blockedResponseTtl,
   });
 
   factory DnsInfo.fromJson(Map<String, dynamic> json) => DnsInfo(
     upstreamDns: json["upstream_dns"] != null ? List<String>.from(json["upstream_dns"].map((x) => x)) : [],
     upstreamDnsFile: json["upstream_dns_file"],
     bootstrapDns: json["bootstrap_dns"] != null ? List<String>.from(json["bootstrap_dns"].map((x) => x)) : [],
+    fallbackDns: json["fallback_dns"] != null ? List<String>.from(json["fallback_dns"].map((x) => x)) : [],
     protectionEnabled: json["protection_enabled"],
     ratelimit: json["ratelimit"],
     blockingMode: json["blocking_mode"],
     ednsCsEnabled: json["edns_cs_enabled"],
+    ednsCsUseCustom: json["edns_cs_use_custom"],
+    ednsCsCustomIp: json["edns_cs_custom_ip"],
     dnssecEnabled: json["dnssec_enabled"],
     disableIpv6: json["disable_ipv6"],
     upstreamMode: json["upstream_mode"],
@@ -64,16 +75,20 @@ class DnsInfo {
     blockingIpv4: json["blocking_ipv4"],
     blockingIpv6: json["blocking_ipv6"],
     defaultLocalPtrUpstreams: json["default_local_ptr_upstreams"] != null ? List<String>.from(json["default_local_ptr_upstreams"].map((x) => x)) : [],
+    blockedResponseTtl: json["blocked_response_ttl"]
   );
 
   Map<String, dynamic> toJson() => {
     "upstream_dns": List<dynamic>.from(upstreamDns.map((x) => x)),
     "upstream_dns_file": upstreamDnsFile,
     "bootstrap_dns": List<dynamic>.from(bootstrapDns.map((x) => x)),
+    "fallback_dns": List<dynamic>.from(bootstrapDns.map((x) => x)),
     "protection_enabled": protectionEnabled,
     "ratelimit": ratelimit,
     "blocking_mode": blockingMode,
     "edns_cs_enabled": ednsCsEnabled,
+    "edns_cs_use_custom": ednsCsUseCustom,
+    "edns_cs_custom_ip": ednsCsCustomIp,
     "dnssec_enabled": dnssecEnabled,
     "disable_ipv6": disableIpv6,
     "upstream_mode": upstreamMode,
@@ -87,5 +102,6 @@ class DnsInfo {
     "blocking_ipv4": blockingIpv4,
     "blocking_ipv6": blockingIpv6,
     "default_local_ptr_upstreams": List<dynamic>.from(defaultLocalPtrUpstreams.map((x) => x)),
+    "blocked_response_ttl": blockedResponseTtl
   };
 }

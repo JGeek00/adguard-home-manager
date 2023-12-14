@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,9 +18,9 @@ class HomeAppBar extends StatelessWidget {
   final bool innerBoxScrolled;
 
   const HomeAppBar({
-    Key? key,
+    super.key,
     required this.innerBoxScrolled
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +120,14 @@ class HomeAppBar extends StatelessWidget {
         ],
       ),
       actions: [
+        if (!(Platform.isAndroid || Platform.isIOS)) ...[
+          IconButton(
+            onPressed: () => statusProvider.getServerStatus(), 
+            icon: const Icon(Icons.refresh_rounded),
+            tooltip: AppLocalizations.of(context)!.refresh,
+          ),
+          const SizedBox(width: 8),
+        ],
         PopupMenuButton(
           itemBuilder: (context) => [
             PopupMenuItem(
