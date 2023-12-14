@@ -49,6 +49,7 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
                   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverSafeArea(
                     top: false,
+                    bottom: false,
                     sliver: SliverAppBar(
                       title: Text(AppLocalizations.of(context)!.accessSettings),
                       pinned: true,
@@ -56,10 +57,7 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
                       centerTitle: false,
                       forceElevated: innerBoxIsScrolled,
                       surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
-                      bottom: PreferredSize(
-                        preferredSize: const Size(double.maxFinite, 50), 
-                        child: _Tabs(tabController: _tabController)
-                      )
+                      bottom: _Tabs(tabController: _tabController)
                     ),
                   ),
                 )
@@ -92,7 +90,7 @@ class _AccessSettingsState extends State<AccessSettings> with TickerProviderStat
   }
 }
 
-class _Tabs extends StatelessWidget {
+class _Tabs extends StatelessWidget implements PreferredSizeWidget {
   final TabController tabController;
 
   const _Tabs({
@@ -137,6 +135,9 @@ class _Tabs extends StatelessWidget {
       ]
     );
   }
+  
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class _TabsView extends StatelessWidget {
