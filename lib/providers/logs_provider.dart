@@ -114,9 +114,15 @@ class LogsProvider with ChangeNotifier {
     _offset = value;
   }
 
-  void setSelectedResultStatus(String value) {
+  void setSelectedResultStatus({
+    required String value,
+    bool? refetch
+  }) {
     _selectedResultStatus = value;
     notifyListeners();
+    if (refetch = true) {
+      filterLogs();
+    }
   }
 
   void setSearchText(String? value) {

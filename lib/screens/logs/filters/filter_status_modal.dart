@@ -34,7 +34,7 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
     final logsProvider = Provider.of<LogsProvider>(context);
 
     void apply() async {
-      logsProvider.setSelectedResultStatus(selectedResultStatus);
+      logsProvider.setSelectedResultStatus(value: selectedResultStatus);
 
       Navigator.pop(context);
     }
