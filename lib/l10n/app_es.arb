@@ -713,5 +713,7 @@
     "noFallbackDnsAdded": "No hay servidores DNS alternativos añadidos.",
     "blockedResponseTtl": "Respuesta TTL bloqueada",
     "blockedResponseTtlDescription": "Especifica durante cuántos segundos los clientes deben almacenar en cache una respuesta filtrada",
-    "invalidValue": "Valor no válido"
+    "invalidValue": "Valor no válido",
+    "noDataChart": "No hay datos para mostrar este gráfico.",
+    "noData": "No hay datos"
 }

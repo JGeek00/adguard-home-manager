@@ -153,6 +153,7 @@ class _HomeState extends State<Home> {
                                       logsProvider.filterLogs();
                                       appConfigProvider.setSelectedScreen(2);
                                     },
+                                    isDesktop: width > 700,
                                   ),
                                 ),
                                 FractionallySizedBox(
@@ -171,6 +172,7 @@ class _HomeState extends State<Home> {
                                       );
                                       appConfigProvider.setSelectedScreen(2);
                                     },
+                                    isDesktop: width > 700,
                                   ),
                                 ),
                                 FractionallySizedBox(
@@ -189,6 +191,7 @@ class _HomeState extends State<Home> {
                                       );
                                       appConfigProvider.setSelectedScreen(2);
                                     },
+                                    isDesktop: width > 700,
                                   ),
                                 ),
                                 FractionallySizedBox(
@@ -208,6 +211,7 @@ class _HomeState extends State<Home> {
                                       logsProvider.filterLogs();
                                       appConfigProvider.setSelectedScreen(2);
                                     },
+                                    isDesktop: width > 700,
                                   ),
                                 ),             
                               ],

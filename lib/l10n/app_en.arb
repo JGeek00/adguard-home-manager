@@ -713,5 +713,7 @@
     "noFallbackDnsAdded": "No fallback DNS servers added.",
     "blockedResponseTtl": "Blocked response TTL",
     "blockedResponseTtlDescription": "Specifies for how many seconds the clients should cache a filtered response",
-    "invalidValue": "Invalid value"
+    "invalidValue": "Invalid value",
+    "noDataChart": "There's no data to display this chart.",
+    "noData": "No data"
 }

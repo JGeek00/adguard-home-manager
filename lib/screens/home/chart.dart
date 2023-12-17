@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/line_chart.dart';
 
@@ -13,6 +14,7 @@ class HomeChart extends StatefulWidget {
   final Color color;
   final int hoursInterval;
   final void Function() onTapTitle;
+  final bool isDesktop;
 
   const HomeChart({
     super.key,
@@ -23,6 +25,7 @@ class HomeChart extends StatefulWidget {
     required this.color,
     required this.hoursInterval,
     required this.onTapTitle,
+    required this.isDesktop,
   });
 
   @override
@@ -58,7 +61,9 @@ class _HomeChartState extends State<HomeChart> {
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: isEmpty
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.start,
                     children: [
                       Flexible(
                         child: MouseRegion(
@@ -68,7 +73,7 @@ class _HomeChartState extends State<HomeChart> {
                           child: GestureDetector(
                             onTapDown: (_) => setState(() => _isHover = true),
                             onTapUp: (_) => setState(() => _isHover = false),
-                            onTap: widget.onTapTitle,
+                            onTap: !isEmpty ? () => widget.onTapTitle () : null,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -79,66 +84,64 @@ class _HomeChartState extends State<HomeChart> {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w500,
-                                      color: _isHover
+                                      color: _isHover && !isEmpty
                                         ? Theme.of(context).colorScheme.onSurfaceVariant
                                         : Theme.of(context).colorScheme.onSurface,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 4),
-                                Icon(
-                                  Icons.chevron_right_rounded,
-                                  size: 20,
-                                  color: _isHover
-                                    ? Theme.of(context).colorScheme.onSurfaceVariant
-                                    : Theme.of(context).colorScheme.onSurface,
-                                )
+                                if (!isEmpty) ...[
+                                  const SizedBox(width: 4),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 20,
+                                    color: _isHover && !isEmpty
+                                      ? Theme.of(context).colorScheme.onSurfaceVariant
+                                      : Theme.of(context).colorScheme.onSurface,
+                                  )
+                                ],
                               ],
                             ),
                           ),
                         ),
                       ),
-                      !isEmpty
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                widget.primaryValue,
-                                style: TextStyle(
-                                  color: widget.color,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500
-                                ),
-                              ),
-                              Text(
-                                widget.secondaryValue,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: widget.color
-                                ),
-                              )
-                            ],
+                      if (!isEmpty) Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            widget.primaryValue,
+                            style: TextStyle(
+                              color: widget.color,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500
+                            ),
+                          ),
+                          Text(
+                            widget.secondaryValue,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: widget.color
+                            ),
                           )
-                        : Row(
-                            children: [
-                              Text(
-                                widget.primaryValue,
-                                style: TextStyle(
-                                  color: widget.color,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "(${widget.secondaryValue})",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: widget.color
-                                ),
-                              )
-                            ],
+                        ],
+                      ),
+                      if (isEmpty && !widget.isDesktop) Column(
+                        children: [
+                          Icon(
+                            Icons.show_chart_rounded,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            size: 16,
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!.noData,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
                           )
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -153,6 +156,28 @@ class _HomeChartState extends State<HomeChart> {
                     context: context,
                   )
                 ),
+                if (isEmpty && widget.isDesktop) SizedBox(
+                  height: 150,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.show_chart_rounded,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        size: 30,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        AppLocalizations.of(context)!.noDataChart,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           ),
