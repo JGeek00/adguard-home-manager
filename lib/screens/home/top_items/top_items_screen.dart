@@ -24,7 +24,7 @@ class TopItemsScreen extends StatefulWidget {
   final List<Map<String, dynamic>> data;
   final bool withProgressBar;
   final String Function(dynamic) buildValue;
-  final List<MenuOption> options;
+  final List<MenuOption> Function(dynamic) options;
   final void Function(dynamic)? onTapEntry;
   final bool isFullscreen;
 
@@ -263,7 +263,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
 class _Content extends StatelessWidget {
   final List<Map<String, dynamic>> screenData;
   final bool? isClient;
-  final List<MenuOption> options;
+  final List<MenuOption> Function(dynamic) options;
   final bool withProgressBar;
   final void Function(dynamic)? onTapEntry;
   final String Function(dynamic) buildValue;

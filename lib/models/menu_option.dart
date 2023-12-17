@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MenuOption {
   final IconData? icon;
   final String title;
-  final void Function(dynamic) action;
+  final void Function() action;
   final bool? disabled;
 
   const MenuOption({

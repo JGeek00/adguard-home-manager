@@ -46,11 +46,11 @@ class _AddedClientTileState extends State<AddedClientTile> {
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(28),
           child: OptionsMenu(
-            options: [
+            options: (_) => [
               MenuOption(
                 icon: Icons.copy_rounded,
                 title: AppLocalizations.of(context)!.copyClipboard, 
-                action: (_) => copyToClipboard(
+                action: () => copyToClipboard(
                   value: widget.client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''), 
                   successMessage: AppLocalizations.of(context)!.copiedClipboard,
                 )
@@ -164,16 +164,16 @@ class _AddedClientTileState extends State<AddedClientTile> {
     }
     else {
       return OptionsMenu(
-        options: [
+        options: (_) => [
           if (widget.onEdit != null) MenuOption(
             title: AppLocalizations.of(context)!.seeDetails,
             icon: Icons.file_open_rounded,
-            action: (_) => widget.onEdit!(widget.client)
+            action: () => widget.onEdit!(widget.client)
           ),
           MenuOption(
             icon: Icons.copy_rounded,
             title: AppLocalizations.of(context)!.copyClipboard, 
-            action: (_) => copyToClipboard(
+            action: () => copyToClipboard(
               value: widget.client.ids.toString().replaceAll(RegExp(r'^\[|\]$'), ''), 
               successMessage: AppLocalizations.of(context)!.copiedClipboard,
             )

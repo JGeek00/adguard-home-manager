@@ -21,7 +21,7 @@ class TopItemsSection extends StatefulWidget {
   final bool withChart;
   final bool withProgressBar;
   final String Function(dynamic) buildValue;
-  final List<MenuOption> menuOptions;
+  final List<MenuOption> Function(dynamic) menuOptions;
   final void Function(dynamic)? onTapEntry;
 
   const TopItemsSection({
@@ -350,7 +350,7 @@ class _ItemsList extends StatelessWidget {
   final HomeTopItems type;
   final bool showChart;
   final String Function(dynamic) buildValue;
-  final List<MenuOption> menuOptions;
+  final List<MenuOption> Function(dynamic) menuOptions;
   final void Function(dynamic)? onTapEntry;
     
   const _ItemsList({

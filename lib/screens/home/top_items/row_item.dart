@@ -16,7 +16,7 @@ class RowItem extends StatefulWidget {
   final bool clients;
   final bool showColor;
   final String? unit;
-  final List<MenuOption> options;
+  final List<MenuOption> Function(dynamic) options;
   final void Function(dynamic)? onTapEntry;
 
   const RowItem({

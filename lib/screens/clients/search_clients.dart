@@ -226,16 +226,16 @@ class _SearchClientsState extends State<SearchClients> {
                   itemCount: clientsScreen.length,
                   padding: const EdgeInsets.only(bottom: 0),
                   itemBuilder: (context, index) => OptionsMenu(
-                    options: [
+                    options: (v) => [
                       MenuOption(
                         icon: Icons.edit_rounded,
                         title: AppLocalizations.of(context)!.edit, 
-                        action: (v) => openClientModal(v)
+                        action: () => openClientModal(v)
                       ),
                       MenuOption(
                         icon: Icons.delete_rounded,
                         title: AppLocalizations.of(context)!.delete, 
-                        action: (v) => openDeleteModal(v)
+                        action: () => openDeleteModal(v)
                       ),
                     ],
                     value: clientsScreen[index],

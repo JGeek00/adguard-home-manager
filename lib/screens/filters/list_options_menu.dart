@@ -146,7 +146,7 @@ class ListOptionsMenu extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           child: OptionsMenu(
-            options: [
+            options: (_) => [
               MenuOption(
                 title: list.enabled == true
                   ? AppLocalizations.of(context)!.disable
@@ -154,12 +154,12 @@ class ListOptionsMenu extends StatelessWidget {
                 icon: list.enabled == true
                   ? Icons.gpp_bad_rounded
                   : Icons.verified_user_rounded,
-                action: (_) => enableDisable()
+                action: () => enableDisable()
               ),
               MenuOption(
                 title: AppLocalizations.of(context)!.copyListUrl,
                 icon: Icons.copy_rounded,
-                action: (_) => copyToClipboard(
+                action: () => copyToClipboard(
                   value: list.url, 
                   successMessage: AppLocalizations.of(context)!.listUrlCopied
                 )
@@ -167,12 +167,12 @@ class ListOptionsMenu extends StatelessWidget {
               MenuOption(
                 title: AppLocalizations.of(context)!.openListUrl,
                 icon: Icons.open_in_browser_rounded,
-                action: (_) => openUrl(list.url)
+                action: () => openUrl(list.url)
               ),
               MenuOption(
                 title: AppLocalizations.of(context)!.selectionMode,
                 icon: Icons.check_rounded,
-                action: (_) => Future.delayed(
+                action: () => Future.delayed(
                   const Duration(milliseconds: 0), 
                   () => openSelectionMode()
                 )

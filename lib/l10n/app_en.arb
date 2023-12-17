@@ -715,5 +715,8 @@
     "blockedResponseTtlDescription": "Specifies for how many seconds the clients should cache a filtered response",
     "invalidValue": "Invalid value",
     "noDataChart": "There's no data to display this chart.",
-    "noData": "No data"
+    "noData": "No data",
+    "unblockClient": "Unblock client",
+    "blockingClient": "Blocking client...",
+    "unblockingClient": "Unblocking client..."
 }
