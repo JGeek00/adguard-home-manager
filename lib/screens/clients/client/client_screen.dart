@@ -39,6 +39,8 @@ class ClientScreen extends StatefulWidget {
 }
 
 class _ClientScreenState extends State<ClientScreen> {
+  final _scrollController = ScrollController();
+
   final Uuid uuid = const Uuid();
   
   bool validValues = false;
@@ -75,6 +77,15 @@ class _ClientScreenState extends State<ClientScreen> {
 
   bool _ignoreClientQueryLog = false;
   bool _ignoreClientStatistics = false;
+
+  bool _enableDnsCache = false;
+  final _dnsCacheField = TextEditingController();
+  String? _dnsCacheError;
+
+  // VALIDATIONS
+  bool _nameValid = true;
+  bool _identifiersValid = true;
+  bool _dnsCacheValid = true;
 
   void enableDisableGlobalSettingsFiltering() {
     if (useGlobalSettingsFiltering == true) {
@@ -125,6 +136,10 @@ class _ClientScreenState extends State<ClientScreen> {
       )).toList();
       _ignoreClientQueryLog = widget.client!.ignoreQuerylog ?? false;
       _ignoreClientStatistics = widget.client!.ignoreStatistics ?? false;
+      _enableDnsCache = widget.client!.upstreamsCacheEnabled ?? false;
+      _dnsCacheField.text = widget.client!.upstreamsCacheSize != null
+        ? widget.client!.upstreamsCacheSize.toString()
+        : "";
     }
     super.initState();
   }
@@ -147,20 +162,37 @@ class _ClientScreenState extends State<ClientScreen> {
         upstreams: List<String>.from(upstreamServers.map((e) => e.controller.text)), 
         tags: selectedTags,
         ignoreQuerylog: _ignoreClientQueryLog,
-        ignoreStatistics: _ignoreClientStatistics
+        ignoreStatistics: _ignoreClientStatistics,
+        upstreamsCacheEnabled: _enableDnsCache,
+        upstreamsCacheSize: _dnsCacheField.text != ""
+          ? int.parse(_dnsCacheField.text)
+          : null
       );
       widget.onConfirm(client);
+    }
+
+    void validateValues() {
+      _nameValid = nameController.text != '';
+      _identifiersValid = identifiersControllers.isNotEmpty && identifiersControllers[0].controller.text != '';
+      _dnsCacheValid = (_dnsCacheField.text == "" || _dnsCacheField.text != "" && RegExp(r'^\d+$').hasMatch(_dnsCacheField.text));
+      if (_nameValid && _identifiersValid && _dnsCacheValid) {
+        createClient();
+        Navigator.pop(context);
+      }
+      else {
+        _scrollController.animateTo(
+          0, 
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 500)
+        );
+        setState(() => {});
+      }
     }
 
     List<Widget> actions() {
       return [
         IconButton(
-          onPressed: validValues == true
-            ? () {
-                createClient();
-                Navigator.pop(context);
-              }
-            : null, 
+          onPressed: validateValues,
           icon: const Icon(Icons.save_rounded),
           tooltip: AppLocalizations.of(context)!.save,
         ),
@@ -193,38 +225,52 @@ class _ClientScreenState extends State<ClientScreen> {
             actions: actions(),
           ),
           body: SafeArea(
-            child: ClientForm(
-              isFullScreen: true,
-              client: widget.client, 
-              nameController: nameController,
-              updateValidValues: (v) => setState(() => validValues = v), 
-              identifiersControllers: identifiersControllers, 
-              selectedTags: selectedTags, 
-              useGlobalSettingsFiltering: useGlobalSettingsFiltering, 
-              enableFiltering: enableFiltering, 
-              enableParentalControl: enableParentalControl, 
-              enableSafeBrowsing: enableSafeBrowsing, 
-              enableSafeSearch: enableSafeSearch, 
-              safeSearch: safeSearch, 
-              blockedServices: blockedServices, 
-              updateBlockedServices: (v) => setState(() => blockedServices = v), 
-              upstreamServers: upstreamServers, 
-              updateUpstreamServers: (v) => setState(() => upstreamServers = v), 
-              defaultSafeSearch: defaultSafeSearch, 
-              useGlobalSettingsServices: useGlobalSettingsServices, 
-              updateSelectedTags: (v) => setState(() => selectedTags = v),
-              updateIdentifiersControllers: (v) => setState(() => identifiersControllers = v), 
-              enableDisableGlobalSettingsFiltering: enableDisableGlobalSettingsFiltering, 
-              updateEnableFiltering: (v) => setState(() => enableFiltering = v), 
-              updateEnableParentalControl: (v) => setState(() => enableParentalControl = v), 
-              updateEnableSafeBrowsing: (v) => setState(() => enableSafeBrowsing = v), 
-              updateEnableSafeSearch: (v) => setState(() => enableSafeSearch = v), 
-              updateSafeSearch: (v) => setState(() => safeSearch = v), 
-              updateUseGlobalSettingsServices: (v) => setState(() => useGlobalSettingsServices = v), 
-              ignoreClientQueryLog: _ignoreClientQueryLog,
-              ignoreClientStatistics: _ignoreClientStatistics,
-              updateIgnoreClientQueryLog: (v) => setState(() => _ignoreClientQueryLog = v),
-              updateIgnoreClientStatistics: (v) => setState(() => _ignoreClientStatistics = v),
+            child: ListView(
+              controller: _scrollController,
+              children: [
+                if (!_nameValid || !_identifiersValid || !_dnsCacheValid) _Errors(
+                  nameValid: _nameValid, 
+                  identifiersValid: _identifiersValid, 
+                  dnsCacheValid: _dnsCacheValid
+                ),
+                ClientForm(
+                  isFullScreen: true,
+                  client: widget.client, 
+                  nameController: nameController,
+                  identifiersControllers: identifiersControllers, 
+                  selectedTags: selectedTags, 
+                  useGlobalSettingsFiltering: useGlobalSettingsFiltering, 
+                  enableFiltering: enableFiltering, 
+                  enableParentalControl: enableParentalControl, 
+                  enableSafeBrowsing: enableSafeBrowsing, 
+                  enableSafeSearch: enableSafeSearch, 
+                  safeSearch: safeSearch, 
+                  blockedServices: blockedServices, 
+                  updateBlockedServices: (v) => setState(() => blockedServices = v), 
+                  upstreamServers: upstreamServers, 
+                  updateUpstreamServers: (v) => setState(() => upstreamServers = v), 
+                  defaultSafeSearch: defaultSafeSearch, 
+                  useGlobalSettingsServices: useGlobalSettingsServices, 
+                  updateSelectedTags: (v) => setState(() => selectedTags = v),
+                  updateIdentifiersControllers: (v) => setState(() => identifiersControllers = v), 
+                  enableDisableGlobalSettingsFiltering: enableDisableGlobalSettingsFiltering, 
+                  updateEnableFiltering: (v) => setState(() => enableFiltering = v), 
+                  updateEnableParentalControl: (v) => setState(() => enableParentalControl = v), 
+                  updateEnableSafeBrowsing: (v) => setState(() => enableSafeBrowsing = v), 
+                  updateEnableSafeSearch: (v) => setState(() => enableSafeSearch = v), 
+                  updateSafeSearch: (v) => setState(() => safeSearch = v), 
+                  updateUseGlobalSettingsServices: (v) => setState(() => useGlobalSettingsServices = v), 
+                  ignoreClientQueryLog: _ignoreClientQueryLog,
+                  ignoreClientStatistics: _ignoreClientStatistics,
+                  updateIgnoreClientQueryLog: (v) => setState(() => _ignoreClientQueryLog = v),
+                  updateIgnoreClientStatistics: (v) => setState(() => _ignoreClientStatistics = v),
+                  enableDnsCache: _enableDnsCache,
+                  updateEnableDnsCache: (v) => setState(() => _enableDnsCache = v),
+                  dnsCacheField: _dnsCacheField,
+                  dnsCacheError: _dnsCacheError,
+                  updateDnsCacheError: (v) => setState(() => _dnsCacheError = v)
+                ),
+              ],
             ),
           ),
         ),
@@ -264,38 +310,52 @@ class _ClientScreenState extends State<ClientScreen> {
                 ),
               ),
               Flexible(
-                child:  ClientForm(
-                  isFullScreen: false,
-                  client: widget.client, 
-                  nameController: nameController,
-                  updateValidValues: (v) => setState(() => validValues = v), 
-                  identifiersControllers: identifiersControllers, 
-                  selectedTags: selectedTags, 
-                  useGlobalSettingsFiltering: useGlobalSettingsFiltering, 
-                  enableFiltering: enableFiltering, 
-                  enableParentalControl: enableParentalControl, 
-                  enableSafeBrowsing: enableSafeBrowsing, 
-                  enableSafeSearch: enableSafeSearch, 
-                  safeSearch: safeSearch, 
-                  blockedServices: blockedServices, 
-                  updateBlockedServices: (v) => setState(() => blockedServices = v), 
-                  upstreamServers: upstreamServers, 
-                  updateUpstreamServers: (v) => setState(() => upstreamServers = v), 
-                  defaultSafeSearch: defaultSafeSearch, 
-                  useGlobalSettingsServices: useGlobalSettingsServices, 
-                  updateSelectedTags: (v) => setState(() => selectedTags = v),
-                  updateIdentifiersControllers: (v) => setState(() => identifiersControllers = v), 
-                  enableDisableGlobalSettingsFiltering: enableDisableGlobalSettingsFiltering, 
-                  updateEnableFiltering: (v) => setState(() => enableFiltering = v), 
-                  updateEnableParentalControl: (v) => setState(() => enableParentalControl = v), 
-                  updateEnableSafeBrowsing: (v) => setState(() => enableSafeBrowsing = v), 
-                  updateEnableSafeSearch: (v) => setState(() => enableSafeSearch = v), 
-                  updateSafeSearch: (v) => setState(() => safeSearch = v), 
-                  updateUseGlobalSettingsServices: (v) => setState(() => useGlobalSettingsServices = v), 
-                  ignoreClientQueryLog: _ignoreClientQueryLog,
-                  ignoreClientStatistics: _ignoreClientStatistics,
-                  updateIgnoreClientQueryLog: (v) => setState(() => _ignoreClientQueryLog = v),
-                  updateIgnoreClientStatistics: (v) => setState(() => _ignoreClientStatistics = v),
+                child: ListView(
+                  controller: _scrollController,
+                  children: [
+                    if (!_nameValid || !_identifiersValid || !_dnsCacheValid) _Errors(
+                      nameValid: _nameValid, 
+                      identifiersValid: _identifiersValid, 
+                      dnsCacheValid: _dnsCacheValid
+                    ),
+                    ClientForm(
+                      isFullScreen: false,
+                      client: widget.client, 
+                      nameController: nameController,
+                      identifiersControllers: identifiersControllers, 
+                      selectedTags: selectedTags, 
+                      useGlobalSettingsFiltering: useGlobalSettingsFiltering, 
+                      enableFiltering: enableFiltering, 
+                      enableParentalControl: enableParentalControl, 
+                      enableSafeBrowsing: enableSafeBrowsing, 
+                      enableSafeSearch: enableSafeSearch, 
+                      safeSearch: safeSearch, 
+                      blockedServices: blockedServices, 
+                      updateBlockedServices: (v) => setState(() => blockedServices = v), 
+                      upstreamServers: upstreamServers, 
+                      updateUpstreamServers: (v) => setState(() => upstreamServers = v), 
+                      defaultSafeSearch: defaultSafeSearch, 
+                      useGlobalSettingsServices: useGlobalSettingsServices, 
+                      updateSelectedTags: (v) => setState(() => selectedTags = v),
+                      updateIdentifiersControllers: (v) => setState(() => identifiersControllers = v), 
+                      enableDisableGlobalSettingsFiltering: enableDisableGlobalSettingsFiltering, 
+                      updateEnableFiltering: (v) => setState(() => enableFiltering = v), 
+                      updateEnableParentalControl: (v) => setState(() => enableParentalControl = v), 
+                      updateEnableSafeBrowsing: (v) => setState(() => enableSafeBrowsing = v), 
+                      updateEnableSafeSearch: (v) => setState(() => enableSafeSearch = v), 
+                      updateSafeSearch: (v) => setState(() => safeSearch = v), 
+                      updateUseGlobalSettingsServices: (v) => setState(() => useGlobalSettingsServices = v), 
+                      ignoreClientQueryLog: _ignoreClientQueryLog,
+                      ignoreClientStatistics: _ignoreClientStatistics,
+                      updateIgnoreClientQueryLog: (v) => setState(() => _ignoreClientQueryLog = v),
+                      updateIgnoreClientStatistics: (v) => setState(() => _ignoreClientStatistics = v),
+                      enableDnsCache: _enableDnsCache,
+                      updateEnableDnsCache: (v) => setState(() => _enableDnsCache = v),
+                      dnsCacheField: _dnsCacheField,
+                      dnsCacheError: _dnsCacheError,
+                      updateDnsCacheError: (v) => setState(() => _dnsCacheError = v)
+                    ),
+                  ],
                 ),
               )
             ],
@@ -306,3 +366,56 @@ class _ClientScreenState extends State<ClientScreen> {
   }
 }
 
+class _Errors extends StatelessWidget {
+  final bool nameValid;
+  final bool identifiersValid;
+  final bool dnsCacheValid;
+
+  const _Errors({
+    required this.nameValid,
+    required this.identifiersValid,
+    required this.dnsCacheValid,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: Colors.red.withOpacity(0.2),
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppLocalizations.of(context)!.errors,
+              style: const TextStyle(
+                fontSize: 18
+              ),
+            ),
+            const SizedBox(height: 8),
+            if (!nameValid) Text(
+              "● ${AppLocalizations.of(context)!.nameInvalid}",
+              style: const TextStyle(
+                fontSize: 14
+              ),
+            ),
+            if (!identifiersValid) Text(
+              "● ${AppLocalizations.of(context)!.oneIdentifierRequired}",
+              style: const TextStyle(
+                fontSize: 14
+              ),
+            ),
+            if (!dnsCacheValid) Text(
+              "● ${AppLocalizations.of(context)!.dnsCacheNumber}",
+              style: const TextStyle(
+                fontSize: 14
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -718,5 +718,12 @@
     "noData": "No data",
     "unblockClient": "Unblock client",
     "blockingClient": "Blocking client...",
-    "unblockingClient": "Unblocking client..."
+    "unblockingClient": "Unblocking client...",
+    "upstreamDnsCacheConfiguration": "Configuración de la caché DNS upstream",
+    "enableDnsCachingClient": "Enable DNS caching for this client",
+    "dnsCacheSize": "DNS cache size",
+    "nameInvalid": "Name is required",
+    "oneIdentifierRequired": "At least one identifier is required",
+    "dnsCacheNumber": "DNS cache size must be a number",
+    "errors": "Errors"
 }

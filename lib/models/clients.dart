@@ -89,6 +89,8 @@ class Client {
   final SafeSearch? safeSearch;
   final bool? ignoreQuerylog;
   final bool? ignoreStatistics;
+  final bool? upstreamsCacheEnabled;
+  final int? upstreamsCacheSize;
 
   Client({
     required this.name,
@@ -104,6 +106,8 @@ class Client {
     required this.safeSearch,
     required this.ignoreQuerylog,
     required this.ignoreStatistics,
+    required this.upstreamsCacheEnabled,
+    required this.upstreamsCacheSize,
   });
 
   factory Client.fromJson(Map<String, dynamic> json) => Client(
@@ -121,7 +125,9 @@ class Client {
       ? SafeSearch.fromJson(json["safe_search"]) 
       : null,
     ignoreQuerylog: json["ignore_querylog"],
-    ignoreStatistics: json["ignore_statistics"]
+    ignoreStatistics: json["ignore_statistics"],
+    upstreamsCacheEnabled: json["upstreams_cache_enabled"],
+    upstreamsCacheSize: json["upstreams_cache_size"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -138,5 +144,7 @@ class Client {
     "use_global_settings": useGlobalSettings,
     "ignore_querylog": ignoreQuerylog,
     "ignore_statistics": ignoreStatistics,
+    "upstreams_cache_enabled": upstreamsCacheEnabled,
+    "upstreams_cache_size": upstreamsCacheSize
   };
 }

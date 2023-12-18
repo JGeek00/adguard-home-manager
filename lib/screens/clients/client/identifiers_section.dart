@@ -11,11 +11,11 @@ class IdentifiersSection extends StatefulWidget {
   final void Function() onCheckValidValues;
 
   const IdentifiersSection({
-    Key? key,
+    super.key,
     required this.identifiersControllers,
     required this.onUpdateIdentifiersControllers,
     required this.onCheckValidValues
-  }) : super(key: key);
+  });
 
   @override
   State<IdentifiersSection> createState() => _IdentifiersSectionState();
@@ -34,11 +34,11 @@ class _IdentifiersSectionState extends State<IdentifiersSection> {
             SectionLabel(
               label: AppLocalizations.of(context)!.identifiers,
               padding: const  EdgeInsets.only(
-                left: 24, right: 24, top: 24, bottom: 12
+                left: 16, right: 16, top: 24, bottom: 12
               )
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 20),
+              padding: const EdgeInsets.only(right: 10),
               child: IconButton(
                 onPressed: () => widget.onUpdateIdentifiersControllers([
                   ...widget.identifiersControllers,
@@ -54,7 +54,7 @@ class _IdentifiersSectionState extends State<IdentifiersSection> {
         ),
         if (widget.identifiersControllers.isNotEmpty) ...widget.identifiersControllers.map((controller) => Padding(
           padding: const EdgeInsets.only(
-            top: 12, bottom: 12, left: 24, right: 20
+            top: 12, bottom: 12, left: 16, right: 10
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,9 +75,9 @@ class _IdentifiersSectionState extends State<IdentifiersSection> {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Padding(
-                padding: const EdgeInsets.only(bottom: 25),
+                padding: const EdgeInsets.only(bottom: 24),
                 child: IconButton(
                   onPressed: () => widget.onUpdateIdentifiersControllers(
                     widget.identifiersControllers.where((e) => e.id != controller.id).toList()
@@ -87,7 +87,7 @@ class _IdentifiersSectionState extends State<IdentifiersSection> {
               )
             ],
           ),
-        )).toList(),
+        )),
         if (widget.identifiersControllers.isEmpty) Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Text(

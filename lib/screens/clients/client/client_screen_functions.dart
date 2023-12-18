@@ -74,22 +74,6 @@ void openSafeSearchModal({
   );
 }
 
-bool checkValidValues({
-  required TextEditingController nameController,
-  required List<ControllerListItem> identifiersControllers
-}) {
-  if (
-    nameController.text != '' &&
-    identifiersControllers.isNotEmpty && 
-    identifiersControllers[0].controller.text != ''
-  ) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 void openClientFormModal({
   required BuildContext context,
   required double width,
@@ -123,4 +107,10 @@ void openClientFormModal({
       onDelete: onDelete,
     ),
   );
+}
+
+bool validateNumber(String value) {
+  if (value == "") return true;
+  final regexp = RegExp(r'^\d+$');
+  return regexp.hasMatch(value);
 }

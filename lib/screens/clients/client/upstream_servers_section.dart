@@ -11,11 +11,11 @@ class UpstreamServersSection extends StatefulWidget {
   final void Function(List<ControllerListItem>) onUpdateUpstreamServers;
 
   const UpstreamServersSection({
-    Key? key,
+    super.key,
     required this.upstreamServers,
     required this.onCheckValidValues,
     required this.onUpdateUpstreamServers
-  }) : super(key: key);
+  });
 
   @override
   State<UpstreamServersSection> createState() => _UpstreamServersSectionState();
@@ -33,10 +33,10 @@ class _UpstreamServersSectionState extends State<UpstreamServersSection> {
           children: [
             SectionLabel(
               label: AppLocalizations.of(context)!.upstreamServers,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 20),
+              padding: const EdgeInsets.only(right: 12),
               child: IconButton(
                 onPressed: () => setState(() => widget.upstreamServers.add(
                   ControllerListItem(
@@ -50,7 +50,7 @@ class _UpstreamServersSectionState extends State<UpstreamServersSection> {
           ],
         ),
         if (widget.upstreamServers.isNotEmpty) ...widget.upstreamServers.map((controller) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.only(left: 16, right: 12),
           child: Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Row(
@@ -71,7 +71,7 @@ class _UpstreamServersSectionState extends State<UpstreamServersSection> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 IconButton(
                   onPressed: () => widget.onUpdateUpstreamServers(
                     widget.upstreamServers.where((e) => e.id != controller.id).toList()
@@ -81,7 +81,7 @@ class _UpstreamServersSectionState extends State<UpstreamServersSection> {
               ],
             ),
           ),
-        )).toList(),
+        )),
         if (widget.upstreamServers.isEmpty) Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(

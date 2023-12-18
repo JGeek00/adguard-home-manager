@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -12,6 +9,7 @@ import 'package:adguard_home_manager/screens/clients/client/settings_tile.dart';
 import 'package:adguard_home_manager/screens/clients/client/tags_section.dart';
 import 'package:adguard_home_manager/screens/clients/client/upstream_servers_section.dart';
 
+import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
@@ -22,7 +20,6 @@ class ClientForm extends StatelessWidget {
   final bool isFullScreen;
   final Client? client;
   final TextEditingController nameController;
-  final void Function(bool) updateValidValues;
   final List<ControllerListItem> identifiersControllers;
   final List<String> selectedTags;
   final bool useGlobalSettingsFiltering;
@@ -50,13 +47,17 @@ class ClientForm extends StatelessWidget {
   final void Function(bool) updateIgnoreClientQueryLog;
   final bool ignoreClientStatistics;
   final void Function(bool) updateIgnoreClientStatistics;
+  final bool enableDnsCache;
+  final void Function(bool) updateEnableDnsCache;
+  final TextEditingController dnsCacheField;
+  final String? dnsCacheError;
+  final void Function(String?) updateDnsCacheError;
 
   const ClientForm({
     super.key,
     required this.isFullScreen,
     required this.client,
     required this.nameController,
-    required this.updateValidValues,
     required this.identifiersControllers,
     required this.selectedTags,
     required this.useGlobalSettingsFiltering,
@@ -84,26 +85,24 @@ class ClientForm extends StatelessWidget {
     required this.ignoreClientStatistics,
     required this.updateIgnoreClientQueryLog,
     required this.updateIgnoreClientStatistics,
+    required this.enableDnsCache,
+    required this.updateEnableDnsCache,
+    required this.dnsCacheField,
+    required this.dnsCacheError,
+    required this.updateDnsCacheError,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.only(top: 0),
+    return Column(
       children: [
-        if (isFullScreen == true) const SizedBox(height: 24),
-        if (isFullScreen == false) const SizedBox(height: 6),
+        const SizedBox(height: 8),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: TextFormField(
             enabled: client != null ? false : true,
             controller: nameController,
-            onChanged: (_) => updateValidValues(
-              checkValidValues(
-                identifiersControllers: identifiersControllers,
-                nameController: nameController
-              )
-            ),
+            onChanged: (_) => {},
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.badge_rounded),
               border: const OutlineInputBorder(
@@ -117,7 +116,7 @@ class ClientForm extends StatelessWidget {
         ),
         SectionLabel(
           label: AppLocalizations.of(context)!.tags,
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         ),
         TagsSection(
           selectedTags: selectedTags, 
@@ -127,28 +126,17 @@ class ClientForm extends StatelessWidget {
           identifiersControllers: identifiersControllers,
           onUpdateIdentifiersControllers: (c) {
             updateIdentifiersControllers(c);
-            updateValidValues(
-              checkValidValues(
-                nameController: nameController, 
-                identifiersControllers: identifiersControllers
-              )
-            );
           },
-          onCheckValidValues: () => updateValidValues(
-            checkValidValues(
-              identifiersControllers: identifiersControllers,
-              nameController: nameController
-            )
-          ),
+          onCheckValidValues: () => {}
         ),
         SectionLabel(
           label: AppLocalizations.of(context)!.settings,
           padding: const  EdgeInsets.only(
-            left: 24, right: 24, top: 12, bottom: 24
+            left: 16, right: 16, top: 12, bottom: 24
           )
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
             color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(28),
@@ -157,8 +145,8 @@ class ClientForm extends StatelessWidget {
               borderRadius: BorderRadius.circular(28),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 5
+                  horizontal: 16,
+                  vertical: 6
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -182,7 +170,7 @@ class ClientForm extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         SettingsTile(
           label: AppLocalizations.of(context)!.enableFiltering,
           value: enableFiltering, 
@@ -204,7 +192,7 @@ class ClientForm extends StatelessWidget {
         CustomListTile(
           title: AppLocalizations.of(context)!.safeSearch,
           padding: const  EdgeInsets.symmetric(
-            horizontal: 42,
+            horizontal: 34,
             vertical: 16
           ),
           trailing: Padding(
@@ -228,15 +216,15 @@ class ClientForm extends StatelessWidget {
         ),
         SectionLabel(
           label: AppLocalizations.of(context)!.queryLogsAndStatistics,
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         ),
         CustomSwitchListTile(
           title: AppLocalizations.of(context)!.ignoreClientQueryLog,
           value: ignoreClientQueryLog,
           onChanged: updateIgnoreClientQueryLog,
           padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 4
+            horizontal: 16,
+            vertical: 6
           ),
         ),
         CustomSwitchListTile(
@@ -244,13 +232,13 @@ class ClientForm extends StatelessWidget {
           value: ignoreClientStatistics,
           onChanged: updateIgnoreClientStatistics,
           padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 4
+            horizontal: 16,
+            vertical: 6
           ),
         ),
         SectionLabel(
           label: AppLocalizations.of(context)!.blockedServices,
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         ),
         BlockedServicesSection(
           useGlobalSettingsServices: useGlobalSettingsServices, 
@@ -260,15 +248,40 @@ class ClientForm extends StatelessWidget {
         ),
         UpstreamServersSection(
           upstreamServers: upstreamServers, 
-          onCheckValidValues: () => updateValidValues(
-            checkValidValues(
-              identifiersControllers: identifiersControllers,
-              nameController: nameController
-            )
-          ),
+          onCheckValidValues: () => {},
           onUpdateUpstreamServers: updateUpstreamServers
         ),
-        SizedBox(height: Platform.isIOS ? 48 : 24)
+        SectionLabel(
+          label: AppLocalizations.of(context)!.upstreamDnsCacheConfiguration,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        ),
+        CustomSwitchListTile(
+          title: AppLocalizations.of(context)!.enableDnsCachingClient,
+          value: enableDnsCache,
+          onChanged: updateEnableDnsCache,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 6
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: TextFormField(
+            controller: dnsCacheField,
+            onChanged: (v) => updateDnsCacheError(!validateNumber(v) ? AppLocalizations.of(context)!.invalidValue : null),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.storage_rounded),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10)
+                )
+              ),
+              labelText: AppLocalizations.of(context)!.dnsCacheSize,
+              errorText: dnsCacheError
+            ),
+            keyboardType: TextInputType.number,
+          ),
+        ),
       ],
     );
   }
