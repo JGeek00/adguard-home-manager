@@ -128,7 +128,7 @@ class LogTile extends StatelessWidget {
           child: OptionsMenu(
             onTap: (_) => onLogTap(log),
             borderRadius: BorderRadius.circular(28),
-            options: (v) => [
+            options: (_) => [
               if (log.question.name != null) MenuOption(
                 title: domainBlocked == true
                   ? AppLocalizations.of(context)!.unblockDomain
@@ -141,10 +141,10 @@ class LogTile extends StatelessWidget {
                   newStatus: domainBlocked == true ? 'unblock' : 'block'
                 )
               ),
-              MenuOption(
+              if (log.question.name != null) MenuOption(
                 title: AppLocalizations.of(context)!.copyClipboard,
                 icon: Icons.copy_rounded, 
-                action: () => copyToClipboard(value: v, successMessage: AppLocalizations.of(context)!.copiedClipboard)
+                action: () => copyToClipboard(value: log.question.name!, successMessage: AppLocalizations.of(context)!.copiedClipboard)
               )
             ],
             child: Container(
