@@ -156,7 +156,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
         "blocking_mode": blockingMode,
         "blocking_ipv4": ipv4controller.text,
         "blocking_ipv6": ipv6controller.text,
-        "blocked_response_ttl": int.parse(_ttlController.text)
+        "blocked_response_ttl": int.tryParse(_ttlController.text)
       });
 
       processModal.close();

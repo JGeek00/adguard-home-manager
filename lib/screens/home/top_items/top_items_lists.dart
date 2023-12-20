@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/top_items/top_items_section.dart';
 
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -30,6 +31,7 @@ class TopItemsLists extends StatelessWidget {
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
 
     List<Widget> bottom = [
       Padding(
@@ -96,8 +98,51 @@ class TopItemsLists extends StatelessWidget {
       }
     }
 
-    void copyValueClipboard(value) {
+    void copyValueClipboard(dynamic value) {
       copyToClipboard(value: value, successMessage: AppLocalizations.of(context)!.copiedClipboard);
+    }
+
+    void blockUnblockClient(dynamic client) async {
+      final currentList = clientsProvider.checkClientList(client);
+      final newList = currentList == AccessSettingsList.allowed || currentList == null
+        ? AccessSettingsList.disallowed
+        : AccessSettingsList.allowed;
+
+      ProcessModal processModal = ProcessModal();
+      processModal.open(
+        currentList == AccessSettingsList.allowed || currentList == null
+          ? AppLocalizations.of(context)!.blockingClient
+          : AppLocalizations.of(context)!.unblockingClient
+      );
+
+      final result = await clientsProvider.addClientList(client, newList);
+      if (!context.mounted) return;
+
+      processModal.close();
+
+      if (result.successful == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
+          color: Colors.green
+        );
+      }
+      else if (result.successful == false && result.content == 'client_another_list') {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAnotherList, 
+          color: Colors.red
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: newList == AccessSettingsList.allowed || newList == AccessSettingsList.disallowed
+            ? AppLocalizations.of(context)!.clientNotRemoved
+            : AppLocalizations.of(context)!.domainNotAdded,
+          color: Colors.red
+        );
+      }
     }
 
     return Column(
@@ -113,16 +158,16 @@ class TopItemsLists extends StatelessWidget {
                   withChart: true,
                   withProgressBar: true,
                   buildValue: (v) => v.toString(),
-                  menuOptions: [
+                  menuOptions: (v) => [
                     MenuOption(
                       title: AppLocalizations.of(context)!.blockDomain,
                       icon: Icons.block_rounded, 
-                      action: (v) => blockUnblock(domain: v.toString(), newStatus: 'block')
+                      action: () => blockUnblock(domain: v.toString(), newStatus: 'block')
                     ),
                     MenuOption(
                       title: AppLocalizations.of(context)!.copyClipboard,
                       icon: Icons.copy_rounded, 
-                      action: copyValueClipboard
+                      action: () => copyValueClipboard(v)
                     ),
                   ],
                   onTapEntry: (v) => filterDomainLogs(value: v.toString()),
@@ -141,16 +186,16 @@ class TopItemsLists extends StatelessWidget {
                   withChart: true,
                   withProgressBar: true,
                   buildValue: (v) => v.toString(),
-                  menuOptions: [
+                  menuOptions: (v) => [
                     MenuOption(
                       title: AppLocalizations.of(context)!.unblockDomain,
                       icon: Icons.check_rounded, 
-                      action: (v) => blockUnblock(domain: v, newStatus: 'unblock')
+                      action: () => blockUnblock(domain: v, newStatus: 'unblock')
                     ),
                     MenuOption(
                       title: AppLocalizations.of(context)!.copyClipboard,
                       icon: Icons.copy_rounded, 
-                      action: copyValueClipboard
+                      action: () => copyValueClipboard(v)
                     )
                   ],
                   onTapEntry: (v) => filterDomainLogs(value: v),
@@ -169,12 +214,21 @@ class TopItemsLists extends StatelessWidget {
                   withChart: true,
                   withProgressBar: true,
                   buildValue: (v) => v.toString(),
-                  menuOptions: [
+                  menuOptions: (v) => [
+                    if (clientsProvider.clients?.clientsAllowedBlocked != null) MenuOption(
+                      title: clientsProvider.checkClientList(v) == AccessSettingsList.allowed || clientsProvider.checkClientList(v) == null
+                        ? AppLocalizations.of(context)!.blockClient
+                        : AppLocalizations.of(context)!.unblockClient,
+                      icon: clientsProvider.checkClientList(v) == AccessSettingsList.allowed || clientsProvider.checkClientList(v) == null
+                        ? Icons.block_rounded
+                        : Icons.check_rounded, 
+                      action: () => blockUnblockClient(v)
+                    ),
                     MenuOption(
                       title: AppLocalizations.of(context)!.copyClipboard,
                       icon: Icons.copy_rounded, 
-                      action: copyValueClipboard
-                    )
+                      action: () => copyValueClipboard(v)
+                    ),
                   ],
                   onTapEntry: (v) => filterClientLogs(value: v),
                 ),
@@ -193,11 +247,11 @@ class TopItemsLists extends StatelessWidget {
                       withChart: true,
                       withProgressBar: true,
                       buildValue: (v) => v.toString(),
-                      menuOptions: [
+                      menuOptions: (v) => [
                         MenuOption(
                           title: AppLocalizations.of(context)!.copyClipboard,
                           icon: Icons.copy_rounded, 
-                          action: copyValueClipboard
+                          action: () => copyValueClipboard(v)
                         )
                       ],
                     ),
@@ -217,11 +271,11 @@ class TopItemsLists extends StatelessWidget {
                       withChart: false,
                       withProgressBar: false,
                       buildValue: (v) => "${doubleFormat(v*1000, Platform.localeName)} ms",
-                      menuOptions: [
+                      menuOptions: (v) => [
                         MenuOption(
                           title: AppLocalizations.of(context)!.copyClipboard,
                           icon: Icons.copy_rounded, 
-                          action: copyValueClipboard
+                          action: () => copyValueClipboard(v)
                         )
                       ],
                     ),

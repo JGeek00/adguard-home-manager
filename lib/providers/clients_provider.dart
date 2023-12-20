@@ -190,6 +190,16 @@ class ClientsProvider with ChangeNotifier {
       "blocked_hosts": clients!.clientsAllowedBlocked?.blockedHosts ?? [],
     };
 
+    if (body['allowed_clients']!.contains(item)) {
+      body['allowed_clients'] = body['allowed_clients']!.where((e) => e != item).toList();
+    }
+    else if (body['disallowed_clients']!.contains(item)) {
+      body['disallowed_clients'] = body['disallowed_clients']!.where((e) => e != item).toList();
+    }
+    else if (body['blocked_hosts']!.contains(item)) {
+      body['blocked_hosts'] = body['blocked_hosts']!.where((e) => e != item).toList();
+    }
+
     if (type == AccessSettingsList.allowed) {
       body['allowed_clients']!.add(item);
     }
@@ -220,6 +230,18 @@ class ClientsProvider with ChangeNotifier {
     else {
       notifyListeners();
       return result;
+    }
+  }
+
+  AccessSettingsList? checkClientList(String client) {
+    if (_clients!.clientsAllowedBlocked!.allowedClients.contains(client)) {
+      return AccessSettingsList.allowed;
+    }
+    else if (_clients!.clientsAllowedBlocked!.disallowedClients.contains(client)) {
+      return AccessSettingsList.disallowed;
+    }
+    else {
+      return null;
     }
   }
 

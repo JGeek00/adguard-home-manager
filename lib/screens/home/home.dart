@@ -14,6 +14,8 @@ import 'package:adguard_home_manager/screens/home/appbar.dart';
 import 'package:adguard_home_manager/screens/home/fab.dart';
 import 'package:adguard_home_manager/screens/home/chart.dart';
 
+import 'package:adguard_home_manager/providers/clients_provider.dart';
+import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
@@ -38,6 +40,9 @@ class _HomeState extends State<Home> {
       withLoadingIndicator: statusProvider.serverStatus != null ? false : true
     );
 
+    final clientsProvider = Provider.of<ClientsProvider>(context, listen: false);
+    clientsProvider.fetchClients(updateLoading:  false);
+
     super.initState();
 
     isVisible = true;
@@ -61,6 +66,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
@@ -143,6 +149,15 @@ class _HomeState extends State<Home> {
                                     secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
                                     color: Colors.blue,
                                     hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
+                                    onTapTitle: () {
+                                      logsProvider.setSelectedResultStatus(
+                                        value: "all",
+                                        refetch: true
+                                      );
+                                      logsProvider.filterLogs();
+                                      appConfigProvider.setSelectedScreen(2);
+                                    },
+                                    isDesktop: width > 700,
                                   ),
                                 ),
                                 FractionallySizedBox(
@@ -154,6 +169,14 @@ class _HomeState extends State<Home> {
                                     secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                                     color: Colors.red,
                                     hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
+                                    onTapTitle: () {
+                                      logsProvider.setSelectedResultStatus(
+                                        value: "blocked",
+                                        refetch: true
+                                      );
+                                      appConfigProvider.setSelectedScreen(2);
+                                    },
+                                    isDesktop: width > 700,
                                   ),
                                 ),
                                 FractionallySizedBox(
@@ -165,6 +188,14 @@ class _HomeState extends State<Home> {
                                     secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                                     color: Colors.green,
                                     hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
+                                    onTapTitle: () {
+                                      logsProvider.setSelectedResultStatus(
+                                        value: "blocked_safebrowsing",
+                                        refetch: true
+                                      );
+                                      appConfigProvider.setSelectedScreen(2);
+                                    },
+                                    isDesktop: width > 700,
                                   ),
                                 ),
                                 FractionallySizedBox(
@@ -176,6 +207,15 @@ class _HomeState extends State<Home> {
                                     secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedParental/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
                                     color: Colors.orange,
                                     hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
+                                    onTapTitle: () {
+                                      logsProvider.setSelectedResultStatus(
+                                        value: "blocked_parental",
+                                        refetch: true
+                                      );
+                                      logsProvider.filterLogs();
+                                      appConfigProvider.setSelectedScreen(2);
+                                    },
+                                    isDesktop: width > 700,
                                   ),
                                 ),             
                               ],

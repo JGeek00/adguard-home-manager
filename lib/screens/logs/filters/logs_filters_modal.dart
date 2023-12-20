@@ -262,13 +262,13 @@ class _FiltersList extends StatelessWidget {
                     FilterChip(
                       selected: logsProvider.selectedResultStatus == "all",
                       label: Text(AppLocalizations.of(context)!.all), 
-                      onSelected: (_) => logsProvider.setSelectedResultStatus("all")
+                      onSelected: (_) => logsProvider.setSelectedResultStatus(value: "all")
                     ),
                     FilterChip(
                       selected: logsProvider.selectedResultStatus == "processed" ||
                         logsProvider.selectedResultStatus == "whitelisted",
                       label: Text(AppLocalizations.of(context)!.allowed), 
-                      onSelected: (_) => logsProvider.setSelectedResultStatus("processed")
+                      onSelected: (_) => logsProvider.setSelectedResultStatus(value: "processed")
                     ),
                     FilterChip(
                       selected: logsProvider.selectedResultStatus == "blocked" || 
@@ -276,7 +276,7 @@ class _FiltersList extends StatelessWidget {
                         logsProvider.selectedResultStatus == "blocked_parental" ||
                         logsProvider.selectedResultStatus == "safe_search",
                       label: Text(AppLocalizations.of(context)!.blocked), 
-                      onSelected: (_) => logsProvider.setSelectedResultStatus("blocked")
+                      onSelected: (_) => logsProvider.setSelectedResultStatus(value: "blocked")
                     ),
                   ],
                 ),

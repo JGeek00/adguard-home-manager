@@ -283,11 +283,11 @@ class FiltersTripleColumn extends StatelessWidget {
                                 ),
                               ],
                               child: OptionsMenu(
-                                options: [
+                                options: (_) => [
                                   MenuOption(
                                     title: AppLocalizations.of(context)!.copyClipboard,
                                     icon: Icons.copy_rounded,
-                                    action: (_) => copyToClipboard(
+                                    action: () => copyToClipboard(
                                       value: filteringProvider.filtering!.userRules[index],
                                       successMessage: AppLocalizations.of(context)!.copiedClipboard,
                                     )

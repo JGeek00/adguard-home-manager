@@ -7,12 +7,12 @@ class SettingsTile extends StatelessWidget {
   final bool useGlobalSettingsFiltering;
 
   const SettingsTile({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     this.onChange,
     required this.useGlobalSettingsFiltering
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +23,7 @@ class SettingsTile extends StatelessWidget {
             ?  value != null ? () => onChange!(!value!) : null
             : null,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 42,
-              vertical: 5
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 6),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

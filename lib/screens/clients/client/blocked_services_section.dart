@@ -22,7 +22,7 @@ class BlockedServicesSection extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
             color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(28),
@@ -31,8 +31,8 @@ class BlockedServicesSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(28),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 5
+                  horizontal: 16,
+                  vertical: 6
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,7 +56,7 @@ class BlockedServicesSection extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         Material(
           color: Colors.transparent,
           child: InkWell(
@@ -69,7 +69,7 @@ class BlockedServicesSection extends StatelessWidget {
               : null,
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 8, horizontal: 24
+                vertical: 8, horizontal: 32
               ),
               child: Row(
                 children: [

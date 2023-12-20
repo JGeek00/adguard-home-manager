@@ -39,10 +39,17 @@ class ApiClientV2 {
   Future<ApiResponse> getServerVersion() async {
     final result = await HttpRequestClient.get(urlPath: '/status', server: server);
     if (result.successful == true) {
-      return ApiResponse(
-        successful: true,
-        content: jsonDecode(result.body!)['version']
-      );
+      try {
+        return ApiResponse(
+          successful: true,
+          content: jsonDecode(result.body!)['version']
+        );
+      } on FormatException {
+        return const ApiResponse(successful: false);
+      } catch (e, stackTrace) {
+        Sentry.captureException(e, stackTrace: stackTrace);
+        return const ApiResponse(successful: false);
+      }
     }
     else {
       return const ApiResponse(successful: false);

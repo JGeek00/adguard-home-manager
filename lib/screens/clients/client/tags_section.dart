@@ -7,10 +7,10 @@ class TagsSection extends StatelessWidget {
   final void Function(List<String>) onTagsSelected;
 
   const TagsSection({
-    Key? key,
+    super.key,
     required this.selectedTags,
     required this.onTagsSelected
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class TagsSection extends StatelessWidget {
         ) ,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: 0, horizontal: 24
+            vertical: 0, horizontal: 16
           ),
           child: Row(
             children: [

@@ -22,11 +22,11 @@ class LogsListWidget extends StatefulWidget {
   final void Function(Log) onLogSelected;
 
   const LogsListWidget({
-    Key? key,
+    super.key,
     required this.twoColumns,
     required this.selectedLog,
     required this.onLogSelected,
-  }) : super(key: key);
+  });
 
   @override
   State<LogsListWidget> createState() => _LogsListWidgetState();

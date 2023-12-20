@@ -28,11 +28,11 @@ class ActiveClientTile extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: OptionsMenu(
-          options: [
+          options: (_) => [
             MenuOption(
               icon: Icons.copy_rounded,
               title: AppLocalizations.of(context)!.copyClipboard, 
-              action: (_) => copyToClipboard(
+              action: () => copyToClipboard(
                 value: client.name != '' 
                   ? client.name!
                   : client.ip,
@@ -99,11 +99,11 @@ class ActiveClientTile extends StatelessWidget {
     }
     else {
       return OptionsMenu(
-        options: [
+        options: (_) => [
           MenuOption(
             icon: Icons.copy_rounded,
             title: AppLocalizations.of(context)!.copyClipboard, 
-            action: (_) => copyToClipboard(
+            action: () => copyToClipboard(
               value: client.name != '' 
                 ? client.name!
                 : client.ip,

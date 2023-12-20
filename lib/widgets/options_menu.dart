@@ -11,7 +11,7 @@ import 'package:adguard_home_manager/models/menu_option.dart';
 
 class OptionsMenu extends StatelessWidget {
   final Widget child;
-  final List<MenuOption> options;
+  final List<MenuOption> Function(dynamic) options;
   final dynamic value;
   final BorderRadius? borderRadius;
   final void Function(dynamic)? onTap;
@@ -40,11 +40,11 @@ class OptionsMenu extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: ContextMenuArea(
-        builder: (context) => options.map((opt) => CustomListTile(
+        builder: (context) => options(value).map((opt) => CustomListTile(
           title: opt.title,
           icon: opt.icon,
           onTap: () {
-            opt.action(value);
+            opt.action();
             Navigator.pop(context);
           },
         )).toList(),
@@ -64,7 +64,7 @@ class OptionsMenu extends StatelessWidget {
 }
 
 class _OptionsModal extends StatelessWidget {
-  final List<MenuOption> options;
+  final List<MenuOption> Function(dynamic) options;
   final dynamic value;
 
   const _OptionsModal({
@@ -98,12 +98,12 @@ class _OptionsModal extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           child: Wrap(
-            children: options.map((opt) => CustomListTileDialog(
+            children: options(value).map((opt) => CustomListTileDialog(
               title: opt.title,
               icon: opt.icon,
               onTap: () {
                 Navigator.pop(context);
-                opt.action(value);
+                opt.action();
               },
             )).toList()
           ),

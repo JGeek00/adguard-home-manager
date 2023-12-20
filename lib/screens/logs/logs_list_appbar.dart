@@ -256,7 +256,7 @@ class LogsListAppBar extends StatelessWidget {
                             clients: logsProvider.appliedFilters.clients
                           )
                         );
-                        logsProvider.setSelectedResultStatus('all');
+                        logsProvider.setSelectedResultStatus(value: 'all');
                         logsProvider.fetchLogs(
                           inOffset: 0,
                           responseStatus: 'all'
