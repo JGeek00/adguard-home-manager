@@ -80,7 +80,7 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
         <li>Open <code>debian.yaml</code> file inside debian/ and update the version number</li>
         <li>run <code>rps build linux</code></li>
         <li>The .tar.gz is at <code>build/linux/x64/release/bundle</code></li>
-        <li>The .deb package is at <code>debian/packages</code></li>
+        <li>The .deb package is at <code>build/linux/x64/release/debian/</code></li>
       </ol>
     </ul>
   </li>
