@@ -34,11 +34,7 @@ class _FallbackDnsScreenState extends State<FallbackDnsScreen> {
   }
 
   void checkValidValues() {
-    if (
-      fallbackControllers.isNotEmpty &&
-      fallbackControllers.every((element) => element['controller'].text != '') &&
-      fallbackControllers.every((element) => element['error'] == null)
-    ) {
+    if (fallbackControllers.every((element) => element['error'] == null)) {
       setState(() => validValues = true);
     }
     else {
