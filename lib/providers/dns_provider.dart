@@ -119,7 +119,7 @@ class DnsProvider with ChangeNotifier {
 
     if (result.successful == true) {
       DnsInfo data = dnsInfo!;
-      data.bootstrapDns = List<String>.from(value['fallback_dns']);
+      data.fallbackDns = List<String>.from(value['fallback_dns']);
       setDnsInfoData(data);
       return result;
     }

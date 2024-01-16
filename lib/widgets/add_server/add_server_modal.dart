@@ -127,6 +127,7 @@ class _AddServerModalState extends State<AddServerModal> {
       if (status == AuthStatus.manyAttepts) return AppLocalizations.of(context)!.tooManyAttempts;
       if (status == AuthStatus.socketException || status == AuthStatus.timeoutException) return AppLocalizations.of(context)!.cantReachServer;
       if (status == AuthStatus.serverError) return AppLocalizations.of(context)!.serverError;
+      if (status == AuthStatus.handshakeException) return AppLocalizations.of(context)!.sslError;
       return AppLocalizations.of(context)!.unknownError;
     }
 
@@ -429,6 +430,24 @@ class _AddServerModalState extends State<AddServerModal> {
             horizontal: 24,
           ),
         ),
+        Card(
+          margin: const EdgeInsets.only(
+            top: 16, left: 24, right: 24
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.warning_rounded,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 16),
+                Flexible(child: Text(AppLocalizations.of(context)!.redirectHttpsWarning))
+              ],
+            ),
+          ),
+        ),
         if (connectionType == ConnectionType.https) Card(
           margin: const EdgeInsets.only(
             top: 16, left: 24, right: 24
@@ -437,7 +456,10 @@ class _AddServerModalState extends State<AddServerModal> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Icon(Icons.info_rounded),
+                Icon(
+                  Icons.info_rounded,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
                 const SizedBox(width: 16),
                 Flexible(child: Text(AppLocalizations.of(context)!.sslWarning))
               ],

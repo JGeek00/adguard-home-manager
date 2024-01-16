@@ -21,7 +21,7 @@ class _LogsState extends State<Logs> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth > 1000) {
+        if (constraints.maxWidth > 800) {
           return Material(
             color: Colors.transparent,
             child: Row(
