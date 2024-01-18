@@ -1,0 +1,4 @@
+storePassword= # keystore password # 
+keyPassword= # keystore key password #
+keyAlias= # key alias #
+storeFile= # ./keystore-file-name.jks #

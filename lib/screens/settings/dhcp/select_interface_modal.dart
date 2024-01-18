@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_interface_item.dart';
+
 import 'package:adguard_home_manager/models/dhcp.dart';
 
 class SelectInterfaceModal extends StatelessWidget {
@@ -11,212 +13,146 @@ class SelectInterfaceModal extends StatelessWidget {
   final bool dialog;
 
   const SelectInterfaceModal({
-    Key? key,
+    super.key,
     required this.interfaces,
     required this.onSelect,
     required this.dialog
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    Widget content() {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: SingleChildScrollView(
-              child: Wrap(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 24),
-                            child: Icon(
+    if (dialog == true) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Wrap(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Icon(
                               Icons.settings_ethernet_rounded,
                               size: 24,
                               color: Theme.of(context).listTileTheme.iconColor
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            AppLocalizations.of(context)!.selectInterface,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Theme.of(context).colorScheme.onSurface
-                            ),
-                            ),
-                        ],
-                      ),
-                    ],
+                            const SizedBox(height: 16),
+                            Text(
+                              AppLocalizations.of(context)!.selectInterface,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Theme.of(context).colorScheme.onSurface
+                              ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: interfaces.length,
+                  itemBuilder: (context, index) => DhcpInterfaceItem(
+                    networkInterface: interfaces[index], 
+                    onSelect: onSelect
+                  )
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context), 
+                      child: Text(AppLocalizations.of(context)!.cancel)
+                    )
+                  ],
+                ),
+              ),
+              if (Platform.isIOS) const SizedBox(height: 16)
+            ],
+          ),
+        ),
+      );
+    }
+    else {
+      return GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.3,
+          maxChildSize: 1,
+          builder: (context, controller) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(28),
+                  topRight: Radius.circular(28),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(16),
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.grey
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  ListView.builder(
-                    primary: false,
-                    shrinkWrap: true,
-                    itemCount: interfaces.length,
-                    itemBuilder: (context, index) => Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          onSelect(interfaces[index]);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                interfaces[index].name,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: Theme.of(context).colorScheme.onSurface
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "${AppLocalizations.of(context)!.hardwareAddress}: ",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant
-                                    ),
-                                  ),
-                                  Text(
-                                    interfaces[index].hardwareAddress,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              if (interfaces[index].flags.isNotEmpty) ...[
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Flags: ",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant
-                                      ),
-                                    ),
-                                    Text(
-                                      interfaces[index].flags.join(', '),
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5),
-                              ],
-                              if (interfaces[index].gatewayIp != null && interfaces[index].gatewayIp != '') ...[
-                                Row(
-                                  children: [
-                                    Text(
-                                      "${AppLocalizations.of(context)!.gatewayIp}: ",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant
-                                      ),
-                                    ),
-                                    Text(
-                                      interfaces[index].gatewayIp!,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5),
-                              ],
-                              if (interfaces[index].ipv4Addresses.isNotEmpty) ...[
-                                Row(
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        "${AppLocalizations.of(context)!.ipv4addresses}: ${interfaces[index].ipv4Addresses.join(', ')}",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(height: 5),
-                              ],
-                              if (interfaces[index].ipv6Addresses.isNotEmpty) ...[
-                                Row(
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        "${AppLocalizations.of(context)!.ipv6addresses}: ${interfaces[index].ipv6Addresses.join(', ')}",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ]
-                            ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.settings_ethernet_rounded,
+                          size: 24,
+                          color: Theme.of(context).listTileTheme.iconColor
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context)!.selectInterface,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Theme.of(context).colorScheme.onSurface
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: SafeArea(
+                      child: ListView.builder(
+                        controller: controller,
+                        itemCount: interfaces.length,
+                        itemBuilder: (context, index) => DhcpInterfaceItem(
+                          networkInterface: interfaces[index], 
+                          onSelect: onSelect
+                        )
                       ),
                     )
                   ),
                 ],
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context), 
-                  child: Text(AppLocalizations.of(context)!.cancel)
-                )
-              ],
-            ),
-          ),
-          if (Platform.isIOS) const SizedBox(height: 16)
-        ],
-      );
-    }
-
-    if (dialog == true) {
-      return Dialog(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 500
-          ),
-          child: content()
+            );
+          },
         ),
-      );
-    }
-    else {
-      return Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).dialogBackgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28)
-          )
-        ),
-        child: content()
       );
     }
   }

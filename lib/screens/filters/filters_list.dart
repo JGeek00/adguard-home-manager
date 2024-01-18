@@ -132,7 +132,7 @@ class _FiltersListState extends State<FiltersList> {
             TextButton.icon(
               onPressed: () async {
                 final result = await filteringProvider.fetchFilters();
-                if (result == false) {
+                if (result == false && mounted) {
                   showSnacbkar(
                     appConfigProvider: appConfigProvider,
                     label: AppLocalizations.of(context)!.errorLoadFilters, 
@@ -172,7 +172,7 @@ class _FiltersListState extends State<FiltersList> {
       loadStatus: widget.loadStatus, 
       onRefresh: () async {
         final result = await filteringProvider.fetchFilters();
-        if (result == false) {
+        if (result == false && mounted) {
           showSnacbkar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.errorLoadFilters, 

@@ -5,7 +5,9 @@ import 'package:adguard_home_manager/constants/enums.dart';
 final List<HomeTopItems> homeTopItemsDefaultOrder = [
   HomeTopItems.queriedDomains,
   HomeTopItems.blockedDomains,
-  HomeTopItems.recurrentClients
+  HomeTopItems.recurrentClients,
+  HomeTopItems.topUpstreams,
+  HomeTopItems.avgUpstreamResponseTime
 ];  
 
 final String homeTopItemsDefaultOrderString = jsonEncode(

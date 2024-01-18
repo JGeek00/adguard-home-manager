@@ -170,7 +170,7 @@
     "dnsQueries": "DNS 查询",
     "average": "平均值",
     "blockedFilters": "被过滤器拦截",
-    "malwarePhisingBlocked": "被拦截的恶意/钓鱼网站",
+    "malwarePhishingBlocked": "被拦截的恶意/钓鱼网站",
     "blockedAdultWebsites": "被拦截的成人网站",
     "generalSettings": "常规设置",
     "generalSettingsDescription": "各种不同的设置",
@@ -649,9 +649,16 @@
     "october": "10月",
     "november": "11月",
     "december": "12月",
-    "malwarePhising": "恶意/钓鱼网站",
+    "malwarePhishing": "恶意/钓鱼网站",
     "queries": "查询",
     "adultSites": "成人网站",
     "quickFilters": "状态过滤器",
-    "searchDomainInternet": "在互联网上搜索该域名"    
+    "searchDomainInternet": "在互联网上搜索该域名",
+    "hideServerAddress": "隐藏服务器地址",
+    "hideServerAddressDescription": "在主页上隐藏服务器地址",
+    "topItemsOrder": "顶部项目顺序",
+    "topItemsOrderDescription": "排列主页顶部项目列表",
+    "topItemsReorderInfo": "按住并滑动一个项目以重新排序。",
+    "discardChanges": "放弃更改",
+    "discardChangesDescription": "您确定要放弃更改吗？"
 }

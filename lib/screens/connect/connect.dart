@@ -11,7 +11,7 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class Connect extends StatefulWidget {
-  const Connect({Key? key}) : super(key: key);
+  const Connect({super.key});
 
   @override
   State<Connect> createState() => _ConnectState();
@@ -61,26 +61,28 @@ class _ConnectState extends State<Connect> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.connect),
       ),
-      body: Stack(
-        children: [
-          ServersList(
-            context: context, 
-            controllers: expandableControllerList, 
-            onChange: expandOrContract,
-            scrollController: scrollController,
-            breakingWidth: 700,
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeInOut,
-            bottom: isVisible ?
-              appConfigProvider.showingSnackbar
-                ? 70 : 20
-              : -70,
-            right: 20,
-            child: const FabConnect()
-          )
-        ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            ServersList(
+              context: context, 
+              controllers: expandableControllerList, 
+              onChange: expandOrContract,
+              scrollController: scrollController,
+              breakingWidth: 700,
+            ),
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              bottom: isVisible ?
+                appConfigProvider.showingSnackbar
+                  ? 90 : 20
+                : -90,
+              right: 20,
+              child: const FabConnect()
+            )
+          ],
+        ),
       ),
     );
   }

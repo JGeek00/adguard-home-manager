@@ -52,6 +52,8 @@ class AppConfigProvider with ChangeNotifier {
 
   int _combinedChartHome = 0;
 
+  int _showTopItemsChart = 0;
+
   String? _doNotRememberVersion;
 
   GitHubRelease? _appUpdatesAvailable;
@@ -166,6 +168,10 @@ class AppConfigProvider with ChangeNotifier {
 
   bool get hideServerAddress {
     return _hideServerAddress == 1 ? true : false;
+  }
+
+  bool get showTopItemsChart {
+    return _showTopItemsChart == 1 ? true : false;
   }
 
   void setDbInstance(Database db) {
@@ -402,6 +408,22 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setShowTopItemsChart(bool value) async {
+    final updated = await updateConfigQuery(
+      db: _dbInstance!,
+      column: 'showTopItemsChart',
+      value: value == true ? 1 : 0
+    );
+    if (updated == true) {
+      _showTopItemsChart = value == true ? 1 : 0;
+      notifyListeners();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
 
   Future<bool> setDoNotRememberVersion(String value) async {
     final updated = await updateConfigQuery(
@@ -424,9 +446,10 @@ class AppConfigProvider with ChangeNotifier {
     _showIpLogs = dbData['showIpLogs'] ?? 0;
     _combinedChartHome = dbData['combinedChart'] ?? 0;
     _hideServerAddress = dbData['hideServerAddress'];
+    _showTopItemsChart = dbData['showTopItemsChart'];
     if (dbData['homeTopItemsOrder'] != null) {
       try {
-        _homeTopItemsOrder = List<HomeTopItems>.from(
+        final itemsOrder = List<HomeTopItems>.from(
           List<String>.from(jsonDecode(dbData['homeTopItemsOrder'])).map((e) {
             switch (e) {
               case 'queriedDomains':
@@ -438,11 +461,22 @@ class AppConfigProvider with ChangeNotifier {
               case 'recurrentClients':
                 return HomeTopItems.recurrentClients;
 
+              case 'topUpstreams':
+                return HomeTopItems.topUpstreams;
+
+              case 'avgUpstreamResponseTime':
+                return HomeTopItems.avgUpstreamResponseTime;
+
               default:
                 return null;
             }
           }).where((e) => e != null).toList()
         );
+        final missingItems = homeTopItemsDefaultOrder.where((e) => !itemsOrder.contains(e));
+        _homeTopItemsOrder = [
+          ...itemsOrder,
+          ...missingItems
+        ];
       } catch (e) {
         Sentry.captureException(e);
         _homeTopItemsOrder = homeTopItemsDefaultOrder;

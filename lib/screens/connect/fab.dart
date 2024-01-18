@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:adguard_home_manager/widgets/add_server_modal.dart';
-import 'package:adguard_home_manager/widgets/version_warning_modal.dart';
+import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 
 class FabConnect extends StatelessWidget {
   const FabConnect({Key? key}) : super(key: key);
@@ -12,37 +11,7 @@ class FabConnect extends StatelessWidget {
 
     void openAddServerModal() async {
       await Future.delayed(const Duration(seconds: 0), (() => {
-        if (width > 700) {
-          showDialog(
-            context: context, 
-            barrierDismissible: false,
-            builder: (context) => AddServerModal(
-              window: true,
-              onUnsupportedVersion: (version) => showDialog(
-                context: context, 
-                builder: (ctx) => VersionWarningModal(
-                  version: version 
-                ),
-                barrierDismissible: false
-              ),
-            ),
-          )
-        }
-        else {
-          Navigator.push(context, MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (BuildContext context) => AddServerModal(
-              window: false,
-              onUnsupportedVersion: (version) => showDialog(
-                context: context, 
-                builder: (ctx) => VersionWarningModal(
-                  version: version 
-                ),
-                barrierDismissible: false
-              ),
-            )
-          ))
-        }
+        openServerFormModal(context: context, width: width)
       }));
     }
 

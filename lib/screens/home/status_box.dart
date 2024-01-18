@@ -9,11 +9,11 @@ class StatusBox extends StatelessWidget {
   final bool isEnabled;
 
   const StatusBox({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     required this.isEnabled
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

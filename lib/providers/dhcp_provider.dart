@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
@@ -41,9 +42,9 @@ class DhcpProvider with ChangeNotifier {
       _loadStatus = LoadStatus.loading;
       notifyListeners();
     }
-    final result = await _serversProvider!.apiClient!.getDhcpData();
-    if (result['result'] == 'success') {
-      _dhcp = result['data'];
+    final result = await _serversProvider!.apiClient2!.getDhcpData();
+    if (result.successful == true) {
+      _dhcp = result.content as DhcpModel;
       _loadStatus = LoadStatus.loaded;
       notifyListeners();
       return true;
@@ -58,7 +59,7 @@ class DhcpProvider with ChangeNotifier {
   }
 
   Future<bool> deleteLease(Lease lease) async {
-    final result = await _serversProvider!.apiClient!.deleteStaticLease(
+    final result = await _serversProvider!.apiClient2!.deleteStaticLease(
       data: {
         "mac": lease.mac,
         "ip": lease.ip,
@@ -66,9 +67,9 @@ class DhcpProvider with ChangeNotifier {
       }
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       DhcpModel data = dhcp!;
-      data.dhcpStatus.staticLeases = data.dhcpStatus.staticLeases.where((l) => l.mac != lease.mac).toList();
+      data.dhcpStatus!.staticLeases = data.dhcpStatus!.staticLeases.where((l) => l.mac != lease.mac).toList();
       setDhcpData(data);
       return true;
     }
@@ -78,8 +79,8 @@ class DhcpProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> createLease(Lease lease) async {
-    final result = await _serversProvider!.apiClient!.createStaticLease(
+  Future<ApiResponse> createLease(Lease lease) async {
+    final result = await _serversProvider!.apiClient2!.createStaticLease(
       data: {
         "mac": lease.mac,
         "ip": lease.ip,
@@ -87,29 +88,14 @@ class DhcpProvider with ChangeNotifier {
       }
     );
 
-    if (result['result'] == 'success') {
+    if (result.successful == true) {
       DhcpModel data = dhcp!;
-      data.dhcpStatus.staticLeases.add(lease);
+      data.dhcpStatus!.staticLeases.add(lease);
       setDhcpData(data);
-      return { 'success': true };
-    }
-    else if (result['result'] == 'error' && result['message'] == 'already_exists' ) {
-      return {
-        'success': false,
-        'error': 'already_exists'
-      };
-    }
-    else if (result['result'] == 'error' && result['message'] == 'server_not_configured' ) {
-      return {
-        'success': false,
-        'error': 'server_not_configured'
-      };
+      return result;
     }
     else {
-      return {
-        'success': false,
-        'error': null
-      };
+      return result;
     }
   }
 } 

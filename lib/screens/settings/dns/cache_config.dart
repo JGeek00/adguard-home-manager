@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/dns/clear_dns_cache_dialog.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/dns_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -15,7 +16,7 @@ import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class CacheConfigDnsScreen extends StatefulWidget {
-  const CacheConfigDnsScreen({Key? key}) : super(key: key);
+  const CacheConfigDnsScreen({super.key});
 
   @override
   State<CacheConfigDnsScreen> createState() => _CacheConfigDnsScreenState();
@@ -58,7 +59,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     cacheSizeController.text = dnsProvider.dnsInfo!.cacheSize.toString();
     overrideMinTtlController.text = dnsProvider.dnsInfo!.cacheTtlMin.toString();
     overrideMaxTtlController.text = dnsProvider.dnsInfo!.cacheTtlMax.toString();
-    optimisticCache = dnsProvider.dnsInfo!.cacheOptimistic;
+    optimisticCache = dnsProvider.dnsInfo!.cacheOptimistic ?? false;
     validData = true;
     super.initState();
   }
@@ -69,8 +70,10 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     final dnsProvider = Provider.of<DnsProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     void saveData() async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
       final result = await dnsProvider.saveCacheCacheConfig({
@@ -82,14 +85,14 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
 
       processModal.close();
 
-      if (result['success'] == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
-      else if (result['success'] == false && result['error'] == 400) {
+      else if (result.successful== false && result.statusCode == 400) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
@@ -135,7 +138,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
 
     void clearCache() async {
       final result = await clearDnsCache(context, serversProvider.selectedServer!);
-      if (result == true) {
+      if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheCleared, 
@@ -154,6 +157,7 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.dnsCacheConfig),
+        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
         actions: [
           IconButton(
             onPressed: validData == true
@@ -165,81 +169,83 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
           const SizedBox(width: 10)
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 10),
-        children: [
-          numericField(
-            controller: cacheSizeController, 
-            label: AppLocalizations.of(context)!.cacheSize, 
-            helper: AppLocalizations.of(context)!.inBytes, 
-            error: cacheSizeError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => cacheSizeError = null);
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 10),
+          children: [
+            numericField(
+              controller: cacheSizeController, 
+              label: AppLocalizations.of(context)!.cacheSize, 
+              helper: AppLocalizations.of(context)!.inBytes, 
+              error: cacheSizeError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => cacheSizeError = null);
+                }
+                else {
+                  setState(() => cacheSizeError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
               }
-              else {
-                setState(() => cacheSizeError = AppLocalizations.of(context)!.valueNotNumber);
+            ),
+            const SizedBox(height: 30),
+            numericField(
+              controller: overrideMinTtlController, 
+              label: AppLocalizations.of(context)!.overrideMinimumTtl, 
+              helper: AppLocalizations.of(context)!.overrideMinimumTtlDescription, 
+              error: overrideMinTtlError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => overrideMinTtlError = null);
+                }
+                else {
+                  setState(() => overrideMinTtlError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
               }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 30),
-          numericField(
-            controller: overrideMinTtlController, 
-            label: AppLocalizations.of(context)!.overrideMinimumTtl, 
-            helper: AppLocalizations.of(context)!.overrideMinimumTtlDescription, 
-            error: overrideMinTtlError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => overrideMinTtlError = null);
+            ),
+            const SizedBox(height: 30),
+            numericField(
+              controller: overrideMaxTtlController, 
+              label: AppLocalizations.of(context)!.overrideMaximumTtl, 
+              helper: AppLocalizations.of(context)!.overrideMaximumTtlDescription, 
+              error: overrideMaxTtlError, 
+              onChanged: (value) {
+                if (int.tryParse(value) != null) {
+                  setState(() => overrideMaxTtlError = null);
+                }
+                else {
+                  setState(() => overrideMaxTtlError = AppLocalizations.of(context)!.valueNotNumber);
+                }
+                checkValidData();
               }
-              else {
-                setState(() => overrideMinTtlError = AppLocalizations.of(context)!.valueNotNumber);
-              }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 30),
-          numericField(
-            controller: overrideMaxTtlController, 
-            label: AppLocalizations.of(context)!.overrideMaximumTtl, 
-            helper: AppLocalizations.of(context)!.overrideMaximumTtlDescription, 
-            error: overrideMaxTtlError, 
-            onChanged: (value) {
-              if (int.tryParse(value) != null) {
-                setState(() => overrideMaxTtlError = null);
-              }
-              else {
-                setState(() => overrideMaxTtlError = AppLocalizations.of(context)!.valueNotNumber);
-              }
-              checkValidData();
-            }
-          ),
-          const SizedBox(height: 10),
-          CustomSwitchListTile(
-            value: optimisticCache, 
-            onChanged: (value) => setState(() => optimisticCache = value), 
-            title: AppLocalizations.of(context)!.optimisticCaching,
-            subtitle: AppLocalizations.of(context)!.optimisticCachingDescription,
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () => showDialog(
-                  context: context, 
-                  builder: (context) => ClearDnsCacheDialog(
-                    onConfirm: clearCache
-                  )
-                ), 
-                icon: const Icon(Icons.delete_rounded),
-                label: Text(AppLocalizations.of(context)!.clearDnsCache),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16)
-        ],
+            ),
+            const SizedBox(height: 10),
+            CustomSwitchListTile(
+              value: optimisticCache, 
+              onChanged: (value) => setState(() => optimisticCache = value), 
+              title: AppLocalizations.of(context)!.optimisticCaching,
+              subtitle: AppLocalizations.of(context)!.optimisticCachingDescription,
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => showDialog(
+                    context: context, 
+                    builder: (context) => ClearDnsCacheDialog(
+                      onConfirm: clearCache
+                    )
+                  ), 
+                  icon: const Icon(Icons.delete_rounded),
+                  label: Text(AppLocalizations.of(context)!.clearDnsCache),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16)
+          ],
+        ),
       ),
     );
   }

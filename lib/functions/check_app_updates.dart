@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:store_checker/store_checker.dart';
 
 import 'package:adguard_home_manager/functions/compare_versions.dart';
+import 'package:adguard_home_manager/services/external_requests.dart';
 import 'package:adguard_home_manager/models/github_release.dart';
-import 'package:adguard_home_manager/services/http_requests.dart';
 
 Future<GitHubRelease?> checkAppUpdates({
   required String currentBuildNumber,
@@ -12,21 +12,27 @@ Future<GitHubRelease?> checkAppUpdates({
   required Source installationSource,
   required bool isBeta
 }) async {
-  final result = await checkAppUpdatesGitHub();
+  var result = isBeta 
+    ? await ExternalRequests.getReleasesGitHub() 
+    : await ExternalRequests.getReleaseData();
 
-  if (result['result'] == 'success') {
+  if (result.successful == true) {
+    late GitHubRelease gitHubRelease;
+    if (isBeta) {
+      gitHubRelease = (result.content as List<GitHubRelease>).firstWhere((r) => r.prerelease == true);
+    }
+    else {
+      gitHubRelease = result.content as GitHubRelease;
+    }
+
     final update = gitHubUpdateExists(
       currentBuildNumber: currentBuildNumber, 
-      gitHubReleases: result['body'],
+      gitHubRelease: gitHubRelease,
       isBeta: isBeta
     );
-
+print(update);
     if (update == true) {
-      final release = isBeta == true
-        ? result['body'].firstWhere((release) => release.prerelease == true)
-        : result['body'].firstWhere((release) => release.prerelease == false);
-
-      setUpdateAvailable(release);
+      setUpdateAvailable(gitHubRelease);
         
       if (Platform.isAndroid) {
         if (
@@ -34,7 +40,7 @@ Future<GitHubRelease?> checkAppUpdates({
           installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
           installationSource == Source.UNKNOWN
         ) {
-          return release;
+          return gitHubRelease;
         }
         else {
           return null;
@@ -44,7 +50,7 @@ Future<GitHubRelease?> checkAppUpdates({
         return null;
       }
       else {
-        return release;
+        return gitHubRelease;
       }
     }
     else {

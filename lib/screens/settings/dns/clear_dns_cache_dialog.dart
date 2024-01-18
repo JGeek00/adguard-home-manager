@@ -5,9 +5,9 @@ class ClearDnsCacheDialog extends StatelessWidget {
   final void Function() onConfirm;
 
   const ClearDnsCacheDialog({
-    Key? key,
+    super.key,
     required this.onConfirm
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +22,7 @@ class ClearDnsCacheDialog extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.clearDnsCache, 
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 24,
               color: Theme.of(context).colorScheme.onSurface

@@ -1,2 +1,2 @@
 enum LoadStatus { loading, loaded, error }
-enum HomeTopItems { queriedDomains, blockedDomains, recurrentClients }
+enum HomeTopItems { queriedDomains, blockedDomains, recurrentClients, topUpstreams, avgUpstreamResponseTime }

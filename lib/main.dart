@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -15,7 +16,8 @@ import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/base.dart';
+import 'package:adguard_home_manager/widgets/layout.dart';
+import 'package:adguard_home_manager/widgets/menu_bar.dart';
 
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -34,6 +36,7 @@ import 'package:adguard_home_manager/services/db/database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     setWindowMinSize(const Size(500, 500));
@@ -196,6 +199,7 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     displayMode();
+
     super.initState();
   }
 
@@ -230,22 +234,16 @@ class _MainState extends State<Main> {
           Locale('zh', ''),
           Locale('zh', 'CN'),
           Locale('pl', ''),
+          Locale('tr', ''),
           Locale('ru', '')
         ],
         scaffoldMessengerKey: scaffoldMessengerKey,
-        builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              textScaleFactor: !(Platform.isAndroid || Platform.isIOS) 
-                ? 0.9
-                : 1.0
-            ),
-            child: child!,
-          );
-        },
-        home: const Base(),
+        navigatorKey: globalNavigatorKey,
+        builder: (context, child) => CustomMenuBar(
+          child: child!,
+        ),
+        home: const Layout(),
       ),
     );
   }
 }
-

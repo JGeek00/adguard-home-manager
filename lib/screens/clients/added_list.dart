@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/rendering.dart';
@@ -9,11 +7,10 @@ import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/client_screen.dart';
-import 'package:adguard_home_manager/screens/clients/added_client_tile.dart';
-import 'package:adguard_home_manager/screens/clients/remove_client_modal.dart';
+import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
+import 'package:adguard_home_manager/screens/clients/client/added_client_tile.dart';
+import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
 import 'package:adguard_home_manager/screens/clients/fab.dart';
-import 'package:adguard_home_manager/screens/clients/options_modal.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -32,13 +29,13 @@ class AddedList extends StatefulWidget {
   final bool splitView;
 
   const AddedList({
-    Key? key,
+    super.key,
     required this.scrollController,
     required this.data,
     required this.onClientSelected,
     this.selectedClient,
     required this.splitView
-  }) : super(key: key);
+  });
 
   @override
   State<AddedList> createState() => _AddedListState();
@@ -77,8 +74,8 @@ class _AddedListState extends State<AddedList> {
     final width = MediaQuery.of(context).size.width;
 
     void confirmEditClient(Client client) async {
-      ProcessModal processModal = ProcessModal(context: context);
-      processModal.open(AppLocalizations.of(context)!.addingClient);
+      ProcessModal processModal = ProcessModal();
+      processModal.open(AppLocalizations.of(context)!.savingChanges);
       
       final result = await clientsProvider.editClient(client);
 
@@ -101,7 +98,7 @@ class _AddedListState extends State<AddedList> {
     }
 
     void deleteClient(Client client) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.removingClient);
       
       final result = await clientsProvider.deleteClient(client);
@@ -128,31 +125,13 @@ class _AddedListState extends State<AddedList> {
     }  
 
     void openClientModal(Client client) {
-      if (width > 900 || !(Platform.isAndroid | Platform.isIOS)) {
-        showDialog(
-          barrierDismissible: false,
-          context: context, 
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmEditClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            onDelete: deleteClient,
-            client: client,
-            dialog: true,
-          )
-        );
-      }
-      else {
-        Navigator.push(context, MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) => ClientScreen(
-            onConfirm: confirmEditClient,
-            serverVersion: statusProvider.serverStatus!.serverVersion,
-            onDelete: deleteClient,
-            client: client,
-            dialog: false,
-          )
-        ));
-      }
+      openClientFormModal(
+        context: context, 
+        width: width, 
+        client: client,
+        onConfirm: confirmEditClient,
+        onDelete: deleteClient
+      );
     }
 
     void openDeleteModal(Client client) {
@@ -163,19 +142,13 @@ class _AddedListState extends State<AddedList> {
         )
       );
     }
-
-    void openOptionsModal(Client client) {
-      showModal(
-        context: context, 
-        builder: (ctx) => OptionsModal(
-          onDelete: () => openDeleteModal(client),
-          onEdit: () => openClientModal(client),
-        )
-      );
-    }
+    final clientsDisplay = clientsProvider.searchTermClients != null && clientsProvider.searchTermClients != ""
+      ? widget.data.where(
+          (c) => c.name.toLowerCase().contains(clientsProvider.searchTermClients.toString()) || c.ids.where((id) => id.contains(clientsProvider.searchTermClients.toString())).isNotEmpty
+        ).toList()
+      : widget.data;
 
     return CustomTabContentList(
-      noSliver: !(Platform.isAndroid || Platform.isIOS),
       listPadding: widget.splitView == true 
         ? const EdgeInsets.only(top: 8)
         : null,
@@ -198,15 +171,16 @@ class _AddedListState extends State<AddedList> {
           ],
         ),
       ), 
-      itemsCount: widget.data.length,
+      itemsCount: clientsDisplay.length,
       contentWidget: (index) => AddedClientTile(
         selectedClient: widget.selectedClient,
-        client: widget.data[index], 
+        client: clientsDisplay[index], 
         onTap: widget.onClientSelected,
-        onLongPress: openOptionsModal,
-        onEdit: openClientModal,
+        onEdit: statusProvider.serverStatus != null
+          ? (c) => openClientModal(c)
+          : null,
+        onDelete: openDeleteModal,
         splitView: widget.splitView,
-        serverVersion: statusProvider.serverStatus!.serverVersion,
       ),
       noData: SizedBox(
         width: double.maxFinite,

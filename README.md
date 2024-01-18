@@ -45,17 +45,27 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 ## Generate production build
 <ul>
   <li>
+    <b>Prerequisites</b>
+    <ol>
+      <li>Open <code>pubspec.yaml</code> and change the version name and the version number.</li>
+      <li>Run <code>flutter clean</code>.</li>
+      <li>Run <code>flutter pub get</code>.</li>
+    </ol>
+  </li>
+  <li>
+    <b>Android</b>
+    <ol>  
+      <li>Make sure you have your <code>key.properties</code> file at <code>android/</code>, with all the required values of your signing key correctly set up.</li>
+      <li>Make sure you have your keystore file at <code>android/app</code>.</li>
+      <li>Run <code>flutter build apk --release</code> to compile the APK.</li>
+      <li>The .apk package is located at <code>build/app/outputs/flutter-apk/app-release.apk</code>.</li>
+    </ol>
+  </li>
+  <li>
     <b>macOS</b>
     <ol>  
-      <li>flutter clean</li>
-      <li>flutter pub get</li>
-      <li>flutter build macos --release</li>
-      <li>Open macos/Runner.xcworkspace on Xcode</li>
-      <li>Make sure all the pods have the minimum deployment version at 10.14</li>
-      <li>Select Runner > Targets Runner</li>
-      <li>Make sure the Version and Build numbers are correct</li>
-      <li>Click on Product menu and on Archive</li>
-      <li>Select the first on the list and click on Distribute app, select Copy App and click on Next</li>
+      <li>Run <code>flutter build macos --release</code> to compile the production build.</li>
+      <li>The .app package is located at <code>build/macos/Build/Products/Release/AdGuard Home Manager.app</code>.</li>
     </ol>
   </li>
   <li>
@@ -67,24 +77,22 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
       </ol>
       <b>Build</b>
       <ol>
-        <li>Open debian.yaml file inside debian/ and update the version number</li>
+        <li>Open <code>debian.yaml</code> file inside debian/ and update the version number</li>
         <li>run <code>rps build linux</code></li>
-        <li>The .tar.gz is at build/linux/x64/release/bundle</li>
-        <li>The .deb package is at debian/packages</li>
+        <li>The .tar.gz is at <code>build/linux/x64/release/bundle</code></li>
+        <li>The .deb package is at <code>build/linux/x64/release/debian/</code></li>
       </ol>
     </ul>
   </li>
   <li>
     <b>Windows</b>
     <ol>
-      <li>flutter clean</li>
-      <li>flutter pub get</li>
-      <li>flutter build windows</li>
+      <li>Run <code>flutter build windows --release</code>.</li>
       <li>Open Inno Setup Compiler application and load the script</li>
-      <li>The script is located at windows/innosetup_installer_builder.iss</li>
+      <li>The script is located at <code>windows/innosetup_installer_builder.iss</code></li>
       <li>Update the version number and save the changes</li>
       <li>Click on the Compile button</li>
-      <li>The installer will be generated at build/windows/aghm_installer.exe</li>
+      <li>The installer will be generated at <code>build/windows/aghm_installer.exe</code>.</li>
     </ol>
   </li>
 </ul>
@@ -119,6 +127,9 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 - [async](https://pub.dev/packages/async)
 - [sentry flutter](https://pub.dev/packages/sentry_flutter)
 - [flutter dotenv](https://pub.dev/packages/flutter_dotenv)
+- [flutter reorderable list](https://pub.dev/packages/flutter_reorderable_list)
+- [pie chart](https://pub.dev/packages/pie_chart)
+- [segmented button slide](https://pub.dev/packages/segmented_button_slide)
 
 <br>
 

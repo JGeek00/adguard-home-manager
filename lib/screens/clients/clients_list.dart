@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/clients/active_client_tile.dart';
+import 'package:adguard_home_manager/screens/clients/client/active_client_tile.dart';
 
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
@@ -10,22 +10,18 @@ import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class ClientsList extends StatelessWidget {
-  final ScrollController scrollController;
   final List<AutoClient> data;
   final void Function(AutoClient) onClientSelected;
   final AutoClient? selectedClient;
   final bool splitView;
-  final bool sliver;
 
   const ClientsList({
-    Key? key,
-    required this.scrollController,
+    super.key,
     required this.data,
     required this.onClientSelected,
     this.selectedClient,
     required this.splitView,
-    required this.sliver
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +31,6 @@ class ClientsList extends StatelessWidget {
       listPadding: splitView == true 
         ? const EdgeInsets.only(top: 8)
         : null,
-      noSliver: !sliver,
       loadingGenerator: () =>  SizedBox(
         width: double.maxFinite,
         height: MediaQuery.of(context).size.height-171,

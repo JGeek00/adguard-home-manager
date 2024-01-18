@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/add_custom_rule.dart';
-import 'package:adguard_home_manager/screens/filters/add_list_modal.dart';
+import 'package:adguard_home_manager/screens/filters/modals/add_custom_rule.dart';
+import 'package:adguard_home_manager/screens/filters/details/add_list_modal.dart';
 
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -32,7 +32,7 @@ class AddFiltersButton extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     void confirmAddRule(String rule) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingRule);
 
       final result = await filteringProvider.addCustomRule(rule);
@@ -56,31 +56,34 @@ class AddFiltersButton extends StatelessWidget {
     }
 
     void openAddCustomRule() {
-      if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
-        showDialog(
-          context: context, 
-          builder: (context) => AddCustomRule(
-            onConfirm: confirmAddRule,
-            dialog: true,
-          ),
-          barrierDismissible: false
-        );
-      }
-      else {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (context) => AddCustomRule(
-              onConfirm: confirmAddRule,
-              dialog: false,
+      showGeneralDialog(
+        context: context, 
+        barrierColor: !(width > 700 || !(Platform.isAndroid || Platform.isIOS))
+          ?Colors.transparent 
+          : Colors.black54,
+        transitionBuilder: (context, anim1, anim2, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 1), 
+              end: const Offset(0, 0)
+            ).animate(
+              CurvedAnimation(
+                parent: anim1, 
+                curve: Curves.easeInOutCubicEmphasized
+              )
             ),
-          )
-        );
-      }
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) => AddCustomRule(
+          fullScreen: !(width > 700 || !(Platform.isAndroid || Platform.isIOS)),
+          onConfirm: confirmAddRule,
+        ),
+      );
     }
 
     void confirmAddList({required String name, required String url, required String type}) async {
-      ProcessModal processModal = ProcessModal(context: context);
+      ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingList);
 
       final result = await filteringProvider.addList(name: name, url: url, type: type);
@@ -131,6 +134,7 @@ class AddFiltersButton extends StatelessWidget {
       else {
         showModalBottomSheet(
           context: context, 
+          useRootNavigator: true,
           builder: (ctx) => AddListModal(
             type: type,
             onConfirm: confirmAddList,

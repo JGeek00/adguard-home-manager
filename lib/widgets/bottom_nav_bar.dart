@@ -3,21 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/config/app_screens.dart';
-import 'package:adguard_home_manager/providers/logs_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/models/app_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
-  const BottomNavBar({Key? key}) : super(key: key);
+  const BottomNavBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    final logsProvider = Provider.of<LogsProvider>(context);
 
-    List<AppScreen> screens = serversProvider.selectedServer != null && serversProvider.apiClient != null
+    List<AppScreen> screens = serversProvider.selectedServer != null && serversProvider.apiClient2 != null
       ? screensServerConnected 
       : screensSelectServer;
 
@@ -46,12 +44,12 @@ class BottomNavBar extends StatelessWidget {
       }
     }
 
-    if ((serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1) {
+    if ((serversProvider.selectedServer == null || serversProvider.apiClient2 == null) && appConfigProvider.selectedScreen > 1) {
       appConfigProvider.setSelectedScreen(0);
     }
 
     return NavigationBar(
-      selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient == null) && appConfigProvider.selectedScreen > 1
+      selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient2 == null) && appConfigProvider.selectedScreen > 1
         ? 0
         : appConfigProvider.selectedScreen,
       destinations: screens.map((screen) => NavigationDestination(
@@ -84,21 +82,6 @@ class BottomNavBar extends StatelessWidget {
         ), 
         label: translatedName(screen.name)
       )).toList(),
-      onDestinationSelected: (value) {
-        // Reset clients tab to 0 when changing screen
-        if (value != 1) {
-          appConfigProvider.setSelectedClientsTab(0);
-        }
-        // Reset logs filters when changing screen
-        if (value != 2) {
-          logsProvider.resetFilters();
-        }
-        // Reset settings selected screen
-        if (value != screens.length-1) {
-          appConfigProvider.setSelectedSettingsScreen(screen: null);
-        }
-        appConfigProvider.setSelectedScreen(value);
-      },
     );
   }
 }

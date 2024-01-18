@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/servers/servers.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
@@ -15,15 +18,17 @@ class HomeAppBar extends StatelessWidget {
   final bool innerBoxScrolled;
 
   const HomeAppBar({
-    Key? key,
+    super.key,
     required this.innerBoxScrolled
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
 
     final Server? server =  serversProvider.selectedServer;
 
@@ -40,6 +45,7 @@ class HomeAppBar extends StatelessWidget {
       floating: true,
       centerTitle: false,
       forceElevated: innerBoxScrolled,
+      surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
       leading: Stack(
         children: [
           Center(
@@ -114,6 +120,14 @@ class HomeAppBar extends StatelessWidget {
         ],
       ),
       actions: [
+        if (!(Platform.isAndroid || Platform.isIOS)) ...[
+          IconButton(
+            onPressed: () => statusProvider.getServerStatus(), 
+            icon: const Icon(Icons.refresh_rounded),
+            tooltip: AppLocalizations.of(context)!.refresh,
+          ),
+          const SizedBox(width: 8),
+        ],
         PopupMenuButton(
           itemBuilder: (context) => [
             PopupMenuItem(

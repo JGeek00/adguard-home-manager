@@ -6,9 +6,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'package:adguard_home_manager/widgets/version_warning_modal.dart';
+import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 import 'package:adguard_home_manager/widgets/servers_list/servers_list.dart';
-import 'package:adguard_home_manager/widgets/add_server_modal.dart';
 
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -17,9 +16,9 @@ class Servers extends StatefulWidget {
   final double? breakingWidth;
 
   const Servers({
-    Key? key,
+    super.key,
     this.breakingWidth
-  }) : super(key: key);
+  });
 
   @override
   State<Servers> createState() => _ServersState();
@@ -69,37 +68,7 @@ class _ServersState extends State<Servers> {
 
     void openAddServerModal() async {
       await Future.delayed(const Duration(seconds: 0), (() => {
-        if (width > 700) {
-          showDialog(
-            context: context, 
-            barrierDismissible: false,
-            builder: (context) => AddServerModal(
-              window: true,
-              onUnsupportedVersion: (version) => showDialog(
-                context: context, 
-                builder: (ctx) => VersionWarningModal(
-                  version: version 
-                ),
-                barrierDismissible: false
-              ),
-            ),
-          )
-        }
-        else {
-          Navigator.push(context, MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (BuildContext context) => AddServerModal(
-              window: false,
-              onUnsupportedVersion: (version) => showDialog(
-                context: context, 
-                builder: (ctx) => VersionWarningModal(
-                  version: version 
-                ),
-                barrierDismissible: false
-              ),
-            )
-          ))
-        }
+        openServerFormModal(context: context, width: width)
       }));
     }
 
@@ -108,29 +77,31 @@ class _ServersState extends State<Servers> {
         title: Text(AppLocalizations.of(context)!.servers),
         centerTitle: false,
       ),
-      body: Stack(
-        children: [
-          ServersList(
-            context: context, 
-            controllers: expandableControllerList, 
-            onChange: expandOrContract,
-            scrollController: scrollController,
-            breakingWidth: widget.breakingWidth ?? 700,
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeInOut,
-            bottom: isVisible ?
-              appConfigProvider.showingSnackbar
-                ? 70 : (Platform.isIOS ? 40 : 20)
-              : -70,
-            right: 20,
-            child: FloatingActionButton(
-              onPressed: openAddServerModal,
-              child: const Icon(Icons.add),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            ServersList(
+              context: context, 
+              controllers: expandableControllerList, 
+              onChange: expandOrContract,
+              scrollController: scrollController,
+              breakingWidth: widget.breakingWidth ?? 700,
             ),
-          ),
-        ],
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+              bottom: isVisible ?
+                appConfigProvider.showingSnackbar
+                  ? 70 : (Platform.isIOS ? 40 : 20)
+                : -70,
+              right: 20,
+              child: FloatingActionButton(
+                onPressed: openAddServerModal,
+                child: const Icon(Icons.add),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

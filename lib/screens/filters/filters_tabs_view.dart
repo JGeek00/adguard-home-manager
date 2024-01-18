@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/screens/filters/custom_rules_list.dart';
 import 'package:adguard_home_manager/screens/filters/filters_list.dart';
 
+import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
@@ -17,12 +18,12 @@ class FiltersTabsView extends StatefulWidget {
   final void Function(Filter, String) onOpenDetailsModal;
 
   const FiltersTabsView({
-    Key? key,
+    super.key,
     required this.appConfigProvider,
     required this.actions,
     required this.onOpenDetailsModal,
     required this.onRemoveCustomRule
-  }) : super(key: key);
+  });
 
   @override
   State<FiltersTabsView> createState() => _FiltersTabsViewState();
@@ -47,6 +48,8 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
   Widget build(BuildContext context) {
     final filteringProvider = Provider.of<FilteringProvider>(context);
 
+    final width = MediaQuery.of(context).size.width;
+
     return DefaultTabController(
       length: 3,
       child: NestedScrollView(
@@ -62,10 +65,12 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
                 forceElevated: innerBoxIsScrolled,
                 centerTitle: false,
                 actions: widget.actions,
+                surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
                 bottom: TabBar(
                   controller: tabController,
                   isScrollable: true,
                   unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                  tabAlignment: TabAlignment.start,
                   tabs: [
                     Tab(
                       child: Row(
@@ -73,7 +78,7 @@ class _FiltersTabsViewState extends State<FiltersTabsView> with TickerProviderSt
                         children: [
                           const Icon(Icons.verified_user_rounded),
                           const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.whitelists,)
+                          Text(AppLocalizations.of(context)!.whitelists)
                         ],
                       ),
                     ),

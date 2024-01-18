@@ -4,12 +4,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/filtering.dart';
-import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/models/filtering_status.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -19,7 +20,6 @@ import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 import 'package:adguard_home_manager/models/clients_allowed_blocked.dart';
 import 'package:adguard_home_manager/models/server.dart';
-import 'package:adguard_home_manager/constants/urls.dart';
 
 
 Future<Map<String, dynamic>> apiRequest({
@@ -270,80 +270,107 @@ class ApiClient {
   });
 
   Future getServerVersion() async {
-    final result = await apiRequest(
-      server: server,
-      method: 'get',
-      urlPath: '/status', 
-      type: 'get_server_version'
-    );
+    try { 
+      final result = await apiRequest(
+        server: server,
+        method: 'get',
+        urlPath: '/status', 
+        type: 'get_server_version'
+      );
 
-    if (result['hasResponse'] == true) {
-      if (result['statusCode'] == 200 && result['body'] != null) {
-        return {
-          'result': 'success',
-          'data': jsonDecode(result['body'])['version']
-        };
+      if (result['hasResponse'] == true) {
+        if (result['statusCode'] == 200 && result['body'] != null) {
+          return {
+            'result': 'success',
+            'data': jsonDecode(result['body'])['version']
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_server_version', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result['statusCode'].toString(),
+              resBody: result['body']
+            )
+          };
+        }
       }
       else {
-        return {
-          'result': 'error',
-          'log': AppLog(
-            type: 'get_server_version', 
-            dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
-            statusCode: result['statusCode'].toString(),
-            resBody: result['body']
-          )
-        };
+        return result;
       }
-    }
-    else {
-      return result;
+    } catch (e) {
+      Sentry.captureException(e);
+      return {
+        'result': 'error',
+        'log': AppLog(
+          type: 'get_server_version', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          resBody: e.toString()
+        )
+      };
     }
   }
 
   Future getServerStatus() async {
-    final result = await Future.wait([
-      apiRequest(server: server, method: 'get', urlPath: '/stats', type: 'server_status'),
-      apiRequest(server: server, method: 'get', urlPath: '/status', type: 'server_status'),
-      apiRequest(server: server, method: 'get', urlPath: '/filtering/status', type: 'server_status'),
-      apiRequest(server: server, method: 'get', urlPath: '/safesearch/status', type: 'server_status'),
-      apiRequest(server: server, method: 'get', urlPath: '/safebrowsing/status', type: 'server_status'),
-      apiRequest(server: server, method: 'get', urlPath: '/parental/status', type: 'server_status'),
-      apiRequest(server: server, method: 'get', urlPath: '/clients', type: 'server_status'),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(server: server, method: 'get', urlPath: '/stats', type: 'server_status'),
+        apiRequest(server: server, method: 'get', urlPath: '/status', type: 'server_status'),
+        apiRequest(server: server, method: 'get', urlPath: '/filtering/status', type: 'server_status'),
+        apiRequest(server: server, method: 'get', urlPath: '/safesearch/status', type: 'server_status'),
+        apiRequest(server: server, method: 'get', urlPath: '/safebrowsing/status', type: 'server_status'),
+        apiRequest(server: server, method: 'get', urlPath: '/parental/status', type: 'server_status'),
+        apiRequest(server: server, method: 'get', urlPath: '/clients', type: 'server_status'),
+      ]);
 
-    if (
-      result[0]['hasResponse'] == true &&
-      result[1]['hasResponse'] == true &&
-      result[2]['hasResponse'] == true &&
-      result[3]['hasResponse'] == true &&
-      result[4]['hasResponse'] == true &&
-      result[5]['hasResponse'] == true &&
-      result[6]['hasResponse'] == true
-    ) {
       if (
-        result[0]['statusCode'] == 200 &&
-        result[1]['statusCode'] == 200 &&
-        result[2]['statusCode'] == 200 &&
-        result[3]['statusCode'] == 200 &&
-        result[4]['statusCode'] == 200 &&
-        result[5]['statusCode'] == 200 &&
-        result[6]['statusCode'] == 200 
+        result[0]['hasResponse'] == true &&
+        result[1]['hasResponse'] == true &&
+        result[2]['hasResponse'] == true &&
+        result[3]['hasResponse'] == true &&
+        result[4]['hasResponse'] == true &&
+        result[5]['hasResponse'] == true &&
+        result[6]['hasResponse'] == true
       ) {
-        final Map<String, dynamic> mappedData = {
-          'stats': jsonDecode(result[0]['body']),
-          'clients': jsonDecode(result[6]['body'])['clients'],
-          'status': jsonDecode(result[1]['body']),
-          'filtering': jsonDecode(result[2]['body']),
-          'safeSearch': jsonDecode(result[3]['body']),
-          'safeBrowsingEnabled': jsonDecode(result[4]['body']),
-          'parentalControlEnabled': jsonDecode(result[5]['body']),
-        };
-        return {
-          'result': 'success',
-          'data': ServerStatus.fromJson(mappedData)
-        };
+        if (
+          result[0]['statusCode'] == 200 &&
+          result[1]['statusCode'] == 200 &&
+          result[2]['statusCode'] == 200 &&
+          result[3]['statusCode'] == 200 &&
+          result[4]['statusCode'] == 200 &&
+          result[5]['statusCode'] == 200 &&
+          result[6]['statusCode'] == 200 
+        ) {
+          final Map<String, dynamic> mappedData = {
+            'stats': jsonDecode(result[0]['body']),
+            'clients': jsonDecode(result[6]['body'])['clients'],
+            'status': jsonDecode(result[1]['body']),
+            'filtering': jsonDecode(result[2]['body']),
+            'safeSearch': jsonDecode(result[3]['body']),
+            'safeBrowsingEnabled': jsonDecode(result[4]['body']),
+            'parentalControlEnabled': jsonDecode(result[5]['body']),
+          };
+          return {
+            'result': 'success',
+            'data': ServerStatus.fromJson(mappedData)
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_server_status', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode']).toString(),
+              resBody: result.map((res) => res['body']).toString()
+            )
+          };
+        }
       }
       else {
         return {
@@ -351,24 +378,23 @@ class ApiClient {
           'log': AppLog(
             type: 'get_server_status', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
-            statusCode: result.map((res) => res['statusCode']).toString(),
-            resBody: result.map((res) => res['body']).toString()
+            message: 'no_response',
+            statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+            resBody: result.map((res) => res['body'] ?? 'null').toString()
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
-        'result': 'error',
-        'log': AppLog(
-          type: 'get_server_status', 
-          dateTime: DateTime.now(), 
-          message: 'no_response',
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString()
-        )
-      };
+          'result': 'error',
+          'log': AppLog(
+            type: 'get_server_status', 
+            dateTime: DateTime.now(), 
+            message: 'no_response',
+            resBody: e.toString()
+          )
+        };
     }
   }
 
@@ -589,19 +615,33 @@ class ApiClient {
   }
 
   Future getClients() async {
-    final result = await Future.wait([
-      apiRequest(server: server, method: 'get', urlPath: '/clients', type: 'get_clients'),
-      apiRequest(server: server, method: 'get', urlPath: '/access/list', type: 'get_clients'),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(server: server, method: 'get', urlPath: '/clients', type: 'get_clients'),
+        apiRequest(server: server, method: 'get', urlPath: '/access/list', type: 'get_clients'),
+      ]);
 
-    if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
-      if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
-        final clients = Clients.fromJson(jsonDecode(result[0]['body']));
-        clients.clientsAllowedBlocked = ClientsAllowedBlocked.fromJson(jsonDecode(result[1]['body']));
-        return {
-          'result': 'success',
-          'data': clients
-        };
+      if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
+        if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
+          final clients = Clients.fromJson(jsonDecode(result[0]['body']));
+          clients.clientsAllowedBlocked = ClientsAllowedBlocked.fromJson(jsonDecode(result[1]['body']));
+          return {
+            'result': 'success',
+            'data': clients
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_clients', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+              resBody: result.map((res) => res['body'] ?? 'null').toString(),
+            )
+          };
+        }
       }
       else {
         return {
@@ -609,22 +649,21 @@ class ApiClient {
           'log': AppLog(
             type: 'get_clients', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
+            message: 'no_response',
             statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
             resBody: result.map((res) => res['body'] ?? 'null').toString(),
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
         'result': 'error',
         'log': AppLog(
           type: 'get_clients', 
           dateTime: DateTime.now(), 
           message: 'no_response',
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+          resBody: e.toString()
         )
       };
     }
@@ -674,68 +713,94 @@ class ApiClient {
     String? responseStatus,
     String? search
   }) async {
-    final result = await apiRequest(
-      server: server, 
-      method: 'get', 
-      urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}',
-      type: 'get_logs'
-    );
-      
-    if (result['hasResponse'] == true) {
-      if (result['statusCode'] == 200) {
-        return {
-          'result': 'success',
-          'data': LogsData.fromJson(jsonDecode(result['body']))
-        };
+    try {
+      final result = await apiRequest(
+        server: server, 
+        method: 'get', 
+        urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}',
+        type: 'get_logs'
+      );
+        
+      if (result['hasResponse'] == true) {
+        if (result['statusCode'] == 200) {
+          return {
+            'result': 'success',
+            'data': LogsData.fromJson(jsonDecode(result['body']))
+          };
+        }
+        else {
+          return {
+            'result': 'error', 
+            'log': AppLog(
+              type: 'get_logs', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result['statusCode'].toString(),
+              resBody: result['body']
+            )
+          };
+        }
       }
       else {
-        return {
-          'result': 'error', 
-          'log': AppLog(
-            type: 'get_logs', 
-            dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
-            statusCode: result['statusCode'].toString(),
-            resBody: result['body']
-          )
-        };
+        return result;
       }
-    }
-    else {
-      return result;
+    } catch (e) {
+      Sentry.captureException(e);
+      return {
+        'result': 'error', 
+        'log': AppLog(
+          type: 'get_logs', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          resBody: e.toString()
+        )
+      };
     }
   }
 
   Future getFilteringRules() async {
-    final result = await apiRequest(
-      server: server, 
-      method: 'get', 
-      urlPath: '/filtering/status',
-      type: 'get_filtering_rules'
-    );
-      
-    if (result['hasResponse'] == true) {
-      if (result['statusCode'] == 200) {
-        return {
-          'result': 'success',
-          'data': FilteringStatus.fromJson(jsonDecode(result['body']))
-        };
+    try {
+      final result = await apiRequest(
+        server: server, 
+        method: 'get', 
+        urlPath: '/filtering/status',
+        type: 'get_filtering_rules'
+      );
+        
+      if (result['hasResponse'] == true) {
+        if (result['statusCode'] == 200) {
+          return {
+            'result': 'success',
+            'data': FilteringStatus.fromJson(jsonDecode(result['body']))
+          };
+        }
+        else {
+          return {
+            'result': 'error', 
+            'log': AppLog(
+              type: 'get_filtering_rules', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result['statusCode'].toString(),
+              resBody: result['body']
+            )
+          };
+        }
       }
       else {
-        return {
-          'result': 'error', 
-          'log': AppLog(
-            type: 'get_filtering_rules', 
-            dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
-            statusCode: result['statusCode'].toString(),
-            resBody: result['body']
-          )
-        };
+        return result;
       }
-    }
-    else {
-      return result;
+    } catch (e) {
+      Sentry.captureException(e);
+      return {
+        'result': 'error', 
+        'log': AppLog(
+          type: 'get_filtering_rules', 
+          dateTime: DateTime.now(), 
+          message: 'error_code_not_expected',
+          resBody: e.toString()
+        )
+      };
     }
   }
 
@@ -872,32 +937,46 @@ class ApiClient {
   }
 
   Future getFiltering() async {
-    final result = await Future.wait([
-      apiRequest(
-        urlPath: '/filtering/status', 
-        method: 'get',
-        server: server, 
-        type: 'get_filtering_status'
-      ),
-      apiRequest(
-        urlPath: '/blocked_services/list', 
-        method: 'get',
-        server: server, 
-        type: 'get_filtering_status'
-      ),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(
+          urlPath: '/filtering/status', 
+          method: 'get',
+          server: server, 
+          type: 'get_filtering_status'
+        ),
+        apiRequest(
+          urlPath: '/blocked_services/list', 
+          method: 'get',
+          server: server, 
+          type: 'get_filtering_status'
+        ),
+      ]);
 
-    if (result[0]['hasResponse'] == true && result[0]['hasResponse'] == true) {
-      if (result[0]['statusCode'] == 200 && result[0]['statusCode'] == 200) {
-        return {
-          'result': 'success',
-          'data': Filtering.fromJson({
-            ...jsonDecode(result[0]['body']),
-            "blocked_services": result[1]['body'] != null 
-              ? jsonDecode(result[1]['body'])
-              : []
-          })
-        };
+      if (result[0]['hasResponse'] == true && result[0]['hasResponse'] == true) {
+        if (result[0]['statusCode'] == 200 && result[0]['statusCode'] == 200) {
+          return {
+            'result': 'success',
+            'data': Filtering.fromJson({
+              ...jsonDecode(result[0]['body']),
+              "blocked_services": result[1]['body'] != null 
+                ? jsonDecode(result[1]['body'])
+                : []
+            })
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_filtering_status', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+              resBody: result.map((res) => res['body'] ?? 'null').toString(),
+            )
+          };
+        }
       }
       else {
         return {
@@ -905,22 +984,21 @@ class ApiClient {
           'log': AppLog(
             type: 'get_filtering_status', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
+            message: 'no_response',
             statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
             resBody: result.map((res) => res['body'] ?? 'null').toString(),
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
         'result': 'error',
         'log': AppLog(
           type: 'get_filtering_status', 
           dateTime: DateTime.now(), 
           message: 'no_response',
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+          resBody: e.toString(),
         )
       };
     }
@@ -1251,55 +1329,69 @@ class ApiClient {
   }
 
   Future getDhcpData() async {
-    final result = await Future.wait([
-      apiRequest(
-        urlPath: '/dhcp/interfaces', 
-        method: 'get',
-        server: server, 
-        type: 'get_dhcp_data'
-      ),
-      apiRequest(
-        urlPath: '/dhcp/status', 
-        method: 'get',
-        server: server, 
-        type: 'get_dhcp_data'
-      ),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(
+          urlPath: '/dhcp/interfaces', 
+          method: 'get',
+          server: server, 
+          type: 'get_dhcp_data'
+        ),
+        apiRequest(
+          urlPath: '/dhcp/status', 
+          method: 'get',
+          server: server, 
+          type: 'get_dhcp_data'
+        ),
+      ]);
 
-    if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
-      if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
-        List<NetworkInterface> interfaces = List<NetworkInterface>.from(jsonDecode(result[0]['body']).entries.map((entry) => NetworkInterface.fromJson(entry.value)));
+      if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
+        if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
+          List<NetworkInterface> interfaces = List<NetworkInterface>.from(jsonDecode(result[0]['body']).entries.map((entry) => NetworkInterface.fromJson(entry.value)));
 
-        return {
-          'result': 'success',
-          'data': DhcpModel(
-            networkInterfaces: interfaces, 
-            dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
-          )
-        };
+          return {
+            'result': 'success',
+            'data': DhcpModel(
+              dhcpAvailable: true,
+              networkInterfaces: interfaces, 
+              dhcpStatus: DhcpStatus.fromJson(jsonDecode(result[1]['body']))
+            )
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_dhcp_data', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+              resBody: result.map((res) => res['body'] ?? 'null').toString(),
+            )
+          };
+        }
       }
       else {
         return {
           'result': 'error',
           'log': AppLog(
-            type: 'get_dhcp_data', 
+            type: 'get_dhpc_data', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
+            message: [result[0]['log'].message, result[1]['log'].message].toString(),
             statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
             resBody: result.map((res) => res['body'] ?? 'null').toString(),
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
         'result': 'error',
         'log': AppLog(
           type: 'get_dhpc_data', 
           dateTime: DateTime.now(), 
-          message: [result[0]['log'].message, result[1]['log'].message].toString(),
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+          message: 'error_code_not_expected',
+          resBody: e.toString(),
         )
       };
     }
@@ -2004,34 +2096,48 @@ class ApiClient {
   }
 
   Future checkServerUpdates() async {
-    final result = await Future.wait([
-      apiRequest(
-        urlPath: '/version.json', 
-        method: 'post',
-        server: server,
-        type: 'check_server_updates',
-        body: {
-          "recheck_now": true
-        }
-      ),
-      apiRequest(
-        urlPath: '/status', 
-        method: 'get',
-        server: server,
-        type: 'check_server_updates',
-      ),
-    ]);
+    try {
+      final result = await Future.wait([
+        apiRequest(
+          urlPath: '/version.json', 
+          method: 'post',
+          server: server,
+          type: 'check_server_updates',
+          body: {
+            "recheck_now": true
+          }
+        ),
+        apiRequest(
+          urlPath: '/status', 
+          method: 'get',
+          server: server,
+          type: 'check_server_updates',
+        ),
+      ]);
 
-    if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
-      if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
-        final Map<String, dynamic> obj = {
-          ...jsonDecode(result[0]['body']),
-          'current_version': ServerInfoData.fromJson(jsonDecode(result[1]['body'])).version
-        };
-        return {
-          'result': 'success',
-          'data': obj
-        };
+      if (result[0]['hasResponse'] == true && result[1]['hasResponse'] == true) {
+        if (result[0]['statusCode'] == 200 && result[1]['statusCode'] == 200) {
+          final Map<String, dynamic> obj = {
+            ...jsonDecode(result[0]['body']),
+            'current_version': ServerInfoData.fromJson(jsonDecode(result[1]['body'])).version
+          };
+          return {
+            'result': 'success',
+            'data': obj
+          };
+        }
+        else {
+          return {
+            'result': 'error',
+            'log': AppLog(
+              type: 'get_filtering_status', 
+              dateTime: DateTime.now(), 
+              message: 'error_code_not_expected',
+              statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
+              resBody: result.map((res) => res['body'] ?? 'null').toString(),
+            )
+          };
+        }
       }
       else {
         return {
@@ -2039,98 +2145,24 @@ class ApiClient {
           'log': AppLog(
             type: 'get_filtering_status', 
             dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
+            message: 'no_response',
             statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
             resBody: result.map((res) => res['body'] ?? 'null').toString(),
           )
         };
       }
-    }
-    else {
+    } catch (e) {
+      Sentry.captureException(e);
       return {
         'result': 'error',
         'log': AppLog(
           type: 'get_filtering_status', 
           dateTime: DateTime.now(), 
           message: 'no_response',
-          statusCode: result.map((res) => res['statusCode'] ?? 'null').toString(),
-          resBody: result.map((res) => res['body'] ?? 'null').toString(),
+          resBody: e.toString(),
         )
       };
     }
-  }
-
-  Future getUpdateChangelog({
-    required String releaseTag
-  }) async {
-    try {
-      HttpClient httpClient = HttpClient();
-      HttpClientRequest request = await httpClient.getUrl(Uri.parse("${Urls.adGuardHomeReleasesTags}/$releaseTag"));
-      HttpClientResponse response = await request.close();
-      String reply = await response.transform(utf8.decoder).join();
-      httpClient.close();
-      if (response.statusCode == 200) {
-        return {
-          'result': 'success',
-          'hasResponse': true,
-          'error': false,
-          'statusCode': response.statusCode,
-          'body': jsonDecode(reply)['body']
-        };
-      }
-      else {
-        return {
-          'result': 'error',
-          'log': AppLog(
-            type: 'update_encryption_settings', 
-            dateTime: DateTime.now(), 
-            message: 'error_code_not_expected',
-            statusCode: response.statusCode.toString(),
-            resBody: reply,
-          )
-        };
-      }    
-    } on SocketException {
-      return {
-        'result': 'no_connection', 
-        'message': 'SocketException',
-        'log': AppLog(
-          type: 'check_latest_release_github', 
-          dateTime: DateTime.now(), 
-          message: 'SocketException'
-        )
-      };
-    } on TimeoutException {
-      return {
-        'result': 'no_connection', 
-        'message': 'TimeoutException',
-        'log': AppLog(
-          type: 'check_latest_release_github', 
-          dateTime: DateTime.now(), 
-          message: 'TimeoutException'
-        )
-      };
-    } on HandshakeException {
-      return {
-        'result': 'ssl_error', 
-        'message': 'HandshakeException',
-        'log': AppLog(
-          type: 'check_latest_release_github', 
-          dateTime: DateTime.now(), 
-          message: 'HandshakeException'
-        )
-      };
-    } catch (e) {
-      return {
-        'result': 'error', 
-        'message': e.toString(),
-        'log': AppLog(
-          type: 'check_latest_release_github', 
-          dateTime: DateTime.now(), 
-          message: e.toString()
-        )
-      };
-    } 
   }
 
   Future requestUpdateServer() async {
@@ -2228,75 +2260,4 @@ class ApiClient {
       return result;
     }
   }
-}
-
-Future checkAppUpdatesGitHub() async {
-  try {
-    HttpClient httpClient = HttpClient();
-    HttpClientRequest request = await httpClient.getUrl(Uri.parse(Urls.getReleasesGitHub));
-    HttpClientResponse response = await request.close();
-    String reply = await response.transform(utf8.decoder).join();
-    httpClient.close();
-    if (response.statusCode == 200) {
-      return {
-        'result': 'success',
-        'hasResponse': true,
-        'error': false,
-        'statusCode': response.statusCode,
-        'body': List<GitHubRelease>.from(jsonDecode(reply).map((entry) => GitHubRelease.fromJson(entry)))
-      };
-    }
-    else {
-      return {
-        'result': 'error',
-        'log': AppLog(
-          type: 'update_encryption_settings', 
-          dateTime: DateTime.now(), 
-          message: 'error_code_not_expected',
-          statusCode: response.statusCode.toString(),
-          resBody: reply,
-        )
-      };
-    }    
-  } on SocketException {
-    return {
-      'result': 'no_connection', 
-      'message': 'SocketException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'SocketException'
-      )
-    };
-  } on TimeoutException {
-    return {
-      'result': 'no_connection', 
-      'message': 'TimeoutException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'TimeoutException'
-      )
-    };
-  } on HandshakeException {
-    return {
-      'result': 'ssl_error', 
-      'message': 'HandshakeException',
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: 'HandshakeException'
-      )
-    };
-  } catch (e) {
-    return {
-      'result': 'error', 
-      'message': e.toString(),
-      'log': AppLog(
-        type: 'check_latest_release_github', 
-        dateTime: DateTime.now(), 
-        message: e.toString()
-      )
-    };
-  } 
 }

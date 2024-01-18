@@ -84,10 +84,13 @@ class Client {
   final bool filteringEnabled;
   final bool parentalEnabled;
   final bool safebrowsingEnabled;
-  final bool? safesearchEnabled;
   final bool useGlobalBlockedServices;
   final bool useGlobalSettings;
   final SafeSearch? safeSearch;
+  final bool? ignoreQuerylog;
+  final bool? ignoreStatistics;
+  final bool? upstreamsCacheEnabled;
+  final int? upstreamsCacheSize;
 
   Client({
     required this.name,
@@ -98,10 +101,13 @@ class Client {
     required this.filteringEnabled,
     required this.parentalEnabled,
     required this.safebrowsingEnabled,
-    required this.safesearchEnabled,
     required this.useGlobalBlockedServices,
     required this.useGlobalSettings,
     required this.safeSearch,
+    required this.ignoreQuerylog,
+    required this.ignoreStatistics,
+    required this.upstreamsCacheEnabled,
+    required this.upstreamsCacheSize,
   });
 
   factory Client.fromJson(Map<String, dynamic> json) => Client(
@@ -113,12 +119,15 @@ class Client {
     filteringEnabled: json["filtering_enabled"],
     parentalEnabled: json["parental_enabled"],
     safebrowsingEnabled: json["safebrowsing_enabled"],
-    safesearchEnabled: json["safesearch_enabled"],
     useGlobalBlockedServices: json["use_global_blocked_services"],
     useGlobalSettings: json["use_global_settings"],
     safeSearch: json["safe_search"] != null
       ? SafeSearch.fromJson(json["safe_search"]) 
-      : null
+      : null,
+    ignoreQuerylog: json["ignore_querylog"],
+    ignoreStatistics: json["ignore_statistics"],
+    upstreamsCacheEnabled: json["upstreams_cache_enabled"],
+    upstreamsCacheSize: json["upstreams_cache_size"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -130,9 +139,12 @@ class Client {
     "filtering_enabled": filteringEnabled,
     "parental_enabled": parentalEnabled,
     "safebrowsing_enabled": safebrowsingEnabled,
-    "safesearch_enabled": safesearchEnabled,
     "safe_search": safeSearch,
     "use_global_blocked_services": useGlobalBlockedServices,
     "use_global_settings": useGlobalSettings,
+    "ignore_querylog": ignoreQuerylog,
+    "ignore_statistics": ignoreStatistics,
+    "upstreams_cache_enabled": upstreamsCacheEnabled,
+    "upstreams_cache_size": upstreamsCacheSize
   };
 }
