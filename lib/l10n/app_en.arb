@@ -727,5 +727,7 @@
     "dnsCacheNumber": "DNS cache size must be a number",
     "errors": "Errors",
     "redirectHttpsWarning": "If you have enabled \"Redirect to HTTPS automatically\" on your AdGuard Home server, you must select an HTTPS connection and use the HTTPS port of your server.",
-    "logsSettingsDescription": "Configure query logs"
+    "logsSettingsDescription": "Configure query logs",
+    "ignoredDomains": "Ignored domains",
+    "noIgnoredDomainsAdded": "No domains to ignore added"
 }

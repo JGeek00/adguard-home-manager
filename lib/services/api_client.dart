@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:adguard_home_manager/models/blocked_services.dart';
+import 'package:adguard_home_manager/models/querylog_config.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
@@ -627,10 +628,19 @@ class ApiClientV2 {
   Future<ApiResponse> getQueryLogInfo() async {
     final result = await HttpRequestClient.get(urlPath: '/querylog/config', server: server);
     if (result.successful) {
-      return ApiResponse(
-        successful: true,
-        content: jsonDecode(result.body!) 
-      );
+      try {
+        return ApiResponse(
+          successful: true,
+          content: QueryLogConfig.fromJson(jsonDecode(result.body!))
+        );
+      } catch (e, stackTrace) {
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
+        return const ApiResponse(successful: false);
+      }
     }
     else {
       return const ApiResponse(successful: false);
