@@ -206,28 +206,6 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     )
                   ) 
             ),
-            CustomListTile(
-              icon: Icons.donut_large_rounded,
-              title: AppLocalizations.of(context)!.showTopItemsChart,
-              subtitle: AppLocalizations.of(context)!.showTopItemsChartDescription,
-              trailing: Switch(
-                value: appConfigProvider.showTopItemsChart, 
-                onChanged: (value) => updateSettings(
-                  newStatus: value, 
-                  function: appConfigProvider.setShowTopItemsChart
-                ),
-              ),
-              onTap: () => updateSettings(
-                newStatus: !appConfigProvider.showTopItemsChart, 
-                function: appConfigProvider.setShowTopItemsChart
-              ),
-              padding: const EdgeInsets.only(
-                top: 10,
-                bottom: 10,
-                left: 16,
-                right: 10
-              )
-            ),
             SectionLabel(label: AppLocalizations.of(context)!.logs),
             CustomListTile(
               icon: Icons.timer_rounded,

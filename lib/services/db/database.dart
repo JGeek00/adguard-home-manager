@@ -127,9 +127,19 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
     });
   }
 
+  Future upgradeDbToV11(Database db) async {
+    await db.execute("ALTER TABLE appConfig DROP COLUMN showTopItemsChart");
+
+    await db.transaction((txn) async{
+      await txn.rawQuery(
+        'SELECT * FROM appConfig',
+      );
+    });
+  }
+
   Database db = await openDatabase(
     'adguard_home_manager.db',
-    version: 10,
+    version: 11,
     onCreate: (Database db, int version) async {
       await db.execute(
         """
@@ -165,8 +175,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
               combinedChart NUMERIC, 
               doNotRememberVersion TEXT, 
               hideServerAddress NUMERIC, 
-              homeTopItemsOrder TEXT,
-              showTopItemsChart NUMERIC
+              homeTopItemsOrder TEXT
             )
         """
       );
@@ -185,8 +194,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
               showIpLogs, 
               combinedChart, 
               hideServerAddress, 
-              homeTopItemsOrder,
-              showTopItemsChart
+              homeTopItemsOrder
             ) 
           VALUES (
             0, 
@@ -199,8 +207,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
             0, 
             0, 
             0, 
-            '$homeTopItemsDefaultOrderString',
-            1
+            '$homeTopItemsDefaultOrderString'
           )
         """
       );
@@ -216,6 +223,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
         await upgradeDbToV8(db);
         await upgradeDbToV9(db);
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
       }
       if (oldVersion == 2) {
         await upgradeDbToV3(db);
@@ -226,6 +234,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
         await upgradeDbToV8(db);
         await upgradeDbToV9(db);
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
       }
       if (oldVersion == 3) {
         await upgradeDbToV4(db);
@@ -235,6 +244,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
         await upgradeDbToV8(db);
         await upgradeDbToV9(db);
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
       }
       if (oldVersion == 4) {
         await upgradeDbToV5(db);
@@ -243,6 +253,7 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
         await upgradeDbToV8(db);
         await upgradeDbToV9(db);
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
       }
       if (oldVersion == 5) {
         await upgradeDbToV6(db);
@@ -250,24 +261,32 @@ Future<Map<String, dynamic>> loadDb(bool acceptsDynamicTheme) async {
         await upgradeDbToV8(db);
         await upgradeDbToV9(db);
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
       }
       if (oldVersion == 6) {
         await upgradeDbToV7(db);
         await upgradeDbToV8(db);
         await upgradeDbToV9(db);
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
       }
       if (oldVersion == 7) {
         await upgradeDbToV8(db);
         await upgradeDbToV9(db);
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
       }
       if (oldVersion == 8) {
         await upgradeDbToV9(db);
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
       }
       if (oldVersion == 9) {
         await upgradeDbToV10(db);
+        await upgradeDbToV11(db);
+      }
+      if (oldVersion == 10) {
+        await upgradeDbToV11(db);
       }
     },
     onOpen: (Database db) async {

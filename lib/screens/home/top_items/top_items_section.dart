@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/home/top_items/row_item.dart';
@@ -13,9 +12,8 @@ import 'package:adguard_home_manager/widgets/custom_pie_chart.dart';
 import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
-class TopItemsSection extends StatefulWidget {
+class TopItemsSection extends StatelessWidget {
   final HomeTopItems type;
   final String label;
   final List<Map<String, dynamic>> data;
@@ -38,44 +36,31 @@ class TopItemsSection extends StatefulWidget {
   });
 
   @override
-  State<TopItemsSection> createState() => _TopItemsState();
-}
-
-class _TopItemsState extends State<TopItemsSection> {
-  bool _showChart = true;
-
-  final colors = [
-    Colors.red, 
-    Colors.green, 
-    Colors.blue, 
-    Colors.orange,
-    Colors.teal, 
-    Colors.grey
-  ];
-
-  @override
-  void initState() {
-    _showChart = Provider.of<AppConfigProvider>(context, listen: false).showTopItemsChart;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final colors = [
+      Colors.red, 
+      Colors.green, 
+      Colors.blue, 
+      Colors.orange,
+      Colors.teal, 
+      Colors.grey
+    ];
+
     final width = MediaQuery.of(context).size.width;
 
-    final withChart = widget.type != HomeTopItems.avgUpstreamResponseTime;
+    final withChart = type != HomeTopItems.avgUpstreamResponseTime;
 
     Map<String, double> ringData() {
       Map<String, double> values = {};
-      widget.data.sublist(0, widget.data.length > 5 ? 5 : widget.data.length).forEach((element) {
+      data.sublist(0, data.length > 5 ? 5 : data.length).forEach((element) {
         values = {
           ...values,
           element.keys.first: element.values.first.toDouble()
         };
       });
-      if (widget.data.length > 5) {
+      if (data.length > 5) {
         final int rest = List<int>.from(
-          widget.data.sublist(5, widget.data.length).map((e) => e.values.first.toInt())
+          data.sublist(5, data.length).map((e) => e.values.first.toInt())
         ).reduce((a, b) => a + b);
         values = {
           ...values,
@@ -87,15 +72,15 @@ class _TopItemsState extends State<TopItemsSection> {
 
     List<Map<String, dynamic>> lineData() {
       List<Map<String, dynamic>> values = [];
-      widget.data.sublist(0, widget.data.length > 5 ? 5 : widget.data.length).forEach((element) {
+      data.sublist(0, data.length > 5 ? 5 : data.length).forEach((element) {
         values.add({
           "label": element.keys.first,
           "value": element.values.first.toDouble()
         });
       });
-      if (widget.data.length > 5) {
+      if (data.length > 5) {
         final int rest = List<int>.from(
-          widget.data.sublist(5, widget.data.length).map((e) => e.values.first.toInt())
+          data.sublist(5, data.length).map((e) => e.values.first.toInt())
         ).reduce((a, b) => a + b);
         values.add({
           "label": AppLocalizations.of(context)!.others,
@@ -105,8 +90,8 @@ class _TopItemsState extends State<TopItemsSection> {
       return values;
     }
 
-    final data = lineData();
-    final total = data.map((e) => e["value"]).reduce((a, b) => a + b);
+    final lineChartData = lineData();
+    final total = lineChartData.map((e) => e["value"]).reduce((a, b) => a + b);
 
     final Widget noItems = Padding(
       padding: const EdgeInsets.only(
@@ -125,8 +110,8 @@ class _TopItemsState extends State<TopItemsSection> {
     return SizedBox(
       child: Column(
         children: [
-          if (widget.data.isEmpty) noItems,
-          if (widget.data.isNotEmpty && width > 700) Padding(
+          if (data.isEmpty) noItems,
+          if (data.isNotEmpty && width > 700) Padding(
             padding: EdgeInsets.only(bottom: withChart == false ? 16 : 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -156,7 +141,7 @@ class _TopItemsState extends State<TopItemsSection> {
                           bottom: 16
                         ),
                         child: Text(
-                          widget.label,
+                          label,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500
@@ -165,16 +150,16 @@ class _TopItemsState extends State<TopItemsSection> {
                       ),
                       _ItemsList(
                         colors: colors, 
-                        data: widget.data, 
-                        clients: widget.type == HomeTopItems.recurrentClients, 
-                        type: widget.type, 
-                        showChart: withChart == true ?  _showChart : false,
-                        buildValue: widget.buildValue,
-                        menuOptions: widget.menuOptions,
-                        onTapEntry: widget.onTapEntry,
+                        data: data, 
+                        clients: type == HomeTopItems.recurrentClients, 
+                        type: type, 
+                        showChart: withChart,
+                        buildValue: buildValue,
+                        menuOptions: menuOptions,
+                        onTapEntry: onTapEntry,
                       ),
                       if (withChart == true) OthersRowItem(
-                        items: widget.data,
+                        items: data,
                         showColor: true,
                       )
                     ]
@@ -183,9 +168,9 @@ class _TopItemsState extends State<TopItemsSection> {
               ],
             ),
           ),
-          if (widget.data.isNotEmpty && width <= 700) ...[
+          if (data.isNotEmpty && width <= 700) ...[
             Text(
-              widget.label,
+              label,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 18,
@@ -202,7 +187,7 @@ class _TopItemsState extends State<TopItemsSection> {
                   height: 20,
                   child: LayoutBuilder(
                     builder: (context, constraints) => Row(
-                      children: data.asMap().entries.map((e) => Tooltip(
+                      children: lineChartData.asMap().entries.map((e) => Tooltip(
                         message:'${e.value["label"]} (${doubleFormat((e.value["value"]/total)*100, Platform.localeName)}%)',
                         child: Container(
                           width: constraints.maxWidth*(e.value["value"]/total),
@@ -220,22 +205,22 @@ class _TopItemsState extends State<TopItemsSection> {
               padding: const EdgeInsets.only(top: 8),
               child: _ItemsList(
                 colors: colors, 
-                data: widget.data, 
-                clients: widget.type == HomeTopItems.recurrentClients,
-                type: widget.type, 
-                showChart: withChart == false ? false : _showChart,
-                buildValue: widget.buildValue,
-                menuOptions: widget.menuOptions,
-                onTapEntry: widget.onTapEntry,
+                data: data, 
+                clients: type == HomeTopItems.recurrentClients,
+                type: type, 
+                showChart: withChart,
+                buildValue: buildValue,
+                menuOptions: menuOptions,
+                onTapEntry: onTapEntry,
               ),
             ),
             OthersRowItem(
-              items: widget.data,
-              showColor: withChart == false ? false : _showChart,
+              items: data,
+              showColor: withChart,
             ),
           ],
           
-          if (widget.data.length > 5) ...[            
+          if (data.length > 5) ...[            
             Padding(
               padding: const EdgeInsets.only(right: 20),
               child: Row(
@@ -263,14 +248,14 @@ class _TopItemsState extends State<TopItemsSection> {
                           );
                         },
                         pageBuilder: (context, animation, secondaryAnimation) => TopItemsScreen(
-                          type: widget.type,
-                          title: widget.label,
-                          isClient: widget.type == HomeTopItems.recurrentClients, 
-                          data: widget.data,
-                          withProgressBar: widget.withProgressBar,
-                          buildValue: widget.buildValue,
-                          options: widget.menuOptions,
-                          onTapEntry: widget.onTapEntry,
+                          type: type,
+                          title: label,
+                          isClient: type == HomeTopItems.recurrentClients, 
+                          data: data,
+                          withProgressBar: withProgressBar,
+                          buildValue: buildValue,
+                          options: menuOptions,
+                          onTapEntry: onTapEntry,
                           isFullscreen: !(width > 700 || !(Platform.isAndroid | Platform.isIOS)),
                         )
                       )
