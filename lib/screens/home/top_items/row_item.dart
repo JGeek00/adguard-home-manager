@@ -62,7 +62,7 @@ class RowItem extends StatelessWidget {
               Flexible(
                 child: Row(
                   children: [
-                    Container(
+                    if (showColor == true) Container(
                       margin: const EdgeInsets.only(right: 16),
                       width: 12,
                       height: 12,
@@ -142,7 +142,7 @@ class OthersRowItem extends StatelessWidget {
           Flexible(
             child: Row(
               children: [
-                Container(
+                if (showColor == true) Container(
                   margin: const EdgeInsets.only(right: 16),
                   width: 12,
                   height: 12,
