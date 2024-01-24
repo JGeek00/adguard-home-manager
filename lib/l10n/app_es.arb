@@ -726,5 +726,6 @@
     "oneIdentifierRequired": "Se require al menos un identificador",
     "dnsCacheNumber": "El tamaño de caché de DNS debe ser un número",
     "errors": "Errores",
-    "redirectHttpsWarning": "Si tienes activado \"Redireccionar a HTTPS automáticamente\" en tu servidor AdGuard Home, debes seleccionar una conexión HTTPS y utilizar el puerto de HTTPS de tu servidor."
+    "redirectHttpsWarning": "Si tienes activado \"Redireccionar a HTTPS automáticamente\" en tu servidor AdGuard Home, debes seleccionar una conexión HTTPS y utilizar el puerto de HTTPS de tu servidor.",
+    "logsSettingsDescription": "Configura los registros de peticiones"
 }

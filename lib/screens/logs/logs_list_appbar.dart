@@ -7,16 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/filters/logs_filters_modal.dart';
-import 'package:adguard_home_manager/screens/logs/configuration/logs_config_modal.dart';
 
-import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
-import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class LogsListAppBar extends StatelessWidget {
@@ -32,60 +26,8 @@ class LogsListAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
-    final statusProvider = Provider.of<StatusProvider>(context);
-    final serversProvider = Provider.of<ServersProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
-
-    void updateConfig(Map<String, dynamic> data) async {
-      ProcessModal processModal = ProcessModal();
-      processModal.open(AppLocalizations.of(context)!.updatingSettings);
-
-      final result = await serversProvider.apiClient2!.updateQueryLogParameters(data: data);
-      
-      processModal.close();
-
-      if (result.successful == true) {
-        showSnacbkar(
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.logsConfigUpdated, 
-          color: Colors.green
-        );
-      }
-      else {
-        showSnacbkar(
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.logsConfigNotUpdated, 
-          color: Colors.red
-        );
-      }
-    }
-
-    void clearQueries() async {
-      ProcessModal processModal = ProcessModal();
-      processModal.open(AppLocalizations.of(context)!.updatingSettings);
-
-      final result = await serversProvider.apiClient2!.clearLogs();
-
-      processModal.close();
-
-      if (result.successful == true) {
-        showSnacbkar(
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.logsCleared, 
-          color: Colors.green
-        );
-      }
-      else {
-        showSnacbkar(
-          appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.logsNotCleared, 
-          color: Colors.red
-        );
-      }
-    }
-
 
     void openFilersModal() {
       if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
@@ -143,40 +85,6 @@ class LogsListAppBar extends StatelessWidget {
               tooltip: AppLocalizations.of(context)!.filters,
             )
           : const SizedBox(),
-        if (statusProvider.serverStatus != null) IconButton(
-          tooltip: AppLocalizations.of(context)!.settings,
-          onPressed: () => {
-            if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
-              showDialog(
-                context: context, 
-                builder: (context) => LogsConfigModal(
-                  context: context,
-                  onConfirm: updateConfig,
-                  onClear: clearQueries,
-                  dialog: true,
-                  serverVersion: statusProvider.serverStatus!.serverVersion,
-                ),
-                barrierDismissible: false
-              )
-            }
-            else {
-              showModalBottomSheet(
-                context: context,
-                useRootNavigator: true, 
-                builder: (context) => LogsConfigModal(
-                  context: context,
-                  onConfirm: updateConfig,
-                  onClear: clearQueries,
-                  dialog: false,
-                  serverVersion: statusProvider.serverStatus!.serverVersion,
-                ),
-                backgroundColor: Colors.transparent,
-                isScrollControlled: true
-              )
-            }
-          }, 
-          icon: const Icon(Icons.settings)
-        ),
         const SizedBox(width: 5),
       ],
       bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients != null

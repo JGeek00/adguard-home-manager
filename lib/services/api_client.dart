@@ -649,7 +649,7 @@ class ApiClientV2 {
   }
 
   Future<ApiResponse> clearLogs() async {
-    final result = await HttpRequestClient.put(
+    final result = await HttpRequestClient.post(
       urlPath: '/querylog_clear', 
       server: server,
       body: {},
