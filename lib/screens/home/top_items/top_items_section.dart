@@ -10,6 +10,7 @@ import 'package:adguard_home_manager/screens/home/top_items/row_item.dart';
 import 'package:adguard_home_manager/screens/home/top_items/top_items_screen.dart';
 import 'package:adguard_home_manager/widgets/custom_pie_chart.dart';
 
+import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
@@ -64,7 +65,7 @@ class _TopItemsState extends State<TopItemsSection> {
 
     final withChart = widget.type != HomeTopItems.avgUpstreamResponseTime;
 
-    Map<String, double> chartData() {
+    Map<String, double> ringData() {
       Map<String, double> values = {};
       widget.data.sublist(0, widget.data.length > 5 ? 5 : widget.data.length).forEach((element) {
         values = {
@@ -83,6 +84,29 @@ class _TopItemsState extends State<TopItemsSection> {
       }
       return values;
     }
+
+    List<Map<String, dynamic>> lineData() {
+      List<Map<String, dynamic>> values = [];
+      widget.data.sublist(0, widget.data.length > 5 ? 5 : widget.data.length).forEach((element) {
+        values.add({
+          "label": element.keys.first,
+          "value": element.values.first.toDouble()
+        });
+      });
+      if (widget.data.length > 5) {
+        final int rest = List<int>.from(
+          widget.data.sublist(5, widget.data.length).map((e) => e.values.first.toInt())
+        ).reduce((a, b) => a + b);
+        values.add({
+          "label": AppLocalizations.of(context)!.others,
+          "value": rest.toDouble()
+        });
+      }
+      return values;
+    }
+
+    final data = lineData();
+    final total = data.map((e) => e["value"]).reduce((a, b) => a + b);
 
     final Widget noItems = Padding(
       padding: const EdgeInsets.only(
@@ -116,7 +140,7 @@ class _TopItemsState extends State<TopItemsSection> {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: CustomPieChart(
-                        data: chartData(), 
+                        data: ringData(),
                         colors: colors
                       )
                     ),
@@ -159,126 +183,57 @@ class _TopItemsState extends State<TopItemsSection> {
               ],
             ),
           ),
-          if (widget.data.isNotEmpty && width <= 700) Builder(
-            builder: (context) {
-              if (widget.withChart == true) {
-                return Column(
-                  children: [
-                    ExpansionPanelList(
-                      expandedHeaderPadding: const EdgeInsets.all(0),
-                      elevation: 0,
-                      expansionCallback: (_, isExpanded) => setState(() => _showChart = isExpanded),
-                      animationDuration: const Duration(milliseconds: 250),
-                      children: [
-                        ExpansionPanel(
-                          headerBuilder: (context, isExpanded) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              mainAxisAlignment: width <= 700
-                                ? MainAxisAlignment.spaceBetween
-                                : MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    widget.label,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      color: Theme.of(context).colorScheme.onSurface
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+          if (widget.data.isNotEmpty && width <= 700) ...[
+            Text(
+              widget.label,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.onSurface
+              ),
+            ),
+            const SizedBox(height: 8),
+            if (withChart == true) Padding(
+              padding: const EdgeInsets.all(16),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                  height: 20,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => Row(
+                      children: data.asMap().entries.map((e) => Tooltip(
+                        message:'${e.value["label"]} (${doubleFormat((e.value["value"]/total)*100, Platform.localeName)}%)',
+                        child: Container(
+                          width: constraints.maxWidth*(e.value["value"]/total),
+                          decoration: BoxDecoration(
+                            color: colors[e.key]
                           ),
-                          body: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 150,
-                                  child: CustomPieChart(
-                                    data: chartData(),
-                                    colors: colors
-                                  )
-                                ),
-                                const SizedBox(height: 16),
-                              ],
-                            ),
-                          ),
-                          isExpanded: _showChart
                         ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: _ItemsList(
-                        colors: colors, 
-                        data: widget.data, 
-                        clients: widget.type == HomeTopItems.recurrentClients,
-                        type: widget.type, 
-                        showChart: _showChart,
-                        buildValue: widget.buildValue,
-                        menuOptions: widget.menuOptions,
-                        onTapEntry: widget.onTapEntry,
-                      ),
-                    ),
-                    if (widget.withChart == true) OthersRowItem(
-                      items: widget.data,
-                      showColor: _showChart,
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                );
-              }
-              else {
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Row(
-                        mainAxisAlignment: width <= 700
-                          ? MainAxisAlignment.spaceBetween
-                          : MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              widget.label,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onSurface
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: _ItemsList(
-                        colors: colors, 
-                        data: widget.data, 
-                        clients: widget.type == HomeTopItems.recurrentClients,
-                        type: widget.type, 
-                        showChart: false,
-                        buildValue: widget.buildValue,
-                        menuOptions: widget.menuOptions,
-                        onTapEntry: widget.onTapEntry,
-                      ),
-                    ),
-                    if (widget.withChart == true) OthersRowItem(
-                      items: widget.data,
-                      showColor: false,
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                );
-              }
-            },
-          ),
+                      )).toList()
+                    )
+                  )
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _ItemsList(
+                colors: colors, 
+                data: widget.data, 
+                clients: widget.type == HomeTopItems.recurrentClients,
+                type: widget.type, 
+                showChart: withChart == false ? false : _showChart,
+                buildValue: widget.buildValue,
+                menuOptions: widget.menuOptions,
+                onTapEntry: widget.onTapEntry,
+              ),
+            ),
+            OthersRowItem(
+              items: widget.data,
+              showColor: withChart == false ? false : _showChart,
+            ),
+          ],
           
           if (widget.data.length > 5) ...[            
             Padding(
