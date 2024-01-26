@@ -7,6 +7,20 @@ import 'package:adguard_home_manager/widgets/section_label.dart';
 
 import 'package:adguard_home_manager/models/clients.dart';
 
+class EditBlockingSchedule {
+  final String timezone;
+  final List<String> weekday;
+  final int start;
+  final int end;
+
+  const EditBlockingSchedule({
+    required this.timezone,
+    required this.weekday,
+    required this.start,
+    required this.end,
+  });
+}
+
 class BlockingSchedule extends StatelessWidget {
   final BlockedServicesSchedule blockedServicesSchedule;
   final void Function(BlockedServicesSchedule) setBlockedServicesSchedule;
@@ -19,11 +33,38 @@ class BlockingSchedule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void updateSchedule(EditBlockingSchedule v) {
+      final scheduleJson = blockedServicesSchedule.toJson();
+      for (var weekday in v.weekday) {
+        scheduleJson[weekday] = {
+          "start": v.start,
+          "end": v.end
+        };
+      }
+      scheduleJson["time_zone"] = v.timezone;
+      setBlockedServicesSchedule(BlockedServicesSchedule.fromJson(scheduleJson));
+    }
+
     void openAddScheduleModal() {
       showDialog(
         context: context, 
         builder: (context) => BlockingScheduleModal(
-          onConfirm: (v) => {},
+          onConfirm: updateSchedule,
+        ),
+      );
+    }
+
+    void openEditScheduleModal(String weekday) {
+      showDialog(
+        context: context, 
+        builder: (context) => BlockingScheduleModal(
+          schedule: EditBlockingSchedule(
+            timezone: blockedServicesSchedule.timeZone!, 
+            weekday: [weekday], 
+            start: blockedServicesSchedule.toJson()[weekday]['start'], 
+            end: blockedServicesSchedule.toJson()[weekday]['end'], 
+          ),
+          onConfirm: updateSchedule,
         ),
       );
     }
@@ -54,43 +95,43 @@ class BlockingSchedule extends StatelessWidget {
         if (blockedServicesSchedule.mon != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.monday, 
           schedule: "${formatTime(blockedServicesSchedule.mon!.start!)} - ${formatTime(blockedServicesSchedule.mon!.end!)}", 
-          onEdit: () => {}, 
+          onEdit: () => openEditScheduleModal("mon"), 
           onDelete: () => {}
         ),
         if (blockedServicesSchedule.tue != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.tuesday, 
           schedule: "${formatTime(blockedServicesSchedule.tue!.start!)} - ${formatTime(blockedServicesSchedule.tue!.end!)}", 
-          onEdit: () => {}, 
+          onEdit: () => openEditScheduleModal("tue"), 
           onDelete: () => {}
         ),
         if (blockedServicesSchedule.wed != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.wednesday, 
           schedule: "${formatTime(blockedServicesSchedule.wed!.start!)} - ${formatTime(blockedServicesSchedule.wed!.end!)}", 
-          onEdit: () => {}, 
+          onEdit: () => openEditScheduleModal("wed"), 
           onDelete: () => {}
         ),
         if (blockedServicesSchedule.thu != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.thursday, 
           schedule: "${formatTime(blockedServicesSchedule.thu!.start!)} - ${formatTime(blockedServicesSchedule.thu!.end!)}", 
-          onEdit: () => {}, 
+          onEdit: () => openEditScheduleModal("thu"), 
           onDelete: () => {}
         ),
         if (blockedServicesSchedule.fri != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.friday, 
           schedule: "${formatTime(blockedServicesSchedule.fri!.start!)} - ${formatTime(blockedServicesSchedule.fri!.end!)}", 
-          onEdit: () => {}, 
+          onEdit: () => openEditScheduleModal("fri"), 
           onDelete: () => {}
         ),
         if (blockedServicesSchedule.sat != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.saturday, 
           schedule: "${formatTime(blockedServicesSchedule.sat!.start!)} - ${formatTime(blockedServicesSchedule.sat!.end!)}", 
-          onEdit: () => {}, 
+          onEdit: () => openEditScheduleModal("sat"), 
           onDelete: () => {}
         ),
         if (blockedServicesSchedule.sun != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.sunday, 
           schedule: "${formatTime(blockedServicesSchedule.sun!.start!)} - ${formatTime(blockedServicesSchedule.sun!.end!)}", 
-          onEdit: () => {}, 
+          onEdit: () => openEditScheduleModal("sun"), 
           onDelete: () => {}
         ),
       ],

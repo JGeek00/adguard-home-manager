@@ -3,13 +3,15 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/models/clients.dart';
+import 'package:adguard_home_manager/screens/clients/client/blocking_schedule.dart';
 
 class BlockingScheduleModal extends StatefulWidget {
-  final void Function(BlockedServicesSchedule) onConfirm;
+  final EditBlockingSchedule? schedule;
+  final void Function(EditBlockingSchedule) onConfirm;
 
   const BlockingScheduleModal({
     super.key,
+    this.schedule,
     required this.onConfirm,
   });
 
@@ -50,13 +52,26 @@ class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
       hours: timeOfDay.hour,
       minutes: timeOfDay.minute,
       seconds: 0
-    ).inMinutes;
+    ).inMilliseconds;
+  }
+
+  TimeOfDay _intToTimeOfDay(int value) {
+    final duration = Duration(milliseconds: value);
+    final minutes = duration.inMinutes - duration.inHours*60;
+    return TimeOfDay(hour: duration.inHours, minute: minutes);
   }
 
   @override
   void initState() {
     tz.initializeTimeZones();
     _timezone = tz.local.name;
+    if (widget.schedule != null) {
+      _timezone = widget.schedule!.timezone;
+      _weekdays = widget.schedule!.weekday;
+      _from = _intToTimeOfDay(widget.schedule!.start);
+      _to = _intToTimeOfDay(widget.schedule!.end);
+    }
+
     super.initState();
   }
 
@@ -73,17 +88,14 @@ class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
 
     void onConfirm() {
       widget.onConfirm(
-        BlockedServicesSchedule(
-          timeZone: _timezone,
-          mon: _weekdays.contains("mon") ? BlockedServicesScheduleDay(start: _timeOfDayToInt(_from!), end: _timeOfDayToInt(_to!)) : null,
-          tue: _weekdays.contains("tue") ? BlockedServicesScheduleDay(start: _timeOfDayToInt(_from!), end: _timeOfDayToInt(_to!)) : null,
-          wed: _weekdays.contains("wed") ? BlockedServicesScheduleDay(start: _timeOfDayToInt(_from!), end: _timeOfDayToInt(_to!)) : null,
-          thu: _weekdays.contains("thu") ? BlockedServicesScheduleDay(start: _timeOfDayToInt(_from!), end: _timeOfDayToInt(_to!)) : null,
-          fri: _weekdays.contains("fri") ? BlockedServicesScheduleDay(start: _timeOfDayToInt(_from!), end: _timeOfDayToInt(_to!)) : null,
-          sat: _weekdays.contains("sat") ? BlockedServicesScheduleDay(start: _timeOfDayToInt(_from!), end: _timeOfDayToInt(_to!)) : null,
-          sun: _weekdays.contains("sun") ? BlockedServicesScheduleDay(start: _timeOfDayToInt(_from!), end: _timeOfDayToInt(_to!)) : null,
+        EditBlockingSchedule(
+          timezone: _timezone!, 
+          weekday: _weekdays, 
+          start: _timeOfDayToInt(_from!), 
+          end: _timeOfDayToInt(_to!)
         )
       );
+      Navigator.pop(context);
     }
 
     final valid = _validate();
@@ -109,7 +121,9 @@ class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      AppLocalizations.of(context)!.newSchedule,
+                      widget.schedule != null
+                        ? AppLocalizations.of(context)!.editSchedule
+                        : AppLocalizations.of(context)!.newSchedule,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 24,

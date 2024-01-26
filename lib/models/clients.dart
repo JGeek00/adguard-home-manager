@@ -187,9 +187,13 @@ class BlockedServicesSchedule {
 
   Map<String, dynamic> toJson() => {
     "time_zone": timeZone,
+    "mon": mon?.toJson(),
     "tue": tue?.toJson(),
     "wed": wed?.toJson(),
     "thu": thu?.toJson(),
+    "fri": fri?.toJson(),
+    "sat": sat?.toJson(),
+    "sun": sun?.toJson(),
   };
 }
 
