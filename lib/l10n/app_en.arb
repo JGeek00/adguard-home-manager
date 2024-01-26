@@ -746,5 +746,6 @@
     "selectStartTime": "Select start time",
     "selectEndTime": "Select end time",
     "startTimeBeforeEndTime": "Start time must be before end time.",
-    "noBlockingScheduleThisDevice": "There's no blocking schedule for this device."
+    "noBlockingScheduleThisDevice": "There's no blocking schedule for this device.",
+    "selectTimezone": "Select a timezone"
 }

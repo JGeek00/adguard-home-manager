@@ -64,7 +64,6 @@ class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
   @override
   void initState() {
     tz.initializeTimeZones();
-    _timezone = tz.local.name;
     if (widget.schedule != null) {
       _timezone = widget.schedule!.timezone;
       _weekdays = widget.schedule!.weekday;
