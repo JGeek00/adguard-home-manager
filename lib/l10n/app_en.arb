@@ -745,5 +745,6 @@
     "to": "To: {to}",
     "selectStartTime": "Select start time",
     "selectEndTime": "Select end time",
-    "startTimeBeforeEndTime": "Start time must be before end time."
+    "startTimeBeforeEndTime": "Start time must be before end time.",
+    "noBlockingScheduleThisDevice": "There's no blocking schedule for this device."
 }

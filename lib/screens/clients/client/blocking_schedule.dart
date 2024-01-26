@@ -69,6 +69,12 @@ class BlockingSchedule extends StatelessWidget {
       );
     }
 
+    void onDeleteSchedule(String weekday) {
+      final scheduleJson = blockedServicesSchedule.toJson();
+      scheduleJson[weekday] = null;
+      setBlockedServicesSchedule(BlockedServicesSchedule.fromJson(scheduleJson));
+    }
+
     String formatTime(int time) {
       final formatted = Duration(milliseconds: time);
       final hours = formatted.inHours;
@@ -92,47 +98,66 @@ class BlockingSchedule extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 2),
+        if (
+          blockedServicesSchedule.mon == null &&
+          blockedServicesSchedule.tue == null &&
+          blockedServicesSchedule.wed == null &&
+          blockedServicesSchedule.thu == null &&
+          blockedServicesSchedule.fri == null &&
+          blockedServicesSchedule.sat == null &&
+          blockedServicesSchedule.sun == null
+        ) Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            AppLocalizations.of(context)!.noBlockingScheduleThisDevice,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              color: Theme.of(context).colorScheme.onSurfaceVariant
+            ),
+          ),
+        ),
         if (blockedServicesSchedule.mon != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.monday, 
           schedule: "${formatTime(blockedServicesSchedule.mon!.start!)} - ${formatTime(blockedServicesSchedule.mon!.end!)}", 
           onEdit: () => openEditScheduleModal("mon"), 
-          onDelete: () => {}
+          onDelete: () => onDeleteSchedule("mon")
         ),
         if (blockedServicesSchedule.tue != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.tuesday, 
           schedule: "${formatTime(blockedServicesSchedule.tue!.start!)} - ${formatTime(blockedServicesSchedule.tue!.end!)}", 
           onEdit: () => openEditScheduleModal("tue"), 
-          onDelete: () => {}
+          onDelete: () => onDeleteSchedule("tue")
         ),
         if (blockedServicesSchedule.wed != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.wednesday, 
           schedule: "${formatTime(blockedServicesSchedule.wed!.start!)} - ${formatTime(blockedServicesSchedule.wed!.end!)}", 
           onEdit: () => openEditScheduleModal("wed"), 
-          onDelete: () => {}
+          onDelete: () => onDeleteSchedule("wed")
         ),
         if (blockedServicesSchedule.thu != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.thursday, 
           schedule: "${formatTime(blockedServicesSchedule.thu!.start!)} - ${formatTime(blockedServicesSchedule.thu!.end!)}", 
           onEdit: () => openEditScheduleModal("thu"), 
-          onDelete: () => {}
+          onDelete: () => onDeleteSchedule("thu")
         ),
         if (blockedServicesSchedule.fri != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.friday, 
           schedule: "${formatTime(blockedServicesSchedule.fri!.start!)} - ${formatTime(blockedServicesSchedule.fri!.end!)}", 
           onEdit: () => openEditScheduleModal("fri"), 
-          onDelete: () => {}
+          onDelete: () => onDeleteSchedule("fri")
         ),
         if (blockedServicesSchedule.sat != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.saturday, 
           schedule: "${formatTime(blockedServicesSchedule.sat!.start!)} - ${formatTime(blockedServicesSchedule.sat!.end!)}", 
           onEdit: () => openEditScheduleModal("sat"), 
-          onDelete: () => {}
+          onDelete: () => onDeleteSchedule("sat")
         ),
         if (blockedServicesSchedule.sun != null) _ScheduleTile(
           weekday: AppLocalizations.of(context)!.sunday, 
           schedule: "${formatTime(blockedServicesSchedule.sun!.start!)} - ${formatTime(blockedServicesSchedule.sun!.end!)}", 
           onEdit: () => openEditScheduleModal("sun"), 
-          onDelete: () => {}
+          onDelete: () => onDeleteSchedule("sun")
         ),
       ],
     );

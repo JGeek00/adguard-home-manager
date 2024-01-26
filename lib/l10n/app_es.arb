@@ -745,5 +745,6 @@
     "to": "Hasta: {to}",
     "selectStartTime": "Seleccionar hora de inicio",
     "selectEndTime": "Seleccionar hora de fin",
-    "startTimeBeforeEndTime": "La hora de inicio debe ser anterior a la hora de fin."
+    "startTimeBeforeEndTime": "La hora de inicio debe ser anterior a la hora de fin.",
+    "noBlockingScheduleThisDevice": "No hay programación de bloqueo para este dispositivo."
 }
