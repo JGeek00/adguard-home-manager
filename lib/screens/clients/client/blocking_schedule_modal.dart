@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -20,6 +22,8 @@ class BlockingScheduleModal extends StatefulWidget {
 }
 
 class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
+  final _weekdaysScrollController = ScrollController();
+
   String? _timezone;
   List<String> _weekdays = [];
   TimeOfDay? _from;
@@ -103,192 +107,207 @@ class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
       : null;
 
     return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.schedule_rounded,
-                      size: 24,
-                      color: Theme.of(context).listTileTheme.iconColor
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      widget.schedule != null
-                        ? AppLocalizations.of(context)!.editSchedule
-                        : AppLocalizations.of(context)!.newSchedule,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 24,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 500),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.schedule_rounded,
+                        size: 24,
+                        color: Theme.of(context).listTileTheme.iconColor
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    LayoutBuilder(
-                      builder: (context, constraints) => DropdownButtonFormField(
-                        items: tz.timeZoneDatabase.locations.keys.map((item) => DropdownMenuItem(
-                          value: item,
-                          child: SizedBox(
-                            width: constraints.maxWidth-48,
-                            child: Text(
-                              item,
-                              overflow: TextOverflow.ellipsis,
+                      const SizedBox(height: 16),
+                      Text(
+                        widget.schedule != null
+                          ? AppLocalizations.of(context)!.editSchedule
+                          : AppLocalizations.of(context)!.newSchedule,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      LayoutBuilder(
+                        builder: (context, constraints) => DropdownButtonFormField(
+                          items: tz.timeZoneDatabase.locations.keys.map((item) => DropdownMenuItem(
+                            value: item,
+                            child: SizedBox(
+                              width: constraints.maxWidth-48,
+                              child: Text(
+                                item,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          )).toList(),
+                          value: _timezone,
+                          onChanged: (v) => setState(() => _timezone = v),
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10)
+                              )
+                            ),
+                            label: Text(AppLocalizations.of(context)!.timezone)
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        height: Platform.isMacOS || Platform.isLinux || Platform.isWindows ? 66 : 50,
+                        child: Scrollbar(
+                          controller: _weekdaysScrollController,
+                          thumbVisibility: Platform.isMacOS || Platform.isLinux || Platform.isWindows,
+                          interactive: Platform.isMacOS || Platform.isLinux || Platform.isWindows,
+                          thickness: Platform.isMacOS || Platform.isLinux || Platform.isWindows ? 8 : 0,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              bottom: Platform.isMacOS || Platform.isLinux || Platform.isWindows ? 16 : 0
+                            ),
+                            child: ListView(
+                              controller: _weekdaysScrollController,
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                FilterChip(
+                                  label: Text(AppLocalizations.of(context)!.monday), 
+                                  selected: _weekdays.contains("mon"),
+                                  onSelected: (value) => onSelectWeekday(value, "mon")
+                                ),
+                                const SizedBox(width: 8),
+                                FilterChip(
+                                  label: Text(AppLocalizations.of(context)!.tuesday), 
+                                  selected: _weekdays.contains("tue"),
+                                  onSelected: (value) => onSelectWeekday(value, "tue")
+                                ),
+                                const SizedBox(width: 8),
+                                FilterChip(
+                                  label: Text(AppLocalizations.of(context)!.wednesday), 
+                                  selected: _weekdays.contains("wed"),
+                                  onSelected: (value) => onSelectWeekday(value, "wed")
+                                ),
+                                const SizedBox(width: 8),
+                                FilterChip(
+                                  label: Text(AppLocalizations.of(context)!.thursday), 
+                                  selected: _weekdays.contains("thu"),
+                                  onSelected: (value) => onSelectWeekday(value, "thu")
+                                ),
+                                const SizedBox(width: 8),
+                                FilterChip(
+                                  label: Text(AppLocalizations.of(context)!.friday), 
+                                  selected: _weekdays.contains("fri"),
+                                  onSelected: (value) => onSelectWeekday(value, "fri")
+                                ),
+                                const SizedBox(width: 8),
+                                FilterChip(
+                                  label: Text(AppLocalizations.of(context)!.saturday), 
+                                  selected: _weekdays.contains("sat"),
+                                  onSelected: (value) => onSelectWeekday(value, "sat")
+                                ),
+                                const SizedBox(width: 8),
+                                FilterChip(
+                                  label: Text(AppLocalizations.of(context)!.sunday), 
+                                  selected: _weekdays.contains("sun"),
+                                  onSelected: (value) => onSelectWeekday(value, "sun")
+                                ),
+                              ],
                             ),
                           ),
-                        )).toList(),
-                        value: _timezone,
-                        onChanged: (v) => setState(() => _timezone = v),
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10)
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              final selected = await showTimePicker(
+                                context: context, 
+                                initialTime: _from ?? const TimeOfDay(hour: 0, minute: 0),
+                                helpText: AppLocalizations.of(context)!.selectStartTime,
+                                confirmText: AppLocalizations.of(context)!.confirm,
+                              );
+                              setState(() => _from = selected); 
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!.from(
+                                _from != null ? "${_from!.hour.toString().padLeft(2, '0')}:${_from!.minute.toString().padLeft(2, '0')}" : "--:--"
+                              )
                             )
                           ),
-                          label: Text(AppLocalizations.of(context)!.timezone)
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      height: 50,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          FilterChip(
-                            label: Text(AppLocalizations.of(context)!.monday), 
-                            selected: _weekdays.contains("mon"),
-                            onSelected: (value) => onSelectWeekday(value, "mon")
-                          ),
-                          const SizedBox(width: 8),
-                          FilterChip(
-                            label: Text(AppLocalizations.of(context)!.tuesday), 
-                            selected: _weekdays.contains("tue"),
-                            onSelected: (value) => onSelectWeekday(value, "tue")
-                          ),
-                          const SizedBox(width: 8),
-                          FilterChip(
-                            label: Text(AppLocalizations.of(context)!.wednesday), 
-                            selected: _weekdays.contains("wed"),
-                            onSelected: (value) => onSelectWeekday(value, "wed")
-                          ),
-                          const SizedBox(width: 8),
-                          FilterChip(
-                            label: Text(AppLocalizations.of(context)!.thursday), 
-                            selected: _weekdays.contains("thu"),
-                            onSelected: (value) => onSelectWeekday(value, "thu")
-                          ),
-                          const SizedBox(width: 8),
-                          FilterChip(
-                            label: Text(AppLocalizations.of(context)!.friday), 
-                            selected: _weekdays.contains("fri"),
-                            onSelected: (value) => onSelectWeekday(value, "fri")
-                          ),
-                          const SizedBox(width: 8),
-                          FilterChip(
-                            label: Text(AppLocalizations.of(context)!.saturday), 
-                            selected: _weekdays.contains("sat"),
-                            onSelected: (value) => onSelectWeekday(value, "sat")
-                          ),
-                          const SizedBox(width: 8),
-                          FilterChip(
-                            label: Text(AppLocalizations.of(context)!.sunday), 
-                            selected: _weekdays.contains("sun"),
-                            onSelected: (value) => onSelectWeekday(value, "sun")
+                          ElevatedButton(
+                            onPressed: () async {
+                              final selected = await showTimePicker(
+                                context: context, 
+                                initialTime: _to ?? const TimeOfDay(hour: 23, minute: 59),
+                                helpText: AppLocalizations.of(context)!.selectEndTime,
+                                confirmText: AppLocalizations.of(context)!.confirm
+                              ); 
+                              setState(() => _to = selected); 
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!.to(
+                                _to != null ? "${_to!.hour.toString().padLeft(2, '0')}:${_to!.minute.toString().padLeft(2, '0')}" : "--:--"
+                              )
+                            )
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            final selected = await showTimePicker(
-                              context: context, 
-                              initialTime: _from ?? const TimeOfDay(hour: 0, minute: 0),
-                              helpText: AppLocalizations.of(context)!.selectStartTime,
-                              confirmText: AppLocalizations.of(context)!.confirm,
-                            );
-                            setState(() => _from = selected); 
-                          },
-                          child: Text(
-                            AppLocalizations.of(context)!.from(
-                              _from != null ? "${_from!.hour.toString().padLeft(2, '0')}:${_from!.minute.toString().padLeft(2, '0')}" : "--:--"
-                            )
-                          )
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            final selected = await showTimePicker(
-                              context: context, 
-                              initialTime: _to ?? const TimeOfDay(hour: 23, minute: 59),
-                              helpText: AppLocalizations.of(context)!.selectEndTime,
-                              confirmText: AppLocalizations.of(context)!.confirm
-                            ); 
-                            setState(() => _to = selected); 
-                          },
-                          child: Text(
-                            AppLocalizations.of(context)!.to(
-                              _to != null ? "${_to!.hour.toString().padLeft(2, '0')}:${_to!.minute.toString().padLeft(2, '0')}" : "--:--"
-                            )
-                          )
-                        ),
-                      ],
-                    ),
-                    if (validTimes == false) Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Card(
-                        color: const Color.fromARGB(255, 255, 182, 175),
-                        elevation: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.error_rounded,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Text(
-                                  AppLocalizations.of(context)!.startTimeBeforeEndTime,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onSurface
+                      if (validTimes == false) Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Card(
+                          color: const Color.fromARGB(255, 255, 182, 175),
+                          elevation: 0,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.error_rounded,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.startTimeBeforeEndTime,
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onSurface
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
+                        )
                       )
-                    )
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context), 
-                  child: Text(AppLocalizations.of(context)!.close)
-                ),
-                const SizedBox(width: 8),
-                TextButton(
-                  onPressed: valid ? () => onConfirm() : null, 
-                  child: Text(AppLocalizations.of(context)!.confirm)
-                ),
-              ],
-            )
-          ],
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context), 
+                    child: Text(AppLocalizations.of(context)!.close)
+                  ),
+                  const SizedBox(width: 8),
+                  TextButton(
+                    onPressed: valid ? () => onConfirm() : null, 
+                    child: Text(AppLocalizations.of(context)!.confirm)
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
