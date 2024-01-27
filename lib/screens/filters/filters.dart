@@ -188,31 +188,25 @@ class _FiltersState extends State<Filters> {
     }
 
     void openListDetails(Filter filter, String type) {
-      showGeneralDialog(
-        context: context, 
-        barrierColor: !(width > 900 || !(Platform.isAndroid | Platform.isIOS))
-          ?Colors.transparent 
-          : Colors.black54,
-        transitionBuilder: (context, anim1, anim2, child) {
-          return SlideTransition(
-            position: Tween(
-              begin: const Offset(0, 1), 
-              end: const Offset(0, 0)
-            ).animate(
-              CurvedAnimation(
-                parent: anim1, 
-                curve: Curves.easeInOutCubicEmphasized
-              )
-            ),
-            child: child,
-          );
-        },
-        pageBuilder: (context, animation, secondaryAnimation) => ListDetailsScreen(
-          listId: filter.id, 
-          type: type,
-          dialog: width > 900 || !(Platform.isAndroid | Platform.isIOS),
-        ),
-      );
+      if (width > 900) {
+        showDialog(
+          context: context, 
+          builder: (context) => ListDetailsScreen(
+            listId: filter.id, 
+            type: type,
+            dialog: width > 900 || !(Platform.isAndroid | Platform.isIOS),
+          ),
+        );
+      }
+      else {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => ListDetailsScreen(
+            listId: filter.id, 
+            type: type,
+            dialog: width > 900 || !(Platform.isAndroid | Platform.isIOS),
+          ),
+        ));
+      }
     }
 
     List<Widget> actions() {

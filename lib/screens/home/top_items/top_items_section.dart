@@ -228,37 +228,37 @@ class TopItemsSection extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () => {
-                      showGeneralDialog(
-                        context: context, 
-                        barrierColor: !(width > 700 || !(Platform.isAndroid | Platform.isIOS))
-                          ?Colors.transparent 
-                          : Colors.black54,
-                        transitionBuilder: (context, anim1, anim2, child) {
-                          return SlideTransition(
-                            position: Tween(
-                              begin: const Offset(0, 1), 
-                              end: const Offset(0, 0)
-                            ).animate(
-                              CurvedAnimation(
-                                parent: anim1, 
-                                curve: Curves.easeInOutCubicEmphasized
-                              )
-                            ),
-                            child: child,
-                          );
-                        },
-                        pageBuilder: (context, animation, secondaryAnimation) => TopItemsScreen(
-                          type: type,
-                          title: label,
-                          isClient: type == HomeTopItems.recurrentClients, 
-                          data: data,
-                          withProgressBar: withProgressBar,
-                          buildValue: buildValue,
-                          options: menuOptions,
-                          onTapEntry: onTapEntry,
-                          isFullscreen: !(width > 700 || !(Platform.isAndroid | Platform.isIOS)),
+                      if (width > 700) {
+                        showDialog(
+                          context: context, 
+                          builder: (context) => TopItemsScreen(
+                            type: type,
+                            title: label,
+                            isClient: type == HomeTopItems.recurrentClients, 
+                            data: data,
+                            withProgressBar: withProgressBar,
+                            buildValue: buildValue,
+                            options: menuOptions,
+                            onTapEntry: onTapEntry,
+                            isFullscreen: !(width > 700 || !(Platform.isAndroid | Platform.isIOS)),
+                          ),
                         )
-                      )
+                      }
+                      else {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => TopItemsScreen(
+                            type: type,
+                            title: label,
+                            isClient: type == HomeTopItems.recurrentClients, 
+                            data: data,
+                            withProgressBar: withProgressBar,
+                            buildValue: buildValue,
+                            options: menuOptions,
+                            onTapEntry: onTapEntry,
+                            isFullscreen: !(width > 700 || !(Platform.isAndroid | Platform.isIOS)),
+                          ),
+                        ))
+                      }
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
