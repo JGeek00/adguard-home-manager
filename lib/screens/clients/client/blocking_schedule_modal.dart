@@ -236,10 +236,15 @@ class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
                               );
                               setState(() => _from = selected); 
                             },
-                            child: Text(
-                              AppLocalizations.of(context)!.from(
-                                _from != null ? "${_from!.hour.toString().padLeft(2, '0')}:${_from!.minute.toString().padLeft(2, '0')}" : "--:--"
-                              )
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Column(
+                                children: [
+                                  Text(AppLocalizations.of(context)!.from),
+                                  const SizedBox(height: 2),
+                                  Text(_from != null ? "${_from!.hour.toString().padLeft(2, '0')}:${_from!.minute.toString().padLeft(2, '0')}" : "--:--")
+                                ],
+                              ),
                             )
                           ),
                           ElevatedButton(
@@ -252,10 +257,15 @@ class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
                               ); 
                               setState(() => _to = selected); 
                             },
-                            child: Text(
-                              AppLocalizations.of(context)!.to(
-                                _to != null ? "${_to!.hour.toString().padLeft(2, '0')}:${_to!.minute.toString().padLeft(2, '0')}" : "--:--"
-                              )
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Column(
+                                children: [
+                                  Text(AppLocalizations.of(context)!.to),
+                                  const SizedBox(height: 2),
+                                  Text(_to != null ? "${_to!.hour.toString().padLeft(2, '0')}:${_to!.minute.toString().padLeft(2, '0')}" : "--:--")
+                                ],
+                              ),
                             )
                           ),
                         ],
