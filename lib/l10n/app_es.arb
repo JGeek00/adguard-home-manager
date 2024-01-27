@@ -747,5 +747,6 @@
     "selectEndTime": "Seleccionar hora de fin",
     "startTimeBeforeEndTime": "La hora de inicio debe ser anterior a la hora de fin.",
     "noBlockingScheduleThisDevice": "No hay programación de bloqueo para este dispositivo.",
-    "selectTimezone": "Selecciona una zona horaria"
+    "selectTimezone": "Selecciona una zona horaria",
+    "selectClientsFiltersInfo": "Selecciona los clientes que quieres mostrar. Si no hay clientes seleccionados, se mostrarán todos."
 }

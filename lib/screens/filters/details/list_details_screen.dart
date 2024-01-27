@@ -64,8 +64,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    final width = MediaQuery.of(context).size.width;
-
     Filter? list;
     try {
       list = filteringProvider.filtering != null
@@ -322,7 +320,7 @@ class _Content extends StatelessWidget {
               )
             : null,
           trailing: IconButton(
-            onPressed: () => openUrl(list!.url), 
+            onPressed: () => openUrl(list.url), 
             icon: const Icon(Icons.open_in_browser_rounded),
             tooltip: AppLocalizations.of(context)!.openListUrl,
           ),

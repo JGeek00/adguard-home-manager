@@ -20,7 +20,7 @@ class LogsProvider with ChangeNotifier {
   DateTime? _logsOlderThan;
   String _selectedResultStatus = 'all';
   String? _searchText;
-  List<String>? _selectedClients;
+  List<String> _selectedClients = [];
 
   int _logsQuantity = 100;
   int _offset = 0;
@@ -65,7 +65,7 @@ class LogsProvider with ChangeNotifier {
     return _offset;
   }
 
-  List<String>? get selectedClients {
+  List<String> get selectedClients {
     return _selectedClients;
   }
 
@@ -131,7 +131,7 @@ class LogsProvider with ChangeNotifier {
   }
 
   void setSelectedClients(List<String>? clients) {
-    _selectedClients = clients;
+    _selectedClients = clients ?? [];
     notifyListeners();
   }
 
