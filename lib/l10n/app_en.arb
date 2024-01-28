@@ -24,7 +24,7 @@
     "invalidUsernamePassword": "Invalid username or password",
     "tooManyAttempts": "Too many attempts. Try again later.",
     "cantReachServer": "Can't reach server. Check connection data.",
-    "sslError": "SSL error. Go to Settings > Advanced settings and enable Override SSL validation.",
+    "sslError": "Handshake exception. Cannot establish a secure connection with the server. This can be a SSL error. Go to Settings > Advanced settings and enable Override SSL validation.",
     "unknownError": "Unknown error",
     "connectionNotCreated": "Connection couldn't be created",
     "connecting": "Connecting...",
