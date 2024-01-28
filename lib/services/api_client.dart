@@ -490,9 +490,6 @@ class ApiClientV2 {
         return ApiResponse(
           successful: true,
           content: DhcpModel(
-            dhcpAvailable: jsonDecode(results[1].body!)['message'] != null
-              ? false
-              : true,
             networkInterfaces: interfaces, 
             dhcpStatus: jsonDecode(results[1].body!)['message'] != null
               ? null

@@ -748,5 +748,6 @@
     "startTimeBeforeEndTime": "Start time must be before end time.",
     "noBlockingScheduleThisDevice": "There's no blocking schedule for this device.",
     "selectTimezone": "Select a timezone",
-    "selectClientsFiltersInfo": "Select the clients you want to display. If no clients are selected, all will be displayed."
+    "selectClientsFiltersInfo": "Select the clients you want to display. If no clients are selected, all will be displayed.",
+    "noDataThisSection": "There's no data for this section."
 }

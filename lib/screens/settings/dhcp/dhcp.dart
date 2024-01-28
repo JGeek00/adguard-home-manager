@@ -15,6 +15,7 @@ import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_leases.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/select_interface_modal.dart';
 
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/dhcp_provider.dart';
@@ -182,13 +183,15 @@ class _DhcpScreenState extends State<DhcpScreen> {
 
   @override
   void initState() {
-    if (mounted) loadDhcpStatus();
+    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
+    if (mounted && statusProvider.serverStatus?.dhcpAvailable == true) loadDhcpStatus();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
     final dhcpProvider = Provider.of<DhcpProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
@@ -353,11 +356,7 @@ class _DhcpScreenState extends State<DhcpScreen> {
       });
     }
 
-    if (
-      dhcpProvider.loadStatus == LoadStatus.loaded && 
-      dhcpProvider.dhcp != null &&
-      dhcpProvider.dhcp!.dhcpAvailable == false
-    ) {
+    if (statusProvider.serverStatus?.dhcpAvailable != true) {
       return const DhcpNotAvailable();
     }
 
