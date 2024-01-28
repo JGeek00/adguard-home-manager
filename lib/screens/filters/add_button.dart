@@ -39,6 +39,7 @@ class AddFiltersButton extends StatelessWidget {
 
       processModal.close();
 
+      if (!context.mounted) return;
       if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
