@@ -90,27 +90,16 @@ class TopItemsSection extends StatelessWidget {
       return values;
     }
 
-    final lineChartData = lineData();
-    final total = lineChartData.map((e) => e["value"]).reduce((a, b) => a + b);
-
-    final Widget noItems = Padding(
-      padding: const EdgeInsets.only(
-        bottom: 20,
-        top: 10
-      ),
-      child: Text(
-        AppLocalizations.of(context)!.noItems,
-        style: TextStyle(
-          fontSize: 16,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      ),
-    );
+    final List<Map<String, dynamic>> lineChartData = lineData();
+    final mapData = lineChartData.map((e) => e["value"]);
+    final List<dynamic> total = mapData.isNotEmpty 
+      ? mapData.reduce((a, b) => a + b) 
+      : [];
 
     return SizedBox(
       child: Column(
         children: [
-          if (data.isEmpty) noItems,
+          if (data.isEmpty) _NoData(label: label),
           if (data.isNotEmpty && width > 700) Padding(
             padding: EdgeInsets.only(bottom: withChart == false ? 16 : 0),
             child: Row(
@@ -319,6 +308,40 @@ class _ItemsList extends StatelessWidget {
         options: menuOptions,
         onTapEntry: onTapEntry,
       )).toList() 
+    );
+  }
+}
+
+class _NoData extends StatelessWidget {
+  final String label;
+
+  const _NoData({
+    required this.label
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          label,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onSurface
+          ),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          AppLocalizations.of(context)!.noDataThisSection,
+          style: TextStyle(
+            fontSize: 16,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }
