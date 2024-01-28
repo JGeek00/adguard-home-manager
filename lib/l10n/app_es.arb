@@ -749,5 +749,14 @@
     "noBlockingScheduleThisDevice": "No hay programación de bloqueo para este dispositivo.",
     "selectTimezone": "Selecciona una zona horaria",
     "selectClientsFiltersInfo": "Selecciona los clientes que quieres mostrar. Si no hay clientes seleccionados, se mostrarán todos.",
-    "noDataThisSection": "No hay datos para esta sección."
+    "noDataThisSection": "No hay datos para esta sección.",
+    "statisticsSettings": "Ajustes de estadísticas",
+    "statisticsSettingsDescription": "Configura la recolección de datos para estadísticas",
+    "loadingStatisticsSettings": "Cargando ajustes de estadísticas...",
+    "statisticsSettingsLoadError": "Ocurrió un error al cargar los ajustes de estadísticas.",
+    "customTimeInHours": "Tiempo personalizado (en horas)",
+    "invalidTime": "Tiempo no válido",
+    "removeDomain": "Eliminar dominio",
+    "addDomain": "Añadir dominio",
+    "notLess1Hour": "El tiempo no puede ser inferior a 1 hora"
 }

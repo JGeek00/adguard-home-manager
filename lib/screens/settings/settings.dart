@@ -12,6 +12,7 @@ import 'package:adguard_home_manager/screens/settings/logs_settings/logs_setting
 import 'package:adguard_home_manager/screens/settings/access_settings/access_settings.dart';
 import 'package:adguard_home_manager/screens/settings/customization/customization.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
+import 'package:adguard_home_manager/screens/settings/statistics_settings/statistics_settings.dart';
 import 'package:adguard_home_manager/screens/settings/safe_search_settings.dart';
 import 'package:adguard_home_manager/screens/settings/update_server/update.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns.dart';
@@ -149,10 +150,18 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                         twoColumns: widget.twoColumns,
                       ),
                       _SettingsTile(
+                        icon: Icons.analytics_rounded,
+                        title: AppLocalizations.of(context)!.statisticsSettings,
+                        subtitle: AppLocalizations.of(context)!.statisticsSettingsDescription,
+                        thisItem: 2,
+                        screenToNavigate: const StatisticsSettings(),
+                        twoColumns: widget.twoColumns,
+                      ),
+                      _SettingsTile(
                         icon: Icons.lock_rounded,
                         title: AppLocalizations.of(context)!.accessSettings,
                         subtitle: AppLocalizations.of(context)!.accessSettingsDescription,
-                        thisItem: 2,
+                        thisItem: 3,
                         screenToNavigate: const AccessSettings(),
                         twoColumns: widget.twoColumns,
                       ),
@@ -160,7 +169,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                         icon: Icons.install_desktop_rounded,
                         title: AppLocalizations.of(context)!.dhcpSettings,
                         subtitle: AppLocalizations.of(context)!.dhcpSettingsDescription,
-                        thisItem: 3,
+                        thisItem: 4,
                         screenToNavigate: const DhcpScreen(),
                         twoColumns: widget.twoColumns,
                       ),
@@ -168,7 +177,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                         icon: Icons.dns_rounded,
                         title: AppLocalizations.of(context)!.dnsSettings,
                         subtitle: AppLocalizations.of(context)!.dnsSettingsDescription,
-                        thisItem: 4,
+                        thisItem: 5,
                         screenToNavigate: DnsSettings(
                           splitView: widget.twoColumns,
                         ),
@@ -178,7 +187,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                         icon: Icons.security_rounded,
                         title: AppLocalizations.of(context)!.encryptionSettings,
                         subtitle: AppLocalizations.of(context)!.encryptionSettingsDescription,
-                        thisItem: 5,
+                        thisItem: 6,
                         screenToNavigate: const EncryptionSettings(),
                         twoColumns: widget.twoColumns,
                       ),
@@ -186,7 +195,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                         icon: Icons.route_rounded,
                         title: AppLocalizations.of(context)!.dnsRewrites,
                         subtitle: AppLocalizations.of(context)!.dnsRewritesDescription,
-                        thisItem: 6,
+                        thisItem: 7,
                         screenToNavigate: const DnsRewritesScreen(),
                         twoColumns: widget.twoColumns,
                       ),
@@ -206,7 +215,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                                 ),
                               )
                             : null,
-                        thisItem: 7,
+                        thisItem: 8,
                         screenToNavigate: const UpdateScreen(),
                         twoColumns: widget.twoColumns,
                       ),
@@ -214,7 +223,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                         icon: Icons.info_rounded,
                         title: AppLocalizations.of(context)!.serverInformation,
                         subtitle: AppLocalizations.of(context)!.serverInformationDescription,
-                        thisItem: 8,
+                        thisItem: 9,
                         screenToNavigate: const ServerInformation(),
                         twoColumns: widget.twoColumns,
                       ),
@@ -224,7 +233,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                       icon: Icons.palette_rounded,
                       title: AppLocalizations.of(context)!.customization, 
                       subtitle: AppLocalizations.of(context)!.customizationDescription,
-                      thisItem: 9,
+                      thisItem: 10,
                       screenToNavigate: const Customization(),
                       twoColumns: widget.twoColumns,
                     ),
@@ -236,7 +245,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                           ? "${AppLocalizations.of(context)!.connectedTo} ${serversProvider.selectedServer!.name}"
                           : "${AppLocalizations.of(context)!.selectedServer} ${serversProvider.selectedServer!.name}"
                         : AppLocalizations.of(context)!.noServerSelected,
-                      thisItem: 10,
+                      thisItem: 11,
                       screenToNavigate: const Servers(),
                       twoColumns: widget.twoColumns,
                     ),
@@ -244,7 +253,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                       icon: Icons.settings,
                       title: AppLocalizations.of(context)!.generalSettings,
                       subtitle: AppLocalizations.of(context)!.generalSettingsDescription,
-                      thisItem: 11,
+                      thisItem: 12,
                       screenToNavigate: GeneralSettings(splitView: widget.twoColumns),
                       twoColumns: widget.twoColumns,
                     ),
@@ -252,7 +261,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                       icon: Icons.build_outlined,
                       title: AppLocalizations.of(context)!.advancedSettings,
                       subtitle: AppLocalizations.of(context)!.advancedSetupDescription,
-                      thisItem: 12,
+                      thisItem: 13,
                       screenToNavigate: const AdvancedSettings(),
                       twoColumns: widget.twoColumns,
                     ),

@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/logs_settings/logs_settings.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
+import 'package:adguard_home_manager/widgets/master_switch.dart';
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 
 class LogsConfigOptions extends StatelessWidget {
@@ -70,48 +71,21 @@ class LogsConfigOptions extends StatelessWidget {
     return ListView(
       children: [
         const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Material(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(28),
-            child: InkWell(
-              onTap: () => updateGeneralSwitch(!generalSwitch),
-              borderRadius: BorderRadius.circular(28),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 8
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.enableLog,
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    Switch(
-                      value: generalSwitch, 
-                      onChanged: updateGeneralSwitch,
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
+        MasterSwitch(
+          label: AppLocalizations.of(context)!.enableLog, 
+          value: generalSwitch, 
+          onChange: updateGeneralSwitch
         ),
         const SizedBox(height: 16),
         CustomCheckboxListTile(
           value: anonymizeClientIp, 
           onChanged: (_) => updateAnonymizeClientIp(!anonymizeClientIp),
           title: AppLocalizations.of(context)!.anonymizeClientIp,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
         const SizedBox(height: 16),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 22),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: DropdownButtonFormField(
             items: retentionItems.asMap().entries.map((item) => DropdownMenuItem(
               value: item.value,
@@ -137,10 +111,10 @@ class LogsConfigOptions extends StatelessWidget {
             children: [
               SectionLabel(
                 label: AppLocalizations.of(context)!.ignoredDomains,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 6),
                 child: IconButton(
                   onPressed: () => updateIgnoredDomainsControllers([
                     ...ignoredDomainsControllers,
@@ -158,7 +132,7 @@ class LogsConfigOptions extends StatelessWidget {
         ),
         if (ignoredDomainsControllers.isNotEmpty) ...ignoredDomainsControllers.map((controller) => Padding(
           padding: const EdgeInsets.only(
-            top: 12, bottom: 12, left: 24, right: 10
+            top: 12, bottom: 12, left: 16, right: 6
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -208,71 +182,6 @@ class LogsConfigOptions extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class ConfigLogsLoading extends StatelessWidget {
-  const ConfigLogsLoading({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                AppLocalizations.of(context)!.loadingLogsSettings,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ConfigLogsError extends StatelessWidget {
-  const ConfigLogsError({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.error,
-            color: Colors.red,
-            size: 50,
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              AppLocalizations.of(context)!.logSettingsNotLoaded,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 22,
-                color: Theme.of(context).colorScheme.onSurfaceVariant
-              ),
-            ),
-          )
-        ],
-      ),
     );
   }
 }

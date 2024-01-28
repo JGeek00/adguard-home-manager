@@ -4,6 +4,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:adguard_home_manager/models/blocked_services.dart';
 import 'package:adguard_home_manager/models/querylog_config.dart';
+import 'package:adguard_home_manager/models/statistics_config.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
 import 'package:adguard_home_manager/models/encryption.dart';
 import 'package:adguard_home_manager/models/dhcp.dart';
@@ -880,5 +881,39 @@ class ApiClientV2 {
       successful: result.successful,
       content: result.body != null ? jsonDecode(result.body!) : null
     );
+  }
+
+  Future<ApiResponse> getStatisticsConfig() async {
+    final result = await HttpRequestClient.get(urlPath: '/stats/config', server: server);
+    if (result.successful) {
+      try {
+        return ApiResponse(
+          successful: true,
+          content: StatisticsConfig.fromJson(jsonDecode(result.body!))
+        );
+      } catch (e, stackTrace) {
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
+        return const ApiResponse(successful: false);
+      }
+    }
+    else {
+      return const ApiResponse(successful: false);
+    }
+  }
+
+  Future<ApiResponse> updateStatisticsSettings({
+    required Map<String, dynamic> body
+  }) async {
+    final result = await HttpRequestClient.put(
+      urlPath: '/stats/config/update', 
+      server: server,
+      body: body
+    );
+    print(result.body);
+    return ApiResponse(successful: result.successful);
   }
 }

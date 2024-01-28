@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/logs_settings/config_widgets.dart';
+import 'package:adguard_home_manager/widgets/load_status_widgets.dart';
 
 import 'package:adguard_home_manager/models/querylog_config.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
@@ -182,7 +183,7 @@ class _LogsSettingsState extends State<LogsSettings> {
         builder: (context) {
           switch (loadStatus) {
             case LoadStatus.loading:
-              return const ConfigLogsLoading();
+              return LoadingData(text: AppLocalizations.of(context)!.loadingLogsSettings);
       
             case LoadStatus.loaded:
               return LogsConfigOptions(
@@ -200,7 +201,7 @@ class _LogsSettingsState extends State<LogsSettings> {
               );
       
             case LoadStatus.error:
-              return const ConfigLogsError();
+              return ErrorLoadData(text: AppLocalizations.of(context)!.logSettingsNotLoaded,);
       
             default:
               return const SizedBox();

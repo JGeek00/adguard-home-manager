@@ -12,7 +12,7 @@ class CustomSettingsTile extends StatelessWidget {
   final int? selectedItem;
 
   const CustomSettingsTile({
-    Key? key,
+    super.key,
     required this.title,
     this.subtitle,
     this.subtitleWidget,
@@ -22,7 +22,7 @@ class CustomSettingsTile extends StatelessWidget {
     this.padding,
     required this.thisItem,
     required this.selectedItem,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
