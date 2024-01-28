@@ -92,9 +92,9 @@ class TopItemsSection extends StatelessWidget {
 
     final List<Map<String, dynamic>> lineChartData = lineData();
     final mapData = lineChartData.map((e) => e["value"]);
-    final List<dynamic> total = mapData.isNotEmpty 
+    final double total = mapData.isNotEmpty 
       ? mapData.reduce((a, b) => a + b) 
-      : [];
+      : 0;
 
     return SizedBox(
       child: Column(
