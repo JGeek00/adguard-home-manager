@@ -151,7 +151,8 @@ class HomeAppBar extends StatelessWidget {
               ),
             )
           ]
-        )
+        ),
+        const SizedBox(width: 8),
       ],
     );
   }
