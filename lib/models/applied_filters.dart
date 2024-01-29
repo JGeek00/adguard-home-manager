@@ -1,7 +1,7 @@
 class AppliedFiters {
   String selectedResultStatus = 'all';
   String? searchText;
-  List<String>? clients;
+  List<String> clients;
 
   AppliedFiters({
     required this.selectedResultStatus,

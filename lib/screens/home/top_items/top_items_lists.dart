@@ -51,7 +51,7 @@ class TopItemsLists extends StatelessWidget {
         AppliedFiters(
           selectedResultStatus: 'all', 
           searchText: value,
-          clients: null
+          clients: []
         )
       );
       appConfigProvider.setSelectedScreen(2);
