@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:adguard_home_manager/config/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
