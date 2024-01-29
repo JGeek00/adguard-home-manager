@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_interface_item.dart';
+import 'package:adguard_home_manager/widgets/list_bottom_sheet.dart';
 
 import 'package:adguard_home_manager/models/dhcp.dart';
 
@@ -89,70 +90,20 @@ class SelectInterfaceModal extends StatelessWidget {
       );
     }
     else {
-      return GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.6,
-          minChildSize: 0.3,
-          maxChildSize: 1,
-          builder: (context, controller) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(28),
-                  topRight: Radius.circular(28),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.all(16),
-                    width: 36,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.settings_ethernet_rounded,
-                          size: 24,
-                          color: Theme.of(context).listTileTheme.iconColor
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          AppLocalizations.of(context)!.selectInterface,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Theme.of(context).colorScheme.onSurface
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: SafeArea(
-                      child: ListView.builder(
-                        controller: controller,
-                        itemCount: interfaces.length,
-                        itemBuilder: (context, index) => DhcpInterfaceItem(
-                          networkInterface: interfaces[index], 
-                          onSelect: onSelect
-                        )
-                      ),
-                    )
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+      return ListBottomSheet(
+        icon: Icons.settings_ethernet_rounded, 
+        title: AppLocalizations.of(context)!.selectInterface,
+        children: [
+          ListView.builder(
+            primary: false,
+            shrinkWrap: true,
+            itemCount: interfaces.length,
+            itemBuilder: (context, index) => DhcpInterfaceItem(
+              networkInterface: interfaces[index], 
+              onSelect: onSelect
+            )
+          ),
+        ]
       );
     }
   }

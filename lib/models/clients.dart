@@ -91,6 +91,7 @@ class Client {
   final bool? ignoreStatistics;
   final bool? upstreamsCacheEnabled;
   final int? upstreamsCacheSize;
+  final BlockedServicesSchedule? blockedServicesSchedule;
 
   Client({
     required this.name,
@@ -108,6 +109,7 @@ class Client {
     required this.ignoreStatistics,
     required this.upstreamsCacheEnabled,
     required this.upstreamsCacheSize,
+    required this.blockedServicesSchedule,
   });
 
   factory Client.fromJson(Map<String, dynamic> json) => Client(
@@ -127,7 +129,8 @@ class Client {
     ignoreQuerylog: json["ignore_querylog"],
     ignoreStatistics: json["ignore_statistics"],
     upstreamsCacheEnabled: json["upstreams_cache_enabled"],
-    upstreamsCacheSize: json["upstreams_cache_size"]
+    upstreamsCacheSize: json["upstreams_cache_size"],
+    blockedServicesSchedule: BlockedServicesSchedule.fromJson(json["blocked_services_schedule"])
   );
 
   Map<String, dynamic> toJson() => {
@@ -145,6 +148,71 @@ class Client {
     "ignore_querylog": ignoreQuerylog,
     "ignore_statistics": ignoreStatistics,
     "upstreams_cache_enabled": upstreamsCacheEnabled,
-    "upstreams_cache_size": upstreamsCacheSize
+    "upstreams_cache_size": upstreamsCacheSize,
+    "blocked_services_schedule":blockedServicesSchedule?.toJson()
+  };
+}
+
+class BlockedServicesSchedule {
+  final String? timeZone;
+  final BlockedServicesScheduleDay? mon;
+  final BlockedServicesScheduleDay? tue;
+  final BlockedServicesScheduleDay? wed;
+  final BlockedServicesScheduleDay? thu;
+  final BlockedServicesScheduleDay? fri;
+  final BlockedServicesScheduleDay? sat;
+  final BlockedServicesScheduleDay? sun;
+
+  BlockedServicesSchedule({
+    this.timeZone,
+    this.mon,
+    this.tue,
+    this.wed,
+    this.thu,
+    this.fri,
+    this.sat,
+    this.sun
+  });
+
+  factory BlockedServicesSchedule.fromJson(Map<String, dynamic> json) => BlockedServicesSchedule(
+    timeZone: json["time_zone"],
+    mon: json["mon"] == null ? null : BlockedServicesScheduleDay.fromJson(json["mon"]),
+    tue: json["tue"] == null ? null : BlockedServicesScheduleDay.fromJson(json["tue"]),
+    wed: json["wed"] == null ? null : BlockedServicesScheduleDay.fromJson(json["wed"]),
+    thu: json["thu"] == null ? null : BlockedServicesScheduleDay.fromJson(json["thu"]),
+    fri: json["fri"] == null ? null : BlockedServicesScheduleDay.fromJson(json["fri"]),
+    sat: json["sat"] == null ? null : BlockedServicesScheduleDay.fromJson(json["sat"]),
+    sun: json["sun"] == null ? null : BlockedServicesScheduleDay.fromJson(json["sun"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "time_zone": timeZone,
+    "mon": mon?.toJson(),
+    "tue": tue?.toJson(),
+    "wed": wed?.toJson(),
+    "thu": thu?.toJson(),
+    "fri": fri?.toJson(),
+    "sat": sat?.toJson(),
+    "sun": sun?.toJson(),
+  };
+}
+
+class BlockedServicesScheduleDay {
+  final int? start;
+  final int? end;
+
+  BlockedServicesScheduleDay({
+    this.start,
+    this.end,
+  });
+
+  factory BlockedServicesScheduleDay.fromJson(Map<String, dynamic> json) => BlockedServicesScheduleDay(
+    start: json["start"],
+    end: json["end"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "start": start,
+    "end": end,
   };
 }

@@ -81,6 +81,8 @@ class _ClientScreenState extends State<ClientScreen> {
   bool _enableDnsCache = false;
   final _dnsCacheField = TextEditingController();
   String? _dnsCacheError;
+  
+  BlockedServicesSchedule _blockedServicesSchedule = BlockedServicesSchedule();
 
   // VALIDATIONS
   bool _nameValid = true;
@@ -140,6 +142,9 @@ class _ClientScreenState extends State<ClientScreen> {
       _dnsCacheField.text = widget.client!.upstreamsCacheSize != null
         ? widget.client!.upstreamsCacheSize.toString()
         : "";
+      if (widget.client!.blockedServicesSchedule != null) {
+        _blockedServicesSchedule = widget.client!.blockedServicesSchedule!;
+      }
     }
     super.initState();
   }
@@ -166,7 +171,8 @@ class _ClientScreenState extends State<ClientScreen> {
         upstreamsCacheEnabled: _enableDnsCache,
         upstreamsCacheSize: _dnsCacheField.text != ""
           ? int.parse(_dnsCacheField.text)
-          : null
+          : null,
+        blockedServicesSchedule: _blockedServicesSchedule
       );
       widget.onConfirm(client);
     }
@@ -268,7 +274,9 @@ class _ClientScreenState extends State<ClientScreen> {
                   updateEnableDnsCache: (v) => setState(() => _enableDnsCache = v),
                   dnsCacheField: _dnsCacheField,
                   dnsCacheError: _dnsCacheError,
-                  updateDnsCacheError: (v) => setState(() => _dnsCacheError = v)
+                  updateDnsCacheError: (v) => setState(() => _dnsCacheError = v),
+                  blockedServicesSchedule: _blockedServicesSchedule,
+                  setBlockedServicesSchedule: (v) => setState(() => _blockedServicesSchedule = v),
                 ),
               ],
             ),
@@ -353,7 +361,9 @@ class _ClientScreenState extends State<ClientScreen> {
                       updateEnableDnsCache: (v) => setState(() => _enableDnsCache = v),
                       dnsCacheField: _dnsCacheField,
                       dnsCacheError: _dnsCacheError,
-                      updateDnsCacheError: (v) => setState(() => _dnsCacheError = v)
+                      updateDnsCacheError: (v) => setState(() => _dnsCacheError = v), 
+                      blockedServicesSchedule: _blockedServicesSchedule,
+                      setBlockedServicesSchedule: (v) => setState(() => _blockedServicesSchedule = v),
                     ),
                   ],
                 ),

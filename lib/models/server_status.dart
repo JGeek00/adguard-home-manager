@@ -21,6 +21,7 @@ class ServerStatus {
   bool? safeSearchPixabay;
   bool? safeSearchYandex;
   bool? safeSearchYoutube;
+  bool dhcpAvailable;
 
   ServerStatus({
     required this.stats,
@@ -39,7 +40,8 @@ class ServerStatus {
     required this.safeSearchDuckduckgo,
     required this.safeSearchPixabay,
     required this.safeSearchYandex,
-    required this.safeSearchYoutube
+    required this.safeSearchYoutube,
+    required this.dhcpAvailable,
   });
 
   factory ServerStatus.fromJson(Map<String, dynamic> json) => ServerStatus(
@@ -64,5 +66,6 @@ class ServerStatus {
     safeSearchPixabay: json['safeSearch']['pixabay'],
     safeSearchYandex: json['safeSearch']['yandex'],
     safeSearchYoutube: json['safeSearch']['youtube'],
+    dhcpAvailable: json['status']['dhcp_available']
   );
 }

@@ -206,7 +206,7 @@ class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    
+
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) => MaterialApp(
         title: 'AdGuard Home Manager',
@@ -234,7 +234,8 @@ class _MainState extends State<Main> {
           Locale('zh', ''),
           Locale('zh', 'CN'),
           Locale('pl', ''),
-          Locale('tr', '')
+          Locale('tr', ''),
+          Locale('ru', '')
         ],
         scaffoldMessengerKey: scaffoldMessengerKey,
         navigatorKey: globalNavigatorKey,

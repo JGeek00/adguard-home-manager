@@ -8,7 +8,7 @@ import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 
-class RowItem extends StatefulWidget {
+class RowItem extends StatelessWidget {
   final HomeTopItems type;
   final Color chartColor;
   final String domain;
@@ -33,60 +33,13 @@ class RowItem extends StatefulWidget {
   });
 
   @override
-  State<RowItem> createState() => _RowItemState();
-}
-
-class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
-  late AnimationController expandController;
-  late Animation<double> animation; 
-
-  @override
-  void initState() {
-    super.initState();
-    prepareAnimations();
-    _runExpandCheck();
-  }
-
-  void prepareAnimations() {
-    expandController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 250)
-    );
-    animation = CurvedAnimation(
-      parent: expandController,
-      curve: Curves.ease,
-    );
-  }
-
-  void _runExpandCheck() {
-    if (widget.showColor) {
-      expandController.forward();
-    }
-    else {
-      expandController.reverse();
-    }
-  }
-
-  @override
-  void didUpdateWidget(oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _runExpandCheck();
-  }
-
-  @override
-  void dispose() {
-    expandController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
 
     String? name;
-    if (widget.clients == true) {
+    if (clients == true) {
       try {
-        name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(widget.domain)).name;
+        name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(domain)).name;
       } catch (e) {
         // ---- //
       }
@@ -95,9 +48,9 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
     return Material(
       color: Colors.transparent,
       child: OptionsMenu(
-        value: widget.domain,
-        options: widget.options,
-        onTap: widget.onTapEntry,
+        value: domain,
+        options: options,
+        onTap: onTapEntry,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
@@ -109,18 +62,13 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
               Flexible(
                 child: Row(
                   children: [
-                    SizeTransition(
-                      axisAlignment: 1.0,
-                      sizeFactor: animation,
-                      axis: Axis.horizontal,
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 16),
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: widget.chartColor
-                        ),
+                    if (showColor == true) Container(
+                      margin: const EdgeInsets.only(right: 16),
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: chartColor
                       ),
                     ),
                     Expanded(
@@ -128,7 +76,7 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.domain,
+                            domain,
                             overflow: TextOverflow.ellipsis,
                             style:  TextStyle(
                               fontSize: 16,
@@ -154,7 +102,7 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
               ),
               const SizedBox(width: 16),
               Text(
-                widget.number,
+                number,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface
                 ),
@@ -167,7 +115,7 @@ class _RowItemState extends State<RowItem> with TickerProviderStateMixin {
   }
 }
 
-class OthersRowItem extends StatefulWidget {
+class OthersRowItem extends StatelessWidget {
   final List<Map<String, dynamic>> items;
   final bool showColor;
 
@@ -178,110 +126,59 @@ class OthersRowItem extends StatefulWidget {
   });
 
   @override
-  State<OthersRowItem> createState() => _OthersRowItemState();
-}
-
-class _OthersRowItemState extends State<OthersRowItem> with SingleTickerProviderStateMixin {
-  late AnimationController expandController;
-  late Animation<double> animation; 
-
-  @override
-  void initState() {
-    super.initState();
-    prepareAnimations();
-    _runExpandCheck();
-  }
-
-  void prepareAnimations() {
-    expandController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 250)
-    );
-    animation = CurvedAnimation(
-      parent: expandController,
-      curve: Curves.ease,
-    );
-  }
-
-  void _runExpandCheck() {
-    if (widget.showColor) {
-      expandController.forward();
-    }
-    else {
-      expandController.reverse();
-    }
-  }
-
-  @override
-  void didUpdateWidget(oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _runExpandCheck();
-  }
-
-  @override
-  void dispose() {
-    expandController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (widget.items.length <= 5) {
+    if (items.length <= 5) {
       return const SizedBox();
     }
 
-    return SizeTransition(
-      axisAlignment: 1.0,
-      sizeFactor: animation,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 8
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 16),
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.grey
-                    ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 8
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Row(
+              children: [
+                if (showColor == true) Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.grey
                   ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.others,
-                          overflow: TextOverflow.ellipsis,
-                          style:  TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.onSurface
-                          ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.others,
+                        overflow: TextOverflow.ellipsis,
+                        style:  TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
-            Text(
-              List<int>.from(
-                widget.items.sublist(5, widget.items.length).map((e) => e.values.first.toInt())
-              ).reduce((a, b) => a + b).toString(),
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface
-              ),
-            )
-          ],
-        ),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            List<int>.from(
+              items.sublist(5, items.length).map((e) => e.values.first.toInt())
+            ).reduce((a, b) => a + b).toString(),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface
+            ),
+          )
+        ],
       ),
     );
   }

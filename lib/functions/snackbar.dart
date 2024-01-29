@@ -9,10 +9,12 @@ void showSnacbkar({
   required AppConfigProvider appConfigProvider,
   required String label, 
   required Color color,
-  Color? labelColor
+  Color? labelColor,
+  GlobalKey<ScaffoldMessengerState>? key,
 }) async {
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey = key ?? scaffoldMessengerKey;
   if (appConfigProvider.showingSnackbar == true) {
-    scaffoldMessengerKey.currentState?.clearSnackBars();
+    scaffoldKey.currentState?.clearSnackBars();
     await Future.delayed(const Duration(milliseconds: 500));
   }
   appConfigProvider.setShowingSnackbar(true);
@@ -26,7 +28,7 @@ void showSnacbkar({
     ),
     backgroundColor: color,
   );
-  scaffoldMessengerKey.currentState?.showSnackBar(snackBar).closed.then(
+  scaffoldKey.currentState?.showSnackBar(snackBar).closed.then(
     (value) => appConfigProvider.setShowingSnackbar(false)
   ); 
 }

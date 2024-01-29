@@ -1,11 +1,9 @@
 import 'dart:convert';
 class DhcpModel {
-  bool dhcpAvailable;
   List<NetworkInterface> networkInterfaces;
   DhcpStatus? dhcpStatus;
 
   DhcpModel({
-    required this.dhcpAvailable,
     required this.networkInterfaces,
     required this.dhcpStatus,
   });
@@ -83,8 +81,8 @@ class DhcpStatus {
 
   Map<String, dynamic> toJson() => {
     "interface_name": interfaceName,
-    "v4": v4 != null ? v4!.toJson() : null,
-    "v6": v6 != null ? v6!.toJson() : null,
+    "v4": v4?.toJson(),
+    "v6": v6?.toJson(),
     "leases": List<Lease>.from(leases.map((x) => x)),
     "static_leases": List<Lease>.from(staticLeases.map((x) => x)),
     "enabled": enabled,

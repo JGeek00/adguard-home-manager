@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,9 +32,9 @@ class CustomizationWidget extends StatefulWidget {
   final AppConfigProvider appConfigProvider;
 
   const CustomizationWidget({
-    Key? key,
+    super.key,
     required this.appConfigProvider,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomizationWidget> createState() => _CustomizationWidgetState();
@@ -43,6 +45,8 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
   bool dynamicColor = true;
   int selectedColor = 0;
   bool useThemeColorInsteadGreenRed = false;
+
+  final _colorsScrollController = ScrollController();
 
   @override
   void initState() {
@@ -125,83 +129,84 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
               title: AppLocalizations.of(context)!.useDynamicTheme, 
             ),
             if (!(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31)) const SizedBox(height: 20),
-            if (dynamicColor == false) ...[
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: 70,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: colors.length,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return Row(
-                        children: [
-                          const SizedBox(width: 15),
-                          ColorItem(
-                            color: colors[index], 
-                            numericValue: index, 
-                            selectedValue: selectedColor,
-                            onChanged: (value) {
-                              setState(() => selectedColor = value);
-                              appConfigProvider.setStaticColor(value);
+            if (dynamicColor == false) Padding(
+              padding: const EdgeInsets.only(bottom: 8, left: 16, right: 16),
+              child: Scrollbar(
+                controller: _colorsScrollController,
+                thumbVisibility: Platform.isMacOS || Platform.isLinux || Platform.isWindows,
+                interactive: Platform.isMacOS || Platform.isLinux || Platform.isWindows,
+                thickness: Platform.isMacOS || Platform.isLinux || Platform.isWindows ? 8 : 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 70,
+                        child: ListView.builder(
+                          controller: _colorsScrollController,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: colors.length,
+                          padding: const EdgeInsets.all(0),
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return Row(
+                                children: [
+                                  ColorItem(
+                                    index: index,
+                                    total: colors.length,
+                                    color: colors[index], 
+                                    numericValue: index, 
+                                    selectedValue: selectedColor,
+                                    onChanged: (value) {
+                                      setState(() => selectedColor = value);
+                                      appConfigProvider.setStaticColor(value);
+                                    }
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                                    width: 1,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(1)
+                                    ),
+                                  )
+                                ],
+                              );
                             }
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            width: 1,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(1)
-                            ),
-                          )
-                        ],
-                      );
-                    }
-                    else if (index == colors.length-1) {
-                      return Row(
-                        children: [
-                          ColorItem(
-                            color: colors[index], 
-                            numericValue: index, 
-                            selectedValue: selectedColor,
-                            onChanged: (value) {
-                              setState(() => selectedColor = value);
-                              appConfigProvider.setStaticColor(value);
+                            else {
+                              return ColorItem(
+                                index: index,
+                                total: colors.length,
+                                color: colors[index], 
+                                numericValue: index, 
+                                selectedValue: selectedColor,
+                                onChanged: (value) {
+                                  setState(() => selectedColor = value);
+                                  appConfigProvider.setStaticColor(value);
+                                }
+                              );
                             }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          colorTranslation(context, selectedColor),
+                          style: TextStyle(
+                            color: Theme.of(context).listTileTheme.iconColor,
+                            fontSize: 16
                           ),
-                          const SizedBox(width: 15)
-                        ],
-                      );
-                    }
-                    else {
-                      return ColorItem(
-                        color: colors[index], 
-                        numericValue: index, 
-                        selectedValue: selectedColor,
-                        onChanged: (value) {
-                          setState(() => selectedColor = value);
-                          appConfigProvider.setStaticColor(value);
-                        }
-                      );
-                    }
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 25,
-                  top: 10
-                ),
-                child: Text(
-                  colorTranslation(context, selectedColor),
-                  style: TextStyle(
-                    color: Theme.of(context).listTileTheme.iconColor,
-                    fontSize: 16
+                        ),
+                      )
+                    ],
                   ),
                 ),
-              )
-            ],
+              ),
+            ),
             CustomSwitchListTile(
               value: useThemeColorInsteadGreenRed, 
               onChanged: (value) {

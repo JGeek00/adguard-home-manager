@@ -112,7 +112,6 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 - [dynamic color](https://pub.dev/packages/dynamic_color)
 - [device info](https://pub.dev/packages/device_info)
 - [fl chart](https://pub.dev/packages/fl_chart)
-- [flutter web browser](https://pub.dev/packages/flutter_web_browser)
 - [flutter svg](https://pub.dev/packages/flutter_svg)
 - [percent indicator](https://pub.dev/packages/percent_indicator)
 - [store checker](https://pub.dev/packages/store_checker)
@@ -130,6 +129,9 @@ On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a 
 - [flutter reorderable list](https://pub.dev/packages/flutter_reorderable_list)
 - [pie chart](https://pub.dev/packages/pie_chart)
 - [segmented button slide](https://pub.dev/packages/segmented_button_slide)
+- [timezone](https://pub.dev/packages/timezone)
+- [url launcher](https://pub.dev/packages/url_launcher)
+- [flutter custom tabs](https://pub.dev/packages/flutter_custom_tabs)
 
 <br>
 

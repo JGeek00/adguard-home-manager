@@ -227,6 +227,8 @@ class _HomeState extends State<Home> {
                             ),
                                   
                             TopItemsLists(order: appConfigProvider.homeTopItemsOrder),
+
+                            const SizedBox(height: 16),
                           ],
                         ),
                         if (statusProvider.loadStatus == LoadStatus.error) SliverFillRemaining(

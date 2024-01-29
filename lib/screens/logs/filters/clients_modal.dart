@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
+import 'package:adguard_home_manager/widgets/list_bottom_sheet.dart';
+
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
-class ClientsModal extends StatefulWidget {
+class ClientsModal extends StatelessWidget {
   final List<String>? value;
   final bool dialog;
 
@@ -18,55 +21,89 @@ class ClientsModal extends StatefulWidget {
   });
 
   @override
-  State<ClientsModal> createState() => _ClientsModalState();
-}
-
-class _ClientsModalState extends State<ClientsModal> {
-  List<String> selectedClients = [];
-
-  @override
-  void initState() {
-    setState(() => selectedClients = widget.value ?? []);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    final clientsProvider = Provider.of<ClientsProvider>(context);
+    final logsProvider = Provider.of<LogsProvider>(context);
 
-    if (widget.dialog == true) {
+    if (dialog == true) {
       return Dialog(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
             maxWidth: 500
           ),
           child: _ModalContent(
-            selectedClients: selectedClients,
-            onClientsSelected: (v) => setState(() => selectedClients = v),
+            selectedClients: logsProvider.selectedClients,
+            onClientsSelected: (v) => logsProvider.setSelectedClients(v),
           )
         ),
       );
     }
     else {
-      return ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: height-50
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(28),
-              topRight: Radius.circular(28) 
+      return ListBottomSheet(
+        icon: Icons.smartphone_rounded, 
+        title: AppLocalizations.of(context)!.clients,
+        children: [
+          Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_rounded,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 16),
+                  Flexible(
+                    child: Text(AppLocalizations.of(context)!.selectClientsFiltersInfo)
+                  )
+                ],
+              ),
             ),
-            color: Theme.of(context).dialogBackgroundColor
           ),
-          child: SafeArea(
-            child: _ModalContent(
-              selectedClients: selectedClients,
-              onClientsSelected: (v) => setState(() => selectedClients = v),
+          CustomCheckboxListTile(
+            padding: const EdgeInsets.only(
+              left: 24,
+              top: 8,
+              right: 12,
+              bottom: 8
             ),
+            value: logsProvider.selectedClients.length == clientsProvider.clients!.autoClients.length, 
+            onChanged: (v) {
+              if (v == true) {
+                logsProvider.setSelectedClients(clientsProvider.clients!.autoClients.map((e) => e.ip).toList());
+              }
+              else {
+                logsProvider.setSelectedClients([]);
+              }
+            }, 
+            title: AppLocalizations.of(context)!.selectAll
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            primary: false,
+            itemCount: clientsProvider.clients!.autoClients.length,
+            itemBuilder: (context, index) => _ListItem(
+              label: clientsProvider.clients!.autoClients[index].ip, 
+              checkboxActive: logsProvider.selectedClients.contains(clientsProvider.clients!.autoClients[index].ip),
+              onChanged: (isSelected) {
+                if (isSelected == true) {
+                  logsProvider.setSelectedClients([
+                    ...logsProvider.selectedClients,
+                    clientsProvider.clients!.autoClients[index].ip
+                  ]);
+                }
+                else {
+                  logsProvider.setSelectedClients(
+                    logsProvider.selectedClients.where(
+                      (item) => item != clientsProvider.clients!.autoClients[index].ip
+                    ).toList()
+                  );
+                }
+              }
+            )
           )
-        ),
+        ]
       );
     }
   }
@@ -86,96 +123,91 @@ class _ModalContent extends StatelessWidget {
     final clientsProvider = Provider.of<ClientsProvider>(context);
     final logsProvider = Provider.of<LogsProvider>(context);
 
-    void apply() async {
-      logsProvider.setSelectedClients(
-        selectedClients.isNotEmpty ? selectedClients : null
-      );
-
-      Navigator.pop(context);
-    }
-
-    void selectAll() {
-      onClientsSelected(
-        clientsProvider.clients!.autoClients.map((item) => item.ip).toList()
-      );
-    }
-
-    void unselectAll() {
-      onClientsSelected([]);
-    }
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 24,
-                bottom: 16,
-              ),
-              child: Icon(
-                Icons.smartphone_rounded,
-                size: 24,
-                color: Theme.of(context).listTileTheme.iconColor
-              ),
-            ),
-            Text(
-              AppLocalizations.of(context)!.clients,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                color: Theme.of(context).colorScheme.onSurface
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-        Flexible(
-          child: ListView.builder(
-            itemCount: clientsProvider.clients!.autoClients.length,
-            itemBuilder: (context, index) => _ListItem(
-              label: clientsProvider.clients!.autoClients[index].ip, 
-              checkboxActive: selectedClients.contains(clientsProvider.clients!.autoClients[index].ip),
-              onChanged: (isSelected) {
-                if (isSelected == true) {
-                  onClientsSelected([
-                    ...selectedClients,
-                    clientsProvider.clients!.autoClients[index].ip
-                  ]);
-                }
-                else {
-                  onClientsSelected(
-                    selectedClients.where(
-                      (item) => item != clientsProvider.clients!.autoClients[index].ip
-                    ).toList()
-                  );
-                }
-              }
-            )
-          )
-        ),
         Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(16),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton(
-                onPressed: selectedClients.length == clientsProvider.clients!.autoClients.length
-                  ? () => unselectAll()
-                  : () => selectAll(), 
-                child: Text(
-                  selectedClients.length == clientsProvider.clients!.autoClients.length
-                    ? AppLocalizations.of(context)!.unselectAll
-                    : AppLocalizations.of(context)!.selectAll
-                )
+              CloseButton(
+                onPressed: () => Navigator.pop(context),
               ),
-              TextButton(
-                onPressed: apply, 
-                child: Text(AppLocalizations.of(context)!.apply)
+              const SizedBox(width: 12),
+              Text(
+                AppLocalizations.of(context)!.clients,
+                style: const TextStyle(
+                  fontSize: 22
+                ),
               )
             ],
           ),
+        ),
+        Flexible(
+          child: ListView(
+            children: [
+              Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_rounded,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 16),
+                      Flexible(
+                        child: Text(AppLocalizations.of(context)!.selectClientsFiltersInfo)
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              CustomCheckboxListTile(
+                padding: const EdgeInsets.only(
+                  left: 24,
+                  top: 8,
+                  right: 12,
+                  bottom: 8
+                ),
+                value: logsProvider.selectedClients.length == clientsProvider.clients!.autoClients.length, 
+                onChanged: (v) {
+                  if (v == true) {
+                    logsProvider.setSelectedClients(clientsProvider.clients!.autoClients.map((e) => e.ip).toList());
+                  }
+                  else {
+                    logsProvider.setSelectedClients([]);
+                  }
+                }, 
+                title: AppLocalizations.of(context)!.selectAll
+              ),
+              ListView.builder(
+                primary: false,
+                shrinkWrap: true,
+                itemCount: clientsProvider.clients!.autoClients.length,
+                itemBuilder: (context, index) => _ListItem(
+                  label: clientsProvider.clients!.autoClients[index].ip, 
+                  checkboxActive: selectedClients.contains(clientsProvider.clients!.autoClients[index].ip),
+                  onChanged: (isSelected) {
+                    if (isSelected == true) {
+                      onClientsSelected([
+                        ...selectedClients,
+                        clientsProvider.clients!.autoClients[index].ip
+                      ]);
+                    }
+                    else {
+                      onClientsSelected(
+                        selectedClients.where(
+                          (item) => item != clientsProvider.clients!.autoClients[index].ip
+                        ).toList()
+                      );
+                    }
+                  }
+                )
+              ),
+            ],
+          )
         ),
         if (Platform.isIOS) const SizedBox(height: 16)
       ],
@@ -203,9 +235,9 @@ class _ListItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(
             left: 24,
-            top: 8,
+            top: 4,
             right: 12,
-            bottom: 8
+            bottom: 4
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

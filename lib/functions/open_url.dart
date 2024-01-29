@@ -1,30 +1,33 @@
 import 'dart:io';
 
-import 'package:flutter_web_browser/flutter_web_browser.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart' as flutter_custom_tabs;
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void openUrl(String url) async {
   if (Platform.isAndroid || Platform.isIOS) {
-    FlutterWebBrowser.openWebPage(
-      url: url,
-      customTabsOptions: const CustomTabsOptions(
-        instantAppsEnabled: true,
-        showTitle: true,
-        urlBarHidingEnabled: false,
-      ),
-      safariVCOptions: const SafariViewControllerOptions(
-        barCollapsingEnabled: true,
-        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-        modalPresentationCapturesStatusBarAppearance: true,
-      )
-    );
+    try {
+      await flutter_custom_tabs.launchUrl(
+        Uri.parse(url),      
+        customTabsOptions: const flutter_custom_tabs.CustomTabsOptions(
+          shareState: flutter_custom_tabs.CustomTabsShareState.browserDefault,
+          urlBarHidingEnabled: true,
+          showTitle: true,
+        ),                    
+        safariVCOptions: const flutter_custom_tabs.SafariViewControllerOptions(
+          barCollapsingEnabled: true,
+          dismissButtonStyle: flutter_custom_tabs.SafariViewControllerDismissButtonStyle.close,        
+        ),
+      );
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
+    }
   }
   else {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      throw 'Could not launch $url';
+    try {
+      url_launcher.launchUrl(Uri.parse(url));
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
     }
   }
 }    

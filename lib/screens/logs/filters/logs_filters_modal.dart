@@ -150,6 +150,7 @@ class _FiltersList extends StatelessWidget {
             dialog: false,
           ),
           isScrollControlled: true,
+          useSafeArea: true,
           backgroundColor: Colors.transparent
         );
       }
@@ -225,8 +226,8 @@ class _FiltersList extends StatelessWidget {
                 Container(height: 16),
                 CustomListTile(
                   title: AppLocalizations.of(context)!.client,
-                  subtitle: logsProvider.selectedClients != null
-                    ? "${logsProvider.selectedClients!.length} ${AppLocalizations.of(context)!.clientsSelected}"
+                  subtitle: logsProvider.selectedClients.isNotEmpty
+                    ? "${logsProvider.selectedClients.length} ${AppLocalizations.of(context)!.clientsSelected}"
                     : AppLocalizations.of(context)!.all,
                   onTap: clientsProvider.loadStatus == LoadStatus.loaded 
                     ? openSelectClients

@@ -7,11 +7,11 @@ class CustomPieChart extends StatelessWidget {
   final Duration? animationDuration;
 
   const CustomPieChart({
-    Key? key,
+    super.key,
     required this.data,
     required this.colors,
-   this.animationDuration = const Duration(milliseconds: 800),
-  }) : super(key: key);
+    this.animationDuration = const Duration(milliseconds: 800),
+  });
 
   @override
   Widget build(BuildContext context) {

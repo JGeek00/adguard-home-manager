@@ -8,6 +8,7 @@ import 'package:adguard_home_manager/screens/clients/client/identifiers_section.
 import 'package:adguard_home_manager/screens/clients/client/settings_tile.dart';
 import 'package:adguard_home_manager/screens/clients/client/tags_section.dart';
 import 'package:adguard_home_manager/screens/clients/client/upstream_servers_section.dart';
+import 'package:adguard_home_manager/screens/clients/client/blocking_schedule.dart';
 
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
@@ -52,6 +53,8 @@ class ClientForm extends StatelessWidget {
   final TextEditingController dnsCacheField;
   final String? dnsCacheError;
   final void Function(String?) updateDnsCacheError;
+  final BlockedServicesSchedule blockedServicesSchedule;
+  final void Function(BlockedServicesSchedule) setBlockedServicesSchedule;
 
   const ClientForm({
     super.key,
@@ -90,6 +93,8 @@ class ClientForm extends StatelessWidget {
     required this.dnsCacheField,
     required this.dnsCacheError,
     required this.updateDnsCacheError,
+    required this.blockedServicesSchedule,
+    required this.setBlockedServicesSchedule,
   });
 
   @override
@@ -282,6 +287,11 @@ class ClientForm extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
         ),
+        BlockingSchedule(
+          blockedServicesSchedule: blockedServicesSchedule,
+          setBlockedServicesSchedule: setBlockedServicesSchedule,
+        ),
+        const SizedBox(height: 16),
       ],
     );
   }

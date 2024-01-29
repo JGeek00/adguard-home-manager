@@ -64,8 +64,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    final width = MediaQuery.of(context).size.width;
-
     Filter? list;
     try {
       list = filteringProvider.filtering != null
@@ -109,177 +107,6 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
           color: Colors.red
         );
       }
-    }
-
-    List<Widget> content() {
-      return [
-        CustomListTile(
-          icon: Icons.shield_rounded, 
-          title: AppLocalizations.of(context)!.currentStatus, 
-          subtitleWidget: Text(
-            list!.enabled == true
-              ? AppLocalizations.of(context)!.enabled
-              : AppLocalizations.of(context)!.disabled,
-            style: TextStyle(
-              color: list.enabled == true
-                ? appConfigProvider.useThemeColorForStatus == true
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.green
-                :  appConfigProvider.useThemeColorForStatus == true
-                  ? Colors.grey
-                  : Colors.red,
-              fontWeight: FontWeight.w500
-            ),
-          ),
-          padding: widget.dialog == true
-            ? const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 8
-              )
-            : null,
-        ),
-        CustomListTile(
-          icon: Icons.badge_rounded, 
-          title: AppLocalizations.of(context)!.name, 
-          subtitle: list.name,
-          padding: widget.dialog == true
-            ? const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 8
-              )
-            : null,
-        ),
-        CustomListTile(
-          icon: Icons.link_rounded, 
-          title: "URL", 
-          subtitle: list.url,
-          padding: widget.dialog == true
-            ? const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 8
-              )
-            : null,
-          trailing: IconButton(
-            onPressed: () => openUrl(list!.url), 
-            icon: const Icon(Icons.open_in_browser_rounded),
-            tooltip: AppLocalizations.of(context)!.openListUrl,
-          ),
-        ),
-        CustomListTile(
-          icon: Icons.list_rounded, 
-          title: AppLocalizations.of(context)!.rules, 
-          subtitle: list.rulesCount.toString(),
-          padding: widget.dialog == true
-            ? const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 8
-              )
-            : null,
-        ),
-        CustomListTile(
-          icon: Icons.shield_rounded, 
-          title: AppLocalizations.of(context)!.listType, 
-          subtitle: widget.type == 'whitelist'
-            ? AppLocalizations.of(context)!.whitelist
-            : AppLocalizations.of(context)!.blacklist,
-          padding: widget.dialog == true
-            ? const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 8
-              )
-            : null,
-        ),
-        if (list.lastUpdated != null) CustomListTile(
-          icon: Icons.schedule_rounded, 
-          title: AppLocalizations.of(context)!.latestUpdate, 
-          subtitle: convertTimestampLocalTimezone(list.lastUpdated!, 'dd-MM-yyyy HH:mm'), 
-          padding: widget.dialog == true
-            ? const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 8
-              )
-            : null,
-        ),
-        if (widget.dialog == true) Container(height: 16)
-      ];
-    }
-
-    List<Widget> actions() {
-      return [
-        IconButton(
-          onPressed: () => {
-            if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
-              showDialog(
-                context: context, 
-                builder: (ctx) => AddListModal(
-                  list: list,
-                  type: widget.type,
-                  onEdit: ({required Filter list, required String type}) async => updateList(
-                    action: FilteringListActions.edit,
-                    filterList: list
-                  ),
-                  dialog: true,
-                ),
-              )
-            }
-            else {
-              showModalBottomSheet(
-                context: context, 
-                useRootNavigator: true,
-                builder: (ctx) => AddListModal(
-                  list: list,
-                  type: widget.type,
-                  onEdit: ({required Filter list, required String type}) async => updateList(
-                    action: FilteringListActions.edit,
-                    filterList: list
-                  ),
-                  dialog: false,
-                ),
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent
-              )
-            }
-          }, 
-          icon: const Icon(Icons.edit),
-          tooltip: AppLocalizations.of(context)!.edit,
-        ),
-        IconButton(
-          onPressed: () {
-            showDialog(
-              context: context, 
-              builder: (c) => DeleteListModal(
-                onConfirm: () async {
-                  ProcessModal processModal = ProcessModal();
-                  processModal.open(AppLocalizations.of(context)!.deletingList);
-                  final result = await filteringProvider.deleteList(
-                    listUrl: list!.url, 
-                    type: widget.type,
-                  );
-                  processModal.close();
-                  if (result == true) {
-                    showSnacbkar(
-                      appConfigProvider: appConfigProvider,
-                      label: AppLocalizations.of(context)!.listDeleted, 
-                      color: Colors.green
-                    );
-                    Navigator.pop(context);
-                  }
-                  else {
-                    showSnacbkar(
-                      appConfigProvider: appConfigProvider,
-                      label: AppLocalizations.of(context)!.listNotDeleted, 
-                      color: Colors.red
-                    );
-                  }
-                }
-              )
-            );
-          }, 
-          icon: const Icon(Icons.delete),
-          tooltip: AppLocalizations.of(context)!.delete,
-        ),
-        const SizedBox(width: 10),
-      ];
     }
 
     if (widget.dialog == true) {
@@ -330,7 +157,11 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                             ? AppLocalizations.of(context)!.disableList
                             : AppLocalizations.of(context)!.enableList,
                         ),
-                        ...actions()
+                        _Actions(
+                          list: list, 
+                          type: widget.type, 
+                          updateList: (action, filterList) => updateList(action: action, filterList: filterList),
+                        )
                       ],
                     )
                   ],
@@ -340,7 +171,12 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                 child: list != null
                   ?  SingleChildScrollView(
                       child: Wrap(
-                        children: content(),
+                        children: [
+                          _Content(
+                            isDialog: widget.dialog,
+                            list: list,
+                          )
+                        ],
                       ),
                     )
                   : Center(
@@ -361,17 +197,27 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
       return Dialog.fullscreen(
         child: Scaffold(
           appBar: AppBar(
-            leading: CloseButton(
-              onPressed: () => Navigator.pop(context),
-            ),
             title: Text(AppLocalizations.of(context)!.listDetails),
-            actions: list != null ? actions() : null,
+            actions: list != null 
+              ? [
+                  _Actions(
+                    list: list, 
+                    type: widget.type, 
+                    updateList: (action, filterList) => updateList(action: action, filterList: filterList),
+                  )
+                ]
+              : null,
           ),
           body: SafeArea(
             child: Stack(
               children: [
                 if (list != null) ListView(
-                  children: content(),
+                  children: [
+                    _Content(
+                      isDialog: widget.dialog,
+                      list: list,
+                    )
+                  ],
                 ),
                 if (list == null) Center(
                   child: Text(
@@ -409,5 +255,205 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
         ),
       );
     }
+  }
+}
+
+class _Content extends StatelessWidget {
+  final Filter list;
+  final bool isDialog;
+
+  const _Content({
+    required this.list,
+    required this.isDialog
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    return Column(
+      children: [
+        CustomListTile(
+          icon: Icons.shield_rounded, 
+          title: AppLocalizations.of(context)!.currentStatus, 
+          subtitleWidget: Text(
+            list.enabled == true
+              ? AppLocalizations.of(context)!.enabled
+              : AppLocalizations.of(context)!.disabled,
+            style: TextStyle(
+              color: list.enabled == true
+                ? appConfigProvider.useThemeColorForStatus == true
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.green
+                :  appConfigProvider.useThemeColorForStatus == true
+                  ? Colors.grey
+                  : Colors.red,
+              fontWeight: FontWeight.w500
+            ),
+          ),
+          padding: isDialog == true
+            ? const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 8
+              )
+            : null,
+        ),
+        CustomListTile(
+          icon: Icons.badge_rounded, 
+          title: AppLocalizations.of(context)!.name, 
+          subtitle: list.name,
+          padding: isDialog == true
+            ? const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 8
+              )
+            : null,
+        ),
+        CustomListTile(
+          icon: Icons.link_rounded, 
+          title: "URL", 
+          subtitle: list.url,
+          padding: isDialog == true
+            ? const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 8
+              )
+            : null,
+          trailing: IconButton(
+            onPressed: () => openUrl(list.url), 
+            icon: const Icon(Icons.open_in_browser_rounded),
+            tooltip: AppLocalizations.of(context)!.openListUrl,
+          ),
+        ),
+        CustomListTile(
+          icon: Icons.list_rounded, 
+          title: AppLocalizations.of(context)!.rules, 
+          subtitle: list.rulesCount.toString(),
+          padding: isDialog == true
+            ? const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 8
+              )
+            : null,
+        ),
+        CustomListTile(
+          icon: Icons.shield_rounded, 
+          title: AppLocalizations.of(context)!.listType, 
+          subtitle: isDialog == 'whitelist'
+            ? AppLocalizations.of(context)!.whitelist
+            : AppLocalizations.of(context)!.blacklist,
+          padding: isDialog == true
+            ? const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 8
+              )
+            : null,
+        ),
+        if (list.lastUpdated != null) CustomListTile(
+          icon: Icons.schedule_rounded, 
+          title: AppLocalizations.of(context)!.latestUpdate, 
+          subtitle: convertTimestampLocalTimezone(list.lastUpdated!, 'dd-MM-yyyy HH:mm'), 
+          padding: isDialog == true
+            ? const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 8
+              )
+            : null,
+        ),
+        if (isDialog == true) Container(height: 16)
+      ],
+    );
+  }
+}
+
+class _Actions extends StatelessWidget {
+  final Filter? list;
+  final String type;
+  final void Function(FilteringListActions, Filter) updateList;
+
+  const _Actions({
+    required this.list,
+    required this.type,
+    required this.updateList,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final filteringProvider = Provider.of<FilteringProvider>(context);
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final width = MediaQuery.of(context).size.width;
+
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => {
+            if (width > 700 || !(Platform.isAndroid || Platform.isIOS)) {
+              showDialog(
+                context: context, 
+                builder: (ctx) => AddListModal(
+                  list: list,
+                  type: type,
+                  onEdit: ({required Filter list, required String type}) async => updateList(FilteringListActions.edit, list),
+                  dialog: true,
+                ),
+              )
+            }
+            else {
+              showModalBottomSheet(
+                context: context, 
+                useRootNavigator: true,
+                builder: (ctx) => AddListModal(
+                  list: list,
+                  type: type,
+                  onEdit: ({required Filter list, required String type}) async => updateList(FilteringListActions.edit, list),
+                  dialog: false,
+                ),
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent
+              )
+            }
+          }, 
+          icon: const Icon(Icons.edit),
+          tooltip: AppLocalizations.of(context)!.edit,
+        ),
+        IconButton(
+          onPressed: () {
+            showDialog(
+              context: context, 
+              builder: (c) => DeleteListModal(
+                onConfirm: () async {
+                  ProcessModal processModal = ProcessModal();
+                  processModal.open(AppLocalizations.of(context)!.deletingList);
+                  final result = await filteringProvider.deleteList(
+                    listUrl: list!.url, 
+                    type: type,
+                  );
+                  processModal.close();
+                  if (result == true) {
+                    showSnacbkar(
+                      appConfigProvider: appConfigProvider,
+                      label: AppLocalizations.of(context)!.listDeleted, 
+                      color: Colors.green
+                    );
+                    Navigator.pop(context);
+                  }
+                  else {
+                    showSnacbkar(
+                      appConfigProvider: appConfigProvider,
+                      label: AppLocalizations.of(context)!.listNotDeleted, 
+                      color: Colors.red
+                    );
+                  }
+                }
+              )
+            );
+          }, 
+          icon: const Icon(Icons.delete),
+          tooltip: AppLocalizations.of(context)!.delete,
+        ),
+        const SizedBox(width: 10),
+      ],
+    );
   }
 }
