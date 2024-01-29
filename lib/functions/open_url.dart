@@ -1,30 +1,21 @@
-import 'dart:io';
-
-import 'package:flutter_web_browser/flutter_web_browser.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void openUrl(String url) async {
-  if (Platform.isAndroid || Platform.isIOS) {
-    FlutterWebBrowser.openWebPage(
-      url: url,
+  try {
+    await launchUrl(
+      Uri.parse(url),      
       customTabsOptions: const CustomTabsOptions(
-        instantAppsEnabled: true,
+        shareState: CustomTabsShareState.browserDefault,
+        urlBarHidingEnabled: true,
         showTitle: true,
-        urlBarHidingEnabled: false,
-      ),
+      ),                    
       safariVCOptions: const SafariViewControllerOptions(
         barCollapsingEnabled: true,
-        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-        modalPresentationCapturesStatusBarAppearance: true,
-      )
+        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,        
+      ),
     );
-  }
-  else {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      throw 'Could not launch $url';
-    }
+  } catch (e, stackTrace) {
+    Sentry.captureException(e, stackTrace: stackTrace);
   }
 }    
