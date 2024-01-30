@@ -82,10 +82,9 @@ class _FiltersList extends StatelessWidget {
   final void Function() onClearSearch;
 
   const _FiltersList({
-    Key? key,
     required this.searchController,
     required this.onClearSearch,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +124,8 @@ class _FiltersList extends StatelessWidget {
             dialog: false,
           ),
           isScrollControlled: true,
-          backgroundColor: Colors.transparent
+          backgroundColor: Colors.transparent,
+          useSafeArea: true
         );
       }
     }

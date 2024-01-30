@@ -1,8 +1,10 @@
-import 'dart:io';
+
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:adguard_home_manager/widgets/list_bottom_sheet.dart';
 
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
@@ -33,169 +35,141 @@ class _FilterStatusModalState extends State<FilterStatusModal> {
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
 
-    void apply() async {
-      logsProvider.setSelectedResultStatus(value: selectedResultStatus);
-
-      Navigator.pop(context);
-    }
-
     if (widget.dialog == true) {
       return Dialog(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
             maxWidth: 400
           ),
-          child: _Content(
-            onApply: apply,
-            updateSelectedResultStatus: (v) => setState(() => selectedResultStatus = v),
-            selectedResultStatus: selectedResultStatus,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16, left: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CloseButton(
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              AppLocalizations.of(context)!.responseStatus,
+                              style: const TextStyle(
+                                fontSize: 22
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(height: 16),
+                      _ItemsList(
+                        selectedResultStatus: logsProvider.selectedResultStatus,
+                        updateSelectedResultStatus: (v) => logsProvider.setSelectedResultStatus(value: v),
+                      ),
+                      Container(height: 16)
+                    ],
+                  ),
+                ),
+              ),
+            ],
           )
         ),
       );  
     }
     else {
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28) 
-          ),
-          color: Theme.of(context).dialogBackgroundColor
+      return SizedBox(
+        height: 700,
+        child: ListBottomSheet(
+          icon: Icons.shield_rounded, 
+          title: AppLocalizations.of(context)!.responseStatus,
+          initialChildSize: 1,
+          minChildSize: 0.5,
+          children: [
+            _ItemsList(
+              selectedResultStatus: logsProvider.selectedResultStatus,
+              updateSelectedResultStatus: (v) => logsProvider.setSelectedResultStatus(value: v),
+            )
+          ]
         ),
-        child: SafeArea(
-          child: _Content(
-            onApply: apply,
-            updateSelectedResultStatus: (v) => setState(() => selectedResultStatus = v),
-            selectedResultStatus: selectedResultStatus,
-          ),
-        )
       );
     }
   }
 }
 
-class _Content extends StatelessWidget {
+class _ItemsList extends StatelessWidget {
   final String selectedResultStatus;
   final void Function(String) updateSelectedResultStatus;
-  final void Function() onApply;
 
-  const _Content({
+  const _ItemsList({
     required this.selectedResultStatus,
-    required this.updateSelectedResultStatus,
-    required this.onApply,
+    required this.updateSelectedResultStatus
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(
-          child: SingleChildScrollView(
-            child: Wrap(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 24,
-                            bottom: 16,
-                          ),
-                          child: Icon(
-                            Icons.shield_rounded,
-                            size: 24,
-                            color: Theme.of(context).listTileTheme.iconColor
-                          ),
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.responseStatus,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
-                            color: Theme.of(context).colorScheme.onSurface
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Container(height: 16),
-                _Item(
-                  selectedResultStatus: selectedResultStatus,
-                  id: "all",
-                  icon: Icons.shield_rounded, 
-                  label: AppLocalizations.of(context)!.all, 
-                  onChanged: updateSelectedResultStatus
-                ),
-                _Item(
-                  selectedResultStatus: selectedResultStatus,
-                  id: "filtered",
-                  icon: Icons.shield_rounded, 
-                  label: AppLocalizations.of(context)!.filtered, 
-                  onChanged: updateSelectedResultStatus
-                ),
-                _Item(
-                  selectedResultStatus: selectedResultStatus,
-                  id: "processed",
-                  icon: Icons.verified_user_rounded, 
-                  label: AppLocalizations.of(context)!.processedRow, 
-                  onChanged: updateSelectedResultStatus
-                ),
-                _Item(
-                  selectedResultStatus: selectedResultStatus,
-                  id: "whitelisted",
-                  icon: Icons.verified_user_rounded, 
-                  label: AppLocalizations.of(context)!.processedWhitelistRow, 
-                  onChanged: updateSelectedResultStatus
-                ),
-                _Item(
-                  selectedResultStatus: selectedResultStatus,
-                  id: "blocked",
-                  icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blocked, 
-                  onChanged: updateSelectedResultStatus
-                ),
-                _Item(
-                  selectedResultStatus: selectedResultStatus,
-                  id: "blocked_safebrowsing",
-                  icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedSafeBrowsingRow, 
-                  onChanged: updateSelectedResultStatus
-                ),
-                _Item(
-                  selectedResultStatus: selectedResultStatus,
-                  id: "blocked_parental",
-                  icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedParentalRow, 
-                  onChanged: updateSelectedResultStatus
-                ),
-                _Item(
-                  selectedResultStatus: selectedResultStatus,
-                  id: "safe_search",
-                  icon: Icons.gpp_bad_rounded, 
-                  label: AppLocalizations.of(context)!.blockedSafeSearchRow, 
-                  onChanged: updateSelectedResultStatus
-                ),
-              ],
-            ),
-          ),
+        _Item(
+          selectedResultStatus: selectedResultStatus,
+          id: "all",
+          icon: Icons.shield_rounded, 
+          label: AppLocalizations.of(context)!.all, 
+          onChanged: updateSelectedResultStatus
         ),
-        Padding(
-          padding: const EdgeInsets.all(24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: onApply, 
-                child: Text(AppLocalizations.of(context)!.apply)
-              )
-            ],
-          ),
+        _Item(
+          selectedResultStatus: selectedResultStatus,
+          id: "filtered",
+          icon: Icons.shield_rounded, 
+          label: AppLocalizations.of(context)!.filtered, 
+          onChanged: updateSelectedResultStatus
         ),
-        if (Platform.isIOS) const SizedBox(height: 16)
+        _Item(
+          selectedResultStatus: selectedResultStatus,
+          id: "processed",
+          icon: Icons.verified_user_rounded, 
+          label: AppLocalizations.of(context)!.processedRow, 
+          onChanged: updateSelectedResultStatus
+        ),
+        _Item(
+          selectedResultStatus: selectedResultStatus,
+          id: "whitelisted",
+          icon: Icons.verified_user_rounded, 
+          label: AppLocalizations.of(context)!.processedWhitelistRow, 
+          onChanged: updateSelectedResultStatus
+        ),
+        _Item(
+          selectedResultStatus: selectedResultStatus,
+          id: "blocked",
+          icon: Icons.gpp_bad_rounded, 
+          label: AppLocalizations.of(context)!.blocked, 
+          onChanged: updateSelectedResultStatus
+        ),
+        _Item(
+          selectedResultStatus: selectedResultStatus,
+          id: "blocked_safebrowsing",
+          icon: Icons.gpp_bad_rounded, 
+          label: AppLocalizations.of(context)!.blockedSafeBrowsingRow, 
+          onChanged: updateSelectedResultStatus
+        ),
+        _Item(
+          selectedResultStatus: selectedResultStatus,
+          id: "blocked_parental",
+          icon: Icons.gpp_bad_rounded, 
+          label: AppLocalizations.of(context)!.blockedParentalRow, 
+          onChanged: updateSelectedResultStatus
+        ),
+        _Item(
+          selectedResultStatus: selectedResultStatus,
+          id: "safe_search",
+          icon: Icons.gpp_bad_rounded, 
+          label: AppLocalizations.of(context)!.blockedSafeSearchRow, 
+          onChanged: updateSelectedResultStatus
+        ),
       ],
     );
   }

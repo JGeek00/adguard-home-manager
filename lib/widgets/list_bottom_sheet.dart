@@ -4,12 +4,18 @@ class ListBottomSheet extends StatelessWidget {
   final IconData icon;
   final String title;
   final List<Widget> children;
+  final double? initialChildSize;
+  final double? minChildSize;
+  final double? maxChildSize;
 
   const ListBottomSheet({
     super.key,
     required this.icon,
     required this.title,
-    required this.children
+    required this.children,
+    this.initialChildSize,
+    this.maxChildSize,
+    this.minChildSize,
   });
 
   @override
@@ -17,9 +23,9 @@ class ListBottomSheet extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.of(context).pop(),
       child: DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        minChildSize: 0.3,
-        maxChildSize: 1,
+        initialChildSize: initialChildSize ?? 0.6,
+        minChildSize: minChildSize ?? 0.3,
+        maxChildSize: maxChildSize ?? 1,
         builder: (context, controller) {
           return Container(
             decoration: BoxDecoration(

@@ -30,7 +30,7 @@ class LogsProvider with ChangeNotifier {
   AppliedFiters _appliedFilters = AppliedFiters(
     selectedResultStatus: 'all', 
     searchText: null,
-    clients: null
+    clients: []
   );
 
   LoadStatus get loadStatus {
@@ -177,18 +177,18 @@ class LogsProvider with ChangeNotifier {
       if (loadingMore != null && loadingMore == true && logsData != null) {
         LogsData newLogsData = result.content;
         newLogsData.data = [...logsData!.data, ...(result.content as LogsData).data];
-        if (appliedFilters.clients != null) {
+        if (appliedFilters.clients.isNotEmpty) {
           newLogsData.data = newLogsData.data.where(
-            (item) => appliedFilters.clients!.contains(item.client)
+            (item) => appliedFilters.clients.contains(item.client)
           ).toList();
         }
         _logsData = newLogsData;
       }
       else {
         LogsData newLogsData = result.content;
-        if (appliedFilters.clients != null) {
+        if (appliedFilters.clients.isNotEmpty) {
           newLogsData.data = newLogsData.data.where(
-            (item) => appliedFilters.clients!.contains(item.client)
+            (item) => appliedFilters.clients.contains(item.client)
           ).toList();
         }
         _logsData = newLogsData;
@@ -217,7 +217,7 @@ class LogsProvider with ChangeNotifier {
     _appliedFilters = AppliedFiters(
       selectedResultStatus: 'all', 
       searchText: null,
-      clients: null
+      clients: []
     );
 
     if (result.successful == true) {
@@ -254,9 +254,9 @@ class LogsProvider with ChangeNotifier {
 
     if (result.successful == true) {
       LogsData newLogsData = result.content as LogsData;
-      if (appliedFilters.clients != null) {
+      if (appliedFilters.clients.isNotEmpty) {
         newLogsData.data = newLogsData.data.where(
-          (item) => appliedFilters.clients!.contains(item.client)
+          (item) => appliedFilters.clients.contains(item.client)
         ).toList();
       }
       _logsData = newLogsData;

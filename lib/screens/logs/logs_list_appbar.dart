@@ -70,8 +70,6 @@ class LogsListAppBar extends StatelessWidget {
       forceElevated: innerBoxIsScrolled,
       surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
       title: Text(AppLocalizations.of(context)!.logs),
-      expandedHeight: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients != null
-        ? 170 : null,
       actions: [
         if (!(Platform.isAndroid || Platform.isIOS)) IconButton(
           onPressed: () => logsProvider.fetchLogs(inOffset: 0), 
@@ -87,7 +85,7 @@ class LogsListAppBar extends StatelessWidget {
           : const SizedBox(),
         const SizedBox(width: 5),
       ],
-      bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients != null
+      bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients.isNotEmpty
         ? PreferredSize(
             preferredSize: const Size(double.maxFinite, 70),
             child: Container(
@@ -172,7 +170,7 @@ class LogsListAppBar extends StatelessWidget {
                       },
                     ),
                   ],
-                  if (logsProvider.appliedFilters.clients != null) ...[
+                  if (logsProvider.appliedFilters.clients.isNotEmpty) ...[
                     const SizedBox(width: 15),
                     Chip(
                       avatar: const Icon(
@@ -181,9 +179,9 @@ class LogsListAppBar extends StatelessWidget {
                       label: Row(
                         children: [
                           Text(
-                            logsProvider.appliedFilters.clients!.length == 1
-                              ? logsProvider.appliedFilters.clients![0]
-                              : "${logsProvider.appliedFilters.clients!.length} ${AppLocalizations.of(context)!.clients}",
+                            logsProvider.appliedFilters.clients.length == 1
+                              ? logsProvider.appliedFilters.clients[0]
+                              : "${logsProvider.appliedFilters.clients.length} ${AppLocalizations.of(context)!.clients}",
                           ),
                         ],
                       ),
@@ -196,7 +194,7 @@ class LogsListAppBar extends StatelessWidget {
                           AppliedFiters(
                             selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
                             searchText: logsProvider.appliedFilters.searchText,
-                            clients: null
+                            clients: []
                           )
                         );
                         logsProvider.setSelectedClients(null);
