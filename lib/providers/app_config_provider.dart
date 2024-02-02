@@ -1,22 +1,23 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sqflite/sqlite_api.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/config/home_top_items_default_order.dart';
 import 'package:adguard_home_manager/models/github_release.dart';
-import 'package:adguard_home_manager/services/db/queries.dart';
-import 'package:adguard_home_manager/functions/conversions.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
 
 class AppConfigProvider with ChangeNotifier {
-  Database? _dbInstance;
+  final SharedPreferences sharedPreferencesInstance;
+
+  AppConfigProvider({
+    required this.sharedPreferencesInstance
+  });
 
   PackageInfo? _appInfo;
   AndroidDeviceInfo? _androidDeviceInfo;
@@ -28,6 +29,7 @@ class AppConfigProvider with ChangeNotifier {
 
   bool _showingSnackbar = false;
 
+  bool _supportsDynamicTheme = true;
   int _selectedTheme = 0;
   bool _useDynamicColor = true;
   int _staticColor = 0;
@@ -38,19 +40,19 @@ class AppConfigProvider with ChangeNotifier {
 
   List<HomeTopItems> _homeTopItemsOrder = homeTopItemsDefaultOrder;
 
-  int _hideServerAddress = 0;
+  bool _hideServerAddress = false;
 
   final List<AppLog> _logs = [];
 
-  int _overrideSslCheck = 0;
+  bool _overrideSslCheck = false;
 
-  int _hideZeroValues = 0;
+  bool _hideZeroValues = false;
 
-  int _showTimeLogs = 0;
+  bool _showTimeLogs = false;
 
-  int _showIpLogs = 0;
+  bool _showIpLogs = false;
 
-  int _combinedChartHome = 0;
+  bool _combinedChartHome = false;
 
   String? _doNotRememberVersion;
 
@@ -88,6 +90,10 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  bool get supportsDynamicTheme {
+    return _supportsDynamicTheme;
+  }
+
   int get selectedThemeNumber {
     return _selectedTheme;
   }
@@ -105,11 +111,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   bool get overrideSslCheck {
-    return _overrideSslCheck == 1 ? true : false;
+    return _overrideSslCheck;
   }
 
   bool get hideZeroValues {
-    return _hideZeroValues == 1 ? true : false;
+    return _hideZeroValues;
   }
 
   int get selectedScreen {
@@ -133,15 +139,15 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   bool get showTimeLogs {
-    return _showTimeLogs == 1 ? true : false;
+    return _showTimeLogs;
   }
 
   bool get showIpLogs {
-    return _showIpLogs == 1 ? true : false;
+    return _showIpLogs;
   }
 
   bool get combinedChartHome {
-    return _combinedChartHome == 1 ? true : false;
+    return _combinedChartHome;
   }
 
   String? get doNotRememberVersion {
@@ -165,11 +171,11 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   bool get hideServerAddress {
-    return _hideServerAddress == 1 ? true : false;
+    return _hideServerAddress;
   }
 
-  void setDbInstance(Database db) {
-    _dbInstance = db;
+  void setSupportsDynamicTheme(bool value) {
+    _supportsDynamicTheme = value;
   }
 
   void setAppInfo(PackageInfo appInfo) {
@@ -227,206 +233,145 @@ class AppConfigProvider with ChangeNotifier {
   }
 
   Future<bool> setOverrideSslCheck(bool status) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'overrideSslCheck',
-      value: status == true ? 1 : 0
-    );
-    if (updated == true) {
-      _overrideSslCheck = status == true ? 1 : 0;
+    try {
+      sharedPreferencesInstance.setBool('overrideSslCheck', status);
+      _overrideSslCheck = status;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setHideZeroValues(bool status) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'hideZeroValues',
-      value: status == true ? 1 : 0
-    );
-    if (updated == true) {
-      _hideZeroValues = status == true ? 1 : 0;
+    try {
+      sharedPreferencesInstance.setBool('hideZeroValues', status);
+      _hideZeroValues = status;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setshowTimeLogs(bool status) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'showTimeLogs',
-      value: status == true ? 1 : 0
-    );
-    if (updated == true) {
-      _showTimeLogs = status == true ? 1 : 0;
+    try {
+      sharedPreferencesInstance.setBool('showTimeLogs', status);
+      _showTimeLogs = status;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setShowIpLogs(bool status) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'showIpLogs',
-      value: status == true ? 1 : 0
-    );
-    if (updated == true) {
-      _showIpLogs = status == true ? 1 : 0;
+    try {
+      sharedPreferencesInstance.setBool('showIpLogs', status);
+      _showIpLogs = status;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setSelectedTheme(int value) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'theme',
-      value: value
-    );
-    if (updated == true) {
+    try {
+      sharedPreferencesInstance.setInt('selectedTheme', value);
       _selectedTheme = value;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setUseDynamicColor(bool value) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'useDynamicColor',
-      value: value == true ? 1 : 0
-    );
-    if (updated == true) {
+    try {
+      sharedPreferencesInstance.setBool('useDynamicColor', value);
       _useDynamicColor = value;
       notifyListeners();
       return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  Future<bool> setUseThemeColorForStatus(bool value) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'useThemeColorForStatus',
-      value: value == true ? 1 : 0
-    );
-    if (updated == true) {
-      _useThemeColorForStatus = value;
-      notifyListeners();
-      return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setCombinedChartHome(bool value) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'combinedChart',
-      value: value == true ? 1 : 0
-    );
-    if (updated == true) {
-      _combinedChartHome = value == true ? 1 : 0;
+    try {
+      sharedPreferencesInstance.setBool('combinedChart', value);
+      _combinedChartHome = value;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setStaticColor(int value) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'staticColor',
-      value: value
-    );
-    if (updated == true) {
+    try {
+      sharedPreferencesInstance.setInt('staticColor', value);
       _staticColor = value;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setHomeTopItemsOrder(List<HomeTopItems> order) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'homeTopItemsOrder',
-      value: jsonEncode(List<String>.from(order.map((e) => e.name)))
-    );
-    if (updated == true) {
+    try {
+      sharedPreferencesInstance.setStringList('homeTopItemsOrder', List<String>.from(order.map((e) => e.name)));
       _homeTopItemsOrder = order;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setHideServerAddress(bool value) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'hideServerAddress',
-      value: value == true ? 1 : 0
-    );
-    if (updated == true) {
-      _hideServerAddress = value == true ? 1 : 0;
+    try {
+      sharedPreferencesInstance.setBool('hideServerAddress', value);
+      _hideServerAddress = value;
       notifyListeners();
       return true;
-    }
-    else {
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> setDoNotRememberVersion(String value) async {
-    final updated = await updateConfigQuery(
-      db: _dbInstance!,
-      column: 'doNotRememberVersion',
-      value: value
-    );
+    final updated = await sharedPreferencesInstance.setString('hideServerAddress', value);
     return updated;
   }
-
-  void saveFromDb(Database dbInstance, Map<String, dynamic> dbData) {
-    _selectedTheme = dbData['theme'] ?? 0;
-    _overrideSslCheck = dbData['overrideSslCheck'] ?? 0;
-    _hideZeroValues = dbData['hideZeroValues'];
-    _useDynamicColor = convertFromIntToBool(dbData['useDynamicColor'])!;
-    _staticColor = dbData['staticColor'] ?? 0;
-    _useThemeColorForStatus = dbData['useThemeColorForStatus'] != null ? convertFromIntToBool(dbData['useThemeColorForStatus'])! : false;
-    _showTimeLogs = dbData['showTimeLogs'] ?? 0;
-    _doNotRememberVersion = dbData['doNotRememberVersion'];
-    _showIpLogs = dbData['showIpLogs'] ?? 0;
-    _combinedChartHome = dbData['combinedChart'] ?? 0;
-    _hideServerAddress = dbData['hideServerAddress'];
-    if (dbData['homeTopItemsOrder'] != null) {
+  
+  void saveFromSharedPreferences() {
+    _selectedTheme = sharedPreferencesInstance.getInt('selectedTheme') ?? 0;
+    _overrideSslCheck = sharedPreferencesInstance.getBool('overrideSslCheck') ?? false;
+    _hideZeroValues = sharedPreferencesInstance.getBool('hideZeroValues') ?? false;
+    _useDynamicColor = sharedPreferencesInstance.getBool('useDynamicColor') ?? true;
+    _staticColor = sharedPreferencesInstance.getInt('staticColor') ?? 0;
+    _showTimeLogs = sharedPreferencesInstance.getBool('showTimeLogs') ?? false;
+    _doNotRememberVersion = sharedPreferencesInstance.getString('doNotRememberVersion');
+    _showIpLogs = sharedPreferencesInstance.getBool('showIpLogs') ?? false;
+    _combinedChartHome = sharedPreferencesInstance.getBool('combinedChart') ?? false;
+    _hideServerAddress = sharedPreferencesInstance.getBool('hideServerAddress') ?? false;
+    if (sharedPreferencesInstance.getStringList('homeTopItemsOrder') != null) {
       try {
         final itemsOrder = List<HomeTopItems>.from(
-          List<String>.from(jsonDecode(dbData['homeTopItemsOrder'])).map((e) {
+          List<String>.from(sharedPreferencesInstance.getStringList('homeTopItemsOrder')!).map((e) {
             switch (e) {
               case 'queriedDomains':
                 return HomeTopItems.queriedDomains;
@@ -458,8 +403,5 @@ class AppConfigProvider with ChangeNotifier {
         _homeTopItemsOrder = homeTopItemsDefaultOrder;
       }
     }
-
-    _dbInstance = dbInstance;
-    notifyListeners();
   }
 }
