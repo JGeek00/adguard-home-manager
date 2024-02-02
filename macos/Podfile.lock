@@ -13,6 +13,9 @@ PODS:
     - FlutterMacOS
     - Sentry/HybridSDK (= 8.18.0)
   - SentryPrivate (8.18.0)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - sqflite (0.0.3):
     - Flutter
     - FlutterMacOS
@@ -42,6 +45,7 @@ DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - sentry_flutter (from `Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos`)
+  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/darwin`)
   - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
@@ -64,6 +68,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   sentry_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos
+  shared_preferences_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   sqflite:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite/darwin
   sqlite3_flutter_libs:
@@ -81,6 +87,7 @@ SPEC CHECKSUMS:
   Sentry: 8984a4ffb2b9bd2894d74fb36e6f5833865bc18e
   sentry_flutter: c87a0556eeb6cbf7f9f924d30e878bdedf22d364
   SentryPrivate: 2f0c9ba4c3fc993f70eab6ca95673509561e0085
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   sqlite3: f307b6291c4db7b5086c38d6237446b98a738581
   sqlite3_flutter_libs: 6b9913d8fbb718e5ebf23658aa6934a0fb509c0f
