@@ -23,6 +23,8 @@ class DnsInfo {
   String blockingIpv6;
   List<String> defaultLocalPtrUpstreams;
   int? blockedResponseTtl;
+  int? ratelimitSubnetLenIpv4;
+  int? ratelimitSubnetLenIpv6;
 
   DnsInfo({
     required this.upstreamDns,
@@ -49,6 +51,8 @@ class DnsInfo {
     required this.blockingIpv6,
     required this.defaultLocalPtrUpstreams,
     required this.blockedResponseTtl,
+    required this.ratelimitSubnetLenIpv4,
+    required this.ratelimitSubnetLenIpv6,
   });
 
   factory DnsInfo.fromJson(Map<String, dynamic> json) => DnsInfo(
@@ -75,7 +79,9 @@ class DnsInfo {
     blockingIpv4: json["blocking_ipv4"],
     blockingIpv6: json["blocking_ipv6"],
     defaultLocalPtrUpstreams: json["default_local_ptr_upstreams"] != null ? List<String>.from(json["default_local_ptr_upstreams"].map((x) => x)) : [],
-    blockedResponseTtl: json["blocked_response_ttl"]
+    blockedResponseTtl: json["blocked_response_ttl"],
+    ratelimitSubnetLenIpv4: json["ratelimit_subnet_len_ipv4"],
+    ratelimitSubnetLenIpv6: json["ratelimit_subnet_len_ipv6"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -102,6 +108,8 @@ class DnsInfo {
     "blocking_ipv4": blockingIpv4,
     "blocking_ipv6": blockingIpv6,
     "default_local_ptr_upstreams": List<dynamic>.from(defaultLocalPtrUpstreams.map((x) => x)),
-    "blocked_response_ttl": blockedResponseTtl
+    "blocked_response_ttl": blockedResponseTtl,
+    "ratelimit_subnet_len_ipv4": ratelimitSubnetLenIpv4,
+    "ratelimit_subnet_len_ipv6": ratelimitSubnetLenIpv6,
   };
 }

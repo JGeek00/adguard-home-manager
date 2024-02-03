@@ -758,5 +758,7 @@
     "invalidTime": "Invalid time",
     "removeDomain": "Remove domain",
     "addDomain": "Add domain",
-    "notLess1Hour": "Time cannot be less than 1 hour"
+    "notLess1Hour": "Time cannot be less than 1 hour",
+    "subnetPrefixLengthIpv4": "Subnet prefix length for IPv4",
+    "subnetPrefixLengthIpv6": "Subnet prefix length for IPv6"
 }

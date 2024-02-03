@@ -758,5 +758,7 @@
     "invalidTime": "Tiempo no válido",
     "removeDomain": "Eliminar dominio",
     "addDomain": "Añadir dominio",
-    "notLess1Hour": "El tiempo no puede ser inferior a 1 hora"
+    "notLess1Hour": "El tiempo no puede ser inferior a 1 hora",
+    "subnetPrefixLengthIpv4": "Longitud del prefijo de subred para IPv4",
+    "subnetPrefixLengthIpv6": "Longitud del prefijo de subred para IPv6"
 }
