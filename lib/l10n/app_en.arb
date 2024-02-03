@@ -759,6 +759,10 @@
     "removeDomain": "Remove domain",
     "addDomain": "Add domain",
     "notLess1Hour": "Time cannot be less than 1 hour",
+    "rateLimit": "Rate limit",
     "subnetPrefixLengthIpv4": "Subnet prefix length for IPv4",
-    "subnetPrefixLengthIpv6": "Subnet prefix length for IPv6"
+    "subnetPrefixLengthIpv6": "Subnet prefix length for IPv6",
+    "rateLimitAllowlist": "Rate limit allowlist",
+    "rateLimitAllowlistDescription": "IP addresses excluded from rate limiting",
+    "dnsOptions": "DNS options"
 }

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/dns/rate_limit_allowlist_modal.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/custom_radio_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
@@ -28,6 +30,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
   String? _ipv4PrefixSubnetError;
   final _ipv6PrefixSubnetController = TextEditingController();
   String? _ipv6PrefixSubnetError;
+  List<String> _rateLimitAllowlist = [];
   String? _limitRequestsError;
   final _expandableCustomEdns = ExpandableController();
   final _expandableEdnsIp = ExpandableController();
@@ -147,6 +150,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
     _ipv6PrefixSubnetController.text = dnsProvider.dnsInfo!.ratelimitSubnetLenIpv6 != null
       ? dnsProvider.dnsInfo!.ratelimitSubnetLenIpv6.toString()
       : "";
+    _rateLimitAllowlist = dnsProvider.dnsInfo!.ratelimitWhitelist ?? [];
     super.initState();
   }
 
@@ -173,6 +177,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
         "blocked_response_ttl": int.tryParse(_ttlController.text),
         "ratelimit_subnet_len_ipv4": int.tryParse(_ipv4PrefixSubnetController.text),
         "ratelimit_subnet_len_ipv6": int.tryParse(_ipv6PrefixSubnetController.text),
+        "ratelimit_whitelist": _rateLimitAllowlist
       });
 
       processModal.close();
@@ -230,10 +235,14 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 0),
           children: [
+            SectionLabel(
+              label: AppLocalizations.of(context)!.rateLimit,
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24, top: 8),
+            ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24, top: 4),
               child: TextFormField(
                 controller: _limitRequestsController,
                 onChanged: (v) => setState(() => _limitRequestsError = validateNumber(v)),
@@ -251,7 +260,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24),
               child: TextFormField(
                 controller: _ipv4PrefixSubnetController,
                 onChanged: (v) => setState(() => _ipv4PrefixSubnetError = validateNumber(v)),
@@ -287,6 +296,33 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
               ),
             ),
             const SizedBox(height: 16),
+            CustomListTile(
+              title: AppLocalizations.of(context)!.rateLimitAllowlist,
+              subtitle: AppLocalizations.of(context)!.rateLimitAllowlistDescription,
+              onTap: () => showDialog(
+                context: context, 
+                builder: (context) => RateLimitAllowlistModal(
+                  values: _rateLimitAllowlist,
+                  onConfirm: (ips) => setState(() => _rateLimitAllowlist = ips)
+                ),
+              ),
+              trailing: _rateLimitAllowlist.isNotEmpty ? Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(40)
+                ),
+                child: Text(
+                  _rateLimitAllowlist.length.toString(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer
+                  ),
+                ),
+              ) : null,
+            ),
+            SectionLabel(label: AppLocalizations.of(context)!.dnsOptions),
             CustomSwitchListTile(
               value: _enableEdns, 
               onChanged: (value) => setState(() {

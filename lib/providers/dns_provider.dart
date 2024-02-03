@@ -164,6 +164,7 @@ class DnsProvider with ChangeNotifier {
       data.blockedResponseTtl = value['blocked_response_ttl'];
       data.ratelimitSubnetLenIpv4 = value['ratelimit_subnet_len_ipv4'];
       data.ratelimitSubnetLenIpv6 = value['ratelimit_subnet_len_ipv6'];
+      data.ratelimitWhitelist = value['ratelimit_whitelist'];
       setDnsInfoData(data);
       return result;
     }
