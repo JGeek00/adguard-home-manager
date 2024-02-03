@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 import 'package:adguard_home_manager/widgets/list_bottom_sheet.dart';
 
+import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
@@ -228,39 +229,25 @@ class _ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => onChanged(!checkboxActive),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 24,
-            top: 4,
-            right: 12,
-            bottom: 4
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).colorScheme.onSurface
-                  ),
-                ),
-              ),
-              Checkbox(
-                value: checkboxActive, 
-                onChanged: (v) => onChanged(!checkboxActive),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)
-                ),
-              )
-            ],
-          ),
-        ),
+    final statusProvider = Provider.of<StatusProvider>(context);
+
+    String? name;
+    try {
+      name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(label)).name;
+    } catch (e) {
+      // ---- //
+    }
+
+    return CustomCheckboxListTile(
+      value: checkboxActive, 
+      onChanged: (v) => onChanged(v),
+      title: label,
+      subtitle: name,
+      padding: const EdgeInsets.only(
+        left: 24,
+        top: 8,
+        right: 12,
+        bottom: 8
       ),
     );
   }

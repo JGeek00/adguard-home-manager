@@ -26,9 +26,6 @@ Future<Map<String, dynamic>> loadDb() async {
         """
       );
     },
-    onUpgrade: (Database db, int oldVersion, int newVersion) async {
-      
-    },
     onOpen: (Database db) async {
       await db.transaction((txn) async{
         servers = await txn.rawQuery(
