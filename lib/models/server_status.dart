@@ -66,6 +66,6 @@ class ServerStatus {
     safeSearchPixabay: json['safeSearch']['pixabay'],
     safeSearchYandex: json['safeSearch']['yandex'],
     safeSearchYoutube: json['safeSearch']['youtube'],
-    dhcpAvailable: json['status']['dhcp_available']
+    dhcpAvailable: json['status']['dhcp_available'] ?? false
   );
 }
