@@ -764,5 +764,10 @@
     "subnetPrefixLengthIpv6": "Subnet prefix length for IPv6",
     "rateLimitAllowlist": "Rate limit allowlist",
     "rateLimitAllowlistDescription": "IP addresses excluded from rate limiting",
-    "dnsOptions": "DNS options"
+    "dnsOptions": "DNS options",
+    "editor": "Editor",
+    "editCustomRules": "Edit custom rules",
+    "savingCustomRules": "Saving custom rules...",
+    "customRulesUpdatedSuccessfully": "Custom rules updated successfully",
+    "customRulesNotUpdated": "Custom rules could not be updated"
 }

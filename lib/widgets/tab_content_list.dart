@@ -17,6 +17,7 @@ class CustomTabContentList extends StatelessWidget {
   final bool? fabVisible;
   final bool? noSliver;
   final EdgeInsets? listPadding;
+  final double? heightFabHidden;
 
   const CustomTabContentList({
     super.key,
@@ -31,7 +32,8 @@ class CustomTabContentList extends StatelessWidget {
     this.fab,
     this.fabVisible, 
     this.noSliver,
-    this.listPadding
+    this.listPadding,
+    this.heightFabHidden,
   });
 
   @override
@@ -150,7 +152,7 @@ class CustomTabContentList extends StatelessWidget {
                 bottom: fabVisible != null && fabVisible == true ?
                   appConfigProvider.showingSnackbar
                     ? 90 : 20
-                  : -90,
+                  : (heightFabHidden ?? -90),
                 right: 20,
                 child: SafeArea(child: fab!)
               ),

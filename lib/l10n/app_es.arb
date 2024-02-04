@@ -764,5 +764,10 @@
     "subnetPrefixLengthIpv6": "Longitud del prefijo de subred para IPv6",
     "rateLimitAllowlist": "Lista de permitidos de limitación de velocidad",
     "rateLimitAllowlistDescription": "Direcciones IP excluidas de la limitación de velocidad",
-    "dnsOptions": "Opciones de DNS"
+    "dnsOptions": "Opciones de DNS",
+    "editor": "Editor",
+    "editCustomRules": "Editar reglas personalizadas",
+    "savingCustomRules": "Guardando reglas personalizadas...",
+    "customRulesUpdatedSuccessfully": "Reglas personalizadas actualizadas correctamente",
+    "customRulesNotUpdated": "Las reglas personalizadas no pudieron ser actualizadas"
 }

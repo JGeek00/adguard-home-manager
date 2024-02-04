@@ -289,6 +289,23 @@ class FilteringProvider with ChangeNotifier {
     }
   }
   
+  Future<bool> setCustomRules(List<String> rules) async {
+    final newRules = rules.where((r) => r != " " && r != "").toList();
+    final result = await _serversProvider!.apiClient2!.setCustomRules(rules: newRules);
+    
+    if (result.successful == true) {
+      Filtering filteringData = filtering!;
+      filteringData.userRules = newRules;
+      _filtering = filteringData;
+      notifyListeners();
+      return true;
+    }
+    else {
+      notifyListeners();
+      return false;
+    }
+  }
+  
   Future<Map<String, dynamic>> addList({required String name, required String url, required String type}) async {
     final result1 = await _serversProvider!.apiClient2!.addFilteringList(
       data: {
