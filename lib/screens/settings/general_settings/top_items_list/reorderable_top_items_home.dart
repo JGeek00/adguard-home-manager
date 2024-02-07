@@ -1,14 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable_list;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class _ItemData {
   final HomeTopItems title;
@@ -90,55 +88,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-
-    final width = MediaQuery.of(context).size.width;
-
-    Widget tile(HomeTopItems title) {
-      switch (title) {
-        case HomeTopItems.queriedDomains:
-          return CustomListTile(
-            title: AppLocalizations.of(context)!.topQueriedDomains,
-            icon: Icons.install_desktop_outlined,
-            padding: const EdgeInsets.all(16)
-          );
-
-        case HomeTopItems.blockedDomains:
-          return CustomListTile(
-            title: AppLocalizations.of(context)!.topBlockedDomains,
-            icon: Icons.block_rounded,
-             padding: const EdgeInsets.all(16)
-          );
-
-        case HomeTopItems.recurrentClients:
-          return CustomListTile(
-            title: AppLocalizations.of(context)!.topClients,
-            icon: Icons.smartphone_rounded,
-             padding: const EdgeInsets.all(16)
-          );
-
-        case HomeTopItems.topUpstreams:
-          return CustomListTile(
-            title: AppLocalizations.of(context)!.topUpstreams,
-            icon: Icons.upload_file_rounded,
-             padding: const EdgeInsets.all(16)
-          );
-
-        case HomeTopItems.avgUpstreamResponseTime:
-          return CustomListTile(
-            title: AppLocalizations.of(context)!.averageUpstreamResponseTime,
-            icon: Icons.timer_rounded,
-             padding: const EdgeInsets.all(16)
-          );
-
-        default:
-          return const SizedBox();
-      }
-    }
-
-
-    
+  Widget build(BuildContext context) {    
     final draggingMode = Platform.isAndroid
       ? DraggingMode.android
       : DraggingMode.iOS;
@@ -184,22 +134,22 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
                       childBuilder: (context, state) {
                         if (draggingMode == DraggingMode.android) {
                           return reorderable_list.DelayedReorderableListener(
-                            child: _Tile(
+                            child: _ReorderableTile(
                               draggingMode: draggingMode,
                               isFirst: index == 0,
                               isLast: index == renderItems.length - 1,
                               state: state,
-                              tileWidget: tile(renderItems[index].title), 
+                              tileWidget: _TopItemTile(tile: renderItems[index].title), 
                             ),
                           );
                         }
                         else {
-                          return _Tile(
+                          return _ReorderableTile(
                             draggingMode: draggingMode,
                             isFirst: index == 0,
                             isLast: index == renderItems.length - 1,
                             state: state,
-                            tileWidget: tile(renderItems[index].title), 
+                            tileWidget: _TopItemTile(tile: renderItems[index].title), 
                           );
                         }
                       },
@@ -216,14 +166,65 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
   }
 }
 
-class _Tile extends StatelessWidget {
+class _TopItemTile extends StatelessWidget {
+  final HomeTopItems tile;
+
+  const _TopItemTile({
+    required this.tile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    switch (tile) {
+      case HomeTopItems.queriedDomains:
+        return CustomListTile(
+          title: AppLocalizations.of(context)!.topQueriedDomains,
+          icon: Icons.install_desktop_outlined,
+          padding: const EdgeInsets.all(16)
+        );
+
+      case HomeTopItems.blockedDomains:
+        return CustomListTile(
+          title: AppLocalizations.of(context)!.topBlockedDomains,
+          icon: Icons.block_rounded,
+           padding: const EdgeInsets.all(16)
+        );
+
+      case HomeTopItems.recurrentClients:
+        return CustomListTile(
+          title: AppLocalizations.of(context)!.topClients,
+          icon: Icons.smartphone_rounded,
+           padding: const EdgeInsets.all(16)
+        );
+
+      case HomeTopItems.topUpstreams:
+        return CustomListTile(
+          title: AppLocalizations.of(context)!.topUpstreams,
+          icon: Icons.upload_file_rounded,
+           padding: const EdgeInsets.all(16)
+        );
+
+      case HomeTopItems.avgUpstreamResponseTime:
+        return CustomListTile(
+          title: AppLocalizations.of(context)!.averageUpstreamResponseTime,
+          icon: Icons.timer_rounded,
+           padding: const EdgeInsets.all(16)
+        );
+
+      default:
+        return const SizedBox();
+    }
+  }
+}
+
+class _ReorderableTile extends StatelessWidget {
   final Widget tileWidget;
   final bool isFirst;
   final bool isLast;
   final reorderable_list.ReorderableItemState state;
   final DraggingMode draggingMode;
 
-  const _Tile({
+  const _ReorderableTile({
     required this.tileWidget,
     required this.isFirst,
     required this.isLast,
