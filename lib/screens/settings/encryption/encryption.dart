@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/status.dart';
@@ -34,6 +35,8 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
   LoadStatus loadStatus = LoadStatus.loading;
 
   bool enabled = false;
+
+  bool? _plainDns;
 
   final TextEditingController domainNameController = TextEditingController();
   String? domainError;
@@ -112,6 +115,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           privateKeyPathController.text = data.privateKeyPath;
         }
         usePreviouslySavedKey = data.privateKeySaved;
+        _plainDns = data.servePlainDns;
         loadStatus = LoadStatus.loaded;
       });
     }
@@ -224,6 +228,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           "private_key_saved": usePreviouslySavedKey,
           "certificate_path": certificatePathController.text,
           "private_key_path": privateKeyPathController.text,
+          "serve_plain_dns": _plainDns
         }
       );
 
@@ -271,6 +276,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           "private_key_saved": false,
           "certificate_path": "",
           "private_key_path": "",
+          "serve_plain_dns": true
         }
       );
       if (!mounted) return;
@@ -372,6 +378,15 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                         onEditValidate();
                       }
                     ),
+                    if (_plainDns != null) ...[
+                      const SizedBox(height: 8),
+                      CustomCheckboxListTile(
+                        value: _plainDns!, 
+                        onChanged: (v) => setState(() => _plainDns = v), 
+                        title: AppLocalizations.of(context)!.enablePlainDns,
+                        subtitle: AppLocalizations.of(context)!.enablePlainDnsDescription,
+                      ),
+                    ],
                     SectionLabel(
                       label: AppLocalizations.of(context)!.serverConfiguration,
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
