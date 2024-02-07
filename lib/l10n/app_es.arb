@@ -769,5 +769,7 @@
     "editCustomRules": "Editar reglas personalizadas",
     "savingCustomRules": "Guardando reglas personalizadas...",
     "customRulesUpdatedSuccessfully": "Reglas personalizadas actualizadas correctamente",
-    "customRulesNotUpdated": "Las reglas personalizadas no pudieron ser actualizadas"
+    "customRulesNotUpdated": "Las reglas personalizadas no pudieron ser actualizadas",
+    "reorder": "Reordenar",
+    "showHide": "Mostrar/ocultar"
 }

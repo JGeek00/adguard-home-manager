@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/settings/general_settings/reorderable_top_items_home.dart';
+import 'package:adguard_home_manager/screens/settings/general_settings/top_items_list/top_items_list_settings.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
@@ -199,10 +199,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               title: AppLocalizations.of(context)!.topItemsOrder,
               subtitle: AppLocalizations.of(context)!.topItemsOrderDescription,
               onTap: () => widget.splitView == true 
-                ? SplitView.of(context).push(const ReorderableTopItemsHome())
+                ? SplitView.of(context).push(const TopItemsListSettings())
                 : Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const ReorderableTopItemsHome()
+                      builder: (context) => const TopItemsListSettings()
                     )
                   ) 
             ),

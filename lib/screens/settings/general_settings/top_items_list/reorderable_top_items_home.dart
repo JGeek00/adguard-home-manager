@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable_list;
@@ -8,8 +7,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
-import 'package:adguard_home_manager/functions/desktop_mode.dart';
-import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
@@ -29,7 +26,14 @@ enum DraggingMode {
 }
 
 class ReorderableTopItemsHome extends StatefulWidget {
-  const ReorderableTopItemsHome({super.key});
+  final List<HomeTopItems> persistHomeTopItems;
+  final void Function(List<HomeTopItems> value) setPersistHomeTopItems;
+
+  const ReorderableTopItemsHome({
+    super.key,
+    required this.persistHomeTopItems,
+    required this.setPersistHomeTopItems,
+  });
 
   @override
   State<ReorderableTopItemsHome> createState() => _ReorderableTopItemsHomeState();
@@ -37,7 +41,6 @@ class ReorderableTopItemsHome extends StatefulWidget {
 
 class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
   List<HomeTopItems> homeTopItemsList = [];
-  List<HomeTopItems> persistHomeTopItemsList = [];
   List<_ItemData> renderItems = [];
 
   int _indexOfKey(Key key) {
@@ -63,7 +66,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
 
   void _reorderDone(Key item) {
     renderItems[_indexOfKey(item)];
-    setState(() => persistHomeTopItemsList = homeTopItemsList);
+    widget.setPersistHomeTopItems(homeTopItemsList);
   }
 
   List<HomeTopItems> reorderEnumItems(int oldIndex, int newIndex) {
@@ -75,10 +78,8 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
 
   @override
   void initState() {
-    final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-    homeTopItemsList = appConfigProvider.homeTopItemsOrder;
-    persistHomeTopItemsList = appConfigProvider.homeTopItemsOrder;
-    renderItems = appConfigProvider.homeTopItemsOrder.asMap().entries.map(
+    homeTopItemsList = widget.persistHomeTopItems;
+    renderItems = widget.persistHomeTopItems.asMap().entries.map(
       (e) => _ItemData(
         key: ValueKey(e.key),
         title: e.value, 
@@ -136,99 +137,80 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
       }
     }
 
-    void saveSettings() async {
-      final result = await appConfigProvider.setHomeTopItemsOrder(homeTopItemsList);
-      if (!mounted) return;
-      if (result == true) {
-        showSnacbkar(
-          appConfigProvider: appConfigProvider, 
-          label: AppLocalizations.of(context)!.settingsSaved, 
-          color: Colors.green
-        );
-      }
-      else {
-        showSnacbkar(
-          appConfigProvider: appConfigProvider, 
-          label: AppLocalizations.of(context)!.settingsNotSaved, 
-          color: Colors.red
-        );
-      }
-    }
+
     
     final draggingMode = Platform.isAndroid
       ? DraggingMode.android
       : DraggingMode.iOS;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.topItemsOrder),
-        surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
-        actions: [
-          IconButton(
-            onPressed: !listEquals(appConfigProvider.homeTopItemsOrder, persistHomeTopItemsList)
-              ? () => saveSettings()
-              : null, 
-            icon: const Icon(Icons.save_rounded),
-            tooltip: AppLocalizations.of(context)!.save,
-          ),
-          const SizedBox(width: 8)
-        ],
-      ),
-      body: Column(
-        children: [
-          Card(
-            margin: const EdgeInsets.all(16),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_rounded,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 16),
-                  Flexible(
-                    child: Text(AppLocalizations.of(context)!.topItemsReorderInfo)
-                  )
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: reorderable_list.ReorderableList(
-              onReorder: _reorderCallback,
-              onReorderDone: _reorderDone,
-              child: ListView.builder(
-                itemBuilder: (context, index) => reorderable_list.ReorderableItem(
-                  key: renderItems[index].key,
-                  childBuilder: (context, state) {
-                    if (draggingMode == DraggingMode.android) {
-                      return reorderable_list.DelayedReorderableListener(
-                        child: _Tile(
-                          draggingMode: draggingMode,
-                          isFirst: index == 0,
-                          isLast: index == renderItems.length - 1,
-                          state: state,
-                          tileWidget: tile(renderItems[index].title), 
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Builder(
+        builder: (context) => CustomScrollView(
+          slivers: [
+            SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            ),      
+            SliverList.list(
+              children: [
+                Card(
+                  margin: const EdgeInsets.all(16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.info_rounded,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
-                      );
-                    }
-                    else {
-                      return _Tile(
-                        draggingMode: draggingMode,
-                        isFirst: index == 0,
-                        isLast: index == renderItems.length - 1,
-                        state: state,
-                        tileWidget: tile(renderItems[index].title), 
-                      );
-                    }
-                  },
+                        const SizedBox(width: 16),
+                        Flexible(
+                          child: Text(AppLocalizations.of(context)!.topItemsReorderInfo)
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-                itemCount: renderItems.length,
-              )
-            ),
-          ),
-        ],
+                reorderable_list.ReorderableList(
+                  onReorder: _reorderCallback,
+                  onReorderDone: _reorderDone,
+                  child: ListView.builder(
+                    primary: false,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(top: 0),
+                    itemBuilder: (context, index) => reorderable_list.ReorderableItem(
+                      key: renderItems[index].key,
+                      childBuilder: (context, state) {
+                        if (draggingMode == DraggingMode.android) {
+                          return reorderable_list.DelayedReorderableListener(
+                            child: _Tile(
+                              draggingMode: draggingMode,
+                              isFirst: index == 0,
+                              isLast: index == renderItems.length - 1,
+                              state: state,
+                              tileWidget: tile(renderItems[index].title), 
+                            ),
+                          );
+                        }
+                        else {
+                          return _Tile(
+                            draggingMode: draggingMode,
+                            isFirst: index == 0,
+                            isLast: index == renderItems.length - 1,
+                            state: state,
+                            tileWidget: tile(renderItems[index].title), 
+                          );
+                        }
+                      },
+                    ),
+                    itemCount: renderItems.length,
+                  )
+                ),
+              ]
+            )
+          ],
+        ),
       ),
     );
   }

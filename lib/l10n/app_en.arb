@@ -769,5 +769,7 @@
     "editCustomRules": "Edit custom rules",
     "savingCustomRules": "Saving custom rules...",
     "customRulesUpdatedSuccessfully": "Custom rules updated successfully",
-    "customRulesNotUpdated": "Custom rules could not be updated"
+    "customRulesNotUpdated": "Custom rules could not be updated",
+    "reorder": "Reorder",
+    "showHide": "Show/hide"
 }

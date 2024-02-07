@@ -7,16 +7,18 @@ class CustomSwitchListTile extends StatelessWidget {
   final String? subtitle;
   final bool? disabled;
   final EdgeInsets? padding;
+  final IconData? leadingIcon;
 
   const CustomSwitchListTile({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChanged,
     required this.title,
     this.disabled,
     this.subtitle,
-    this.padding
-  }) : super(key: key);
+    this.padding,
+    this.leadingIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,13 @@ class CustomSwitchListTile extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              if (leadingIcon != null) ...[
+                Icon(
+                  leadingIcon,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 16),
+              ],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
