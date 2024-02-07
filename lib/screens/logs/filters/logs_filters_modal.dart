@@ -15,7 +15,7 @@ import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
-class LogsFiltersModal extends StatefulWidget {
+class LogsFiltersModal extends StatelessWidget {
   final bool dialog;
 
   const LogsFiltersModal({
@@ -24,21 +24,8 @@ class LogsFiltersModal extends StatefulWidget {
   });
 
   @override
-  State<LogsFiltersModal> createState() => _LogsFiltersModalState();
-}
-
-class _LogsFiltersModalState extends State<LogsFiltersModal> {
-  TextEditingController searchController = TextEditingController();
-
-  @override
-  void initState() {
-    searchController.text = Provider.of<LogsProvider>(context, listen: false).searchText ?? '';
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (widget.dialog == true) {
+    if (dialog == true) {
       return Padding(
         padding: MediaQuery.of(context).viewInsets,
         child: Dialog(
@@ -46,10 +33,7 @@ class _LogsFiltersModalState extends State<LogsFiltersModal> {
             constraints: const BoxConstraints(
               maxWidth: 500
             ),
-            child: _FiltersList(
-              searchController: searchController, 
-              onClearSearch: () => setState(() => searchController.text = "")
-            )
+            child: const _FiltersList()
           )
         ),
       );
@@ -65,11 +49,8 @@ class _LogsFiltersModalState extends State<LogsFiltersModal> {
               topRight: Radius.circular(28)
             )
           ),
-          child: SafeArea(
-            child: _FiltersList(
-              searchController: searchController, 
-              onClearSearch: () => setState(() => searchController.text = "")
-            ),
+          child: const SafeArea(
+            child: _FiltersList(),
           )
         ),
       );
@@ -78,13 +59,7 @@ class _LogsFiltersModalState extends State<LogsFiltersModal> {
 }
 
 class _FiltersList extends StatelessWidget {
-  final TextEditingController searchController;
-  final void Function() onClearSearch;
-
-  const _FiltersList({
-    required this.searchController,
-    required this.onClearSearch,
-  });
+  const _FiltersList();
 
   @override
   Widget build(BuildContext context) {
@@ -194,35 +169,6 @@ class _FiltersList extends StatelessWidget {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: searchController,
-                          onChanged: logsProvider.setSearchText,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.search_rounded),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10)
-                              )
-                            ),
-                            labelText: AppLocalizations.of(context)!.search,
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                onClearSearch();
-                                logsProvider.setSearchText(null);
-                              },
-                              icon: const Icon(Icons.clear)
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
                 Container(height: 16),
                 CustomListTile(
                   title: AppLocalizations.of(context)!.client,
@@ -300,7 +246,6 @@ class _FiltersList extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: () {
-                  searchController.text = "";
                   logsProvider.requestResetFilters();
                 }, 
                 child: Text(AppLocalizations.of(context)!.resetFilters)

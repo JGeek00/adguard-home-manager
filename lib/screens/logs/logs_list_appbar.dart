@@ -76,14 +76,31 @@ class LogsListAppBar extends StatelessWidget {
           icon: const Icon(Icons.refresh_rounded),
           tooltip: AppLocalizations.of(context)!.refresh,
         ),
-        logsProvider.loadStatus == LoadStatus.loaded
-          ? IconButton(
-              onPressed: openFilersModal, 
-              icon: const Icon(Icons.filter_list_rounded),
-              tooltip: AppLocalizations.of(context)!.filters,
-            )
-          : const SizedBox(),
-        const SizedBox(width: 5),
+        if (logsProvider.loadStatus == LoadStatus.loaded) IconButton(
+          onPressed: () => showDialog(
+            context: context, 
+            builder: (context) => _Search(
+              onSearch: (v) {
+                logsProvider.setAppliedFilters(
+                  AppliedFiters(
+                    selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
+                    searchText: v != "" ? v : null, 
+                    clients: logsProvider.appliedFilters.clients
+                  )
+                );
+                logsProvider.filterLogs();
+              },
+            ),
+          ), 
+          icon: const Icon(Icons.search_rounded),
+          tooltip: AppLocalizations.of(context)!.search,
+        ),
+        if (logsProvider.loadStatus == LoadStatus.loaded) IconButton(
+          onPressed: openFilersModal, 
+          icon: const Icon(Icons.filter_list_rounded),
+          tooltip: AppLocalizations.of(context)!.filters,
+        ),
+        const SizedBox(width: 8),
       ],
       bottom: logsProvider.appliedFilters.searchText != null || logsProvider.appliedFilters.selectedResultStatus != 'all' || logsProvider.appliedFilters.clients.isNotEmpty
         ? PreferredSize(
@@ -211,6 +228,97 @@ class LogsListAppBar extends StatelessWidget {
             )
           )
       : null,
+    );
+  }
+}
+
+class _Search extends StatefulWidget {
+  final void Function(String) onSearch;
+
+  const _Search({
+    required this.onSearch
+  });
+
+  @override
+  State<_Search> createState() => _SearchState();
+}
+
+class _SearchState extends State<_Search> {
+  final _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    final logsProvider = Provider.of<LogsProvider>(context, listen: false);
+    _searchController.text = logsProvider.appliedFilters.searchText ?? "";
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final logsProvider = Provider.of<LogsProvider>(context);
+
+    return GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () => {},
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 500),
+                child: Container(
+                  margin: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(16)
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: TextFormField(
+                      controller: _searchController,
+                      onChanged: (v) {
+                        if (v == "") {
+                          logsProvider.setSearchText(null);
+                          return;
+                        }
+                        logsProvider.setSearchText(v);
+                      },
+                      onFieldSubmitted: (v) {
+                        widget.onSearch(v);
+                        Navigator.pop(context);
+                      },
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.search,
+                        prefixIcon: const Icon(Icons.search_rounded),
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.grey.withOpacity(0.2),
+                        suffixIcon: _searchController.text != ""
+                          ? IconButton(
+                              onPressed: () {
+                                _searchController.text = "";
+                                logsProvider.setSearchText(null);
+                              }, 
+                              icon: const Icon(
+                                Icons.close_rounded,
+                                size: 20,
+                              ),
+                              tooltip: AppLocalizations.of(context)!.clearSearch,
+                            )
+                          : null
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
