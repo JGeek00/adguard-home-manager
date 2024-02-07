@@ -73,7 +73,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
 
   bool localValidationValid = false;
   String? validDataError;
-  int certKeyValidApi = 0;
+  bool _dataValidApi = true;
 
   EncryptionValidation? certKeyValid;
   String? encryptionResultMessage;
@@ -125,8 +125,6 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
   }
 
   Future checkValidDataApi({Map<String, dynamic>? data}) async {
-    setState(() => certKeyValidApi = 0);
-
     final result = await Provider.of<ServersProvider>(context, listen: false).apiClient2!.checkEncryptionSettings(
       data: data ?? {
         "enabled": enabled,
@@ -150,11 +148,11 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
         final object = data.encryptionValidation!;
         setState(() {
           if (object.warningValidation != null && object.warningValidation != '') {
-            certKeyValidApi = 2;
+            _dataValidApi = false;
             validDataError = object.warningValidation;
           }
           else {
-            certKeyValidApi = 1;
+            _dataValidApi = true;
             validDataError = null;
           }
           certKeyValid = object;
@@ -163,7 +161,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       else {
         setState(() {
           encryptionResultMessage = data.message;
-          certKeyValidApi = 2;
+          _dataValidApi = false;
         });
       }
     }
@@ -351,7 +349,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
               case LoadStatus.loaded:
                 return ListView(
                   children: [
-                    if (certKeyValidApi == 2 && (validDataError != null || encryptionResultMessage != null)) Card(
+                    if (_dataValidApi == false && (validDataError != null || encryptionResultMessage != null)) Card(
                       margin: const EdgeInsets.all(16),
                       color: Colors.red.withOpacity(0.2),
                       elevation: 0,
