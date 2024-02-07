@@ -370,7 +370,7 @@ class AppConfigProvider with ChangeNotifier {
     _hideServerAddress = sharedPreferencesInstance.getBool('hideServerAddress') ?? false;
     if (sharedPreferencesInstance.getStringList('homeTopItemsOrder') != null) {
       try {
-        final itemsOrder = List<HomeTopItems>.from(
+        _homeTopItemsOrder = List<HomeTopItems>.from(
           List<String>.from(sharedPreferencesInstance.getStringList('homeTopItemsOrder')!).map((e) {
             switch (e) {
               case 'queriedDomains':
@@ -393,11 +393,6 @@ class AppConfigProvider with ChangeNotifier {
             }
           }).where((e) => e != null).toList()
         );
-        final missingItems = homeTopItemsDefaultOrder.where((e) => !itemsOrder.contains(e));
-        _homeTopItemsOrder = [
-          ...itemsOrder,
-          ...missingItems
-        ];
       } catch (e) {
         Sentry.captureException(e);
         _homeTopItemsOrder = homeTopItemsDefaultOrder;

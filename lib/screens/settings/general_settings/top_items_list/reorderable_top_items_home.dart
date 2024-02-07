@@ -122,7 +122,26 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
                     ),
                   ),
                 ),
-                reorderable_list.ReorderableList(
+                if (homeTopItemsList.isEmpty) Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.noElementsReorderMessage,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (homeTopItemsList.isNotEmpty) reorderable_list.ReorderableList(
                   onReorder: _reorderCallback,
                   onReorderDone: _reorderDone,
                   child: ListView.builder(

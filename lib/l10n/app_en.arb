@@ -771,5 +771,6 @@
     "customRulesUpdatedSuccessfully": "Custom rules updated successfully",
     "customRulesNotUpdated": "Custom rules could not be updated",
     "reorder": "Reorder",
-    "showHide": "Show/hide"
+    "showHide": "Show/hide",
+    "noElementsReorderMessage": "Enable some elements on the show/hide tab to reorder them here."
 }

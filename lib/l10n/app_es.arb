@@ -771,5 +771,6 @@
     "customRulesUpdatedSuccessfully": "Reglas personalizadas actualizadas correctamente",
     "customRulesNotUpdated": "Las reglas personalizadas no pudieron ser actualizadas",
     "reorder": "Reordenar",
-    "showHide": "Mostrar/ocultar"
+    "showHide": "Mostrar/ocultar",
+    "noElementsReorderMessage": "Activa algunos elementos en la pestaña de mostrar/ocultar para reordenarlos aquí."
 }
