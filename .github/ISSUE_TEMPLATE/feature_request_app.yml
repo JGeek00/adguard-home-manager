@@ -1,8 +1,7 @@
 name: Request a new feature or an improvement for the app itself
 description: |
   You want a new feature for the application, or an improvement for an existing one.
-title: "[App Feature Request]: "
-labels: ["feature request"]
+labels: ["app feature request"]
 body:
   - type: markdown
     id: important-info

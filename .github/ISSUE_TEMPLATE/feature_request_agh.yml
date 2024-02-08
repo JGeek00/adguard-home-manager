@@ -1,8 +1,7 @@
 name: Request a new feature that has been added to AdGuard Home
 description: |
   The AdGuard Home team added recently a new feature that you want on the app.
-title: "[AGH Feature Request]: "
-labels: ["feature request"]
+labels: ["agh feature request"]
 body:
   - type: textarea
     id: description

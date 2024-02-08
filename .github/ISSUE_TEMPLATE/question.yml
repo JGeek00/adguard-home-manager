@@ -1,0 +1,19 @@
+name: You have a question about the app
+description: |
+  You want ask something that's not related with a feature request or a bug.
+labels: ["question"]
+body:
+  - type: markdown
+    id: important-info
+    attributes:
+      value: |
+        Having problems while adding a connection to a server? Check out [this guide](https://github.com/JGeek00/adguard-home-manager/wiki/Create-a-connection).
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Write your question here giving the maximum detail possible.
+      placeholder: |
+        Write your question here...
+    validations:
+      required: true
