@@ -1,0 +1,33 @@
+name: Request a new feature that has been added to AdGuard Home
+description: |
+  The AdGuard Home team added recently a new feature that you want on the app.
+title: "[AGH Feature Request]: "
+labels: ["feature request"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the feature that you want on the app.
+      placeholder: |
+        Write the details here...
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Attach some screenshots of where that new feature is located on the web administration panel.
+      placeholder: |
+        Screenshots here.
+    validations:
+      required: true
+  - type: textarea
+    id: version-introduced
+    attributes:
+      label: Version where feature was introduced
+      description: Version of the AdGuard Home server where this feature was introduced.
+      placeholder: |
+        - Version: (eg: v0.107.44)
+    validations:
+      required: true
