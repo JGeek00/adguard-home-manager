@@ -1,0 +1,43 @@
+name: Report a bug
+description: |
+  You detected something wrong on the application.
+body:
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the problem you are running into.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected results
+      description: What is expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual results
+      description: What is actually happening.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Screenshots or Video
+      description: |
+        Upload any screenshots or video of the bug.
+      value: |
+        Screenshots or video demonstration
+      required: true
+  - type: textarea
+    attributes:
+      label: App and OS details
+      description: |
+        Some details about the app version and the OS where you are running the application.
+      value: |
+        - App version: (eg: v2.16.0)
+        - Device OS version: (eg: Android 14)
+      required: true
