@@ -47,4 +47,5 @@ body:
       value: |
         - App version: (eg: v2.16.0)
         - Device OS version: (eg: Android 14)
+    validations:
       required: true
