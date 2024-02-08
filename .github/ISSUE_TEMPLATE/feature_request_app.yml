@@ -4,7 +4,8 @@ description: |
 title: "[App Feature Request]: "
 labels: ["feature request"]
 body:
- - type: markdown
+  - type: markdown
+    id: important-info
     attributes:
       value: |
         ℹ️ IMPORTANT INFO ℹ️
