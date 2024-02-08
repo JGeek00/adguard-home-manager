@@ -1,0 +1,20 @@
+name: Request a new feature or an improvement for the app itself
+description: |
+  You want a new feature for the application, or an improvement for an existing one.
+title: "[App Feature Request]: "
+labels: ["feature request"]
+body:
+ - type: markdown
+    attributes:
+      value: |
+        ℹ️ IMPORTANT INFO ℹ️
+        Please note that if the functionality is related to data representation, it may not be implemented, as AdGuard Home Manager depends on the capabilities of the AdGuard Home API.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the feature that you want on the app.
+      placeholder: |
+        Write the details here...
+    validations:
+      required: true
