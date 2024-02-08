@@ -1,8 +1,11 @@
 name: Report a bug
 description: |
   You detected something wrong on the application.
+title: "[Bug]: "
+labels: ["bug"]
 body:
   - type: textarea
+    id: steps
     attributes:
       label: Steps to reproduce
       description: Steps to reproduce the problem you are running into.
@@ -13,18 +16,21 @@ body:
     validations:
       required: true
   - type: textarea
+    id: expected-results
     attributes:
       label: Expected results
       description: What is expected to happen.
     validations:
       required: true
   - type: textarea
+    id: actual-results
     attributes:
       label: Actual results
       description: What is actually happening.
     validations:
       required: true
   - type: textarea
+    id: screenshots
     attributes:
       label: Screenshots or Video
       description: |
@@ -33,6 +39,7 @@ body:
         Screenshots or video demonstration
       required: true
   - type: textarea
+    id: app-os-details
     attributes:
       label: App and OS details
       description: |
