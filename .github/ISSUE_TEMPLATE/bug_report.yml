@@ -37,6 +37,7 @@ body:
         Upload any screenshots or video of the bug.
       value: |
         Screenshots or video demonstration
+    validations:
       required: true
   - type: textarea
     id: app-os-details
