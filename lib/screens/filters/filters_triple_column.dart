@@ -247,21 +247,34 @@ class FiltersTripleColumn extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                AppLocalizations.of(context)!.customRules,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500
+                              Flexible(
+                                child: Text(
+                                  AppLocalizations.of(context)!.customRules,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500
+                                  ),
                                 ),
                               ),
+                              const SizedBox(width: 16),
                               AddFiltersButton(
-                                type: '', 
+                                type: 'edit_custom_rule', 
+                                widget: (fn) => IconButton(
+                                  onPressed: fn, 
+                                  icon: const Icon(Icons.edit_rounded),
+                                  tooltip: AppLocalizations.of(context)!.editCustomRules,
+                                )
+                              ),
+                              const SizedBox(width: 8),
+                              AddFiltersButton(
+                                type: 'add_custom_rule', 
                                 widget: (fn) => IconButton(
                                   onPressed: fn, 
                                   icon: const Icon(Icons.add_rounded),
                                   tooltip: AppLocalizations.of(context)!.addCustomRule,
                                 )
-                              )
+                              ),
                             ],
                           ),
                         ),

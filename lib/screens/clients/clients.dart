@@ -23,7 +23,7 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth > 1000) {
+          if (constraints.maxWidth > 900) {
             return SplitView.material(
               hideDivider: true,
               flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),

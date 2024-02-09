@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/modals/add_custom_rule/edit_custom_rules.dart';
-import 'package:adguard_home_manager/screens/filters/modals/add_custom_rule/add_custom_rule.dart';
+import 'package:adguard_home_manager/screens/filters/modals/custom_rules/edit_custom_rules.dart';
+import 'package:adguard_home_manager/screens/filters/modals/custom_rules/add_custom_rule.dart';
 import 'package:adguard_home_manager/screens/filters/details/add_list_modal.dart';
 
 import 'package:adguard_home_manager/providers/filtering_provider.dart';

@@ -83,6 +83,8 @@ class _SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<_SettingsWidget> {
+  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     Provider.of<AppConfigProvider>(context, listen: false).setSelectedSettingsScreen(screen: null);
@@ -102,7 +104,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
     }
 
     return ScaffoldMessenger(
-      key: widget.twoColumns ? GlobalKey() : null,
+      key: widget.twoColumns ? scaffoldMessengerKey : null,
       child: Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
