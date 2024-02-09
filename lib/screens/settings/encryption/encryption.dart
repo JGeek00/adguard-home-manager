@@ -383,6 +383,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                         onChanged: (v) => setState(() => _plainDns = v), 
                         title: AppLocalizations.of(context)!.enablePlainDns,
                         subtitle: AppLocalizations.of(context)!.enablePlainDnsDescription,
+                        disabled: enabled == false,
                       ),
                     ],
                     SectionLabel(
