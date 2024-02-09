@@ -62,7 +62,7 @@ class LogsListAppBar extends StatelessWidget {
       "blocked_parental": AppLocalizations.of(context)!.blockedParentalRow, 
       "safe_search": AppLocalizations.of(context)!.safeSearch, 
     };
-
+print(MediaQuery.of(context).viewPadding.top);
     return SliverAppBar.large(
       pinned: true,
       floating: true,
@@ -80,6 +80,7 @@ class LogsListAppBar extends StatelessWidget {
           onPressed: () => showDialog(
             context: context, 
             builder: (context) => _Search(
+              hasTopBar: MediaQuery.of(context).viewPadding.top > 0,
               onSearch: (v) {
                 logsProvider.setAppliedFilters(
                   AppliedFiters(
@@ -234,9 +235,11 @@ class LogsListAppBar extends StatelessWidget {
 
 class _Search extends StatefulWidget {
   final void Function(String) onSearch;
+  final bool hasTopBar;
 
   const _Search({
-    required this.onSearch
+    required this.onSearch,
+    required this.hasTopBar,
   });
 
   @override
@@ -270,7 +273,9 @@ class _SearchState extends State<_Search> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 500),
                 child: Container(
-                  margin: const EdgeInsets.all(16),
+                  margin: widget.hasTopBar
+                    ? const EdgeInsets.symmetric(horizontal: 16)
+                    : const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(16)
