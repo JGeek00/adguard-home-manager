@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/modals/add_custom_rule/custom_rule_docs.dart';
+import 'package:adguard_home_manager/screens/filters/modals/custom_rules/custom_rule_docs.dart';
 
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
 
@@ -26,7 +26,6 @@ class _EditCustomRulesState extends State<EditCustomRules> {
   @override
   void initState() {
     final filteringProvider = Provider.of<FilteringProvider>(context, listen: false);
-    print(filteringProvider.filtering!.userRules);
     if (filteringProvider.filtering != null) {
       _fieldController.text = filteringProvider.filtering!.userRules.join("\n");
     }
@@ -87,7 +86,7 @@ class _EditCustomRulesState extends State<EditCustomRules> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          AppLocalizations.of(context)!.addCustomRule,
+                          AppLocalizations.of(context)!.editCustomRules,
                           style: const TextStyle(
                             fontSize: 22
                           ),
