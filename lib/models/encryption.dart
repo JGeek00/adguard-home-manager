@@ -39,6 +39,7 @@ class EncryptionData {
   final String certificatePath;
   final String privateKeyPath;
   final bool privateKeySaved;
+  final bool? servePlainDns;
 
   EncryptionData({
     required this.validCert,
@@ -65,6 +66,7 @@ class EncryptionData {
     required this.certificatePath,
     required this.privateKeyPath,
     required this.privateKeySaved,
+    required this.servePlainDns,
   });
 
 
@@ -93,6 +95,7 @@ class EncryptionData {
     certificatePath: json["certificate_path"],
     privateKeyPath: json["private_key_path"],
     privateKeySaved: json["private_key_saved"],
+    servePlainDns: json["serve_plain_dns"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -120,6 +123,7 @@ class EncryptionData {
     "certificate_path": certificatePath,
     "private_key_path": privateKeyPath,
     "private_key_saved": privateKeySaved,
+    "serve_plain_dns": servePlainDns,
   };
 }
 

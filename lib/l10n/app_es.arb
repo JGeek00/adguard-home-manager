@@ -758,5 +758,21 @@
     "invalidTime": "Tiempo no válido",
     "removeDomain": "Eliminar dominio",
     "addDomain": "Añadir dominio",
-    "notLess1Hour": "El tiempo no puede ser inferior a 1 hora"
+    "notLess1Hour": "El tiempo no puede ser inferior a 1 hora",
+    "rateLimit": "Limitación de velocidad",
+    "subnetPrefixLengthIpv4": "Longitud del prefijo de subred para IPv4",
+    "subnetPrefixLengthIpv6": "Longitud del prefijo de subred para IPv6",
+    "rateLimitAllowlist": "Lista de permitidos de limitación de velocidad",
+    "rateLimitAllowlistDescription": "Direcciones IP excluidas de la limitación de velocidad",
+    "dnsOptions": "Opciones de DNS",
+    "editor": "Editor",
+    "editCustomRules": "Editar reglas personalizadas",
+    "savingCustomRules": "Guardando reglas personalizadas...",
+    "customRulesUpdatedSuccessfully": "Reglas personalizadas actualizadas correctamente",
+    "customRulesNotUpdated": "Las reglas personalizadas no pudieron ser actualizadas",
+    "reorder": "Reordenar",
+    "showHide": "Mostrar/ocultar",
+    "noElementsReorderMessage": "Activa algunos elementos en la pestaña de mostrar/ocultar para reordenarlos aquí.",
+    "enablePlainDns": "Activar DNS simple (sin cifrado)",
+    "enablePlainDnsDescription": "El DNS simple (sin cifrado) está activado de forma predeterminada. Puedes desactivarlo para obligar a todos los dispositivos a utilizar DNS cifrado. Para ello, debes habilitar al menos un protocolo DNS cifrado."
 }

@@ -120,7 +120,7 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
               label: AppLocalizations.of(context)!.color,
               padding: const EdgeInsets.only(top: 45, left: 16, right: 16, bottom: 5),
             ),
-            if (appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31) CustomSwitchListTile(
+            if (appConfigProvider.supportsDynamicTheme) CustomSwitchListTile(
               value: dynamicColor, 
               onChanged: (value) {
                 setState(() => dynamicColor = value);
@@ -129,7 +129,10 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
               title: AppLocalizations.of(context)!.useDynamicTheme, 
             ),
             if (!(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31)) const SizedBox(height: 20),
-            if (dynamicColor == false) Padding(
+            if (
+              appConfigProvider.supportsDynamicTheme == false || 
+              (appConfigProvider.supportsDynamicTheme == true && dynamicColor == false)
+            ) Padding(
               padding: const EdgeInsets.only(bottom: 8, left: 16, right: 16),
               child: Scrollbar(
                 controller: _colorsScrollController,
@@ -207,15 +210,6 @@ class _CustomizationWidgetState extends State<CustomizationWidget> {
                 ),
               ),
             ),
-            CustomSwitchListTile(
-              value: useThemeColorInsteadGreenRed, 
-              onChanged: (value) {
-                setState(() => useThemeColorInsteadGreenRed = value);
-                appConfigProvider.setUseThemeColorForStatus(value);
-              }, 
-              title: AppLocalizations.of(context)!.useThemeColorStatus,
-              subtitle: AppLocalizations.of(context)!.useThemeColorStatusDescription,
-            )
           ],
         ),
       ),

@@ -10,6 +10,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:store_checker/store_checker.dart';
 import 'package:window_size/window_size.dart';
@@ -31,8 +32,8 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/colors.dart';
 import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/config/theme.dart';
-import 'package:adguard_home_manager/classes/http_override.dart';
 import 'package:adguard_home_manager/services/db/database.dart';
+import 'package:adguard_home_manager/classes/http_override.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,8 +49,12 @@ void main() async {
   }
 
   await dotenv.load(fileName: '.env');
+
+  final sharedPreferences = await SharedPreferences.getInstance();
   
-  final AppConfigProvider appConfigProvider = AppConfigProvider();
+  final AppConfigProvider appConfigProvider = AppConfigProvider(
+    sharedPreferencesInstance: sharedPreferences
+  );
   final ServersProvider serversProvider = ServersProvider();
   final StatusProvider statusProvider = StatusProvider();
   final ClientsProvider clientsProvider = ClientsProvider();
@@ -69,9 +74,7 @@ void main() async {
     appConfigProvider.setIosInfo(iosInfo);
   }
 
-  final dbData = await loadDb(appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31);
-
-  if (dbData['appConfig']['overrideSslCheck'] == 1) {
+  if (sharedPreferences.getBool('overrideSslCheck') == true) {
     HttpOverrides.global = MyHttpOverrides();
   }
 
@@ -80,9 +83,11 @@ void main() async {
     appConfigProvider.setInstallationSource(installationSource);
   }
 
+  final dbData = await loadDb();
   serversProvider.setDbInstance(dbData['dbInstance']);
-  appConfigProvider.saveFromDb(dbData['dbInstance'], dbData['appConfig']);
   serversProvider.saveFromDb(dbData['servers']);
+
+  appConfigProvider.saveFromSharedPreferences();
 
   PackageInfo appInfo = await PackageInfo.fromPlatform();
   appConfigProvider.setAppInfo(appInfo);
@@ -208,42 +213,45 @@ class _MainState extends State<Main> {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
     return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) => MaterialApp(
-        title: 'AdGuard Home Manager',
-        theme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
-          ? appConfigProvider.useDynamicColor == true
-            ? lightTheme(lightDynamic)
-            : lightThemeOldVersions(colors[appConfigProvider.staticColor])
-          : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
-        darkTheme: appConfigProvider.androidDeviceInfo != null && appConfigProvider.androidDeviceInfo!.version.sdkInt >= 31
-          ? appConfigProvider.useDynamicColor == true
-            ? darkTheme(darkDynamic)
-            : darkThemeOldVersions(colors[appConfigProvider.staticColor])
-          : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
-        themeMode: appConfigProvider.selectedTheme,
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          AppLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en', ''),
-          Locale('es', ''),
-          Locale('zh', ''),
-          Locale('zh', 'CN'),
-          Locale('pl', ''),
-          Locale('tr', ''),
-          Locale('ru', '')
-        ],
-        scaffoldMessengerKey: scaffoldMessengerKey,
-        navigatorKey: globalNavigatorKey,
-        builder: (context, child) => CustomMenuBar(
-          child: child!,
-        ),
-        home: const Layout(),
-      ),
+      builder: (lightDynamic, darkDynamic) {
+        appConfigProvider.setSupportsDynamicTheme(lightDynamic != null && darkDynamic != null);
+        return MaterialApp(
+          title: 'AdGuard Home Manager',
+          theme: lightDynamic != null
+            ? appConfigProvider.useDynamicColor == true
+              ? lightTheme(lightDynamic)
+              : lightThemeOldVersions(colors[appConfigProvider.staticColor])
+            : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
+          darkTheme: darkDynamic != null
+            ? appConfigProvider.useDynamicColor == true
+              ? darkTheme(darkDynamic)
+              : darkThemeOldVersions(colors[appConfigProvider.staticColor])
+            : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
+          themeMode: appConfigProvider.selectedTheme,
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            AppLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en', ''),
+            Locale('es', ''),
+            Locale('zh', ''),
+            Locale('zh', 'CN'),
+            Locale('pl', ''),
+            Locale('tr', ''),
+            Locale('ru', '')
+          ],
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          navigatorKey: globalNavigatorKey,
+          builder: (context, child) => CustomMenuBar(
+            child: child!,
+          ),
+          home: const Layout(),
+        );
+      }
     );
   }
 }

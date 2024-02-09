@@ -20,12 +20,12 @@ class CustomRulesList extends StatefulWidget {
   final void Function(String) onRemoveCustomRule;
 
   const CustomRulesList({
-    Key? key,
+    super.key,
     required this.loadStatus,
     required this.scrollController,
     required this.data,
     required this.onRemoveCustomRule
-  }) : super(key: key);
+  });
 
   @override
   State<CustomRulesList> createState() => _CustomRulesListState();
@@ -210,13 +210,26 @@ class _CustomRulesListState extends State<CustomRulesList> {
           );
         }
       }, 
-      fab: AddFiltersButton(
-        type: 'custom_rule',
-        widget: (fn) => FloatingActionButton(
-          onPressed: fn,
-          child: const Icon(Icons.add),
-        ),
+      fab: Column(
+        children: [
+          AddFiltersButton(
+            type: 'edit_custom_rule', 
+            widget: (fn) => FloatingActionButton.small(
+              onPressed: fn,
+              child: const Icon(Icons.edit_rounded),
+            ),
+          ),
+          const SizedBox(height: 16),
+          AddFiltersButton(
+            type: 'add_custom_rule',
+            widget: (fn) => FloatingActionButton(
+              onPressed: fn,
+              child: const Icon(Icons.add),
+            ),
+          ),
+        ],
       ),
+      heightFabHidden: -120,
       fabVisible: isVisible,
     );
   }

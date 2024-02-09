@@ -92,7 +92,7 @@ class LogsConfigOptions extends StatelessWidget {
               child: Text(dropdownItemTranslation[item.key]),
             )).toList(),
             value: retentionTime,
-            onChanged: (value) => updateRetentionTime(value as double),
+            onChanged: (value) => updateRetentionTime(double.tryParse(value.toString())),
             decoration: InputDecoration(
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(

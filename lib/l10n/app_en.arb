@@ -758,5 +758,21 @@
     "invalidTime": "Invalid time",
     "removeDomain": "Remove domain",
     "addDomain": "Add domain",
-    "notLess1Hour": "Time cannot be less than 1 hour"
+    "notLess1Hour": "Time cannot be less than 1 hour",
+    "rateLimit": "Rate limit",
+    "subnetPrefixLengthIpv4": "Subnet prefix length for IPv4",
+    "subnetPrefixLengthIpv6": "Subnet prefix length for IPv6",
+    "rateLimitAllowlist": "Rate limit allowlist",
+    "rateLimitAllowlistDescription": "IP addresses excluded from rate limiting",
+    "dnsOptions": "DNS options",
+    "editor": "Editor",
+    "editCustomRules": "Edit custom rules",
+    "savingCustomRules": "Saving custom rules...",
+    "customRulesUpdatedSuccessfully": "Custom rules updated successfully",
+    "customRulesNotUpdated": "Custom rules could not be updated",
+    "reorder": "Reorder",
+    "showHide": "Show/hide",
+    "noElementsReorderMessage": "Enable some elements on the show/hide tab to reorder them here.",
+    "enablePlainDns": "Enable plain DNS",
+    "enablePlainDnsDescription": "Plain DNS is enabled by default. You can disable it to force all devices to use encrypted DNS. To do this, you must enable at least one encrypted DNS protocol."
 }

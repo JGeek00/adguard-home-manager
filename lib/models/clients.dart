@@ -130,7 +130,9 @@ class Client {
     ignoreStatistics: json["ignore_statistics"],
     upstreamsCacheEnabled: json["upstreams_cache_enabled"],
     upstreamsCacheSize: json["upstreams_cache_size"],
-    blockedServicesSchedule: BlockedServicesSchedule.fromJson(json["blocked_services_schedule"])
+    blockedServicesSchedule: json["blocked_services_schedule"] != null
+      ? BlockedServicesSchedule.fromJson(json["blocked_services_schedule"])
+      : null
   );
 
   Map<String, dynamic> toJson() => {

@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/screens/filters/modals/add_custom_rule.dart';
+import 'package:adguard_home_manager/screens/filters/modals/add_custom_rule/edit_custom_rules.dart';
+import 'package:adguard_home_manager/screens/filters/modals/add_custom_rule/add_custom_rule.dart';
 import 'package:adguard_home_manager/screens/filters/details/add_list_modal.dart';
 
 import 'package:adguard_home_manager/providers/filtering_provider.dart';
@@ -19,10 +20,10 @@ class AddFiltersButton extends StatelessWidget {
   final Widget Function(void Function()) widget;
 
   const AddFiltersButton({
-    Key? key,
+    super.key,
     required this.type,
     required this.widget
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +57,31 @@ class AddFiltersButton extends StatelessWidget {
       }
     }
 
+    void confirmEditCustomRules(List<String> rules) async {
+      ProcessModal processModal = ProcessModal();
+      processModal.open(AppLocalizations.of(context)!.savingCustomRules);
+
+      final result = await filteringProvider.setCustomRules(rules);
+
+      processModal.close();
+
+      if (!context.mounted) return;
+      if (result == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.customRulesUpdatedSuccessfully, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.customRulesNotUpdated, 
+          color: Colors.red
+        );
+      }
+    }
+
     void openAddCustomRule() {
       showGeneralDialog(
         context: context, 
@@ -83,6 +109,33 @@ class AddFiltersButton extends StatelessWidget {
       );
     }
 
+    void openEditCustomRule() {
+      showGeneralDialog(
+        context: context, 
+        barrierColor: !(width > 700 || !(Platform.isAndroid || Platform.isIOS))
+          ?Colors.transparent 
+          : Colors.black54,
+        transitionBuilder: (context, anim1, anim2, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 1), 
+              end: const Offset(0, 0)
+            ).animate(
+              CurvedAnimation(
+                parent: anim1, 
+                curve: Curves.easeInOutCubicEmphasized
+              )
+            ),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) => EditCustomRules(
+          fullScreen: !(width > 700 || !(Platform.isAndroid || Platform.isIOS)),
+          onConfirm: confirmEditCustomRules,
+        ),
+      );
+    }
+
     void confirmAddList({required String name, required String url, required String type}) async {
       ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingList);
@@ -91,6 +144,7 @@ class AddFiltersButton extends StatelessWidget {
 
       processModal.close();
 
+      if (!context.mounted) return;
       if (result['success'] == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
@@ -147,10 +201,25 @@ class AddFiltersButton extends StatelessWidget {
       }
     }
 
-    return widget(
-      type == 'blacklist' || type == 'whitelist'
-        ? () => openAddWhitelistBlacklist()
-        : () => openAddCustomRule(),
-    );
+    switch (type) {
+      case 'blacklist':
+      case 'whitelist':
+        return widget(
+          () => openAddWhitelistBlacklist(),
+        );
+
+      case 'add_custom_rule':
+        return widget(
+          () => openAddCustomRule(),
+        );
+
+      case 'edit_custom_rule':
+        return widget(
+          () => openEditCustomRule(),
+        );
+
+      default:
+        return const SizedBox();
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_switch_list_tile.dart';
 import 'package:adguard_home_manager/screens/settings/encryption/status.dart';
@@ -34,6 +35,8 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
   LoadStatus loadStatus = LoadStatus.loading;
 
   bool enabled = false;
+
+  bool? _plainDns;
 
   final TextEditingController domainNameController = TextEditingController();
   String? domainError;
@@ -70,7 +73,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
 
   bool localValidationValid = false;
   String? validDataError;
-  int certKeyValidApi = 0;
+  bool _dataValidApi = true;
 
   EncryptionValidation? certKeyValid;
   String? encryptionResultMessage;
@@ -112,6 +115,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           privateKeyPathController.text = data.privateKeyPath;
         }
         usePreviouslySavedKey = data.privateKeySaved;
+        _plainDns = data.servePlainDns;
         loadStatus = LoadStatus.loaded;
       });
     }
@@ -121,8 +125,6 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
   }
 
   Future checkValidDataApi({Map<String, dynamic>? data}) async {
-    setState(() => certKeyValidApi = 0);
-
     final result = await Provider.of<ServersProvider>(context, listen: false).apiClient2!.checkEncryptionSettings(
       data: data ?? {
         "enabled": enabled,
@@ -146,11 +148,11 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
         final object = data.encryptionValidation!;
         setState(() {
           if (object.warningValidation != null && object.warningValidation != '') {
-            certKeyValidApi = 2;
+            _dataValidApi = false;
             validDataError = object.warningValidation;
           }
           else {
-            certKeyValidApi = 1;
+            _dataValidApi = true;
             validDataError = null;
           }
           certKeyValid = object;
@@ -159,7 +161,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       else {
         setState(() {
           encryptionResultMessage = data.message;
-          certKeyValidApi = 2;
+          _dataValidApi = false;
         });
       }
     }
@@ -224,6 +226,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           "private_key_saved": usePreviouslySavedKey,
           "certificate_path": certificatePathController.text,
           "private_key_path": privateKeyPathController.text,
+          "serve_plain_dns": _plainDns
         }
       );
 
@@ -271,6 +274,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           "private_key_saved": false,
           "certificate_path": "",
           "private_key_path": "",
+          "serve_plain_dns": true
         }
       );
       if (!mounted) return;
@@ -345,7 +349,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
               case LoadStatus.loaded:
                 return ListView(
                   children: [
-                    if (certKeyValidApi == 2 && (validDataError != null || encryptionResultMessage != null)) Card(
+                    if (_dataValidApi == false && (validDataError != null || encryptionResultMessage != null)) Card(
                       margin: const EdgeInsets.all(16),
                       color: Colors.red.withOpacity(0.2),
                       elevation: 0,
@@ -372,6 +376,16 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                         onEditValidate();
                       }
                     ),
+                    if (_plainDns != null) ...[
+                      const SizedBox(height: 8),
+                      CustomCheckboxListTile(
+                        value: _plainDns!, 
+                        onChanged: (v) => setState(() => _plainDns = v), 
+                        title: AppLocalizations.of(context)!.enablePlainDns,
+                        subtitle: AppLocalizations.of(context)!.enablePlainDnsDescription,
+                        disabled: enabled == false,
+                      ),
+                    ],
                     SectionLabel(
                       label: AppLocalizations.of(context)!.serverConfiguration,
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
