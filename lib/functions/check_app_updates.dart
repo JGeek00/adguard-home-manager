@@ -30,7 +30,7 @@ Future<GitHubRelease?> checkAppUpdates({
       gitHubRelease: gitHubRelease,
       isBeta: isBeta
     );
-print(update);
+
     if (update == true) {
       setUpdateAvailable(gitHubRelease);
         

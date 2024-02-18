@@ -62,7 +62,7 @@ class LogsListAppBar extends StatelessWidget {
       "blocked_parental": AppLocalizations.of(context)!.blockedParentalRow, 
       "safe_search": AppLocalizations.of(context)!.safeSearch, 
     };
-print(MediaQuery.of(context).viewPadding.top);
+
     return SliverAppBar.large(
       pinned: true,
       floating: true,

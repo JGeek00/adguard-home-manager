@@ -37,27 +37,6 @@ class LogDetailsScreen extends StatelessWidget {
 
     final width = MediaQuery.of(context).size.width;
 
-    Filter? getList(int id) {
-      try {
-        return statusProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
-          return statusProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
-        });
-      } catch (_) {
-        return null;
-      }
-    }
-
-    Widget getResult() {
-      final filter = getFilteredStatus(context, appConfigProvider, log.reason, true);
-      return Text(
-        filter['label'],
-        style: TextStyle(
-          color: filter['color'],
-          fontWeight: FontWeight.w500
-        ),
-      );
-    }
-
     void blockUnblock(String domain, String newStatus) async {
       final ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingUserFilters);
@@ -85,8 +64,175 @@ class LogDetailsScreen extends StatelessWidget {
       }
     }
 
-    List<Widget> content() {
-      return [
+    if (dialog) {
+      return Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 500
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => Navigator.pop(context), 
+                          icon: const Icon(Icons.clear_rounded)
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          AppLocalizations.of(context)!.logDetails,
+                          style: const TextStyle(
+                            fontSize: 22
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => openUrl("${Urls.googleSearchUrl}?q=${log.question.name}"), 
+                          icon: const Icon(Icons.travel_explore_rounded),
+                          tooltip: AppLocalizations.of(context)!.searchDomainInternet
+                        ),
+                        IconButton(
+                          onPressed: log.question.name != null
+                            ? () => blockUnblock(
+                                log.question.name!, 
+                                getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'
+                              )
+                            : null,
+                          icon: Icon(
+                            getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                              ? Icons.check_circle_rounded
+                              : Icons.block
+                          ),
+                          tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                            ? AppLocalizations.of(context)!.unblockDomain
+                            : AppLocalizations.of(context)!.blockDomain,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: ListView(
+                    children: [
+                      _Content(log: log)
+                    ]
+                  )
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+    else {
+      return Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar.large(
+                pinned: true,
+                floating: true,
+                centerTitle: false,
+                forceElevated: innerBoxIsScrolled,
+                surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
+                title:  Text(AppLocalizations.of(context)!.logDetails),
+                actions: [
+                  IconButton(
+                    onPressed: () => openUrl("${Urls.googleSearchUrl}?q=${log.question.name}"), 
+                    icon: const Icon(Icons.travel_explore_rounded),
+                    tooltip: AppLocalizations.of(context)!.searchDomainInternet
+                  ),
+                  if (statusProvider.filteringStatus != null) IconButton(
+                    onPressed: log.question.name != null
+                      ? () => blockUnblock(
+                          log.question.name!, 
+                          getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'
+                        )
+                      : null,
+                    icon: Icon(
+                      getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                        ? Icons.check_circle_rounded
+                        : Icons.block
+                    ),
+                    tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
+                      ? AppLocalizations.of(context)!.unblockDomain
+                      : AppLocalizations.of(context)!.blockDomain,
+                  ),
+                  const SizedBox(width: 10)
+                ],
+              ),
+            )
+          ],
+          body: SafeArea(
+            top: false,
+            child: Builder(
+              builder: (context) => CustomScrollView(
+                slivers: [
+                  SliverOverlapInjector(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  ),
+                  SliverList.list(
+                    children: [
+                      _Content(log: log)
+                    ]
+                  )
+                ],
+              ),
+            ) 
+          )
+        ),
+      );
+    }
+  }
+}
+
+class _Content extends StatelessWidget {
+  final Log log;
+
+  const _Content({
+    required this.log,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final appConfigProvider = Provider.of<AppConfigProvider>(context);
+    final statusProvider = Provider.of<StatusProvider>(context);
+
+    Widget getResult() {
+      final filter = getFilteredStatus(context, appConfigProvider, log.reason, true);
+      return Text(
+        filter['label'],
+        style: TextStyle(
+          color: filter['color'],
+          fontWeight: FontWeight.w500
+        ),
+      );
+    }
+
+    Filter? getList(int id) {
+      try {
+        return statusProvider.filteringStatus!.filters.firstWhere((filter) => filter.id == id, orElse: () {
+          return statusProvider.filteringStatus!.whitelistFilters.firstWhere((filter) => filter.id == id);
+        });
+      } catch (_) {
+        return null;
+      }
+    }
+
+    return Column(
+      children: [
         SectionLabel(label: AppLocalizations.of(context)!.status),
         LogListTile(
           icon: Icons.shield_rounded, 
@@ -117,6 +263,11 @@ class LogDetailsScreen extends StatelessWidget {
           icon: Icons.block, 
           title: AppLocalizations.of(context)!.blockingRule, 
           subtitle: log.rule
+        ),
+        LogListTile(
+          icon: Icons.calendar_month_rounded, 
+          title: AppLocalizations.of(context)!.date,
+          subtitle: convertTimestampLocalTimezone(log.time, 'dd-MM-yyyy')
         ),
         LogListTile(
           icon: Icons.schedule, 
@@ -180,7 +331,7 @@ class LogDetailsScreen extends StatelessWidget {
             else {
               return const SizedBox();
             }
-          }).toList()
+          })
         ],
         if (log.answer.isNotEmpty) ...[
           SectionLabel(label: AppLocalizations.of(context)!.answers),
@@ -206,137 +357,9 @@ class LogDetailsScreen extends StatelessWidget {
                 ),
               ),
             )
-          )).toList()
+          ))
         ]
-      ];
-    }
-
-    if (dialog) {
-      return Dialog(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 500
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => Navigator.pop(context), 
-                          icon: const Icon(Icons.clear_rounded)
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          AppLocalizations.of(context)!.logDetails,
-                          style: const TextStyle(
-                            fontSize: 22
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => openUrl("${Urls.googleSearchUrl}?q=${log.question.name}"), 
-                          icon: const Icon(Icons.travel_explore_rounded),
-                          tooltip: AppLocalizations.of(context)!.searchDomainInternet
-                        ),
-                        IconButton(
-                          onPressed: log.question.name != null
-                            ? () => blockUnblock(
-                                log.question.name!, 
-                                getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'
-                              )
-                            : null,
-                          icon: Icon(
-                            getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                              ? Icons.check_circle_rounded
-                              : Icons.block
-                          ),
-                          tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                            ? AppLocalizations.of(context)!.unblockDomain
-                            : AppLocalizations.of(context)!.blockDomain,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: ListView(
-                    children: content(),
-                  )
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-    }
-    else {
-      return Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar.large(
-                pinned: true,
-                floating: true,
-                centerTitle: false,
-                forceElevated: innerBoxIsScrolled,
-                surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
-                title:  Text(AppLocalizations.of(context)!.logDetails),
-                actions: [
-                  IconButton(
-                    onPressed: () => openUrl("${Urls.googleSearchUrl}?q=${log.question.name}"), 
-                    icon: const Icon(Icons.travel_explore_rounded),
-                    tooltip: AppLocalizations.of(context)!.searchDomainInternet
-                  ),
-                  if (statusProvider.filteringStatus != null) IconButton(
-                    onPressed: log.question.name != null
-                      ? () => blockUnblock(
-                          log.question.name!, 
-                          getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true ? 'unblock' : 'block'
-                        )
-                      : null,
-                    icon: Icon(
-                      getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                        ? Icons.check_circle_rounded
-                        : Icons.block
-                    ),
-                    tooltip: getFilteredStatus(context, appConfigProvider, log.reason, true)['filtered'] == true
-                      ? AppLocalizations.of(context)!.unblockDomain
-                      : AppLocalizations.of(context)!.blockDomain,
-                  ),
-                  const SizedBox(width: 10)
-                ],
-              ),
-            )
-          ],
-          body: SafeArea(
-            top: false,
-            child: Builder(
-              builder: (context) => CustomScrollView(
-                slivers: [
-                  SliverOverlapInjector(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  ),
-                  SliverList.list(
-                    children: content()
-                  )
-                ],
-              ),
-            ) 
-          )
-        ),
-      );
-    }
+      ],
+    );
   }
 }
