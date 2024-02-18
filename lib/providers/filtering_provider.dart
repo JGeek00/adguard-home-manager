@@ -133,7 +133,6 @@ class FilteringProvider with ChangeNotifier {
       if (result2.successful == true) {
         _filtering = result2.content as Filtering;
         notifyListeners();
-        print(result.content);
         return {
           "success": true,
           "data": result.content
