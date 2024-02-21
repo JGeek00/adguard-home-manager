@@ -250,13 +250,20 @@ class _Header extends SliverPersistentHeaderDelegate {
                   left: (constraints.maxWidth/2)-(_iconSize/2),
                   child: Opacity(
                     opacity: 1-iconPercentage,
-                    child: Icon(
-                      serversProvider.updateAvailable.data!.canAutoupdate == true
-                        ? Icons.system_update_rounded
-                        : Icons.system_security_update_good_rounded,
-                      size: _iconSize,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    child: serversProvider.updateAvailable.loadStatus == LoadStatus.loading
+                      ? const Column(
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 4)
+                          ],
+                        )
+                      : Icon(
+                          serversProvider.updateAvailable.data!.canAutoupdate == true
+                            ? Icons.system_update_rounded
+                            : Icons.system_security_update_good_rounded,
+                          size: _iconSize,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                   ),
                 ),
                 Positioned(
