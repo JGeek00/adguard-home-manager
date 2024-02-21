@@ -86,12 +86,27 @@ class _ServerInformationState extends State<ServerInformation> {
                       title: AppLocalizations.of(context)!.dnsAddresses,
                       subtitle: AppLocalizations.of(context)!.seeDnsAddresses,
                       onTap: () {
-                        showModal(
-                          context: context, 
-                          builder: (context) => DnsAddressesModal(
-                            dnsAddresses: serverInfo.data!.dnsAddresses
-                          )
-                        );
+                        if (width > 700) {
+                          showDialog(
+                            context: context, 
+                            builder: (context) => DnsAddressesModal(
+                              dnsAddresses: serverInfo.data!.dnsAddresses,
+                              isDialog: true,
+                            )
+                          );
+                        }
+                        else {
+                          showModalBottomSheet(
+                            context: context, 
+                            builder: (context) => DnsAddressesModal(
+                              dnsAddresses: serverInfo.data!.dnsAddresses,
+                              isDialog: false,
+                            ),
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            useSafeArea: true
+                          );
+                        }
                       },
                     ),
                     CustomListTile(
