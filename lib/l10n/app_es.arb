@@ -775,5 +775,6 @@
     "noElementsReorderMessage": "Activa algunos elementos en la pestaña de mostrar/ocultar para reordenarlos aquí.",
     "enablePlainDns": "Activar DNS simple (sin cifrado)",
     "enablePlainDnsDescription": "El DNS simple (sin cifrado) está activado de forma predeterminada. Puedes desactivarlo para obligar a todos los dispositivos a utilizar DNS cifrado. Para ello, debes habilitar al menos un protocolo DNS cifrado.",
-    "date": "Fecha"
+    "date": "Fecha",
+    "loadingChangelog": "Cargando registro de cambios..."
 }
