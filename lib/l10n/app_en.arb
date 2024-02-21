@@ -775,5 +775,6 @@
     "noElementsReorderMessage": "Enable some elements on the show/hide tab to reorder them here.",
     "enablePlainDns": "Enable plain DNS",
     "enablePlainDnsDescription": "Plain DNS is enabled by default. You can disable it to force all devices to use encrypted DNS. To do this, you must enable at least one encrypted DNS protocol.",
-    "date": "Date"
+    "date": "Date",
+    "loadingChangelog": "Loading changelog..."
 }

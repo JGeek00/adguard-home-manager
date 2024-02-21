@@ -14,7 +14,7 @@ import 'package:adguard_home_manager/screens/settings/customization/customizatio
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp.dart';
 import 'package:adguard_home_manager/screens/settings/statistics_settings/statistics_settings.dart';
 import 'package:adguard_home_manager/screens/settings/safe_search_settings.dart';
-import 'package:adguard_home_manager/screens/settings/update_server/update.dart';
+import 'package:adguard_home_manager/screens/settings/update_server/update_screen.dart';
 import 'package:adguard_home_manager/screens/settings/dns/dns.dart';
 import 'package:adguard_home_manager/screens/settings/dns_rewrites/dns_rewrites.dart';
 import 'package:adguard_home_manager/screens/servers/servers.dart';
