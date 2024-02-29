@@ -47,7 +47,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
     final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
 
     for (var item in dnsProvider.dnsInfo!.upstreamDns) {
-      if (item == '#') {
+      if (item.contains("#")) {
         dnsServers.add({
           'comment': item
         });

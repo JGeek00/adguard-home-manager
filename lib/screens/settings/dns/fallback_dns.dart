@@ -1,5 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
+import 'dart:io';
 
+import 'package:adguard_home_manager/screens/settings/dns/comment_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -48,12 +49,20 @@ class _FallbackDnsScreenState extends State<FallbackDnsScreen> {
     final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
 
     for (var item in dnsProvider.dnsInfo!.fallbackDns!) {
-      final controller = TextEditingController();
-      controller.text = item;
-      fallbackControllers.add({
-        'controller': controller,
-        'error': null
-      });
+      if (item.contains("#")) {
+        fallbackControllers.add({
+          'comment': item
+        });
+      }
+      else {
+        final controller = TextEditingController();
+        controller.text = item;
+        fallbackControllers.add({
+          'controller': controller,
+          'error': null,
+          'isComment': item.contains("#")
+        });
+      }
     }
     validValues = true;
     super.initState();
@@ -71,11 +80,16 @@ class _FallbackDnsScreenState extends State<FallbackDnsScreen> {
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
       final result = await dnsProvider.saveFallbackDnsConfig({
-        "fallback_dns": fallbackControllers.map((e) => e['controller'].text).toList(),
+        "fallback_dns": fallbackControllers.map(
+          (e) => e['controller'] != null 
+            ? e['controller'].text
+            : e['comment']
+        ).toList(),
       });
 
       processModal.close();
 
+      if (!context.mounted) return;
       if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
@@ -97,6 +111,37 @@ class _FallbackDnsScreenState extends State<FallbackDnsScreen> {
           color: Colors.red
         );
       } 
+    }
+
+    void openEditCommentModal(Map<String, dynamic> item, int position) {
+      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
+          builder: (context) => CommentModal(
+            comment: item['comment'],
+            onConfirm: (value) {
+              setState(() => fallbackControllers[position] = { 'comment': value });
+            },
+            dialog: true,
+          ),
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          useRootNavigator: true,
+          builder: (context) => CommentModal(
+            comment: item['comment'],
+            onConfirm: (value) {
+              setState(() => fallbackControllers[position] = { 'comment': value });
+            },
+            dialog: false,
+          ),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          isDismissible: true
+        );
+      }
     }
 
     return Scaffold(
@@ -168,29 +213,55 @@ class _FallbackDnsScreenState extends State<FallbackDnsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
+                  if (c['controller'] != null) Expanded(
                     child: TextFormField(
                       controller: c['controller'],
                       onChanged: (value) => validateIp(c, value),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.dns_rounded),
+                        prefixIcon: Icon(
+                          c['isComment'] == true 
+                            ? Icons.comment_rounded 
+                            : Icons.dns_rounded
+                        ),
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(10)
                           )
                         ),
                         errorText: c['error'],
-                        labelText: AppLocalizations.of(context)!.dnsServer,
+                        labelText: c['isComment'] == true 
+                          ? AppLocalizations.of(context)!.comment
+                          : AppLocalizations.of(context)!.dnsServer,
                       )
                     ),
                   ),
                   const SizedBox(width: 8),
+                  if (c['comment'] != null) Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          c['comment'],
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).listTileTheme.iconColor
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => openEditCommentModal(c, fallbackControllers.indexOf(c)), 
+                          icon: const Icon(Icons.edit),
+                          tooltip:  AppLocalizations.of(context)!.edit,
+                        )
+                      ],
+                    ),
+                  ),
                   IconButton(
                     onPressed: () {
                       setState(() => fallbackControllers = fallbackControllers.where((con) => con != c).toList());
                       checkValidValues();
                     }, 
-                    icon: const Icon(Icons.remove_circle_outline)
+                    icon: const Icon(Icons.remove_circle_outline),
+                    tooltip:  AppLocalizations.of(context)!.remove,
                   )
                 ],
               ),
