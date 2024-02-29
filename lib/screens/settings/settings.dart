@@ -83,7 +83,7 @@ class _SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<_SettingsWidget> {
-  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -104,7 +104,7 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
     }
 
     return ScaffoldMessenger(
-      key: widget.twoColumns ? scaffoldMessengerKey : null,
+      key: widget.twoColumns ? _scaffoldMessengerKey : null,
       child: Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [

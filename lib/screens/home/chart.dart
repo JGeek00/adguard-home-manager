@@ -43,7 +43,7 @@ class _HomeChartState extends State<HomeChart> {
 
     if (!(appConfigProvider.hideZeroValues == true && isEmpty == true)) {
       List<DateTime> dateTimes = [];
-      DateTime currentDate = DateTime.now().subtract(Duration(hours: widget.hoursInterval*widget.data.length+1));
+      DateTime currentDate = DateTime.now().subtract(Duration(hours: widget.hoursInterval*widget.data.length));
       for (var i = 0; i < widget.data.length; i++) {
         currentDate = currentDate.add(Duration(hours: widget.hoursInterval));
         dateTimes.add(currentDate);

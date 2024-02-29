@@ -145,19 +145,19 @@ class _StatisticsSettingsState extends State<StatisticsSettings> {
       
       processModal.close();
 
-      if (!mounted) return;
+      if (!context.mounted) return;
 
       if (result.successful == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.logsConfigUpdated, 
+          label: AppLocalizations.of(context)!.statisticsConfigUpdated, 
           color: Colors.green
         );
       }
       else {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
-          label: AppLocalizations.of(context)!.logsConfigNotUpdated, 
+          label: AppLocalizations.of(context)!.statisticsConfigNotUpdated, 
           color: Colors.red
         );
       }
@@ -209,7 +209,7 @@ class _StatisticsSettingsState extends State<StatisticsSettings> {
                         if (value != null && value != "custom") {
                           _customTimeError = null;
                           _customTimeController.text = "";
-                        };
+                        }
                         _retentionTime = value;
                       }),
                       decoration: InputDecoration(

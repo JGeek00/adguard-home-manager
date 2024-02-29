@@ -33,6 +33,7 @@ class LogsListWidget extends StatefulWidget {
 }
 
 class _LogsListWidgetState extends State<LogsListWidget> {
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   bool showDivider = true;
 
   void fetchFilteringRules() async {
@@ -93,194 +94,197 @@ class _LogsListWidgetState extends State<LogsListWidget> {
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
     
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverOverlapAbsorber(
-            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            sliver: LogsListAppBar(
-              innerBoxIsScrolled: innerBoxIsScrolled, 
-              showDivider: showDivider,
+    return ScaffoldMessenger(
+      key: widget.twoColumns ? _scaffoldMessengerKey : null,
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: LogsListAppBar(
+                innerBoxIsScrolled: innerBoxIsScrolled, 
+                showDivider: showDivider,
+              )
             )
-          )
-        ],
-        body: Builder(
-          builder: (context) {
-            switch (logsProvider.loadStatus) {
-              case LoadStatus.loading:
-                return SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Builder(
-                    builder: (context) => CustomScrollView(
-                      slivers: [
-                        SliverOverlapInjector(
-                          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                        ),
-                        SliverFillRemaining(
-                          child: SizedBox(
-                            width: double.maxFinite,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const CircularProgressIndicator(),
-                                const SizedBox(height: 30),
-                                Text(
-                                  AppLocalizations.of(context)!.loadingLogs,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  ),
-                                )
-                              ],
-                            ),
+          ],
+          body: Builder(
+            builder: (context) {
+              switch (logsProvider.loadStatus) {
+                case LoadStatus.loading:
+                  return SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: Builder(
+                      builder: (context) => CustomScrollView(
+                        slivers: [
+                          SliverOverlapInjector(
+                            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                          ),
+                          SliverFillRemaining(
+                            child: SizedBox(
+                              width: double.maxFinite,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const CircularProgressIndicator(),
+                                  const SizedBox(height: 30),
+                                  Text(
+                                    AppLocalizations.of(context)!.loadingLogs,
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
                           )
-                        )
-                      ],
-                    ),
-                  ) 
-                );
-              
-              case LoadStatus.loaded:
-                return SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Builder(
-                    builder: (context) => RefreshIndicator(
-                      onRefresh: () async {
-                        await logsProvider.fetchLogs(inOffset: 0);
-                      },
-                      displacement: 95,
-                      child: NotificationListener(
-                        onNotification: scrollListener,
-                        child: CustomScrollView(
-                          slivers: [
-                            SliverOverlapInjector(
-                              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                            ),
-                            if (logsProvider.logsData!.data.isNotEmpty) SliverList.builder(
-                              itemCount: logsProvider.isLoadingMore 
-                                ? logsProvider.logsData!.data.length + 1 
-                                : logsProvider.logsData!.data.length,
-                              itemBuilder: (context, index) {
-                                if (logsProvider.isLoadingMore == true && index == logsProvider.logsData!.data.length) {
-                                  return const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 20),
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  );
-                                }
-                                else if (logsProvider.logsData!.data[index].question.name != null) {
-                                  return LogTile(
-                                    log: logsProvider.logsData!.data[index],
-                                    index: index,
-                                    length: logsProvider.logsData!.data.length,
-                                    isLogSelected: widget.selectedLog != null && widget.selectedLog == logsProvider.logsData!.data[index],
-                                    onLogTap: (log) {
-                                      if (!widget.twoColumns) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => LogDetailsScreen(
-                                              log: log,
-                                              dialog: false,
+                        ],
+                      ),
+                    ) 
+                  );
+                
+                case LoadStatus.loaded:
+                  return SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: Builder(
+                      builder: (context) => RefreshIndicator(
+                        onRefresh: () async {
+                          await logsProvider.fetchLogs(inOffset: 0);
+                        },
+                        displacement: 95,
+                        child: NotificationListener(
+                          onNotification: scrollListener,
+                          child: CustomScrollView(
+                            slivers: [
+                              SliverOverlapInjector(
+                                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                              ),
+                              if (logsProvider.logsData!.data.isNotEmpty) SliverList.builder(
+                                itemCount: logsProvider.isLoadingMore 
+                                  ? logsProvider.logsData!.data.length + 1 
+                                  : logsProvider.logsData!.data.length,
+                                itemBuilder: (context, index) {
+                                  if (logsProvider.isLoadingMore == true && index == logsProvider.logsData!.data.length) {
+                                    return const Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 20),
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
+                                  }
+                                  else if (logsProvider.logsData!.data[index].question.name != null) {
+                                    return LogTile(
+                                      log: logsProvider.logsData!.data[index],
+                                      index: index,
+                                      length: logsProvider.logsData!.data.length,
+                                      isLogSelected: widget.selectedLog != null && widget.selectedLog == logsProvider.logsData!.data[index],
+                                      onLogTap: (log) {
+                                        if (!widget.twoColumns) {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => LogDetailsScreen(
+                                                log: log,
+                                                dialog: false,
+                                              )
                                             )
-                                          )
-                                        );
-                                      }
-                                      widget.onLogSelected(log);
-                                    },
-                                    twoColumns: widget.twoColumns,
-                                  );
+                                          );
+                                        }
+                                        widget.onLogSelected(log);
+                                      },
+                                      twoColumns: widget.twoColumns,
+                                    );
+                                  }
+                                  else {
+                                    return null;
+                                  }
                                 }
-                                else {
-                                  return null;
-                                }
-                              }
-                            ),
-                            if (logsProvider.logsData!.data.isEmpty) SliverFillRemaining(
-                              child: Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.noLogsDisplay,
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                    if (logsProvider.logsOlderThan != null) Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 30,
-                                        left: 20,
-                                        right: 20
-                                      ),
-                                      child: Text(
-                                        AppLocalizations.of(context)!.noLogsThatOld,
-                                        textAlign: TextAlign.center,
+                              ),
+                              if (logsProvider.logsData!.data.isEmpty) SliverFillRemaining(
+                                child: Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.noLogsDisplay,
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 24,
                                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         ),
                                       ),
-                                    ),
-                                  ]
+                                      if (logsProvider.logsOlderThan != null) Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 30,
+                                          left: 20,
+                                          right: 20
+                                        ),
+                                        child: Text(
+                                          AppLocalizations.of(context)!.noLogsThatOld,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ),
+                                    ]
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ) 
-                );
-                
-              case LoadStatus.error:
-                return SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Builder(
-                    builder: (context) => CustomScrollView(
-                      slivers: [
-                        SliverOverlapInjector(
-                          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                        ),
-                        SliverFillRemaining(
-                          child: SizedBox(
-                            width: double.maxFinite,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                  size: 50,
-                                ),
-                                const SizedBox(height: 30),
-                                Text(
-                                  AppLocalizations.of(context)!.logsNotLoaded,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ) 
+                  );
+                  
+                case LoadStatus.error:
+                  return SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: Builder(
+                      builder: (context) => CustomScrollView(
+                        slivers: [
+                          SliverOverlapInjector(
+                            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                          ),
+                          SliverFillRemaining(
+                            child: SizedBox(
+                              width: double.maxFinite,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                    size: 50,
                                   ),
-                                )
-                              ],
-                            ),
+                                  const SizedBox(height: 30),
+                                  Text(
+                                    AppLocalizations.of(context)!.logsNotLoaded,
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
                           )
-                        )
-                      ],
-                    ),
-                  ) 
-                );
-
-              default:
-                return const SizedBox();
-            }
-          },
-        )
+                        ],
+                      ),
+                    ) 
+                  );
+      
+                default:
+                  return const SizedBox();
+              }
+            },
+          )
+        ),
       ),
     );
   }
