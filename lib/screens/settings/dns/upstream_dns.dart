@@ -263,7 +263,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
                   const SizedBox(width: 4),
                 ],
               ),
-            )).toList(),
+            )),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
