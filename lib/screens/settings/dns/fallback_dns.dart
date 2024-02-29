@@ -113,6 +113,44 @@ class _FallbackDnsScreenState extends State<FallbackDnsScreen> {
       } 
     }
 
+    void openAddCommentModal() {
+      if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
+        showDialog(
+          context: context, 
+          builder: (context) => CommentModal(
+            onConfirm: (value) {
+              setState(() {
+                fallbackControllers.add({
+                  'comment': value
+                });
+              });
+            },
+            dialog: true,
+          ),
+        );
+      }
+      else {
+        showModalBottomSheet(
+          context: context, 
+          useRootNavigator: true,
+          builder: (context) => CommentModal(
+            onConfirm: (value) {
+              setState(() {
+                fallbackControllers.add({
+                  'comment': value
+                });
+              });
+            },
+            dialog: false,
+          ),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          isDismissible: true
+        );
+      }
+    }
+
+
     void openEditCommentModal(Map<String, dynamic> item, int position) {
       if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
         showDialog(
@@ -267,9 +305,14 @@ class _FallbackDnsScreenState extends State<FallbackDnsScreen> {
               ),
             )),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               mainAxisSize: MainAxisSize.min,
               children: [
+                ElevatedButton.icon(
+                  onPressed: openAddCommentModal, 
+                  icon: const Icon(Icons.add), 
+                  label: Text(AppLocalizations.of(context)!.comment)
+                ),
                 ElevatedButton.icon(
                   onPressed: () {
                     setState(() => fallbackControllers.add({
@@ -279,7 +322,7 @@ class _FallbackDnsScreenState extends State<FallbackDnsScreen> {
                     checkValidValues();
                   }, 
                   icon: const Icon(Icons.add), 
-                  label: Text(AppLocalizations.of(context)!.addItem)
+                  label: Text(AppLocalizations.of(context)!.address)
                 ),
               ],
             ),
