@@ -754,6 +754,8 @@
     "statisticsSettingsDescription": "Configure data collection for statistics",
     "loadingStatisticsSettings": "Loading statistics settings...",
     "statisticsSettingsLoadError": "An error occured when loading statistics settings.",
+    "statisticsConfigUpdated": "Statistics settings updated successfully",
+    "statisticsConfigNotUpdated": "Statistics settings couldn't be updated",
     "customTimeInHours": "Custom time (in hours)",
     "invalidTime": "Invalid time",
     "removeDomain": "Remove domain",

@@ -754,6 +754,8 @@
     "statisticsSettingsDescription": "Configura la recolección de datos para estadísticas",
     "loadingStatisticsSettings": "Cargando ajustes de estadísticas...",
     "statisticsSettingsLoadError": "Ocurrió un error al cargar los ajustes de estadísticas.",
+    "statisticsConfigNotUpdated": "La configuración de estadísticas no pudo ser actualizada.",
+    "statisticsConfigUpdated": "Configuración de estadísticas actualizada correctamente.",
     "customTimeInHours": "Tiempo personalizado (en horas)",
     "invalidTime": "Tiempo no válido",
     "removeDomain": "Eliminar dominio",
