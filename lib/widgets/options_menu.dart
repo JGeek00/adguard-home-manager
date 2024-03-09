@@ -76,6 +76,7 @@ class _OptionsModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       contentPadding: const EdgeInsets.symmetric(vertical: 16),
+      scrollable: true,
       title: Column(
         children: [
           Icon(
@@ -94,19 +95,17 @@ class _OptionsModal extends StatelessWidget {
       ),
       content: ConstrainedBox(
         constraints: const BoxConstraints(
-          maxWidth: 400
+          maxWidth: 500
         ),
-        child: SingleChildScrollView(
-          child: Wrap(
-            children: options(value).map((opt) => CustomListTileDialog(
-              title: opt.title,
-              icon: opt.icon,
-              onTap: () {
-                Navigator.pop(context);
-                opt.action();
-              },
-            )).toList()
-          ),
+        child: Column(
+          children: options(value).map((opt) => CustomListTileDialog(
+            title: opt.title,
+            icon: opt.icon,
+            onTap: () {
+              Navigator.pop(context);
+              opt.action();
+            },
+          )).toList()
         ),
       ),
       actions: [
