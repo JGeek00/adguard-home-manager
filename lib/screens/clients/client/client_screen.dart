@@ -260,7 +260,7 @@ class _ClientScreenState extends State<ClientScreen> {
           ], 
           body: SafeArea(
             top: false,
-            bottom: true,
+            bottom: false,
             child: Builder(
               builder: (context) => CustomScrollView(
                 slivers: [
