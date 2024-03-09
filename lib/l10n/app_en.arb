@@ -780,5 +780,9 @@
     "date": "Date",
     "loadingChangelog": "Loading changelog...",
     "invalidIpOrUrl": "Invalid IP address or URL",
-    "addPersistentClient": "Add as a persistent client"
+    "addPersistentClient": "Add as a persistent client",
+    "blockThisClientOnly": "Block for this client only",
+    "unblockThisClientOnly": "Unblock for this client only",
+    "domainBlockedThisClient": "{domain} blocked for this client",
+    "domainUnblockedThisClient": "{domain} unblocked for this client"
 }

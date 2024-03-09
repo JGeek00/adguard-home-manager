@@ -780,5 +780,9 @@
     "date": "Fecha",
     "loadingChangelog": "Cargando registro de cambios...",
     "invalidIpOrUrl": "Dirección IP o URL no válida",
-    "addPersistentClient": "Añadir como cliente persistente"
+    "addPersistentClient": "Añadir como cliente persistente",
+    "blockThisClientOnly": "Bloquear sólo para este cliente",
+    "unblockThisClientOnly": "Desbloquear sólo para este cliente",
+    "domainBlockedThisClient": "{domain} bloqueado para este cliente",
+    "domainUnblockedThisClient": "{domain} desbloqueado para este cliente"
 }

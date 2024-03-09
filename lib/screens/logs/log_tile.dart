@@ -9,6 +9,7 @@ import 'package:adguard_home_manager/screens/clients/client/client_screen.dart';
 import 'package:adguard_home_manager/widgets/options_menu.dart';
 
 import 'package:adguard_home_manager/providers/status_provider.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
@@ -45,6 +46,7 @@ class LogTile extends StatelessWidget {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
     final clientsProvider = Provider.of<ClientsProvider>(context);
+    final filteringProvider = Provider.of<FilteringProvider>(context);
 
     Widget logStatusWidget({
       required IconData icon, 
@@ -147,6 +149,37 @@ class LogTile extends StatelessWidget {
       }
     }
 
+    void blockUnblockRuleClient() async {
+      ProcessModal processModal = ProcessModal();
+      processModal.open(AppLocalizations.of(context)!.addingRule);
+
+      final rule = isDomainBlocked(log.reason) == true
+        ? "@@||${log.question.name}^\$client='${log.client}'"
+        : "||${log.question.name}^\$client='${log.client}'";
+
+      final result = await filteringProvider.addCustomRule(rule);
+
+      processModal.close();
+
+      if (!context.mounted) return;
+      if (result == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: isDomainBlocked(log.reason) == true 
+            ? AppLocalizations.of(context)!.domainUnblockedThisClient(log.question.name!)
+            : AppLocalizations.of(context)!.domainBlockedThisClient(log.question.name!), 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.ruleNotAdded, 
+          color: Colors.red
+        );
+      }
+    }
+
     void openAddClient() {
       Future.delayed(
         const Duration(milliseconds: 0), 
@@ -181,6 +214,15 @@ class LogTile extends StatelessWidget {
                   domain: log.question.name!, 
                   newStatus: domainBlocked == true ? 'unblock' : 'block'
                 )
+              ),
+              MenuOption(
+                title: domainBlocked == true 
+                  ? AppLocalizations.of(context)!.unblockThisClientOnly
+                  : AppLocalizations.of(context)!.blockThisClientOnly,
+                icon: domainBlocked == true 
+                  ? Icons.check_rounded
+                  : Icons.block_rounded,
+                action: blockUnblockRuleClient
               ),
               if (log.clientInfo?.name == "") MenuOption(
                 title: AppLocalizations.of(context)!.addPersistentClient,
@@ -364,6 +406,15 @@ class LogTile extends StatelessWidget {
                 domain: log.question.name!, 
                 newStatus: domainBlocked == true ? 'unblock' : 'block'
               )
+            ),
+            MenuOption(
+              title: domainBlocked == true 
+                ? AppLocalizations.of(context)!.unblockThisClientOnly
+                : AppLocalizations.of(context)!.blockThisClientOnly,
+              icon: domainBlocked == true 
+                ? Icons.check_rounded
+                : Icons.block_rounded,
+              action: blockUnblockRuleClient
             ),
             if (log.clientInfo?.name == "") MenuOption(
               title: AppLocalizations.of(context)!.addPersistentClient,
