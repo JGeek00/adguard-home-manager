@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
+import 'package:adguard_home_manager/screens/clients/client/client_screen.dart';
 import 'package:adguard_home_manager/widgets/options_menu.dart';
 
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
 import 'package:adguard_home_manager/functions/copy_clipboard.dart';
+import 'package:adguard_home_manager/models/clients.dart';
+import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
@@ -40,6 +44,7 @@ class LogTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
+    final clientsProvider = Provider.of<ClientsProvider>(context);
 
     Widget logStatusWidget({
       required IconData icon, 
@@ -118,6 +123,39 @@ class LogTile extends StatelessWidget {
       }
     }
 
+    void confirmAddClient(Client client) async {
+      ProcessModal processModal = ProcessModal();
+      processModal.open(AppLocalizations.of(context)!.addingClient);
+      
+      final result = await clientsProvider.addClient(client);
+      
+      processModal.close();
+
+      if (result == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
+          color: Colors.green
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientNotAdded, 
+          color: Colors.red
+        );
+      }
+    }
+
+    void openAddClient() {
+      openClientFormModal(
+        context: context, 
+        width: MediaQuery.of(context).size.width, 
+        onConfirm: confirmAddClient,
+        initialData: ClientInitialData(name:  "Client ${log.client}", ip: log.client)
+      );
+    }
+
     final domainBlocked = isDomainBlocked(log.reason);
 
     if (twoColumns && !(useAlwaysNormalTile == true)) {
@@ -140,6 +178,11 @@ class LogTile extends StatelessWidget {
                   domain: log.question.name!, 
                   newStatus: domainBlocked == true ? 'unblock' : 'block'
                 )
+              ),
+              if (log.clientInfo?.name == "") MenuOption(
+                title: AppLocalizations.of(context)!.addPersistentClient,
+                icon: Icons.add_rounded,
+                action: openAddClient
               ),
               if (log.question.name != null) MenuOption(
                 title: AppLocalizations.of(context)!.copyClipboard,
@@ -318,6 +361,11 @@ class LogTile extends StatelessWidget {
                 domain: log.question.name!, 
                 newStatus: domainBlocked == true ? 'unblock' : 'block'
               )
+            ),
+            if (log.clientInfo?.name == "") MenuOption(
+              title: AppLocalizations.of(context)!.addPersistentClient,
+              icon: Icons.add_rounded,
+              action: openAddClient
             ),
             if (log.question.name != null) MenuOption(
               title: AppLocalizations.of(context)!.copyClipboard,

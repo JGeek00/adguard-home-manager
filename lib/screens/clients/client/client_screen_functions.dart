@@ -80,6 +80,7 @@ void openClientFormModal({
   Client? client,
   required void Function(Client) onConfirm,
   void Function(Client)? onDelete,
+  ClientInitialData? initialData,
 }) {
   showGeneralDialog(
     context: context, 
@@ -105,6 +106,7 @@ void openClientFormModal({
       client: client,
       onConfirm: onConfirm,
       onDelete: onDelete,
+      initialData: initialData,
     ),
   );
 }

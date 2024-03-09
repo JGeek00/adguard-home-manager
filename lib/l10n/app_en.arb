@@ -779,5 +779,6 @@
     "enablePlainDnsDescription": "Plain DNS is enabled by default. You can disable it to force all devices to use encrypted DNS. To do this, you must enable at least one encrypted DNS protocol.",
     "date": "Date",
     "loadingChangelog": "Loading changelog...",
-    "invalidIpOrUrl": "Invalid IP address or URL"
+    "invalidIpOrUrl": "Invalid IP address or URL",
+    "addPersistentClient": "Add as a persistent client"
 }

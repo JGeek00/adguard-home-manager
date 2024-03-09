@@ -10,6 +10,16 @@ import 'package:adguard_home_manager/models/safe_search.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
+class ClientInitialData {
+  final String name;
+  final String ip;
+
+  const ClientInitialData({
+    required this.name,
+    required this.ip,
+  });
+}  
+
 class ControllerListItem {
   final String id;
   final TextEditingController controller;
@@ -25,13 +35,15 @@ class ClientScreen extends StatefulWidget {
   final void Function(Client) onConfirm;
   final void Function(Client)? onDelete;
   final bool fullScreen;
+  final ClientInitialData? initialData;
 
   const ClientScreen({
     super.key,
     this.client,
     required this.onConfirm,
     this.onDelete,
-    required this.fullScreen
+    required this.fullScreen,
+    this.initialData,
   });
 
   @override
@@ -145,6 +157,13 @@ class _ClientScreenState extends State<ClientScreen> {
       if (widget.client!.blockedServicesSchedule != null) {
         _blockedServicesSchedule = widget.client!.blockedServicesSchedule!;
       }
+    }
+    if (widget.initialData != null) {
+      nameController.text = widget.initialData!.name;
+      identifiersControllers[0] = ControllerListItem(
+        id: uuid.v4(), 
+        controller: TextEditingController(text: widget.initialData!.ip)
+      );
     }
     super.initState();
   }
