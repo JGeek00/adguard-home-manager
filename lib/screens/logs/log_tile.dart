@@ -148,11 +148,14 @@ class LogTile extends StatelessWidget {
     }
 
     void openAddClient() {
-      openClientFormModal(
-        context: context, 
-        width: MediaQuery.of(context).size.width, 
-        onConfirm: confirmAddClient,
-        initialData: ClientInitialData(name:  "Client ${log.client}", ip: log.client)
+      Future.delayed(
+        const Duration(milliseconds: 0), 
+        () => openClientFormModal(
+          context: context, 
+          width: MediaQuery.of(context).size.width, 
+          onConfirm: confirmAddClient,
+          initialData: ClientInitialData(name:  "Client ${log.client}", ip: log.client)
+        )
       );
     }
 

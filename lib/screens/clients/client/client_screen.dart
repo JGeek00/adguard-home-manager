@@ -235,71 +235,90 @@ class _ClientScreenState extends State<ClientScreen> {
 
 
     if (widget.fullScreen == true) {
-      return Dialog.fullscreen(
-        child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.close)
-            ),
-            title: Text(
-              widget.client != null 
-                ? AppLocalizations.of(context)!.client
-                : AppLocalizations.of(context)!.addClient
-            ),
-            actions: actions(),
-          ),
+      return Material(
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar.large(
+                pinned: true,
+                floating: true,
+                centerTitle: false,
+                forceElevated: innerBoxIsScrolled,
+                leading: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close)
+                ),
+                title: Text(
+                  widget.client != null 
+                    ? AppLocalizations.of(context)!.client
+                    : AppLocalizations.of(context)!.addClient
+                ),
+                actions: actions(),
+              )
+            )
+          ], 
           body: SafeArea(
-            child: ListView(
-              controller: _scrollController,
-              children: [
-                if (!_nameValid || !_identifiersValid || !_dnsCacheValid) _Errors(
-                  nameValid: _nameValid, 
-                  identifiersValid: _identifiersValid, 
-                  dnsCacheValid: _dnsCacheValid
-                ),
-                ClientForm(
-                  isFullScreen: true,
-                  client: widget.client, 
-                  nameController: nameController,
-                  identifiersControllers: identifiersControllers, 
-                  selectedTags: selectedTags, 
-                  useGlobalSettingsFiltering: useGlobalSettingsFiltering, 
-                  enableFiltering: enableFiltering, 
-                  enableParentalControl: enableParentalControl, 
-                  enableSafeBrowsing: enableSafeBrowsing, 
-                  enableSafeSearch: enableSafeSearch, 
-                  safeSearch: safeSearch, 
-                  blockedServices: blockedServices, 
-                  updateBlockedServices: (v) => setState(() => blockedServices = v), 
-                  upstreamServers: upstreamServers, 
-                  updateUpstreamServers: (v) => setState(() => upstreamServers = v), 
-                  defaultSafeSearch: defaultSafeSearch, 
-                  useGlobalSettingsServices: useGlobalSettingsServices, 
-                  updateSelectedTags: (v) => setState(() => selectedTags = v),
-                  updateIdentifiersControllers: (v) => setState(() => identifiersControllers = v), 
-                  enableDisableGlobalSettingsFiltering: enableDisableGlobalSettingsFiltering, 
-                  updateEnableFiltering: (v) => setState(() => enableFiltering = v), 
-                  updateEnableParentalControl: (v) => setState(() => enableParentalControl = v), 
-                  updateEnableSafeBrowsing: (v) => setState(() => enableSafeBrowsing = v), 
-                  updateEnableSafeSearch: (v) => setState(() => enableSafeSearch = v), 
-                  updateSafeSearch: (v) => setState(() => safeSearch = v), 
-                  updateUseGlobalSettingsServices: (v) => setState(() => useGlobalSettingsServices = v), 
-                  ignoreClientQueryLog: _ignoreClientQueryLog,
-                  ignoreClientStatistics: _ignoreClientStatistics,
-                  updateIgnoreClientQueryLog: (v) => setState(() => _ignoreClientQueryLog = v),
-                  updateIgnoreClientStatistics: (v) => setState(() => _ignoreClientStatistics = v),
-                  enableDnsCache: _enableDnsCache,
-                  updateEnableDnsCache: (v) => setState(() => _enableDnsCache = v),
-                  dnsCacheField: _dnsCacheField,
-                  dnsCacheError: _dnsCacheError,
-                  updateDnsCacheError: (v) => setState(() => _dnsCacheError = v),
-                  blockedServicesSchedule: _blockedServicesSchedule,
-                  setBlockedServicesSchedule: (v) => setState(() => _blockedServicesSchedule = v),
-                ),
-              ],
-            ),
-          ),
+            top: false,
+            bottom: true,
+            child: Builder(
+              builder: (context) => CustomScrollView(
+                slivers: [
+                  SliverOverlapInjector(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  ),
+                  SliverList.list(
+                    children: [
+                      if (!_nameValid || !_identifiersValid || !_dnsCacheValid) _Errors(
+                        nameValid: _nameValid, 
+                        identifiersValid: _identifiersValid, 
+                        dnsCacheValid: _dnsCacheValid
+                      ),
+                      ClientForm(
+                        isFullScreen: true,
+                        client: widget.client, 
+                        nameController: nameController,
+                        identifiersControllers: identifiersControllers, 
+                        selectedTags: selectedTags, 
+                        useGlobalSettingsFiltering: useGlobalSettingsFiltering, 
+                        enableFiltering: enableFiltering, 
+                        enableParentalControl: enableParentalControl, 
+                        enableSafeBrowsing: enableSafeBrowsing, 
+                        enableSafeSearch: enableSafeSearch, 
+                        safeSearch: safeSearch, 
+                        blockedServices: blockedServices, 
+                        updateBlockedServices: (v) => setState(() => blockedServices = v), 
+                        upstreamServers: upstreamServers, 
+                        updateUpstreamServers: (v) => setState(() => upstreamServers = v), 
+                        defaultSafeSearch: defaultSafeSearch, 
+                        useGlobalSettingsServices: useGlobalSettingsServices, 
+                        updateSelectedTags: (v) => setState(() => selectedTags = v),
+                        updateIdentifiersControllers: (v) => setState(() => identifiersControllers = v), 
+                        enableDisableGlobalSettingsFiltering: enableDisableGlobalSettingsFiltering, 
+                        updateEnableFiltering: (v) => setState(() => enableFiltering = v), 
+                        updateEnableParentalControl: (v) => setState(() => enableParentalControl = v), 
+                        updateEnableSafeBrowsing: (v) => setState(() => enableSafeBrowsing = v), 
+                        updateEnableSafeSearch: (v) => setState(() => enableSafeSearch = v), 
+                        updateSafeSearch: (v) => setState(() => safeSearch = v), 
+                        updateUseGlobalSettingsServices: (v) => setState(() => useGlobalSettingsServices = v), 
+                        ignoreClientQueryLog: _ignoreClientQueryLog,
+                        ignoreClientStatistics: _ignoreClientStatistics,
+                        updateIgnoreClientQueryLog: (v) => setState(() => _ignoreClientQueryLog = v),
+                        updateIgnoreClientStatistics: (v) => setState(() => _ignoreClientStatistics = v),
+                        enableDnsCache: _enableDnsCache,
+                        updateEnableDnsCache: (v) => setState(() => _enableDnsCache = v),
+                        dnsCacheField: _dnsCacheField,
+                        dnsCacheError: _dnsCacheError,
+                        updateDnsCacheError: (v) => setState(() => _dnsCacheError = v),
+                        blockedServicesSchedule: _blockedServicesSchedule,
+                        setBlockedServicesSchedule: (v) => setState(() => _blockedServicesSchedule = v),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          )
         ),
       );
     } 
