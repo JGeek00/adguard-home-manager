@@ -180,6 +180,47 @@ class LogTile extends StatelessWidget {
       }
     }
 
+    void allowDisallowClient() async {
+      ProcessModal processModal = ProcessModal();
+      processModal.open(
+        log.clientInfo!.disallowed == true 
+          ? AppLocalizations.of(context)!.allowingClient
+          : AppLocalizations.of(context)!.disallowingClient
+      );
+
+      final result = await clientsProvider.addClientList(
+        log.client, 
+        log.clientInfo!.disallowed == true
+          ? AccessSettingsList.allowed
+          : AccessSettingsList.disallowed
+      );
+
+      processModal.close();
+      
+      if (!context.mounted) return;
+      if (result.successful == true) {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
+          color: Colors.green
+        );
+      }
+      else if (result.successful == false && result.content == 'client_another_list') {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.clientAnotherList, 
+          color: Colors.red
+        );
+      }
+      else {
+        showSnacbkar(
+          appConfigProvider: appConfigProvider,
+          label: AppLocalizations.of(context)!.changesNotSaved,
+          color: Colors.red
+        );
+      }
+    }
+
     void openAddClient() {
       Future.delayed(
         const Duration(milliseconds: 0), 
@@ -228,6 +269,15 @@ class LogTile extends StatelessWidget {
                 title: AppLocalizations.of(context)!.addPersistentClient,
                 icon: Icons.add_rounded,
                 action: openAddClient
+              ),
+              MenuOption(
+                title: log.clientInfo!.disallowed == true
+                  ? AppLocalizations.of(context)!.allowThisClient
+                  : AppLocalizations.of(context)!.disallowThisClient,
+                icon: log.clientInfo!.disallowed == true
+                  ? Icons.check_rounded
+                  : Icons.block_rounded,
+                action: allowDisallowClient
               ),
               if (log.question.name != null) MenuOption(
                 title: AppLocalizations.of(context)!.copyClipboard,
@@ -420,6 +470,15 @@ class LogTile extends StatelessWidget {
               title: AppLocalizations.of(context)!.addPersistentClient,
               icon: Icons.add_rounded,
               action: openAddClient
+            ),
+            MenuOption(
+              title: log.clientInfo!.disallowed == true
+                ? AppLocalizations.of(context)!.allowThisClient
+                : AppLocalizations.of(context)!.disallowThisClient,
+              icon: log.clientInfo!.disallowed == true
+                ? Icons.check_rounded
+                : Icons.block_rounded,
+              action: allowDisallowClient
             ),
             if (log.question.name != null) MenuOption(
               title: AppLocalizations.of(context)!.copyClipboard,

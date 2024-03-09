@@ -784,5 +784,12 @@
     "blockThisClientOnly": "Bloquear sólo para este cliente",
     "unblockThisClientOnly": "Desbloquear sólo para este cliente",
     "domainBlockedThisClient": "{domain} bloqueado para este cliente",
-    "domainUnblockedThisClient": "{domain} desbloqueado para este cliente"
+    "domainUnblockedThisClient": "{domain} desbloqueado para este cliente",
+    "disallowThisClient": "No permitir este cliente",
+    "allowThisClient": "Permitir este cliente",
+    "clientAllowedSuccessfully": "Cliente permitido correctamente",
+    "clientDisallowedSuccessfully": "Cliente no permitido correctamente",
+    "changesNotSaved": "Los cambios no han podido ser guardados",
+    "allowingClient": "Permitiendo cliente...",
+    "disallowingClient": "No permitiendo cliente..."
 }
