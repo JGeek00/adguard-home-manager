@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/settings.dart';
 import 'package:adguard_home_manager/screens/settings/dns/fallback_dns.dart';
 import 'package:adguard_home_manager/screens/settings/dns/test_upstream_dns_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dns/clear_dns_cache_dialog.dart';
@@ -52,7 +52,7 @@ class _DnsSettingsState extends State<DnsSettings> {
 
     void navigate(Widget w) {
       if (widget.splitView) {
-        SplitView.of(context).push(w);
+        Navigator.of(settingsNavigatorKey.currentContext!).push(MaterialPageRoute(builder: (ctx) => w));
       }
       else {
         Navigator.of(context).push(

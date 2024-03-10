@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/server_info/server_info.dart';
@@ -33,6 +32,8 @@ import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
+final settingsNavigatorKey = GlobalKey<NavigatorState>();
+
 class Settings extends StatelessWidget {
   const Settings({super.key});
 
@@ -41,25 +42,22 @@ class Settings extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 900) {
-          return SplitView.material(
-            hideDivider: true,
-            flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
-            placeholder: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  AppLocalizations.of(context)!.selectOptionLeftColumn,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant
-                  ),
-                ),
+          return Row(
+            children: [
+              const Expanded(
+                flex: 1,
+                child: _SettingsWidget(
+                  twoColumns: true,
+                )
               ),
-            ),
-            child: const _SettingsWidget(
-              twoColumns: true,
-            ),
+              Expanded(
+                flex: 2,
+                child: Navigator(
+                  key: settingsNavigatorKey,
+                  onGenerateRoute: (settings) => MaterialPageRoute(builder: (ctx) => const SizedBox()),
+                ),
+              )
+            ],
           );
         }
         else {
@@ -351,7 +349,13 @@ class _SettingsTile extends StatelessWidget {
         selectedItem: appConfigProvider.selectedSettingsScreen,
         onTap: () {
           appConfigProvider.setSelectedSettingsScreen(screen: thisItem, notify: true);
-          SplitView.of(context).setSecondary(screenToNavigate);
+          Navigator.of(settingsNavigatorKey.currentContext!).pushReplacement(
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) => screenToNavigate,
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
         },
       );
     }

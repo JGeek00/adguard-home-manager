@@ -3,10 +3,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/settings/settings.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_not_available.dart';
 import 'package:adguard_home_manager/widgets/confirm_action_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/dhcp_main_button.dart';
@@ -610,11 +610,11 @@ class _DhcpScreenState extends State<DhcpScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 if (!(Platform.isAndroid || Platform.isIOS)) {
-                                  SplitView.of(context).push(
-                                    DhcpLeases(
+                                  Navigator.of(settingsNavigatorKey.currentContext!).push(
+                                    MaterialPageRoute(builder: (ctx) => DhcpLeases(
                                       items: dhcpProvider.dhcp!.dhcpStatus!.leases,
                                       staticLeases: false,
-                                    )
+                                    ))
                                   );
                                 }
                                 else {
@@ -639,11 +639,11 @@ class _DhcpScreenState extends State<DhcpScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 if (!(Platform.isAndroid || Platform.isIOS)) {
-                                  SplitView.of(context).push(
-                                    DhcpLeases(
+                                  Navigator.of(settingsNavigatorKey.currentContext!).push(
+                                    MaterialPageRoute(builder: (ctx) => DhcpLeases(
                                       items: dhcpProvider.dhcp!.dhcpStatus!.staticLeases,
                                       staticLeases: true,
-                                    )
+                                    ))
                                   );
                                 }
                                 else {
