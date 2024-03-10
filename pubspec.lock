@@ -597,6 +597,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  screen_retriever:
+    dependency: transitive
+    description:
+      name: screen_retriever
+      sha256: "6ee02c8a1158e6dae7ca430da79436e3b1c9563c8cf02f524af997c201ac2b90"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.9"
   segmented_button_slide:
     dependency: "direct main"
     description:
@@ -954,15 +962,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
-  window_size:
+  window_manager:
     dependency: "direct main"
     description:
-      path: "plugins/window_size"
-      ref: HEAD
-      resolved-ref: "6c66ad23ee79749f30a8eece542cf54eaf157ed8"
-      url: "https://github.com/google/flutter-desktop-embedding"
-    source: git
-    version: "0.1.0"
+      name: window_manager
+      sha256: b3c895bdf936c77b83c5254bec2e6b3f066710c1f89c38b20b8acc382b525494
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.8"
   xdg_directories:
     dependency: transitive
     description:

@@ -13,7 +13,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:store_checker/store_checker.dart';
-import 'package:window_size/window_size.dart';
+import 'package:window_manager/window_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -40,7 +40,8 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    setWindowMinSize(const Size(500, 500));
+    await windowManager.ensureInitialized();
+    WindowManager.instance.setMinimumSize(const Size(500, 700));
   }
 
   if (Platform.isWindows || Platform.isLinux) {

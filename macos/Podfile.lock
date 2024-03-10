@@ -6,6 +6,8 @@ PODS:
   - FlutterMacOS (1.0.0)
   - package_info_plus (0.0.1):
     - FlutterMacOS
+  - screen_retriever (0.0.1):
+    - FlutterMacOS
   - Sentry/HybridSDK (8.21.0):
     - SentryPrivate (= 8.21.0)
   - sentry_flutter (0.0.1):
@@ -36,7 +38,7 @@ PODS:
     - sqlite3/rtree
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
-  - window_size (0.0.2):
+  - window_manager (0.2.0):
     - FlutterMacOS
 
 DEPENDENCIES:
@@ -44,12 +46,13 @@ DEPENDENCIES:
   - dynamic_color (from `Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
+  - screen_retriever (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos`)
   - sentry_flutter (from `Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/darwin`)
   - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
-  - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
+  - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
 
 SPEC REPOS:
   trunk:
@@ -66,6 +69,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
+  screen_retriever:
+    :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos
   sentry_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos
   shared_preferences_foundation:
@@ -76,14 +81,15 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
-  window_size:
-    :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
+  window_manager:
+    :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
   device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   dynamic_color: 2eaa27267de1ca20d879fbd6e01259773fb1670f
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
+  screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38
   Sentry: ebc12276bd17613a114ab359074096b6b3725203
   sentry_flutter: dff1df05dc39c83d04f9330b36360fc374574c5e
   SentryPrivate: d651efb234cf385ec9a1cdd3eff94b5e78a0e0fe
@@ -92,7 +98,7 @@ SPEC CHECKSUMS:
   sqlite3: 73b7fc691fdc43277614250e04d183740cb15078
   sqlite3_flutter_libs: 06a05802529659a272beac4ee1350bfec294f386
   url_launcher_macos: d2691c7dd33ed713bf3544850a623080ec693d95
-  window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
+  window_manager: 3a1844359a6295ab1e47659b1a777e36773cd6e8
 
 PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
 
