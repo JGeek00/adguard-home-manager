@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/clients/clients.dart';
 import 'package:adguard_home_manager/screens/clients/client/client_screen_functions.dart';
 import 'package:adguard_home_manager/screens/clients/client/added_client_tile.dart';
 import 'package:adguard_home_manager/screens/clients/client/remove_client_modal.dart';
@@ -107,7 +107,7 @@ class _AddedListState extends State<AddedList> {
 
       if (result == true) {
         if (widget.splitView == true) {
-          SplitView.of(context).popUntil(0);
+          Navigator.of(clientsNavigatorKey.currentContext!).popUntil((route) => false);
         }
         showSnacbkar(
           appConfigProvider: appConfigProvider,

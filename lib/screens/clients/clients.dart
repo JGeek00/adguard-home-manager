@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_split_view/flutter_split_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/clients/clients_lists.dart';
 
 import 'package:adguard_home_manager/models/clients.dart';
+
+final clientsNavigatorKey = GlobalKey<NavigatorState>();
 
 class Clients extends StatefulWidget {
   const Clients({super.key});
@@ -24,26 +24,23 @@ class _ClientsState extends State<Clients> with TickerProviderStateMixin {
       body: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth > 900) {
-            return SplitView.material(
-              hideDivider: true,
-              flexWidth: const FlexWidth(mainViewFlexWidth: 1, secondaryViewFlexWidth: 2),
-              placeholder: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Text(
-                    AppLocalizations.of(context)!.selectClientLeftColumn,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant
-                    ),
-                  ),
-                ),
+            return Row(
+            children: [
+              const Expanded(
+                flex: 1,
+                child: ClientsLists(
+                  splitView: true,
+                )
               ),
-              child: const ClientsLists(
-                splitView: true,
+              Expanded(
+                flex: 2,
+                child: Navigator(
+                  key: clientsNavigatorKey,
+                  onGenerateRoute: (settings) => MaterialPageRoute(builder: (ctx) => const SizedBox()),
+                ),
               )
-            );
+            ],
+          );
           }
           else {
             return const ClientsLists(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_split_view/flutter_split_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/clients/clients.dart';
 import 'package:adguard_home_manager/screens/clients/added_list.dart';
 import 'package:adguard_home_manager/screens/clients/client/logs_list_client.dart';
 import 'package:adguard_home_manager/screens/clients/clients_list.dart';
@@ -68,7 +68,13 @@ class _ClientsListsState extends State<ClientsLists> with TickerProviderStateMix
         splitView: widget.splitView,
       );
       if (widget.splitView) {
-        SplitView.of(context).push(w);
+        Navigator.of(clientsNavigatorKey.currentContext!).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => w,
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          )
+        );
       }
       else {
         Navigator.of(context).push(
@@ -88,7 +94,13 @@ class _ClientsListsState extends State<ClientsLists> with TickerProviderStateMix
         splitView: widget.splitView,
       );
       if (widget.splitView) {
-        SplitView.of(context).push(w);
+        Navigator.of(clientsNavigatorKey.currentContext!).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => w,
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          )
+        );
       }
       else {
         Navigator.of(context).push(
