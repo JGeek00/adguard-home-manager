@@ -256,7 +256,7 @@ class LogTile extends StatelessWidget {
                   newStatus: domainBlocked == true ? 'unblock' : 'block'
                 )
               ),
-              MenuOption(
+              if (filteringProvider.filtering != null) MenuOption(
                 title: domainBlocked == true 
                   ? AppLocalizations.of(context)!.unblockThisClientOnly
                   : AppLocalizations.of(context)!.blockThisClientOnly,
@@ -457,7 +457,7 @@ class LogTile extends StatelessWidget {
                 newStatus: domainBlocked == true ? 'unblock' : 'block'
               )
             ),
-            MenuOption(
+            if (filteringProvider.filtering != null) MenuOption(
               title: domainBlocked == true 
                 ? AppLocalizations.of(context)!.unblockThisClientOnly
                 : AppLocalizations.of(context)!.blockThisClientOnly,

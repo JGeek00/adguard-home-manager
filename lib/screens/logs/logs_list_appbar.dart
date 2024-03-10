@@ -59,7 +59,7 @@ class LogsListAppBar extends StatelessWidget {
       showDialog(
         context: context, 
         builder: (context) => _Search(
-          searchButtonRenderBox: _searchButtonKey.currentContext!.findRenderObject() as RenderBox,
+          searchButtonRenderBox: _searchButtonKey.currentContext?.findRenderObject() as RenderBox?,
           onSearch: (v) {
             logsProvider.setAppliedFilters(
               AppliedFiters(
@@ -243,7 +243,7 @@ class LogsListAppBar extends StatelessWidget {
 
 class _Search extends StatefulWidget {
   final void Function(String) onSearch;
-  final RenderBox searchButtonRenderBox;
+  final RenderBox? searchButtonRenderBox;
 
   const _Search({
     required this.onSearch,
@@ -269,7 +269,8 @@ class _SearchState extends State<_Search> {
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
 
-    final Offset position = widget.searchButtonRenderBox.localToGlobal(Offset.zero);
+    final position = widget.searchButtonRenderBox?.localToGlobal(Offset.zero);
+    final topPadding = MediaQuery.of(globalNavigatorKey.currentContext!).viewPadding.top;
 
     return GestureDetector(
       onTap: () => Navigator.pop(context),
@@ -282,7 +283,7 @@ class _SearchState extends State<_Search> {
               alignment: Alignment.topCenter,
               children: [
                 Positioned(
-                  top: position.dy - MediaQuery.of(globalNavigatorKey.currentContext!).viewPadding.top,
+                  top: position != null ? position.dy - topPadding : topPadding,
                   child: SizedBox(
                     width: width,
                     child: GestureDetector(

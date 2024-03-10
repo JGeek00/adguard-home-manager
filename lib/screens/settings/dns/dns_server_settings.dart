@@ -165,7 +165,7 @@ class _DnsServerSettingsScreenState extends State<DnsServerSettingsScreen> {
       processModal.open(AppLocalizations.of(context)!.savingConfig);
 
       final result = await dnsProvider.saveDnsServerConfig({
-        "ratelimit": int.parse(_limitRequestsController.text),
+        "ratelimit": int.tryParse(_limitRequestsController.text),
         "edns_cs_enabled": _enableEdns,
         "edns_cs_use_custom": _useCustomIpEdns,
         "edns_cs_custom_ip": _customIpEdnsController.text,
