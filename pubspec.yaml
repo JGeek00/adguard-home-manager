@@ -58,10 +58,6 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   sqlite3_flutter_libs: ^0.5.18
   sqflite_common_ffi: ^2.3.1
-  window_size:
-    git:
-      url: https://github.com/google/flutter-desktop-embedding
-      path: plugins/window_size
   contextmenu: ^3.0.0
   async: ^2.11.0
   sentry_flutter: ^7.13.2
@@ -74,6 +70,7 @@ dependencies:
   flutter_custom_tabs: ^2.0.0+1
   url_launcher: ^6.2.4
   shared_preferences: ^2.2.2
+  window_manager: ^0.3.8
 
 dev_dependencies:
   flutter_test:
