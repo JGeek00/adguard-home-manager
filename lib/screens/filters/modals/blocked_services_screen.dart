@@ -85,38 +85,130 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
 
     if (widget.fullScreen == true) {
       return Dialog.fullscreen(
-        child: Scaffold(
-          appBar: AppBar(
-            leading: CloseButton(onPressed: () => Navigator.pop(context)),
-            title: Text(AppLocalizations.of(context)!.blockedServices),
-            actions: [
-              IconButton(
-                onPressed: updateBlockedServices, 
-                icon: const Icon(
-                  Icons.save_rounded
-                ),
-                tooltip: AppLocalizations.of(context)!.save,
-              ),
-              const SizedBox(width: 10)
-            ],
-          ),
-          body: SafeArea(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                final result = await filteringProvider.loadBlockedServices();
-                if (result == false) {
-                  showSnacbkar(
-                    appConfigProvider: appConfigProvider,
-                    label: AppLocalizations.of(context)!.blockedServicesListNotLoaded, 
-                    color: Colors.red
-                  );
-                }
-              },
-              child: _Content(
-                values: values,
-                updateValues: updateValues,
+        child: Material(
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar.large(
+                  pinned: true,
+                  floating: true,
+                  centerTitle: false,
+                  forceElevated: innerBoxIsScrolled,
+                  leading: CloseButton(onPressed: () => Navigator.pop(context)),
+                  title: Text(AppLocalizations.of(context)!.blockedServices),
+                  actions: [
+                    IconButton(
+                      onPressed: updateBlockedServices, 
+                      icon: const Icon(
+                        Icons.save_rounded
+                      ),
+                      tooltip: AppLocalizations.of(context)!.save,
+                    ),
+                    const SizedBox(width: 10)
+                  ],
+                )
               )
-            ),
+            ], 
+            body: SafeArea(
+              top: false,
+              bottom: true,
+              child: Builder(
+                builder: (context) => CustomScrollView(
+                  slivers: [
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                    ),
+                    if (filteringProvider.blockedServicesLoadStatus == LoadStatus.loading) Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      width: double.maxFinite,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 30),
+                          Text(
+                            AppLocalizations.of(context)!.loadingBlockedServicesList,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    if (filteringProvider.blockedServicesLoadStatus == LoadStatus.loaded) SliverList.builder(
+                      itemCount: filteringProvider.blockedServices!.services.length,
+                      itemBuilder: (context, index) => Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => updateValues(
+                            values.contains(filteringProvider.blockedServices!.services[index].id), 
+                            filteringProvider.blockedServices!.services[index]
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 6,
+                              bottom: 6,
+                              right: 12,
+                              left: 24
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  filteringProvider.blockedServices!.services[index].name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).colorScheme.onSurface
+                                  ),
+                                ),
+                                Checkbox(
+                                  value: values.contains(filteringProvider.blockedServices!.services[index].id), 
+                                  onChanged: (value) => updateValues(
+                                    value!, 
+                                    filteringProvider.blockedServices!.services[index]
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ),
+                    if (filteringProvider.blockedServicesLoadStatus == LoadStatus.error) Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      width: double.maxFinite,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                            size: 50,
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            AppLocalizations.of(context)!.blockedServicesListNotLoaded,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            )
           ),
         ),
       );
@@ -162,9 +254,105 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
                 ),
               ),
               Expanded(
-                child: _Content(
-                  values: values,
-                  updateValues: updateValues,
+                child: Builder(
+                  builder: (ctx) {
+                    switch (filteringProvider.blockedServicesLoadStatus) {
+                      case LoadStatus.loading:
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          width: double.maxFinite,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const CircularProgressIndicator(),
+                              const SizedBox(height: 30),
+                              Text(
+                                AppLocalizations.of(context)!.loadingBlockedServicesList,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+
+                      case LoadStatus.loaded:
+                        return ListView.builder(
+                          itemCount: filteringProvider.blockedServices!.services.length,
+                          itemBuilder: (context, index) => Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => updateValues(
+                                values.contains(filteringProvider.blockedServices!.services[index].id), 
+                                filteringProvider.blockedServices!.services[index]
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 6,
+                                  bottom: 6,
+                                  right: 12,
+                                  left: 24
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      filteringProvider.blockedServices!.services[index].name,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Theme.of(context).colorScheme.onSurface
+                                      ),
+                                    ),
+                                    Checkbox(
+                                      value: values.contains(filteringProvider.blockedServices!.services[index].id), 
+                                      onChanged: (value) => updateValues(
+                                        value!, 
+                                        filteringProvider.blockedServices!.services[index]
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5)
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        );
+
+                      case LoadStatus.error:
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          width: double.maxFinite,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 50,
+                              ),
+                              const SizedBox(height: 30),
+                              Text(
+                                AppLocalizations.of(context)!.blockedServicesListNotLoaded,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+
+                      default:
+                        return const SizedBox();
+                    }
+                  },
                 )
               ),
             ],
@@ -175,117 +363,6 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
   }
 }
 
-class _Content extends StatelessWidget {
-  final List<String> values;
-  final void Function(bool value, BlockedService item) updateValues;
-
-  const _Content({
-    required this.values,
-    required this.updateValues,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final filteringProvider = Provider.of<FilteringProvider>(context);
-
-    switch (filteringProvider.blockedServicesLoadStatus) {
-      case LoadStatus.loading:
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.loadingBlockedServicesList,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              )
-            ],
-          ),
-        );
-
-      case LoadStatus.loaded:
-        return ListView.builder(
-          itemCount: filteringProvider.blockedServices!.services.length,
-          itemBuilder: (context, index) => Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => updateValues(
-                values.contains(filteringProvider.blockedServices!.services[index].id), 
-                filteringProvider.blockedServices!.services[index]
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 6,
-                  bottom: 6,
-                  right: 12,
-                  left: 24
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      filteringProvider.blockedServices!.services[index].name,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.onSurface
-                      ),
-                    ),
-                    Checkbox(
-                      value: values.contains(filteringProvider.blockedServices!.services[index].id), 
-                      onChanged: (value) => updateValues(
-                        value!, 
-                        filteringProvider.blockedServices!.services[index]
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          )
-        );
-
-      case LoadStatus.error:
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 50,
-              ),
-              const SizedBox(height: 30),
-              Text(
-                AppLocalizations.of(context)!.blockedServicesListNotLoaded,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              )
-            ],
-          ),
-        );
-
-      default:
-        return const SizedBox();
-    }
-  }
-}
 
 void openBlockedServicesModal({
   required BuildContext context,
