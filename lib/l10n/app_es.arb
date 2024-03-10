@@ -779,5 +779,17 @@
     "enablePlainDnsDescription": "El DNS simple (sin cifrado) está activado de forma predeterminada. Puedes desactivarlo para obligar a todos los dispositivos a utilizar DNS cifrado. Para ello, debes habilitar al menos un protocolo DNS cifrado.",
     "date": "Fecha",
     "loadingChangelog": "Cargando registro de cambios...",
-    "invalidIpOrUrl": "Dirección IP o URL no válida"
+    "invalidIpOrUrl": "Dirección IP o URL no válida",
+    "addPersistentClient": "Añadir como cliente persistente",
+    "blockThisClientOnly": "Bloquear sólo para este cliente",
+    "unblockThisClientOnly": "Desbloquear sólo para este cliente",
+    "domainBlockedThisClient": "{domain} bloqueado para este cliente",
+    "domainUnblockedThisClient": "{domain} desbloqueado para este cliente",
+    "disallowThisClient": "No permitir este cliente",
+    "allowThisClient": "Permitir este cliente",
+    "clientAllowedSuccessfully": "Cliente permitido correctamente",
+    "clientDisallowedSuccessfully": "Cliente no permitido correctamente",
+    "changesNotSaved": "Los cambios no han podido ser guardados",
+    "allowingClient": "Permitiendo cliente...",
+    "disallowingClient": "No permitiendo cliente..."
 }

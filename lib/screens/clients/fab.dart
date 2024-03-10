@@ -14,7 +14,7 @@ import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class ClientsFab extends StatelessWidget {
-  const ClientsFab({Key? key}) : super(key: key);
+  const ClientsFab({super.key});
 
   @override
   Widget build(BuildContext context) {

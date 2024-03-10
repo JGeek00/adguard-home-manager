@@ -131,146 +131,175 @@ class _LogsListClientState extends State<LogsListClient> {
       setState(() => previousIp = widget.ip);
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.name != null && widget.name != '' ? widget.name! : widget.ip),
-        centerTitle: true,
-        surfaceTintColor: isDesktop(MediaQuery.of(context).size.width) 
-          ? Colors.transparent 
-          : null,
-        actions: [
-          if (!(Platform.isAndroid || Platform.isIOS)) ...[
-            IconButton(
-              onPressed: fetchLogs, 
-              icon: const Icon(Icons.refresh_rounded),
-              tooltip: AppLocalizations.of(context)!.refresh,
-            ),
-            const SizedBox(width: 8)
-          ]
-        ],
-      ),
-      body: SafeArea(
-        child: Builder(
-          builder: (context) {
-            switch (loadStatus) {
-              case 0:
-                return SizedBox(
-                  width: double.maxFinite,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 30),
-                      Text(
-                        AppLocalizations.of(context)!.loadingLogs,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 22,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      )
-                    ],
+    return Material(
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar.large(
+              pinned: true,
+              floating: true,
+              centerTitle: false,
+              forceElevated: innerBoxIsScrolled,
+              title: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.client,
+                      style: const TextStyle(
+                        fontSize: 24
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.name != null && widget.name != '' ? widget.name! : widget.ip,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.secondary
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              surfaceTintColor: isDesktop(MediaQuery.of(context).size.width) 
+                ? Colors.transparent 
+                : null,
+              actions: [
+                if (!(Platform.isAndroid || Platform.isIOS)) ...[
+                  IconButton(
+                    onPressed: fetchLogs, 
+                    icon: const Icon(Icons.refresh_rounded),
+                    tooltip: AppLocalizations.of(context)!.refresh,
                   ),
-                );
-        
-              case 1:
-                if (logsData!.data.isNotEmpty) {
-                  return RefreshIndicator(
-                    onRefresh: fetchLogs,
-                    child: ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.only(top: 0),
-                      itemCount: isLoadingMore == true 
-                        ? logsData!.data.length+1
-                        : logsData!.data.length,
-                      itemBuilder: (context, index) {
-                        if (isLoadingMore == true && index == logsData!.data.length) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Center(
-                              child: CircularProgressIndicator(),
+                  const SizedBox(width: 8)
+                ]
+              ],
+            )
+          )
+        ], 
+        body: SafeArea(
+          top: false,
+          bottom: false,
+          child: Builder(
+            builder: (context) => RefreshIndicator(
+              onRefresh: fetchLogs,
+              displacement: 95,
+              child: CustomScrollView(
+                slivers: [
+                  SliverOverlapInjector(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  ),
+                  if (loadStatus == 0) SliverFillRemaining(
+                    child: SizedBox(
+                      width: double.maxFinite,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 30),
+                          Text(
+                            AppLocalizations.of(context)!.loadingLogs,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
-                          );
-                        }
-                        else {
-                          return LogTile(
-                            log: logsData!.data[index],
-                            index: index,
-                            length: logsData!.data.length,
-                            useAlwaysNormalTile: true,
-                            onLogTap: (log) => {
-                              if (width > 700) {
-                                showDialog(
-                                  context: context, 
+                          )
+                        ],
+                      ),
+                    )
+                  ),
+                  if (loadStatus == 1 && logsData!.data.isNotEmpty) SliverList.builder(
+                    itemCount: isLoadingMore == true 
+                      ? logsData!.data.length+1
+                      : logsData!.data.length,
+                    itemBuilder: (context, index) {
+                      if (isLoadingMore == true && index == logsData!.data.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      else {
+                        return LogTile(
+                          log: logsData!.data[index],
+                          index: index,
+                          length: logsData!.data.length,
+                          useAlwaysNormalTile: true,
+                          onLogTap: (log) => {
+                            if (width > 700) {
+                              showDialog(
+                                context: context, 
+                                builder: (context) => LogDetailsScreen(
+                                  log: log, 
+                                  dialog: true
+                                )
+                              )
+                            }
+                            else {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
                                   builder: (context) => LogDetailsScreen(
                                     log: log, 
-                                    dialog: true
+                                    dialog: false
                                   )
                                 )
-                              }
-                              else {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => LogDetailsScreen(
-                                      log: log, 
-                                      dialog: false
-                                    )
-                                  )
-                                )
-                              }
-                            },
-                            twoColumns: widget.splitView,
-                          );
-                        }
+                              )
+                            }
+                          },
+                          twoColumns: widget.splitView,
+                        );
                       }
-                    ),
-                  );
-                }
-                else {
-                  return Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.noLogsDisplay,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  );
-                }
-              
-              case 2:
-                return SizedBox(
-                  width: double.maxFinite,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error,
-                        color: Colors.red,
-                        size: 50,
-                      ),
-                      const SizedBox(height: 30),
-                      Text(
-                        AppLocalizations.of(context)!.logsNotLoaded,
+                    }
+                  ),
+                  if (loadStatus == 1 && logsData!.data.isEmpty) SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        AppLocalizations.of(context)!.noLogsDisplay,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 22,
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                );
-        
-              default:
-                return const SizedBox();
-            }
-          },
-        ),
-      )
+                  if (loadStatus == 2) SliverFillRemaining(
+                    child: SizedBox(
+                      width: double.maxFinite,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                            size: 50,
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            AppLocalizations.of(context)!.logsNotLoaded,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
+        )
+      ),
     );
   }
 }

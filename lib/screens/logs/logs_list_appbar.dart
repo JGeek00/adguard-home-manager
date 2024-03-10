@@ -8,10 +8,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/filters/logs_filters_modal.dart';
 
+import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
+
+final GlobalKey _searchButtonKey = GlobalKey();
 
 class LogsListAppBar extends StatelessWidget {
   final bool innerBoxIsScrolled;
@@ -52,6 +55,25 @@ class LogsListAppBar extends StatelessWidget {
       }
     }
 
+    void showSearchDialog() {
+      showDialog(
+        context: context, 
+        builder: (context) => _Search(
+          searchButtonRenderBox: _searchButtonKey.currentContext?.findRenderObject() as RenderBox?,
+          onSearch: (v) {
+            logsProvider.setAppliedFilters(
+              AppliedFiters(
+                selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
+                searchText: v != "" ? v : null, 
+                clients: logsProvider.appliedFilters.clients
+              )
+            );
+            logsProvider.filterLogs();
+          },
+        ),
+      );
+    }
+
     final Map<String, String> translatedString = {
       "all": AppLocalizations.of(context)!.all, 
       "filtered": AppLocalizations.of(context)!.filtered, 
@@ -77,22 +99,8 @@ class LogsListAppBar extends StatelessWidget {
           tooltip: AppLocalizations.of(context)!.refresh,
         ),
         if (logsProvider.loadStatus == LoadStatus.loaded) IconButton(
-          onPressed: () => showDialog(
-            context: context, 
-            builder: (context) => _Search(
-              hasTopBar: MediaQuery.of(context).viewPadding.top > 0,
-              onSearch: (v) {
-                logsProvider.setAppliedFilters(
-                  AppliedFiters(
-                    selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
-                    searchText: v != "" ? v : null, 
-                    clients: logsProvider.appliedFilters.clients
-                  )
-                );
-                logsProvider.filterLogs();
-              },
-            ),
-          ), 
+          key: _searchButtonKey,
+          onPressed: showSearchDialog,
           icon: const Icon(Icons.search_rounded),
           tooltip: AppLocalizations.of(context)!.search,
         ),
@@ -235,11 +243,11 @@ class LogsListAppBar extends StatelessWidget {
 
 class _Search extends StatefulWidget {
   final void Function(String) onSearch;
-  final bool hasTopBar;
+  final RenderBox? searchButtonRenderBox;
 
   const _Search({
     required this.onSearch,
-    required this.hasTopBar,
+    required this.searchButtonRenderBox,
   });
 
   @override
@@ -261,67 +269,75 @@ class _SearchState extends State<_Search> {
   Widget build(BuildContext context) {
     final logsProvider = Provider.of<LogsProvider>(context);
 
+    final position = widget.searchButtonRenderBox?.localToGlobal(Offset.zero);
+    final topPadding = MediaQuery.of(globalNavigatorKey.currentContext!).viewPadding.top;
+
     return GestureDetector(
       onTap: () => Navigator.pop(context),
       child: Material(
         color: Colors.transparent,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () => {},
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 500),
-                child: Container(
-                  margin: widget.hasTopBar
-                    ? const EdgeInsets.symmetric(horizontal: 16)
-                    : const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(16)
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: TextFormField(
-                      controller: _searchController,
-                      onChanged: (v) {
-                        if (v == "") {
-                          logsProvider.setSearchText(null);
-                          return;
-                        }
-                        logsProvider.setSearchText(v);
-                      },
-                      onFieldSubmitted: (v) {
-                        widget.onSearch(v);
-                        Navigator.pop(context);
-                      },
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.search,
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.grey.withOpacity(0.2),
-                        suffixIcon: _searchController.text != ""
-                          ? IconButton(
-                              onPressed: () {
-                                _searchController.text = "";
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final double width = constraints.maxWidth - 32  > 500 ? 500 : constraints.maxWidth - 32;
+            return Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Positioned(
+                  top: position != null ? position.dy - topPadding : topPadding,
+                  child: SizedBox(
+                    width: width,
+                    child: GestureDetector(
+                      onTap: () => {},
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(16)
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: TextFormField(
+                            controller: _searchController,
+                            onChanged: (v) {
+                              if (v == "") {
                                 logsProvider.setSearchText(null);
-                              }, 
-                              icon: const Icon(
-                                Icons.close_rounded,
-                                size: 20,
-                              ),
-                              tooltip: AppLocalizations.of(context)!.clearSearch,
-                            )
-                          : null
+                                return;
+                              }
+                              logsProvider.setSearchText(v);
+                            },
+                            onFieldSubmitted: (v) {
+                              widget.onSearch(v);
+                              Navigator.pop(context);
+                            },
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!.search,
+                              prefixIcon: const Icon(Icons.search_rounded),
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Colors.grey.withOpacity(0.2),
+                              suffixIcon: _searchController.text != ""
+                                ? IconButton(
+                                    onPressed: () {
+                                      _searchController.text = "";
+                                      logsProvider.setSearchText(null);
+                                    }, 
+                                    icon: const Icon(
+                                      Icons.close_rounded,
+                                      size: 20,
+                                    ),
+                                    tooltip: AppLocalizations.of(context)!.clearSearch,
+                                  )
+                                : null
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            )
-          ],
+                )
+              ],
+            );
+          }
         ),
       ),
     );

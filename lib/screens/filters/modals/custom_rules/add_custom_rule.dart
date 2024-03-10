@@ -55,44 +55,66 @@ class _AddCustomRuleState extends State<AddCustomRule> {
   Widget build(BuildContext context) {
     if (widget.fullScreen == true) {
       return Dialog.fullscreen(
-        child: Scaffold(
-          appBar: AppBar(
-            leading: CloseButton(onPressed: () => Navigator.pop(context)),
-            title: Text(AppLocalizations.of(context)!.addCustomRule),
-            actions: [
-              IconButton(
-                onPressed: _checkValidValues() == true
-                  ? () {
-                      Navigator.pop(context);
-                      widget.onConfirm(
-                        _buildRule(
-                          domainController: _domainController,
-                          important: _addImportant,
-                          preset: _preset
-                        )
-                      );
-                    }
-                  : null, 
-                icon: const Icon(Icons.check)
-              ),
-              const SizedBox(width: 10)
-            ],
-          ),
-          body: SafeArea(
-            child: ListView(
-              children: [
-                _CustomRuleEditor(
-                  domainController: _domainController,
-                  domainError: _domainError,
-                  important: _addImportant,
-                  preset: _preset,
-                  setImportant: (v) => setState(() => _addImportant = v),
-                  setPreset: (v) => setState(() => _preset = v),
-                  validateDomain: validateDomain
+        child: Material(
+          child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar.large(
+                    pinned: true,
+                    floating: true,
+                    centerTitle: false,
+                    forceElevated: innerBoxIsScrolled,
+                    leading: CloseButton(onPressed: () => Navigator.pop(context)),
+                    title: Text(AppLocalizations.of(context)!.addCustomRule),
+                    actions: [
+                      IconButton(
+                        onPressed: _checkValidValues() == true
+                          ? () {
+                              Navigator.pop(context);
+                              widget.onConfirm(
+                                _buildRule(
+                                  domainController: _domainController,
+                                  important: _addImportant,
+                                  preset: _preset
+                                )
+                              );
+                            }
+                          : null, 
+                        icon: const Icon(Icons.check)
+                      ),
+                      const SizedBox(width: 10)
+                    ],
+                  )
                 )
-              ]
+              ], 
+              body: SafeArea(
+                top: false,
+                bottom: true,
+                child: Builder(
+                  builder: (context) => CustomScrollView(
+                    slivers: [
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                      ),
+                      SliverList.list(
+                        children: [
+                          _CustomRuleEditor(
+                            domainController: _domainController,
+                            domainError: _domainError,
+                            important: _addImportant,
+                            preset: _preset,
+                            setImportant: (v) => setState(() => _addImportant = v),
+                            setPreset: (v) => setState(() => _preset = v),
+                            validateDomain: validateDomain
+                          )
+                        ] 
+                      )
+                    ],
+                  ),
+                )
+              )
             ),
-          )
         ),
       );
     }

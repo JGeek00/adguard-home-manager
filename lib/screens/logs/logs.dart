@@ -1,14 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:adguard_home_manager/screens/logs/logs_list.dart';
 import 'package:adguard_home_manager/screens/logs/details/log_details_screen.dart';
 
 import 'package:adguard_home_manager/models/logs.dart';
+import 'package:adguard_home_manager/providers/filtering_provider.dart';
 
 class Logs extends StatefulWidget {
-  const Logs({Key? key}) : super(key: key);
+  const Logs({super.key});
 
   @override
   State<Logs> createState() => _LogsState();
@@ -16,6 +18,12 @@ class Logs extends StatefulWidget {
 
 class _LogsState extends State<Logs> {
   Log? _selectedLog;
+
+  @override
+  void initState() {
+    Provider.of<FilteringProvider>(context, listen: false).fetchFilters();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

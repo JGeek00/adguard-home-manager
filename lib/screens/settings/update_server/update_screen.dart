@@ -47,6 +47,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   void processChangelog() async {
     final serversProvider = Provider.of<ServersProvider>(context, listen: false);
+    if (serversProvider.updateAvailable.data?.changelog == null) return;
     final markdownResult = await compute(md.markdownToHtml, serversProvider.updateAvailable.data!.changelog!);
     final htmlParsedResult = await compute(html.parse, markdownResult);
     setState(() => _htmlChangelog = htmlParsedResult.outerHtml);
@@ -84,7 +85,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
       processModal.close();
       
-      if (!mounted) return;
+      if (!context.mounted) return;
       if (result.successful == true) {
         serversProvider.recheckPeriodServerUpdated();
         showSnacbkar(

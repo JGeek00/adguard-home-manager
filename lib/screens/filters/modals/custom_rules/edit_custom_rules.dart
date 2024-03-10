@@ -37,29 +37,51 @@ class _EditCustomRulesState extends State<EditCustomRules> {
   Widget build(BuildContext context) {
     if (widget.fullScreen == true) {
       return Dialog.fullscreen(
-        child: Scaffold(
-          appBar: AppBar(
-            leading: CloseButton(onPressed: () => Navigator.pop(context)),
-            title: Text(AppLocalizations.of(context)!.editCustomRules),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onConfirm(_fieldController.text.split("\n"));
-                },
-                icon: const Icon(Icons.save_rounded),
-                tooltip: AppLocalizations.of(context)!.save,
-              ),
-              const SizedBox(width: 10)
-            ],
+        child: Material(
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar.large(
+                  pinned: true,
+                  floating: true,
+                  centerTitle: false,
+                  forceElevated: innerBoxIsScrolled,
+                  leading: CloseButton(onPressed: () => Navigator.pop(context)),
+                  title: Text(AppLocalizations.of(context)!.editCustomRules),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        widget.onConfirm(_fieldController.text.split("\n"));
+                      },
+                      icon: const Icon(Icons.save_rounded),
+                      tooltip: AppLocalizations.of(context)!.save,
+                    ),
+                    const SizedBox(width: 10)
+                  ],
+                )
+              )
+            ], 
+            body: SafeArea(
+              top: false,
+              bottom: true,
+              child: Builder(
+                builder: (context) => CustomScrollView(
+                  slivers: [
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                    ),
+                    SliverList.list(
+                      children: [
+                        _CustomRulesRawEditor(fieldController: _fieldController)
+                      ] 
+                    )
+                  ],
+                ),
+              )
+            )
           ),
-          body: SafeArea(
-            child: ListView(
-              children: [
-                _CustomRulesRawEditor(fieldController: _fieldController)
-              ]
-            ),
-          )
         ),
       );
     }

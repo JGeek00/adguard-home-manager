@@ -779,5 +779,17 @@
     "enablePlainDnsDescription": "Plain DNS is enabled by default. You can disable it to force all devices to use encrypted DNS. To do this, you must enable at least one encrypted DNS protocol.",
     "date": "Date",
     "loadingChangelog": "Loading changelog...",
-    "invalidIpOrUrl": "Invalid IP address or URL"
+    "invalidIpOrUrl": "Invalid IP address or URL",
+    "addPersistentClient": "Add as a persistent client",
+    "blockThisClientOnly": "Block for this client only",
+    "unblockThisClientOnly": "Unblock for this client only",
+    "domainBlockedThisClient": "{domain} blocked for this client",
+    "domainUnblockedThisClient": "{domain} unblocked for this client",
+    "disallowThisClient": "Disallow this client",
+    "allowThisClient": "Allow this client",
+    "clientAllowedSuccessfully": "Client allowed successfully",
+    "clientDisallowedSuccessfully": "Client disallowed successfully",
+    "changesNotSaved": "Changes could not be saved",
+    "allowingClient": "Allowing client...",
+    "disallowingClient": "Disallowing client..."
 }
