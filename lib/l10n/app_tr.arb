@@ -779,5 +779,17 @@
     "enablePlainDnsDescription": "Düz DNS varsayılan olarak etkindir. Tüm aygıtları şifrelenmiş DNS kullanmaya zorlamak için bunu devre dışı bırakabilirsiniz. Bunu yapmak için en az bir şifrelenmiş DNS protokolünü etkinleştirmeniz gerekir.",
     "date": "Tarih",
     "loadingChangelog": "Değişiklikler yükleniyor...",
-    "invalidIpOrUrl": "Geçersiz IP adresi veya URL"  
+    "invalidIpOrUrl": "Geçersiz IP adresi veya URL",
+    "addPersistentClient": "Kalıcı istemci olarak ekle",
+    "blockThisClientOnly": "Yalnızca bu istemci için engelle",
+    "unblockThisClientOnly": "Yalnızca bu istemci için engeli kaldır",
+    "domainBlockedThisClient": "Bu istemci için {domain} engellendi",
+    "domainUnblockedThisClient": "Bu istemci için {domain} engeli kaldırıldı",
+    "disallowThisClient": "Bu istemciye izin verme",
+    "allowThisClient": "Bu istemciye izin ver",
+    "clientAllowedSuccessfully": "İstemciye başarıyla izin verildi",
+    "clientDisallowedSuccessfully": "İstemci başarıyla reddedildi",
+    "changesNotSaved": "Değişiklikler kaydedilemedi",
+    "allowingClient": "İstemciye izin veriliyor...",
+    "disallowingClient": "İstemci reddediliyor..."
 }
