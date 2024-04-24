@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -133,6 +131,8 @@ class LogTile extends StatelessWidget {
       
       processModal.close();
 
+      if (!context.mounted) return;
+
       if (result == true) {
         showSnacbkar(
           appConfigProvider: appConfigProvider,
@@ -224,12 +224,15 @@ class LogTile extends StatelessWidget {
     void openAddClient() {
       Future.delayed(
         const Duration(milliseconds: 0), 
-        () => openClientFormModal(
-          context: context, 
-          width: MediaQuery.of(context).size.width, 
-          onConfirm: confirmAddClient,
-          initialData: ClientInitialData(name:  "Client ${log.client}", ip: log.client)
-        )
+        () {
+          if (!context.mounted) return;
+          openClientFormModal(
+            context: context, 
+            width: MediaQuery.of(context).size.width, 
+            onConfirm: confirmAddClient,
+            initialData: ClientInitialData(name:  "Client ${log.client}", ip: log.client)
+          );
+        }
       );
     }
 
