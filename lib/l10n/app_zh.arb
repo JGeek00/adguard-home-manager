@@ -660,7 +660,7 @@
     "topItemsOrderDescription": "排列主页顶部项目列表",
     "topItemsReorderInfo": "按住并滑动一个项目以重新排序 ",
     "discardChanges": "放弃更改",
-    "discardChangesDescription": "您确定要放弃更改吗？"
+    "discardChangesDescription": "您确定要放弃更改吗？",
     "others": "其他",
     "showChart": "显示图表",
     "hideChart": "隐藏图表",
@@ -679,7 +679,7 @@
     "failedElements": "失败元素",
     "processingLists": "正在处理列表...",
     "enableDisableResult": "启用或禁用结果",
-    "selectedListsEnabledDisabledSuccessfully": "所有选定列表已成功启用或禁用"
+    "selectedListsEnabledDisabledSuccessfully": "所有选定列表已成功启用或禁用",
     "sslWarning": "如果您正在使用带有自签名证书的 HTTPS 连接，请确保在设置 > 高级设置中启用 '不检查 SSL 证书' ",
     "unsupportedServerVersion": "不支持的服务器版本",
     "unsupportedServerVersionMessage": "您的 AdGuard Home 服务器版本过旧，不受 AdGuard Home Manager 支持 您需要将 AdGuard Home 服务器升级到更新的版本才能使用此应用程序 ",

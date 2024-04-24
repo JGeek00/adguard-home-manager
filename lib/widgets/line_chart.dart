@@ -91,7 +91,7 @@ class CustomLineChart extends StatelessWidget {
         enabled: true,
         touchTooltipData: LineTouchTooltipData(
           fitInsideHorizontally: true,
-          tooltipBgColor: selectedTheme == ThemeMode.light
+          getTooltipColor: (touchedSpot) =>  selectedTheme == ThemeMode.light
             ? const Color.fromRGBO(220, 220, 220, 0.9)
             : const Color.fromRGBO(35, 35, 35, 0.9),
           getTooltipItems: (items) => [

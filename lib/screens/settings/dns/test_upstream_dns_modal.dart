@@ -29,6 +29,10 @@ class _TestUpstreamDnsModalState extends State<TestUpstreamDnsModal> {
 
   void checkDns() async {
     final dnsProvider = Provider.of<DnsProvider>(context, listen: false);
+    if (dnsProvider.dnsInfo == null) {
+      setState(() => loadStatus = LoadStatus.error);
+      return;
+    }
     final result = await Provider.of<ServersProvider>(context, listen: false).apiClient2!.testUpstreamDns(
       body: {
         "bootstrap_dns": dnsProvider.dnsInfo!.bootstrapDns,
