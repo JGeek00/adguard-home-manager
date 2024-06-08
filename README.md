@@ -40,7 +40,7 @@ Check the privacy policy [here](https://github.com/JGeek00/adguard-home-manager/
 This is an unofficial application. The AdGuard Home team and the development of the AdGuard Home software is not related in any way with this application.
 
 ## Recommended configuration and lists
-On [this repository](https://github.com/JuanRodenas/Pihole_list) you can find a recommended configuration for AdGuard Home and some lists. Thanks to [JuanRodenas](https://github.com/JuanRodenas).
+On [this repository](https://github.com/juanico10/Pihole_list) you can find a recommended configuration for AdGuard Home and some lists. Thanks to [juanico10](https://github.com/juanico10).
 
 ## Generate production build
 <ul>
