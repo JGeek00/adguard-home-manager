@@ -791,5 +791,8 @@
     "clientDisallowedSuccessfully": "Cliente no permitido correctamente",
     "changesNotSaved": "Los cambios no han podido ser guardados",
     "allowingClient": "Permitiendo cliente...",
-    "disallowingClient": "No permitiendo cliente..."
+    "disallowingClient": "No permitiendo cliente...",
+    "clientIpCopied": "Dirección IP del cliente copiada al portapapeles",
+    "clientNameCopied": "Nombre del cliente copiado al portapapeles",
+    "dnsServerAddressCopied": "Dirección del servidor DNS copiada al portapapeles"
 }

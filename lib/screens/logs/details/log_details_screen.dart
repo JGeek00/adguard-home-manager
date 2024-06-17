@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -275,10 +276,11 @@ class _Content extends StatelessWidget {
           subtitle: convertTimestampLocalTimezone(log.time, 'HH:mm:ss')
         ),
         SectionLabel(label: AppLocalizations.of(context)!.request),
-        LogListTile(
+        if (log.question.name != null) LogListTile(
           icon: Icons.domain_rounded, 
           title: AppLocalizations.of(context)!.domain,
-          subtitle: log.question.name
+          subtitle: log.question.name,
+          onTap: () => copyToClipboard(value: log.question.name!, successMessage: AppLocalizations.of(context)!.domainCopiedClipboard),
         ),
         LogListTile(
           icon: Icons.category_rounded, 
@@ -294,7 +296,8 @@ class _Content extends StatelessWidget {
         if (log.upstream != null && log.upstream != '') LogListTile(
           icon: Icons.dns_rounded, 
           title: AppLocalizations.of(context)!.dnsServer,
-          subtitle: log.upstream
+          subtitle: log.upstream,
+          onTap: () => copyToClipboard(value: log.upstream!, successMessage: AppLocalizations.of(context)!.dnsServerAddressCopied)
         ),
         LogListTile(
           icon: Icons.timer_rounded, 
@@ -310,12 +313,14 @@ class _Content extends StatelessWidget {
         LogListTile(
           icon: Icons.smartphone_rounded, 
           title: AppLocalizations.of(context)!.deviceIp,
-          subtitle: log.client
+          subtitle: log.client,
+          onTap: () => copyToClipboard(value: log.client, successMessage: AppLocalizations.of(context)!.clientIpCopied),
         ),
         if (log.clientInfo != null && log.clientInfo!.name != '') LogListTile(
           icon: Icons.abc_rounded, 
           title: AppLocalizations.of(context)!.deviceName,
-          subtitle: log.clientInfo!.name
+          subtitle: log.clientInfo!.name,
+          onTap: () => copyToClipboard(value: log.clientInfo!.name, successMessage: AppLocalizations.of(context)!.clientNameCopied),
         ),
         if (log.rules.isNotEmpty) ...[
           SectionLabel(label: AppLocalizations.of(context)!.rules),
