@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
@@ -14,10 +15,12 @@ import 'package:adguard_home_manager/providers/logs_provider.dart';
 class _ClientLog {
   final String ip;
   final String? name;
+  final List<String>? ids;
 
   const _ClientLog({
     required this.ip,
-    required this.name
+    required this.name,
+    this.ids,
   });
 }
 
@@ -38,6 +41,7 @@ class ClientsModal extends StatefulWidget {
 class _ClientsModalState extends State<ClientsModal> {
   List<_ClientLog> _filteredClients = [];
   final _searchController = TextEditingController();
+  int _selectedList = 0;
 
   @override
   void initState() {
@@ -65,22 +69,46 @@ class _ClientsModalState extends State<ClientsModal> {
     final logsProvider = Provider.of<LogsProvider>(context);
     final statusProvider = Provider.of<StatusProvider>(context);
 
-    void onSearch(String value) {
-      final filtered = clientsProvider.clients!.autoClients.map((e) {
-        String? name;
-        try {
-          name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(e.ip)).name;
-        } catch (e) {
-          // ---- //
-        }
-        return _ClientLog(
-          ip: e.ip, 
-          name: name
-        );
-      }).where(
-        (c) => c.ip.contains(value.toLowerCase()) || (c.name != null && c.name!.toLowerCase().contains(value.toLowerCase()))
-      ).toList();
-      setState(() => _filteredClients = filtered);
+    void onSearch({required String value, int? selectedList}) {
+      if ((selectedList ?? _selectedList) == 1) {
+        final filtered = clientsProvider.clients!.clients.map((e) {
+          String? name;
+          try {
+            name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(e.ids[0])).name;
+          } catch (e) {
+            // ---- //
+          }
+          return _ClientLog(
+            ip: e.ids[0], 
+            name: name,
+            ids: e.ids
+          );
+        }).where(
+          (c) => c.ip.contains(value.toLowerCase()) || (c.name != null && c.name!.toLowerCase().contains(value.toLowerCase()))
+        ).toList();
+        setState(() => _filteredClients = filtered);
+      }
+      else {
+        final filtered = clientsProvider.clients!.autoClients.map((e) {
+          String? name;
+          try {
+            name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(e.ip)).name;
+          } catch (e) {
+            // ---- //
+          }
+          return _ClientLog(
+            ip: e.ip, 
+            name: name
+          );
+        }).where(
+          (c) => c.ip.contains(value.toLowerCase()) || (c.name != null && c.name!.toLowerCase().contains(value.toLowerCase()))
+        ).toList();
+        setState(() => _filteredClients = filtered);
+      }
+    }
+
+    void onListChange(int list) {
+      onSearch(value: _searchController.text, selectedList: list);
     }
 
     if (widget.dialog == true) {
@@ -115,7 +143,7 @@ class _ClientsModalState extends State<ClientsModal> {
                     _SearchField(
                       controller: _searchController, 
                       onClear: () => setState(() => _searchController.text = ""), 
-                      onSearch: onSearch
+                      onSearch: (v) => onSearch(value: v)
                     ),
                     Card(
                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -135,30 +163,34 @@ class _ClientsModalState extends State<ClientsModal> {
                         ),
                       ),
                     ),
-                    CustomCheckboxListTile(
-                      padding: const EdgeInsets.only(
-                        left: 24,
-                        top: 8,
-                        right: 12,
-                        bottom: 8
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SegmentedButtonSlide(
+                        entries: [
+                          SegmentedButtonSlideEntry(icon: Icons.devices, label: AppLocalizations.of(context)!.activeClients),
+                          SegmentedButtonSlideEntry(icon: Icons.add_rounded, label: AppLocalizations.of(context)!.added),
+                        ], 
+                        selectedEntry: _selectedList, 
+                        onChange: (v) {
+                          onListChange(v);
+                          setState(() => _selectedList = v);
+                        }, 
+                        colors: SegmentedButtonSlideColors(
+                          barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
+                          backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
+                          foregroundSelectedColor: Theme.of(context).colorScheme.onPrimary, 
+                          foregroundUnselectedColor: Theme.of(context).colorScheme.onSurface, 
+                          hoverColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                      value: logsProvider.selectedClients.length == clientsProvider.clients!.autoClients.length, 
-                      onChanged: (v) {
-                        if (v == true) {
-                          logsProvider.setSelectedClients(clientsProvider.clients!.autoClients.map((e) => e.ip).toList());
-                        }
-                        else {
-                          logsProvider.setSelectedClients([]);
-                        }
-                      }, 
-                      title: AppLocalizations.of(context)!.selectAll
                     ),
                     ListView.builder(
                       primary: false,
                       shrinkWrap: true,
                       itemCount: _filteredClients.length,
                       itemBuilder: (context, index) => _ListItem(
-                        label: _filteredClients[index].ip, 
+                        title: _filteredClients[index].ip, 
+                        subtitle: _selectedList == 0 ? _filteredClients[index].name : _filteredClients[index].ids?.join(", "),
                         checkboxActive: logsProvider.selectedClients.contains(_filteredClients[index].ip),
                         onChanged: (isSelected) {
                           if (isSelected == true) {
@@ -196,7 +228,7 @@ class _ClientsModalState extends State<ClientsModal> {
             _SearchField(
               controller: _searchController, 
               onClear: () => setState(() => _searchController.text = ""), 
-              onSearch: onSearch
+              onSearch: (v) => onSearch(value: v)
             ),
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -216,30 +248,34 @@ class _ClientsModalState extends State<ClientsModal> {
                 ),
               ),
             ),
-            CustomCheckboxListTile(
-              padding: const EdgeInsets.only(
-                left: 24,
-                top: 8,
-                right: 12,
-                bottom: 8
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SegmentedButtonSlide(
+                entries: [
+                  SegmentedButtonSlideEntry(icon: Icons.devices, label: AppLocalizations.of(context)!.activeClients),
+                  SegmentedButtonSlideEntry(icon: Icons.add_rounded, label: AppLocalizations.of(context)!.added),
+                ], 
+                selectedEntry: _selectedList, 
+                onChange: (v) {
+                  onListChange(v);
+                  setState(() => _selectedList = v);
+                }, 
+                colors: SegmentedButtonSlideColors(
+                  barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
+                  backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
+                  foregroundSelectedColor: Theme.of(context).colorScheme.onPrimary, 
+                  foregroundUnselectedColor: Theme.of(context).colorScheme.onSurface, 
+                  hoverColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
-              value: logsProvider.selectedClients.length == clientsProvider.clients!.autoClients.length, 
-              onChanged: (v) {
-                if (v == true) {
-                  logsProvider.setSelectedClients(clientsProvider.clients!.autoClients.map((e) => e.ip).toList());
-                }
-                else {
-                  logsProvider.setSelectedClients([]);
-                }
-              }, 
-              title: AppLocalizations.of(context)!.selectAll
             ),
             ListView.builder(
               shrinkWrap: true,
               primary: false,
               itemCount: _filteredClients.length,
               itemBuilder: (context, index) => _ListItem(
-                label: _filteredClients[index].ip, 
+                title: _selectedList == 0 ? _filteredClients[index].ip : _filteredClients[index].name ?? "", 
+                subtitle: _selectedList == 0 ? _filteredClients[index].name : _filteredClients[index].ids?.join(", "),
                 checkboxActive: logsProvider.selectedClients.contains(_filteredClients[index].ip),
                 onChanged: (isSelected) {
                   if (isSelected == true) {
@@ -257,7 +293,7 @@ class _ClientsModalState extends State<ClientsModal> {
                   }
                 }
               )
-            )
+            ),
           ]
         ),
       );
@@ -309,32 +345,25 @@ class _SearchField extends StatelessWidget {
 }
 
 class _ListItem extends StatelessWidget {
-  final String label;
+  final String title;
+  final String? subtitle;
   final bool checkboxActive;
   final void Function(bool) onChanged;
 
   const _ListItem({
-    required this.label,
+    required this.title,
+    this.subtitle,
     required this.checkboxActive,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    final statusProvider = Provider.of<StatusProvider>(context);
-
-    String? name;
-    try {
-      name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(label)).name;
-    } catch (e) {
-      // ---- //
-    }
-
     return CustomCheckboxListTile(
       value: checkboxActive, 
       onChanged: (v) => onChanged(v),
-      title: label,
-      subtitle: name,
+      title: title,
+      subtitle: subtitle,
       padding: const EdgeInsets.only(
         left: 24,
         top: 8,
