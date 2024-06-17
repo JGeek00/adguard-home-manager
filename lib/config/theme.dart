@@ -44,6 +44,12 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   ),
   cardTheme: CardTheme(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
+  ),
+  popupMenuTheme: PopupMenuThemeData(
+    surfaceTintColor: dynamicColorScheme?.surfaceTint
+  ),
+  navigationBarTheme: NavigationBarThemeData(
+    surfaceTintColor: dynamicColorScheme?.surfaceTint
   )
 );
 
