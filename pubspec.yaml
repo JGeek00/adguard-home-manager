@@ -41,14 +41,14 @@ dependencies:
   intl: any
   provider: ^6.1.1
   sqflite: ^2.3.0
-  package_info_plus: ^7.0.0
+  package_info_plus: ^8.0.0
   flutter_displaymode: ^0.6.0 
   dynamic_color: ^1.6.8
   animations: ^2.0.10
   device_info_plus: ^10.1.0
   uuid: ^4.2.1
   expandable: ^5.0.1
-  fl_chart: ^0.67.0
+  fl_chart: ^0.68.0
   flutter_svg: ^2.0.9
   percent_indicator: ^4.2.3
   store_checker: ^1.4.0
@@ -81,7 +81,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.3.8
 
