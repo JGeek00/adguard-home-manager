@@ -138,7 +138,7 @@ class _ServerInformationState extends State<ServerInformation> {
                       title: AppLocalizations.of(context)!.serverVersion,
                       subtitle: serverInfo.data!.version,
                     ),
-                    CustomListTile(
+                    if (serverInfo.data!.language != "") CustomListTile(
                       title: AppLocalizations.of(context)!.serverLanguage,
                       subtitle: serverInfo.data!.language,
                     ),
