@@ -6,6 +6,7 @@ import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
+import 'package:adguard_home_manager/functions/is_ip.dart';
 import 'package:adguard_home_manager/widgets/list_bottom_sheet.dart';
 
 import 'package:adguard_home_manager/providers/status_provider.dart';
@@ -79,9 +80,9 @@ class _ClientsModalState extends State<ClientsModal> {
             // ---- //
           }
           return _ClientLog(
-            ip: e.ids[0], 
+            ip: isIpAddress(e.ids[0]) ? e.ids[0] : '"${e.ids[0]}"', 
             name: name,
-            ids: e.ids
+            ids: e.ids.map((i) => isIpAddress(i) ? i : '"$i"').toList()
           );
         }).where(
           (c) => c.ip.contains(value.toLowerCase()) || (c.name != null && c.name!.toLowerCase().contains(value.toLowerCase()))
