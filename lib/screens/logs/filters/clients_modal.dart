@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 import 'package:adguard_home_manager/functions/is_ip.dart';
 import 'package:adguard_home_manager/widgets/list_bottom_sheet.dart';
+import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/clients_provider.dart';
@@ -80,9 +81,9 @@ class _ClientsModalState extends State<ClientsModal> {
             // ---- //
           }
           return _ClientLog(
-            ip: isIpAddress(e.ids[0]) ? e.ids[0] : '"${e.ids[0]}"', 
+            ip: e.ids[0], 
             name: name,
-            ids: e.ids.map((i) => isIpAddress(i) ? i : '"$i"').toList()
+            ids: e.ids
           );
         }).where(
           (c) => c.ip.contains(value.toLowerCase()) || (c.name != null && c.name!.toLowerCase().contains(value.toLowerCase()))
@@ -110,6 +111,13 @@ class _ClientsModalState extends State<ClientsModal> {
 
     void onListChange(int list) {
       onSearch(value: _searchController.text, selectedList: list);
+    }
+
+    void searchAddedClient(_ClientLog client) {
+      final notIps = client.ids?.where((e) => isIpAddress(e) == false).toList();
+      if (notIps == null) return;
+      logsProvider.setSearchText('"${notIps[0]}"');
+      Navigator.of(context).pop();
     }
 
     if (widget.dialog == true) {
@@ -193,6 +201,8 @@ class _ClientsModalState extends State<ClientsModal> {
                         title: _filteredClients[index].ip, 
                         subtitle: _selectedList == 0 ? _filteredClients[index].name : _filteredClients[index].ids?.join(", "),
                         checkboxActive: logsProvider.selectedClients.contains(_filteredClients[index].ip),
+                        isAddedClient: _selectedList == 0,
+                        onSearchAddedClient: () => searchAddedClient(_filteredClients[index]),
                         onChanged: (isSelected) {
                           if (isSelected == true) {
                             logsProvider.setSelectedClients([
@@ -278,6 +288,8 @@ class _ClientsModalState extends State<ClientsModal> {
                 title: _selectedList == 0 ? _filteredClients[index].ip : _filteredClients[index].name ?? "", 
                 subtitle: _selectedList == 0 ? _filteredClients[index].name : _filteredClients[index].ids?.join(", "),
                 checkboxActive: logsProvider.selectedClients.contains(_filteredClients[index].ip),
+                isAddedClient: _selectedList == 1,
+                onSearchAddedClient: () => searchAddedClient(_filteredClients[index]),
                 onChanged: (isSelected) {
                   if (isSelected == true) {
                     logsProvider.setSelectedClients([
@@ -350,27 +362,43 @@ class _ListItem extends StatelessWidget {
   final String? subtitle;
   final bool checkboxActive;
   final void Function(bool) onChanged;
+  final bool isAddedClient;
+  final void Function() onSearchAddedClient;
 
   const _ListItem({
     required this.title,
     this.subtitle,
     required this.checkboxActive,
     required this.onChanged,
+    required this.isAddedClient,
+    required this.onSearchAddedClient,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CustomCheckboxListTile(
-      value: checkboxActive, 
-      onChanged: (v) => onChanged(v),
-      title: title,
-      subtitle: subtitle,
-      padding: const EdgeInsets.only(
-        left: 24,
-        top: 8,
-        right: 12,
-        bottom: 8
-      ),
-    );
+    if (isAddedClient == true) {
+      return CustomListTile(
+        title: title,
+        subtitle: subtitle,
+        trailing: TextButton(
+          onPressed: onSearchAddedClient, 
+          child: Text(AppLocalizations.of(context)!.select)
+        ),
+      );
+    }
+    else {
+      return CustomCheckboxListTile(
+        value: checkboxActive, 
+        onChanged: (v) => onChanged(v),
+        title: title,
+        subtitle: subtitle,
+        padding: const EdgeInsets.only(
+          left: 24,
+          top: 8,
+          right: 12,
+          bottom: 8
+        ),
+      );
+    }
   }
 }

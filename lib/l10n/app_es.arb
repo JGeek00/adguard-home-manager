@@ -794,5 +794,6 @@
     "disallowingClient": "No permitiendo cliente...",
     "clientIpCopied": "Dirección IP del cliente copiada al portapapeles",
     "clientNameCopied": "Nombre del cliente copiado al portapapeles",
-    "dnsServerAddressCopied": "Dirección del servidor DNS copiada al portapapeles"
+    "dnsServerAddressCopied": "Dirección del servidor DNS copiada al portapapeles",
+    "select": "Seleccionar"
 }

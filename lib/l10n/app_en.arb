@@ -794,5 +794,6 @@
     "disallowingClient": "Disallowing client...",
     "clientIpCopied": "Client IP copied to the clipboard",
     "clientNameCopied": "Client name copied to the clipboard",
-    "dnsServerAddressCopied": "DNS server address copied to the clipboard"
+    "dnsServerAddressCopied": "DNS server address copied to the clipboard",
+    "select": "Select"
 }
