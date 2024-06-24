@@ -791,5 +791,9 @@
     "clientDisallowedSuccessfully": "Client disallowed successfully",
     "changesNotSaved": "Changes could not be saved",
     "allowingClient": "Allowing client...",
-    "disallowingClient": "Disallowing client..."
+    "disallowingClient": "Disallowing client...",
+    "clientIpCopied": "Client IP copied to the clipboard",
+    "clientNameCopied": "Client name copied to the clipboard",
+    "dnsServerAddressCopied": "DNS server address copied to the clipboard",
+    "select": "Select"
 }
