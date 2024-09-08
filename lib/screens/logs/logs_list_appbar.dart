@@ -6,11 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:adguard_home_manager/screens/logs/live/live_logs_screen.dart';
 import 'package:adguard_home_manager/screens/logs/filters/logs_filters_modal.dart';
 
 import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
+import 'package:adguard_home_manager/providers/live_logs_provider.dart';
+import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/applied_filters.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
@@ -74,6 +77,22 @@ class LogsListAppBar extends StatelessWidget {
       );
     }
 
+    void openLiveLogsScreen() {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              ChangeNotifierProxyProvider<ServersProvider, LiveLogsProvider>(
+                create: (context) => LiveLogsProvider(), 
+                update: (context, servers, logs) => logs!..update(servers),
+              ),
+            ],
+            child: const LiveLogsScreen()
+          )
+        )
+      );
+    }
+
     final Map<String, String> translatedString = {
       "all": AppLocalizations.of(context)!.all, 
       "filtered": AppLocalizations.of(context)!.filtered, 
@@ -104,10 +123,29 @@ class LogsListAppBar extends StatelessWidget {
           icon: const Icon(Icons.search_rounded),
           tooltip: AppLocalizations.of(context)!.search,
         ),
-        if (logsProvider.loadStatus == LoadStatus.loaded) IconButton(
-          onPressed: openFilersModal, 
-          icon: const Icon(Icons.filter_list_rounded),
-          tooltip: AppLocalizations.of(context)!.filters,
+        if (logsProvider.loadStatus == LoadStatus.loaded) PopupMenuButton(
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              onTap: openFilersModal,
+              child: Row(
+                children: [
+                  const Icon(Icons.filter_list_rounded),
+                  const SizedBox(width: 10),
+                  Text(AppLocalizations.of(context)!.filters)
+                ],
+              )
+            ),
+            PopupMenuItem(
+              onTap: openLiveLogsScreen,
+              child: Row(
+                children: [
+                  const Icon(Icons.stream_rounded),
+                  const SizedBox(width: 10),
+                  Text(AppLocalizations.of(context)!.liveLogs)
+                ],
+              )
+            ),
+          ],
         ),
         const SizedBox(width: 8),
       ],

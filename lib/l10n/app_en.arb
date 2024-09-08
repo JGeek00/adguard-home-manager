@@ -795,5 +795,7 @@
     "clientIpCopied": "Client IP copied to the clipboard",
     "clientNameCopied": "Client name copied to the clipboard",
     "dnsServerAddressCopied": "DNS server address copied to the clipboard",
-    "select": "Select"
+    "select": "Select",
+    "liveLogs": "Live logs",
+    "hereWillAppearRealtimeLogs": "Here there will appear the logs on realtime."
 }

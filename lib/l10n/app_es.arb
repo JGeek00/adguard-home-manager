@@ -795,5 +795,7 @@
     "clientIpCopied": "Dirección IP del cliente copiada al portapapeles",
     "clientNameCopied": "Nombre del cliente copiado al portapapeles",
     "dnsServerAddressCopied": "Dirección del servidor DNS copiada al portapapeles",
-    "select": "Seleccionar"
+    "select": "Seleccionar",
+    "liveLogs": "Registros en directo",
+    "hereWillAppearRealtimeLogs": "Aquí aparecerán los registros en tiempo real."
 }
