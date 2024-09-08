@@ -187,9 +187,15 @@ class _ClientsModalState extends State<ClientsModal> {
                         colors: SegmentedButtonSlideColors(
                           barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
                           backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
-                          foregroundSelectedColor: Theme.of(context).colorScheme.onPrimary, 
-                          foregroundUnselectedColor: Theme.of(context).colorScheme.onSurface, 
-                          hoverColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        selectedTextStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        unselectedTextStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        hoverTextStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -274,9 +280,16 @@ class _ClientsModalState extends State<ClientsModal> {
                 colors: SegmentedButtonSlideColors(
                   barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
                   backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
-                  foregroundSelectedColor: Theme.of(context).colorScheme.onPrimary, 
-                  foregroundUnselectedColor: Theme.of(context).colorScheme.onSurface, 
-                  hoverColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                selectedTextStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontWeight: FontWeight.w700
+                ),
+                unselectedTextStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+                hoverTextStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ),

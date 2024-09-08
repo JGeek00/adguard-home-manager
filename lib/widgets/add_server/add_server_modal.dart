@@ -419,15 +419,21 @@ class _AddServerModalState extends State<AddServerModal> {
           colors: SegmentedButtonSlideColors(
             barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
             backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
-            foregroundSelectedColor: Theme.of(context).colorScheme.onPrimary, 
-            foregroundUnselectedColor: Theme.of(context).colorScheme.onSurface, 
-            hoverColor: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           textOverflow: TextOverflow.ellipsis,
-          fontSize: 14,
           height: 40,
           margin: const EdgeInsets.symmetric(
             horizontal: 24,
+          ),
+          selectedTextStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontWeight: FontWeight.w700
+          ),
+          unselectedTextStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+          hoverTextStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         Card(
