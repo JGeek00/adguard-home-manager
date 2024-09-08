@@ -188,6 +188,7 @@ class _LogsListWidgetState extends State<LogsListWidget> {
                                               builder: (context) => LogDetailsScreen(
                                                 log: log,
                                                 dialog: false,
+                                                twoColumns: widget.twoColumns,
                                               )
                                             )
                                           );

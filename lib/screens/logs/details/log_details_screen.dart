@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,6 +10,7 @@ import 'package:adguard_home_manager/screens/logs/details/log_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
+import 'package:adguard_home_manager/functions/copy_clipboard.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/functions/get_filtered_status.dart';
@@ -24,11 +24,13 @@ import 'package:adguard_home_manager/providers/app_config_provider.dart';
 class LogDetailsScreen extends StatelessWidget {
   final Log log;
   final bool dialog;
+  final bool twoColumns;
 
   const LogDetailsScreen({
     super.key,
     required this.log,
-    required this.dialog
+    required this.dialog,
+    required this.twoColumns,
   });
 
   @override
@@ -137,6 +139,7 @@ class LogDetailsScreen extends StatelessWidget {
       );
     }
     else {
+      print(twoColumns);
       return Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -148,6 +151,7 @@ class LogDetailsScreen extends StatelessWidget {
                 centerTitle: false,
                 forceElevated: innerBoxIsScrolled,
                 surfaceTintColor: isDesktop(width) ? Colors.transparent : null,
+                automaticallyImplyLeading: twoColumns != true,
                 title:  Text(AppLocalizations.of(context)!.logDetails),
                 actions: [
                   IconButton(
