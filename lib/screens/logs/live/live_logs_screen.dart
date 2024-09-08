@@ -25,7 +25,7 @@ class _LiveLogsScreenState extends State<LiveLogsScreen> {
   @override
   Widget build(BuildContext context) {
     final liveLogsProvider = Provider.of<LiveLogsProvider>(context);
-print(liveLogsProvider.logs.length);
+
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
