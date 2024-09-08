@@ -42,6 +42,15 @@ This is an unofficial application. The AdGuard Home team and the development of 
 ## Recommended configuration and lists
 On [this repository](https://github.com/juanico10/Pihole_list) you can find a recommended configuration for AdGuard Home and some lists. Thanks to [juanico10](https://github.com/juanico10).
 
+## Donations
+If you like the project and you want to contribute with the development, you can [become a sponsor on GitHub](https://github.com/sponsors/JGeek00), or you can donate using PayPal.
+
+<div align="center">
+  <a href="https://www.paypal.com/donate/?hosted_button_id=T63UK6AVL3MG8">
+    <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" height="100" />
+  </a>
+</div>
+
 ## Generate production build
 <ul>
   <li>
