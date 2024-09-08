@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:install_referrer/install_referrer.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:store_checker/store_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -58,7 +58,7 @@ class AppConfigProvider with ChangeNotifier {
 
   GitHubRelease? _appUpdatesAvailable;
 
-  Source _installationSource = Source.UNKNOWN;
+  InstallationAppReferrer? _installationSource;
 
   PackageInfo? get getAppInfo {
     return _appInfo;
@@ -162,7 +162,7 @@ class AppConfigProvider with ChangeNotifier {
     return _appUpdatesAvailable;
   }
 
-  Source get installationSource {
+  InstallationAppReferrer? get installationSource {
     return _installationSource;
   }
 
@@ -227,7 +227,7 @@ class AppConfigProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setInstallationSource(Source value) {
+  void setInstallationSource(InstallationAppReferrer value) {
     _installationSource = value;
     notifyListeners();
   }

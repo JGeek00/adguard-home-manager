@@ -114,7 +114,6 @@ On [this repository](https://github.com/juanico10/Pihole_list) you can find a re
 - [fl chart](https://pub.dev/packages/fl_chart)
 - [flutter svg](https://pub.dev/packages/flutter_svg)
 - [percent indicator](https://pub.dev/packages/percent_indicator)
-- [store checker](https://pub.dev/packages/store_checker)
 - [flutter markdown](https://pub.dev/packages/flutter_markdown)
 - [markdown](https://pub.dev/packages/markdown)
 - [html](https://pub.dev/packages/html)
@@ -132,6 +131,9 @@ On [this repository](https://github.com/juanico10/Pihole_list) you can find a re
 - [timezone](https://pub.dev/packages/timezone)
 - [url launcher](https://pub.dev/packages/url_launcher)
 - [flutter custom tabs](https://pub.dev/packages/flutter_custom_tabs)
+- [shared preferences](https://pub.dev/packages/shared_preferences)
+- [window manager](https://pub.dev/packages/window_manager)
+- [install referrer](https://pub.dev/packages/install_referrer)
 
 <br>
 

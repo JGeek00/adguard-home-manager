@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/details/log_details_screen.dart';
 import 'package:adguard_home_manager/screens/logs/live/live_logs_list.dart';
-import 'package:adguard_home_manager/screens/logs/log_tile.dart';
 
 import 'package:adguard_home_manager/models/logs.dart';
 import 'package:adguard_home_manager/providers/live_logs_provider.dart';

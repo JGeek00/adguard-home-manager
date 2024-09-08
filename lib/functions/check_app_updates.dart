@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:store_checker/store_checker.dart';
+import 'package:install_referrer/install_referrer.dart';
 
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/services/external_requests.dart';
@@ -9,7 +9,7 @@ import 'package:adguard_home_manager/models/github_release.dart';
 Future<GitHubRelease?> checkAppUpdates({
   required String currentBuildNumber,
   required void Function(GitHubRelease?) setUpdateAvailable,
-  required Source installationSource,
+  required InstallationAppReferrer? installationSource,
   required bool isBeta
 }) async {
   var result = isBeta 
@@ -35,11 +35,7 @@ Future<GitHubRelease?> checkAppUpdates({
       setUpdateAvailable(gitHubRelease);
         
       if (Platform.isAndroid) {
-        if (
-          installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE ||
-          installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
-          installationSource == Source.UNKNOWN
-        ) {
+        if (installationSource == InstallationAppReferrer.androidManually) {
           return gitHubRelease;
         }
         else {
