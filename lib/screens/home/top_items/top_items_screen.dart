@@ -187,16 +187,19 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                       ),
                     ),
                   ),
-                  if (sortedValues.isNotEmpty) SliverList.builder(
-                    itemCount: sortedValues.length,
-                    itemBuilder: (context, index) => _Item(
-                      data: sortedValues[index], 
-                      isClient: widget.isClient, 
-                      options: widget.options,
-                      total: total,
-                      withProgressBar: widget.withProgressBar, 
-                      onTapEntry: widget.onTapEntry, 
-                      buildValue: widget.buildValue, 
+                  if (sortedValues.isNotEmpty) SliverPadding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
+                    sliver: SliverList.builder(
+                      itemCount: sortedValues.length,
+                      itemBuilder: (context, index) => _Item(
+                        data: sortedValues[index], 
+                        isClient: widget.isClient, 
+                        options: widget.options,
+                        total: total,
+                        withProgressBar: widget.withProgressBar, 
+                        onTapEntry: widget.onTapEntry, 
+                        buildValue: widget.buildValue, 
+                      ),
                     ),
                   ),
                 ],
