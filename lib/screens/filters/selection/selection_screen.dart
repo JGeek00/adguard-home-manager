@@ -82,8 +82,8 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
               blacklists: _selectedBlacklists, 
               whitelists: _selectedWhitelists
             );
-            if (!mounted) return;
             processModal.close();
+            if (!context.mounted) return;
             showDialog(
               context: context, 
               builder: (ctx) => SelectionResultModal(
@@ -113,8 +113,8 @@ class _SelectionScreenState extends State<SelectionScreen> with TickerProviderSt
               blacklists: _selectedBlacklists, 
               whitelists: _selectedWhitelists
             );
-            if (!mounted) return;
             processModal.close();
+            if (!context.mounted) return;
             showDialog(
               context: context, 
               builder: (ctx) => SelectionResultModal(

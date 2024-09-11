@@ -84,7 +84,7 @@ class FiltersTripleColumn extends StatelessWidget {
             onPressed: () async {
               final result = await filteringProvider.fetchFilters();
               if (result == false && context.mounted) {
-                showSnacbkar(
+                showSnackbar(
                   appConfigProvider: appConfigProvider,
                   label: AppLocalizations.of(context)!.errorLoadFilters, 
                   color: Colors.red

@@ -93,7 +93,7 @@ class _HomeState extends State<Home> {
                     onRefresh: () async {
                       final result = await statusProvider.getServerStatus();
                       if (mounted && result == false) {
-                        showSnacbkar(
+                        showSnackbar(
                           appConfigProvider: appConfigProvider, 
                           label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
                           color: Colors.red

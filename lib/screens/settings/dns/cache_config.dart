@@ -86,21 +86,21 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
       processModal.close();
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
       else if (result.successful== false && result.statusCode == 400) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
           color: Colors.red
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 
           color: Colors.red
@@ -139,14 +139,14 @@ class _CacheConfigDnsScreenState extends State<CacheConfigDnsScreen> {
     void clearCache() async {
       final result = await clearDnsCache(context, serversProvider.selectedServer!);
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheCleared, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.dnsCacheNotCleared, 
           color: Colors.red

@@ -37,7 +37,7 @@ class CombinedChartItem {
 }
 
 class CombinedHomeChart extends StatelessWidget {
-  const CombinedHomeChart({Key? key}) : super(key: key);
+  const CombinedHomeChart({super.key});
 
   List<int>? removeZero(List<int> list) {
     final removed = list.where((i) => i > 0);
@@ -266,12 +266,11 @@ class _Legend extends StatelessWidget {
   final String? secondaryValue;
 
   const _Legend({
-    Key? key,
     required this.label,
     required this.color,
     required this.primaryValue,
     this.secondaryValue
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

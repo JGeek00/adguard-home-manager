@@ -10,10 +10,10 @@ class ServicesModal extends StatefulWidget {
   final void Function(List<String>) onConfirm;
 
   const ServicesModal({
-    Key? key,
+    super.key,
     required this.blockedServices,
     required this.onConfirm,
-  }) : super(key: key);
+  });
 
   @override
   State<ServicesModal> createState() => _ServicesModalStateWidget();

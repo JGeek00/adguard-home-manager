@@ -13,7 +13,7 @@ class FormTextField extends StatelessWidget {
   final bool isConnecting;
 
   const FormTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.controller,
     this.error,
@@ -24,7 +24,7 @@ class FormTextField extends StatelessWidget {
     this.hintText,
     this.helperText,
     required this.isConnecting
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

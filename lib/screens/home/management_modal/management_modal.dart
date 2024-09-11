@@ -82,7 +82,7 @@ class _ManagementModalState extends State<ManagementModal> with SingleTickerProv
         time: time
       );
       if (mounted && result == false) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.invalidUsernamePassword, 
           color: Colors.red

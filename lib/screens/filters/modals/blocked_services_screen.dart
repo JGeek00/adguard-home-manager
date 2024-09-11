@@ -68,14 +68,14 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.blockedServicesUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.blockedServicesNotUpdated, 
           color: Colors.red

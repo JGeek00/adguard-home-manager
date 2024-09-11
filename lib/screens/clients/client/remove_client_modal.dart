@@ -5,9 +5,9 @@ class RemoveClientModal extends StatelessWidget {
   final void Function() onConfirm;
 
   const RemoveClientModal({
-    Key? key,
+    super.key,
     required this.onConfirm
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

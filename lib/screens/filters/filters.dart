@@ -24,7 +24,7 @@ import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/models/clients.dart';
 
 class Filters extends StatefulWidget {
-  const Filters({Key? key}) : super(key: key);
+  const Filters({super.key});
 
   @override
   State<Filters> createState() => _FiltersState();
@@ -57,14 +57,14 @@ class _FiltersState extends State<Filters> {
       if (!mounted) return;
       processModal.close();
       if (result['success'] == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: "${result['data']['updated']} ${AppLocalizations.of(context)!.listsUpdated}", 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listsNotUpdated, 
           color: Colors.red
@@ -109,14 +109,14 @@ class _FiltersState extends State<Filters> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.filteringStatusUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.filteringStatusNotUpdated, 
           color: Colors.red
@@ -133,14 +133,14 @@ class _FiltersState extends State<Filters> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.updateFrequencyChanged, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.updateFrequencyNotChanged, 
           color: Colors.red
@@ -163,14 +163,14 @@ class _FiltersState extends State<Filters> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar( 
+        showSnackbar( 
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleRemovedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleNotRemoved, 
           color: Colors.red

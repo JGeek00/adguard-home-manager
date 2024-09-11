@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/config/globals.dart';
 
-void showSnacbkar({
+void showSnackbar({
   required AppConfigProvider appConfigProvider,
   required String label, 
   required Color color,

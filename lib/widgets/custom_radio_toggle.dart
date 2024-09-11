@@ -7,12 +7,12 @@ class CustomRadioToggle extends StatelessWidget {
   final void Function(String) onTap;
 
   const CustomRadioToggle({
-    Key? key,
+    super.key,
     required this.groupSelected,
     required this.value,
     required this.label,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

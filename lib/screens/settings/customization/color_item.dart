@@ -31,7 +31,7 @@ class ColorItem extends StatelessWidget {
         child: InkWell(
           onTap: () => onChanged(numericValue),
           borderRadius: BorderRadius.circular(50),
-          overlayColor: const MaterialStatePropertyAll(Colors.grey),
+          overlayColor: const WidgetStatePropertyAll(Colors.grey),
           child: Container(
             width: 50,
             height: 50,

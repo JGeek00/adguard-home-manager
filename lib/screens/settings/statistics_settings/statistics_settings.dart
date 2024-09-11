@@ -148,14 +148,14 @@ class _StatisticsSettingsState extends State<StatisticsSettings> {
       if (!context.mounted) return;
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.statisticsConfigUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.statisticsConfigNotUpdated, 
           color: Colors.red

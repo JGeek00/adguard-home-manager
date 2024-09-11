@@ -50,14 +50,15 @@ void showDeleteModal({
   required BuildContext context,
   required Server server
 }) async {
-  await Future.delayed(const Duration(seconds: 0), () => {
+  await Future.delayed(const Duration(seconds: 0), () {
+    if (!context.mounted) return;
     showDialog(
       context: context, 
       builder: (context) => DeleteModal(
         serverToDelete: server,
       ),
       barrierDismissible: false
-    )
+    );
   });
 }
 
@@ -133,7 +134,7 @@ void connectToServer({
     process.close();
     if (!context.mounted) return;
     final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-    showSnacbkar(
+    showSnackbar(
       appConfigProvider: appConfigProvider, 
       label: AppLocalizations.of(context)!.cannotConnect, 
       color: Colors.red
@@ -150,14 +151,14 @@ void setDefaultServer({
   if (!context.mounted) return;
   final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
   if (result == null) {
-    showSnacbkar(
+    showSnackbar(
       appConfigProvider: appConfigProvider, 
       label: AppLocalizations.of(context)!.connectionDefaultSuccessfully, 
       color: Colors.green
     );
   }
   else {
-    showSnacbkar(
+    showSnackbar(
       appConfigProvider: appConfigProvider, 
       label: AppLocalizations.of(context)!.connectionDefaultFailed, 
       color: Colors.red

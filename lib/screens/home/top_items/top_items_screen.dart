@@ -348,7 +348,7 @@ class _Content extends StatelessWidget {
                           percent: screenData[index].values.toList()[0]/total,
                           barRadius: const Radius.circular(5),
                           progressColor: Theme.of(context).colorScheme.primary,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                         ),
                       ),
                       const SizedBox(width: 10),

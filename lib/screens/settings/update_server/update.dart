@@ -41,7 +41,7 @@ class UpdateScreen extends StatelessWidget {
       
       if (result.successful == true) {
         serversProvider.recheckPeriodServerUpdated();
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.requestStartUpdateSuccessful,
           color: Colors.green,
@@ -49,7 +49,7 @@ class UpdateScreen extends StatelessWidget {
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.requestStartUpdateFailed,
           color: Colors.red,
@@ -203,7 +203,7 @@ class UpdateScreen extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            color: Theme.of(context).colorScheme.surfaceVariant,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: SafeArea(
               child: headerPortrait()
             )

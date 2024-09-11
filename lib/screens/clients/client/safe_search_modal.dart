@@ -11,11 +11,11 @@ class SafeSearchModal extends StatefulWidget {
   final void Function(SafeSearch) onConfirm;
   
   const SafeSearchModal({
-    Key? key,
+    super.key,
     required this.safeSearch,
     required this.disabled,
     required this.onConfirm
-  }) : super(key: key);
+  });
 
   @override
   State<SafeSearchModal> createState() => _SafeSearchModalState();

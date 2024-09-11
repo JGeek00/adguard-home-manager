@@ -157,7 +157,7 @@ class _AddServerModalState extends State<AddServerModal> {
       if (result != AuthStatus.success) {
         cancelConnecting();
         if (mounted) {
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider, 
             label: getErrorMessage(result), 
             color: Colors.red
@@ -206,7 +206,7 @@ class _AddServerModalState extends State<AddServerModal> {
       if (serverCreated != null) {
         if (mounted) setState(() => isConnecting = false);
         if (mounted) {
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider, 
             label: AppLocalizations.of(context)!.connectionNotCreated, 
             color: Colors.red
@@ -256,7 +256,7 @@ class _AddServerModalState extends State<AddServerModal> {
       if (result != AuthStatus.success) {
         cancelConnecting();
         if (mounted) {
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider, 
             label: getErrorMessage(result), 
             color: Colors.red
@@ -306,7 +306,7 @@ class _AddServerModalState extends State<AddServerModal> {
           )
         );
         if (mounted) {
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider, 
             label: AppLocalizations.of(context)!.connectionNotCreated, 
             color: Colors.red

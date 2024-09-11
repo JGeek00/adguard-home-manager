@@ -43,14 +43,14 @@ class _TopItemsListSettingsState extends State<TopItemsListSettings> with Ticker
       final result = await appConfigProvider.setHomeTopItemsOrder(persistHomeTopItemsList);
       if (!context.mounted) return;
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsSaved, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsNotSaved, 
           color: Colors.red

@@ -11,14 +11,14 @@ class CustomRadioListTile extends StatelessWidget {
   final void Function(String) onChanged;
 
   const CustomRadioListTile({
-    Key? key,
+    super.key,
     required this.groupValue,
     required this.value,
     required this.radioBackgroundColor,
     required this.title,
     this.subtitle,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -67,14 +67,14 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleDeleted, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotDeleted, 
           color: Colors.red
@@ -91,14 +91,14 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleAdded, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotAdded, 
           color: Colors.red
@@ -115,14 +115,14 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsRewriteRuleNotUpdated, 
           color: Colors.red
@@ -169,7 +169,7 @@ class _DnsRewritesScreenState extends State<DnsRewritesScreen> {
                         onRefresh: () async {
                           final result = await rewriteRulesProvider.fetchRules();
                           if (result == false) {
-                            showSnacbkar(
+                            showSnackbar(
                               appConfigProvider: appConfigProvider,
                               label: AppLocalizations.of(context)!.rewriteRulesNotLoaded, 
                               color: Colors.red

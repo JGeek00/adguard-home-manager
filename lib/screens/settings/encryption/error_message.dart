@@ -5,9 +5,9 @@ class ErrorMessageEncryption extends StatelessWidget {
   final String errorMessage;
 
   const ErrorMessageEncryption({
-    Key? key,
+    super.key,
     required this.errorMessage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

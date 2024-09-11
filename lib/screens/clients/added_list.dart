@@ -82,14 +82,14 @@ class _AddedListState extends State<AddedList> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientUpdatedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotUpdated, 
           color: Colors.red
@@ -109,14 +109,14 @@ class _AddedListState extends State<AddedList> {
         if (widget.splitView == true) {
           Navigator.of(clientsNavigatorKey.currentContext!).popUntil((route) => false);
         }
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientDeletedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotDeleted, 
           color: Colors.red

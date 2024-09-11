@@ -12,7 +12,7 @@ class EncryptionTextField extends StatelessWidget {
   final String? helperText;
 
   const EncryptionTextField({
-    Key? key,
+    super.key,
     required this.enabled,
     required this.controller,
     required this.icon,
@@ -22,7 +22,7 @@ class EncryptionTextField extends StatelessWidget {
     this.keyboardType,
     this.multiline,
     this.helperText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

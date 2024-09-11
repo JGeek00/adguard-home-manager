@@ -88,7 +88,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
       if (!context.mounted) return;
       if (result.successful == true) {
         serversProvider.recheckPeriodServerUpdated();
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.requestStartUpdateSuccessful,
           color: Colors.green,
@@ -96,7 +96,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.requestStartUpdateFailed,
           color: Colors.red,
@@ -220,7 +220,7 @@ class _Header extends SliverPersistentHeaderDelegate {
     return LayoutBuilder(
       builder: (context, constraints) => Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
         ),
         child: Align(
           alignment: Alignment.topLeft,

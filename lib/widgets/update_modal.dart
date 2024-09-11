@@ -11,10 +11,10 @@ class UpdateModal extends StatefulWidget {
   final void Function(String, String) onDownload;
 
   const UpdateModal({
-    Key? key,
+    super.key,
     required this.gitHubRelease,
     required this.onDownload,
-  }) : super(key: key);
+  });
 
   @override
   State<UpdateModal> createState() => _UpdateModalState();

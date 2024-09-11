@@ -83,14 +83,14 @@ class TopItemsLists extends StatelessWidget {
 
       if (!context.mounted) return;
       if (rules == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.userFilteringRulesUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.userFilteringRulesNotUpdated, 
           color: Colors.red
@@ -121,21 +121,21 @@ class TopItemsLists extends StatelessWidget {
       processModal.close();
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
           color: Colors.green
         );
       }
       else if (result.successful == false && result.content == 'client_another_list') {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
           color: Colors.red
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: newList == AccessSettingsList.allowed || newList == AccessSettingsList.disallowed
             ? AppLocalizations.of(context)!.clientNotRemoved

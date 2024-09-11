@@ -71,7 +71,7 @@ class _ClientsListState extends State<ClientsList> {
     Future refetchClients() async {
       final result = await clientsProvider.fetchClients();
       if (result == false && mounted) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientsNotLoaded, 
           color: Colors.red
@@ -104,21 +104,21 @@ class _ClientsListState extends State<ClientsList> {
       processModal.close();
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientRemovedSuccessfully, 
           color: Colors.green
         );
       }
       else if (result.successful == false && result.content == 'client_another_list') {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
           color: Colors.red
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: type == AccessSettingsList.allowed || type == AccessSettingsList.disallowed
             ? AppLocalizations.of(context)!.clientNotRemoved
@@ -137,21 +137,21 @@ class _ClientsListState extends State<ClientsList> {
       processModal.close();
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
           color: Colors.green
         );
       }
       else if (result.successful == false && result.content == 'client_another_list') {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
           color: Colors.red
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: type == AccessSettingsList.allowed || type == AccessSettingsList.disallowed
             ? AppLocalizations.of(context)!.clientNotRemoved

@@ -233,14 +233,14 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       processModal.close();
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.encryptionConfigSaved, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.encryptionConfigNotSaved, 
           color: Colors.red
@@ -282,14 +282,14 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       processModal.close();
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.configurationResetSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.configurationResetError, 
           color: Colors.red

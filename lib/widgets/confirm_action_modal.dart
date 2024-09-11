@@ -8,12 +8,12 @@ class ConfirmActionModal extends StatelessWidget {
   final void Function() onConfirm;
 
   const ConfirmActionModal({
-    Key? key,
+    super.key,
     required this.icon,
     required this.title,
     required this.message,
     required this.onConfirm
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

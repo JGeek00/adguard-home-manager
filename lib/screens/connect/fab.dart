@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 
 class FabConnect extends StatelessWidget {
-  const FabConnect({Key? key}) : super(key: key);
+  const FabConnect({super.key});
 
   @override
   Widget build(BuildContext context) {

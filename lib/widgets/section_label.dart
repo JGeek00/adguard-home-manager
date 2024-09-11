@@ -5,10 +5,10 @@ class SectionLabel extends StatelessWidget {
   final EdgeInsets? padding;
 
   const SectionLabel({
-    Key? key,
+    super.key,
     required this.label,
     this.padding
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

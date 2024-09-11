@@ -33,7 +33,7 @@ class AppConfigProvider with ChangeNotifier {
   int _selectedTheme = 0;
   bool _useDynamicColor = true;
   int _staticColor = 0;
-  bool _useThemeColorForStatus = false;
+  final bool _useThemeColorForStatus = false;
 
   int _selectedClientsTab = 0;
   int _selectedFiltersTab = 0;

@@ -49,14 +49,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     }) async {
       final result = await function(newStatus);
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsUpdatedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.cannotUpdateSettings, 
           color: Colors.red

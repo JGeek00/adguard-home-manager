@@ -52,14 +52,14 @@ class LogDetailsScreen extends StatelessWidget {
       processModal.close();
 
       if (rules == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.userFilteringRulesUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.userFilteringRulesNotUpdated, 
           color: Colors.red
@@ -139,7 +139,6 @@ class LogDetailsScreen extends StatelessWidget {
       );
     }
     else {
-      print(twoColumns);
       return Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
