@@ -24,14 +24,15 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: pietrobolcato/action-read-yaml@1.0.0
+        uses: jbutcher5/read-yaml@1.6
         id: read_pubspec
         with:
-          config: ${{ github.workspace }}/pubspec.yaml
+          file: './pubspec.yaml'          # File to read from
+          key-path: '["version"]'
       - name: Save version on env variable
         id: save_version
         run: |
-          version=${{ steps.read_pubspec.outputs['version'] }}
+          version=${{ steps.read_pubspec.outputs.data }}
           IFS='+' 
           read -r -a split <<< "$version"
           echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_ENV
@@ -80,14 +81,15 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: pietrobolcato/action-read-yaml@1.0.0
+        uses: jbutcher5/read-yaml@1.6
         id: read_pubspec
         with:
-          config: ${{ github.workspace }}/pubspec.yaml
+          file: './pubspec.yaml'
+          key-path: '["version"]'
       - name: Save version on env variable
         id: save_version
         run: |
-          version=${{ steps.read_pubspec.outputs['version'] }}
+          version=${{ steps.read_pubspec.outputs.data }}
           IFS='+' 
           read -r -a split <<< "$version"
           echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_ENV
@@ -139,14 +141,15 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: pietrobolcato/action-read-yaml@1.0.0
+        uses: jbutcher5/read-yaml@1.6
         id: read_pubspec
         with:
-          config: ${{ github.workspace }}/pubspec.yaml
+          file: './pubspec.yaml'
+          key-path: '["version"]'
       - name: Save version on env variable
         id: save_version
         run: |
-          version=${{ steps.read_pubspec.outputs['version'] }}
+          version=${{ steps.read_pubspec.outputs.data }}
           IFS='+' 
           read -r -a split <<< "$version"
           echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_ENV
@@ -201,14 +204,15 @@ jobs:
         run: |
           [IO.File]::WriteAllBytes('.env', [Convert]::FromBase64String('${{ secrets.ENV }}'))
       - name: Read pubspec.yaml
-        uses: pietrobolcato/action-read-yaml@1.0.0
+        uses: jbutcher5/read-yaml@1.6
         id: read_pubspec
         with:
-          config: ${{ github.workspace }}/pubspec.yaml
+          file: './pubspec.yaml'
+          key-path: '["version"]'
       - name: Save version on env variable
         id: save_version
         run: |
-          version=${{ steps.read_pubspec.outputs['version'] }}
+          version=${{ steps.read_pubspec.outputs.data }}
           IFS='+' 
           read -r -a split <<< "$version"
           echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_ENV
