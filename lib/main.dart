@@ -169,6 +169,20 @@ void main() async {
       (options) {
         options.dsn = dotenv.env['SENTRY_DSN'];
         options.sendDefaultPii = false;
+        options.beforeSend = (event, hint) {
+          if (event.throwable is HttpException) {
+            return null;
+          }
+
+          if (
+            event.message?.formatted.contains("Unexpected character") ?? false ||
+            (event.throwable != null && event.throwable!.toString().contains("Unexpected character"))
+          ) {
+            return null; // Exclude this event
+          }
+
+          return event;
+        };
       },
       appRunner: () => startApp()
     );
