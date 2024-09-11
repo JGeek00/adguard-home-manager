@@ -2,8 +2,6 @@ name: Compile and release production build
 
 on:
   workflow_dispatch:
-    branches:
-      - master
 
 jobs:
   build-android:
@@ -210,6 +208,7 @@ jobs:
           file: './pubspec.yaml'
           key-path: '["version"]'
       - name: Save version on env variable
+        shell: bash
         id: save_version
         run: |
           version=${{ steps.read_pubspec.outputs.data }}
