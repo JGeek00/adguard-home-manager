@@ -51,34 +51,37 @@ class LiveLogsList extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontSize: 24
+                        fontSize: 22
                       ),
                     ),
                   ),
                 ),
               ),
-              if (liveLogsProvider.logs.isNotEmpty) SliverList.builder(
-                itemCount: liveLogsProvider.logs.length,
-                itemBuilder: (context, index) => LogTile(
-                  log: liveLogsProvider.logs[index], 
-                  length: liveLogsProvider.logs.length, 
-                  index: index, 
-                  onLogTap: (log) {
-                    if (!twoColumns) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => LogDetailsScreen(
-                            log: log,
-                            dialog: false,
-                            twoColumns: twoColumns,
+              if (liveLogsProvider.logs.isNotEmpty) SliverPadding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
+                sliver: SliverList.builder(
+                  itemCount: liveLogsProvider.logs.length,
+                  itemBuilder: (context, index) => LogTile(
+                    log: liveLogsProvider.logs[index], 
+                    length: liveLogsProvider.logs.length, 
+                    index: index, 
+                    onLogTap: (log) {
+                      if (!twoColumns) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => LogDetailsScreen(
+                              log: log,
+                              dialog: false,
+                              twoColumns: twoColumns,
+                            )
                           )
-                        )
-                      );
-                    }
-                    onLogSelected(log);
-                  },
-                  isLogSelected: selectedLog == liveLogsProvider.logs[index],
-                  twoColumns: twoColumns
+                        );
+                      }
+                      onLogSelected(log);
+                    },
+                    isLogSelected: selectedLog == liveLogsProvider.logs[index],
+                    twoColumns: twoColumns
+                  ),
                 ),
               )
             ],
