@@ -137,6 +137,8 @@ class AddFiltersButton extends StatelessWidget {
     }
 
     void confirmAddList({required String name, required String url, required String type}) async {
+      if (!context.mounted) return;
+
       ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingList);
 

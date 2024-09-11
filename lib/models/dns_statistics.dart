@@ -5,7 +5,7 @@ DnsStatistics dnsStatisticsFromJson(String str) => DnsStatistics.fromJson(json.d
 String dnsStatisticsToJson(DnsStatistics data) => json.encode(data.toJson());
 
 class DnsStatistics {
-  final String timeUnits;
+  final String? timeUnits;
   final List<Map<String, int>> topQueriedDomains;
   final List<Map<String, int>> topClients;
   final List<Map<String, int>> topBlockedDomains;

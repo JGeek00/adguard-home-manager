@@ -96,6 +96,8 @@ class LogTile extends StatelessWidget {
     }
 
     void blockUnblock({required String domain, required String newStatus}) async {
+      if (!context.mounted) return;
+      
       final ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingUserFilters);
 
@@ -124,6 +126,8 @@ class LogTile extends StatelessWidget {
     }
 
     void confirmAddClient(Client client) async {
+      if (!context.mounted) return;
+
       ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingClient);
       
