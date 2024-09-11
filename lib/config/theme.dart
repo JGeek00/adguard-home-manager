@@ -24,6 +24,9 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   navigationBarTheme: NavigationBarThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
+  dialogTheme: DialogTheme(
+    surfaceTintColor: dynamicColorScheme?.surfaceTint
+  ),
   pageTransitionsTheme: const PageTransitionsTheme(
     builders: {
       TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
@@ -54,6 +57,9 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
   navigationBarTheme: NavigationBarThemeData(
+    surfaceTintColor: dynamicColorScheme?.surfaceTint
+  ),
+  dialogTheme: DialogTheme(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
   pageTransitionsTheme: const PageTransitionsTheme(
