@@ -365,7 +365,8 @@ class _SearchState extends State<_Search> {
                                     ),
                                     tooltip: AppLocalizations.of(context)!.clearSearch,
                                   )
-                                : null
+                                : null,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 12),
                             ),
                           ),
                         ),
