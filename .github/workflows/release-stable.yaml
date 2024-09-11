@@ -22,7 +22,7 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: jbutcher5/read-yaml@1.6
+        uses: JGeek00/read-yaml-files@2.0.0
         id: read_pubspec
         with:
           file: './pubspec.yaml'          # File to read from
@@ -79,7 +79,7 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: jbutcher5/read-yaml@1.6
+        uses: JGeek00/read-yaml-files@2.0.0
         id: read_pubspec
         with:
           file: './pubspec.yaml'
@@ -139,7 +139,7 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: jbutcher5/read-yaml@1.6
+        uses: JGeek00/read-yaml-files@2.0.0
         id: read_pubspec
         with:
           file: './pubspec.yaml'
@@ -202,7 +202,7 @@ jobs:
         run: |
           [IO.File]::WriteAllBytes('.env', [Convert]::FromBase64String('${{ secrets.ENV }}'))
       - name: Read pubspec.yaml
-        uses: jbutcher5/read-yaml@1.6
+        uses: JGeek00/read-yaml-files@2.0.0
         id: read_pubspec
         with:
           file: './pubspec.yaml'
