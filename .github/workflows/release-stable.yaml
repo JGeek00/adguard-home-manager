@@ -80,15 +80,14 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: adore-me/read-yaml@v1.0.0
+        uses: pietrobolcato/action-read-yaml@1.0.0
         id: read_pubspec
         with:
-          file: './pubspec.yaml'
-          key-path: '["version"]'
+          config: ${{ github.workspace }}/pubspec.yaml
       - name: Save version on env variable
         id: save_version
         run: |
-          version=${{ steps.read_pubspec.outputs.data }}
+          version=${{ steps.read_pubspec.outputs['version'] }}
           IFS='+' 
           read -r -a split <<< "$version"
           echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_ENV
@@ -140,15 +139,14 @@ jobs:
       - name: Decode .env
         run: echo "${{ secrets.ENV }}" | base64 --decode > .env
       - name: Read pubspec.yaml
-        uses: adore-me/read-yaml@v1.0.0
+        uses: pietrobolcato/action-read-yaml@1.0.0
         id: read_pubspec
         with:
-          file: './pubspec.yaml'
-          key-path: '["version"]'
+          config: ${{ github.workspace }}/pubspec.yaml
       - name: Save version on env variable
         id: save_version
         run: |
-          version=${{ steps.read_pubspec.outputs.data }}
+          version=${{ steps.read_pubspec.outputs['version'] }}
           IFS='+' 
           read -r -a split <<< "$version"
           echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_ENV
@@ -203,16 +201,14 @@ jobs:
         run: |
           [IO.File]::WriteAllBytes('.env', [Convert]::FromBase64String('${{ secrets.ENV }}'))
       - name: Read pubspec.yaml
-        uses: adore-me/read-yaml@v1.0.0
+        uses: pietrobolcato/action-read-yaml@1.0.0
         id: read_pubspec
         with:
-          file: './pubspec.yaml'
-          key-path: '["version"]'
+          config: ${{ github.workspace }}/pubspec.yaml
       - name: Save version on env variable
-        shell: bash
         id: save_version
         run: |
-          version=${{ steps.read_pubspec.outputs.data }}
+          version=${{ steps.read_pubspec.outputs['version'] }}
           IFS='+' 
           read -r -a split <<< "$version"
           echo "VERSION_NAME=$(echo ${split[0]})" >> $GITHUB_ENV
