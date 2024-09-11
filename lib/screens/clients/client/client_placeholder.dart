@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ClientPlaceholder extends StatelessWidget {
-  const ClientPlaceholder({Key? key}) : super(key: key);
+  const ClientPlaceholder({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text("Select a client"),
     );
   }

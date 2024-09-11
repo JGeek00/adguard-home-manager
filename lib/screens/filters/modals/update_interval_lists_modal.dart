@@ -235,10 +235,10 @@ class _Content extends StatelessWidget {
                   }
                   : null,
                 style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(
+                  overlayColor: WidgetStateProperty.all(
                     Theme.of(context).colorScheme.primary.withOpacity(0.1)
                   ),
-                  foregroundColor: MaterialStateProperty.all(
+                  foregroundColor: WidgetStateProperty.all(
                     selectedOption != null
                       ? Theme.of(context).colorScheme.primary
                       : Colors.grey,

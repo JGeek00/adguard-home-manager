@@ -7,12 +7,12 @@ class OptionBox extends StatelessWidget {
   final String label;
 
   const OptionBox({
-    Key? key,
+    super.key,
     required this.optionsValue,
     required this.itemValue,
     required this.onTap,
     required this.label,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

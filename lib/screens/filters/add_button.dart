@@ -42,14 +42,14 @@ class AddFiltersButton extends StatelessWidget {
 
       if (!context.mounted) return;
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleAddedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleNotAdded, 
           color: Colors.red
@@ -67,14 +67,14 @@ class AddFiltersButton extends StatelessWidget {
 
       if (!context.mounted) return;
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.customRulesUpdatedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.customRulesNotUpdated, 
           color: Colors.red
@@ -146,28 +146,28 @@ class AddFiltersButton extends StatelessWidget {
 
       if (!context.mounted) return;
       if (result['success'] == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: "${AppLocalizations.of(context)!.listAdded} ${result['data']}.", 
           color: Colors.green
         );
       }
       else if (result['success'] == false && result['error'] == 'invalid_url') {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listUrlInvalid, 
           color: Colors.red
         );
       }
       else if (result['success'] == false && result['error'] == 'url_exists') {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listAlreadyAdded, 
           color: Colors.red
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listNotAdded, 
           color: Colors.red

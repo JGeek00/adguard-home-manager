@@ -9,14 +9,14 @@ class CustomCheckboxListTile extends StatelessWidget {
   final EdgeInsets? padding;
 
   const CustomCheckboxListTile({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChanged,
     required this.title,
     this.disabled,
     this.subtitle,
     this.padding
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

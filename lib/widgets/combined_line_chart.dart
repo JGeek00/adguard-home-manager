@@ -15,12 +15,12 @@ class CustomCombinedLineChart extends StatelessWidget {
   final bool daysInterval;
 
   const CustomCombinedLineChart({
-    Key? key,
+    super.key,
     required this.inputData,
     required this.context,
     required this.dates,
     required this.daysInterval
-  }) : super(key: key);
+  });
 
   LineChartData mainData(Map<String, dynamic> data, ThemeMode selectedTheme) {
     String chartDate(DateTime date) {
@@ -55,11 +55,11 @@ class CustomCombinedLineChart extends StatelessWidget {
     }
 
     return LineChartData(
-      gridData: FlGridData(
+      gridData: const FlGridData(
         show: false,
         drawVerticalLine: false,
       ),
-      titlesData: FlTitlesData(
+      titlesData: const FlTitlesData(
         show: false,
       ),
       borderData: FlBorderData(
@@ -73,7 +73,7 @@ class CustomCombinedLineChart extends StatelessWidget {
           barWidth: 2,
           isStrokeCapRound: true,
           preventCurveOverShooting: true,
-          dotData: FlDotData(
+          dotData: const FlDotData(
             show: false,
           ),
           belowBarData: BarAreaData(

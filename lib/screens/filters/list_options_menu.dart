@@ -59,14 +59,14 @@ class ListOptionsMenu extends StatelessWidget {
       
       if (!context.mounted) return;
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listDataUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listDataNotUpdated, 
           color: Colors.red

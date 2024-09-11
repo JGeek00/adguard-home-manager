@@ -102,17 +102,17 @@ class _LogsSettingsState extends State<LogsSettings> {
 
       processModal.close();
 
-      if (!mounted) return;
+      if (!context.mounted) return;
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsCleared, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsNotCleared, 
           color: Colors.red
@@ -135,17 +135,17 @@ class _LogsSettingsState extends State<LogsSettings> {
       
       processModal.close();
 
-      if (!mounted) return;
+      if (!context.mounted) return;
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsConfigUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.logsConfigNotUpdated, 
           color: Colors.red

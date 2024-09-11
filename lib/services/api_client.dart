@@ -206,14 +206,14 @@ class ApiClientV2 {
   }
 
   Future<ApiResponse> getLogs({
-    required int count, 
+    int? count, 
     int? offset,
     DateTime? olderThan,
     String? responseStatus,
     String? search
   }) async {
     final result = await HttpRequestClient.get(
-      urlPath: '/querylog?limit=$count${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}', 
+      urlPath: '/querylog?${count != null ? 'limit=$count' : ''}${offset != null ? '&offset=$offset' : ''}${olderThan != null ? '&older_than=${olderThan.toIso8601String()}' : ''}${responseStatus != null ? '&response_status=$responseStatus' : ''}${search != null ? '&search=$search' : ''}', 
       server: server
     );
     if (result.successful == true) {

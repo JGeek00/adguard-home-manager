@@ -26,14 +26,14 @@ class AdvancedSettings extends StatelessWidget {
       final result = await function(newStatus);
       if (!context.mounted) return;
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsUpdatedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.cannotUpdateSettings, 
           color: Colors.red

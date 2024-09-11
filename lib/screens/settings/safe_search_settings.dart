@@ -90,7 +90,7 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsUpdatedSuccessfully,
           color: Colors.green,
@@ -98,7 +98,7 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsNotSaved,
           color: Colors.red,

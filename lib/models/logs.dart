@@ -30,7 +30,7 @@ class LogsData {
 
   Map<String, dynamic> toJson() => {
     "data": List<dynamic>.from(data.map((x) => x.toJson())),
-    "oldest": oldest != null ? oldest!.toIso8601String() : null,
+    "oldest": oldest?.toIso8601String(),
   };
 }
 

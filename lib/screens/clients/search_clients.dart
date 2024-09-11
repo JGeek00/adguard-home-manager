@@ -95,14 +95,14 @@ class _SearchClientsState extends State<SearchClients> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientDeletedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotDeleted, 
           color: Colors.red
@@ -119,14 +119,14 @@ class _SearchClientsState extends State<SearchClients> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientUpdatedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotUpdated, 
           color: Colors.red
@@ -205,7 +205,7 @@ class _SearchClientsState extends State<SearchClients> {
             height: 1,
             decoration: BoxDecoration(
               color: showDivider == true
-                ? Theme.of(context).colorScheme.surfaceVariant
+                ? Theme.of(context).colorScheme.surfaceContainerHighest
                 : Colors.transparent
             ),
           ),

@@ -43,14 +43,14 @@ class DhcpLeases extends StatelessWidget {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseDeleted, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseNotDeleted, 
           color: Colors.red
@@ -67,28 +67,28 @@ class DhcpLeases extends StatelessWidget {
       processModal.close();
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseCreated, 
           color: Colors.green
         );
       }
       else if (result.successful == false && result.content == "already_exists") {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseExists, 
           color: Colors.red
         );
       }
       else if (result.successful == false && result.content == "server_not_configured") {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.serverNotConfigured, 
           color: Colors.red
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.staticLeaseNotCreated, 
           color: Colors.red

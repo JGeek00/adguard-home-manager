@@ -6,10 +6,10 @@ class EncryptionMasterSwitch extends StatelessWidget {
   final void Function(bool) onChange;
 
   const EncryptionMasterSwitch({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChange
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

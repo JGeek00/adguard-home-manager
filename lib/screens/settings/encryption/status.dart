@@ -8,10 +8,10 @@ class Status extends StatelessWidget {
   final String label;
 
   const Status({
-    Key? key,
+    super.key,
     required this.valid,
     required this.label
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

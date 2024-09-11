@@ -63,7 +63,7 @@ class Filter {
   Map<String, dynamic> toJson() => {
     "url": url,
     "name": name,
-    "last_updated": lastUpdated != null ? lastUpdated!.toIso8601String() : null,
+    "last_updated": lastUpdated?.toIso8601String(),
     "id": id,
     "rules_count": rulesCount,
     "enabled": enabled,

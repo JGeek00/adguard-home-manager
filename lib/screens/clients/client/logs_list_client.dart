@@ -237,7 +237,8 @@ class _LogsListClientState extends State<LogsListClient> {
                                 context: context, 
                                 builder: (context) => LogDetailsScreen(
                                   log: log, 
-                                  dialog: true
+                                  dialog: true,
+                                  twoColumns: widget.splitView,
                                 )
                               )
                             }
@@ -246,7 +247,8 @@ class _LogsListClientState extends State<LogsListClient> {
                                 MaterialPageRoute(
                                   builder: (context) => LogDetailsScreen(
                                     log: log, 
-                                    dialog: false
+                                    dialog: false,
+                                    twoColumns: widget.splitView,
                                   )
                                 )
                               )

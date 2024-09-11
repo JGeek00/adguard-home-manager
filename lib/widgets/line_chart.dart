@@ -13,13 +13,13 @@ class CustomLineChart extends StatelessWidget {
   final BuildContext context;
 
   const CustomLineChart({
-    Key? key,
+    super.key,
     required this.data,
     required this.color,
     required this.dates,
     required this.daysInterval,
     required this.context
-  }) : super(key: key);
+  });
 
   String chartDate(DateTime date) {
     String twoDigits(int number) => number.toString().padLeft(2, '0');
@@ -55,11 +55,11 @@ class CustomLineChart extends StatelessWidget {
 
   LineChartData mainData(Map<String, dynamic> data, ThemeMode selectedTheme) {
     return LineChartData(
-      gridData: FlGridData(
+      gridData: const FlGridData(
         show: false,
         drawVerticalLine: false,
       ),
-      titlesData: FlTitlesData(
+      titlesData: const FlTitlesData(
         show: false,
       ),
       borderData: FlBorderData(
@@ -73,7 +73,7 @@ class CustomLineChart extends StatelessWidget {
           barWidth: 2,
           isStrokeCapRound: true,
           preventCurveOverShooting: true,
-          dotData: FlDotData(
+          dotData: const FlDotData(
             show: false,
           ),
           belowBarData: BarAreaData(

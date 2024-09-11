@@ -27,13 +27,13 @@ class FiltersList extends StatefulWidget {
   final void Function(Filter, String) onOpenDetailsScreen;
 
   const FiltersList({
-    Key? key,
+    super.key,
     required this.loadStatus,
     required this.scrollController,
     required this.data,
     required this.type,
     required this.onOpenDetailsScreen
-  }) : super(key: key);
+  });
 
   @override
   State<FiltersList> createState() => _FiltersListState();
@@ -133,7 +133,7 @@ class _FiltersListState extends State<FiltersList> {
               onPressed: () async {
                 final result = await filteringProvider.fetchFilters();
                 if (result == false && mounted) {
-                  showSnacbkar(
+                  showSnackbar(
                     appConfigProvider: appConfigProvider,
                     label: AppLocalizations.of(context)!.errorLoadFilters, 
                     color: Colors.red
@@ -173,7 +173,7 @@ class _FiltersListState extends State<FiltersList> {
       onRefresh: () async {
         final result = await filteringProvider.fetchFilters();
         if (result == false && mounted) {
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.errorLoadFilters, 
             color: Colors.red

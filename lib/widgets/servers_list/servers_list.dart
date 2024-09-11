@@ -16,13 +16,13 @@ class ServersList extends StatelessWidget {
   final double breakingWidth;
 
   const ServersList({
-    Key? key,
+    super.key,
     required this.context,
     required this.controllers,
     required this.onChange,
     required this.scrollController,
     required this.breakingWidth
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -163,7 +163,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
               onPressed: () async {
                 final result = await filteringProvider.fetchFilters();
                 if (result == false) {
-                  showSnacbkar(
+                  showSnackbar(
                     appConfigProvider: appConfigProvider,
                     label: AppLocalizations.of(context)!.errorLoadFilters, 
                     color: Colors.red
@@ -203,7 +203,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
       onRefresh: () async {
         final result = await filteringProvider.fetchFilters();
         if (result == false) {
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.errorLoadFilters, 
             color: Colors.red

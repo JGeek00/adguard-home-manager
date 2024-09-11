@@ -80,21 +80,21 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
       processModal.close();
 
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigSaved, 
           color: Colors.green
         );
       }
       else if (result.successful == false && result.statusCode == 400) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.someValueNotValid, 
           color: Colors.red
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.dnsConfigNotSaved, 
           color: Colors.red
@@ -197,7 +197,7 @@ class _BootstrapDnsScreenState extends State<BootstrapDnsScreen> {
                   )
                 ],
               ),
-            )).toList(),
+            )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,

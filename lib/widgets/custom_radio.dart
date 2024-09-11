@@ -7,12 +7,12 @@ class CustomRadio extends StatelessWidget {
   final Color backgroundColor;
 
   const CustomRadio({
-    Key? key,
+    super.key,
     required this.value,
     required this.groupValue,
     this.onChange,
     required this.backgroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

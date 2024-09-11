@@ -5,9 +5,9 @@ class DeleteStaticLeaseModal extends StatelessWidget {
   final void Function() onConfirm;
 
   const DeleteStaticLeaseModal({
-    Key? key,
+    super.key,
     required this.onConfirm
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

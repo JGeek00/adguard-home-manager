@@ -7,7 +7,7 @@ import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 
 class HomeFab extends StatelessWidget {
-  const HomeFab({Key? key}) : super(key: key);
+  const HomeFab({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -5,9 +5,9 @@ class DeleteDnsRewrite extends StatelessWidget {
   final void Function() onConfirm;
 
   const DeleteDnsRewrite({
-    Key? key,
+    super.key,
     required this.onConfirm
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

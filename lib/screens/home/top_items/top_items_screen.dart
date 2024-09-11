@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/options_menu.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
+import 'package:adguard_home_manager/widgets/floating_search_bar.dart';
 
 import 'package:adguard_home_manager/models/menu_option.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -16,6 +17,7 @@ import 'package:adguard_home_manager/functions/number_format.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 
 enum _SortingOptions { highestToLowest, lowestToHighest }
+final GlobalKey _searchButtonKey = GlobalKey();
 
 class TopItemsScreen extends StatefulWidget {
   final HomeTopItems type;
@@ -47,15 +49,18 @@ class TopItemsScreen extends StatefulWidget {
 
 class _TopItemsScreenState extends State<TopItemsScreen> {
   _SortingOptions _sortingOptions = _SortingOptions.highestToLowest;
-  bool searchActive = false;
   final TextEditingController searchController = TextEditingController();
+  String? _currentSearchValue = "";
 
   List<Map<String, dynamic>> data = [];
   List<Map<String, dynamic>> screenData = [];
 
   void search(String value) {
     List<Map<String, dynamic>> newValues = widget.data.where((item) => item.keys.toList()[0].contains(value)).toList();
-    setState(() => screenData = newValues);
+    setState(() {
+      screenData = newValues;
+      _currentSearchValue = searchController.text;
+    });
   }
 
   @override
@@ -75,118 +80,132 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
     final sortedValues = _sortingOptions == _SortingOptions.lowestToHighest
       ? screenData.reversed.toList()
       : screenData.toList();
+
+    void showSearchDialog() {
+      showDialog(
+        context: context, 
+        builder: (context) => FloatingSearchBar(
+          existingSearchValue: _currentSearchValue,
+          searchButtonRenderBox: _searchButtonKey.currentContext?.findRenderObject() as RenderBox?,
+          onSearchCompleted: (v) {
+            List<Map<String, dynamic>> newValues = widget.data.where((item) => item.keys.toList()[0].contains(v)).toList();
+            setState(() {
+              screenData = newValues;
+              _currentSearchValue = v;
+            });
+          },
+        ),
+      );
+    }
     
     if (widget.isFullscreen == true) {
-      return Dialog.fullscreen(
-        child: Scaffold(
-          appBar: AppBar(
-            title: searchActive == true
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
-                  child: TextFormField(
-                    controller: searchController,
-                    onChanged: search,
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.search,
-                      hintStyle: const TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 18
+      return Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar.large(
+                title: Text(widget.title),
+                actions: [
+                  IconButton(
+                    key: _searchButtonKey,
+                    onPressed: showSearchDialog,
+                    icon: const Icon(Icons.search_rounded),
+                    tooltip: AppLocalizations.of(context)!.search,
+                  ),
+                  PopupMenuButton(
+                    icon: const Icon(Icons.sort_rounded),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        onTap: () => setState(() => _sortingOptions = _SortingOptions.highestToLowest),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.arrow_downward_rounded),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(AppLocalizations.of(context)!.fromHighestToLowest)
+                            ),
+                            const SizedBox(width: 16),
+                            Icon(
+                              _sortingOptions == _SortingOptions.highestToLowest
+                                ? Icons.radio_button_checked_rounded
+                                : Icons.radio_button_unchecked_rounded,
+                              color: _sortingOptions == _SortingOptions.highestToLowest
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                            )
+                          ],
+                        )
                       ),
-                      border: InputBorder.none,
-                    ),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 18
-                    ),
-                    autofocus: true,
-                  ),
-                )
-              : Text(widget.title),
-            leading: searchActive == true ?
-              IconButton(
-                onPressed: () => setState(() {
-                  searchActive = false;
-                  searchController.text = '';
-                  screenData = data;
-                }), 
-                icon: const Icon(Icons.arrow_back),
-                tooltip: AppLocalizations.of(context)!.exitSearch,
-              ) : null,
-            actions: [
-              if (searchActive == false) IconButton(
-                onPressed: () => setState(() => searchActive = true), 
-                icon: const Icon(Icons.search),
-                tooltip: AppLocalizations.of(context)!.search,
-              ),
-              if (searchActive == true) IconButton(
-                onPressed: () => setState(() {
-                  searchController.text = '';
-                  screenData = data;
-                }), 
-                icon: const Icon(Icons.clear_rounded),
-                tooltip: AppLocalizations.of(context)!.clearSearch,
-              ),
-              PopupMenuButton(
-                icon: const Icon(Icons.sort_rounded),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: () => setState(() => _sortingOptions = _SortingOptions.highestToLowest),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.arrow_downward_rounded),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(AppLocalizations.of(context)!.fromHighestToLowest)
-                        ),
-                        const SizedBox(width: 16),
-                        Icon(
-                          _sortingOptions == _SortingOptions.highestToLowest
-                            ? Icons.radio_button_checked_rounded
-                            : Icons.radio_button_unchecked_rounded,
-                          color: _sortingOptions == _SortingOptions.highestToLowest
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                      PopupMenuItem(
+                        onTap: () => setState(() => _sortingOptions = _SortingOptions.lowestToHighest),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.arrow_upward_rounded),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(AppLocalizations.of(context)!.fromLowestToHighest)
+                            ),
+                            const SizedBox(width: 16),
+                            Icon(
+                              _sortingOptions == _SortingOptions.lowestToHighest
+                                ? Icons.radio_button_checked_rounded
+                                : Icons.radio_button_unchecked_rounded,
+                              color: _sortingOptions == _SortingOptions.lowestToHighest
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                            )
+                          ],
                         )
-                      ],
-                    )
+                      ),
+                    ],
                   ),
-                  PopupMenuItem(
-                    onTap: () => setState(() => _sortingOptions = _SortingOptions.lowestToHighest),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.arrow_upward_rounded),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(AppLocalizations.of(context)!.fromLowestToHighest)
+                  const SizedBox(width: 8)
+                ],
+              )
+            )
+          ], 
+          body: SafeArea(
+            top: false,
+            bottom: false,
+            child: Builder(
+              builder: (context) => CustomScrollView(
+                slivers: [
+                  SliverOverlapInjector(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  ),
+                  if (sortedValues.isEmpty) Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        AppLocalizations.of(context)!.noItemsSearch,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
-                        const SizedBox(width: 16),
-                        Icon(
-                          _sortingOptions == _SortingOptions.lowestToHighest
-                            ? Icons.radio_button_checked_rounded
-                            : Icons.radio_button_unchecked_rounded,
-                          color: _sortingOptions == _SortingOptions.lowestToHighest
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
-                        )
-                      ],
-                    )
+                      ),
+                    ),
+                  ),
+                  if (sortedValues.isNotEmpty) SliverPadding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
+                    sliver: SliverList.builder(
+                      itemCount: sortedValues.length,
+                      itemBuilder: (context, index) => _Item(
+                        data: sortedValues[index], 
+                        isClient: widget.isClient, 
+                        options: widget.options,
+                        total: total,
+                        withProgressBar: widget.withProgressBar, 
+                        onTapEntry: widget.onTapEntry, 
+                        buildValue: widget.buildValue, 
+                      ),
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(width: 8)
-            ],
-          ),
-          body: SafeArea(
-            child: _Content(
-              buildValue: widget.buildValue,
-              isClient: widget.isClient,
-              onTapEntry: widget.onTapEntry,
-              options: widget.options,
-              screenData: sortedValues,
-              total: total,
-              withProgressBar: widget.withProgressBar,
-            ),
-          ),
+            )
+          )
         ),
       );
     }
@@ -242,14 +261,29 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                 ),
               ),
               Expanded(
-                child: _Content(
-                  buildValue: widget.buildValue,
-                  isClient: widget.isClient,
-                  onTapEntry: widget.onTapEntry,
-                  options: widget.options,
-                  screenData: sortedValues,
-                  total: total,
-                  withProgressBar: widget.withProgressBar,
+                child: sortedValues.isNotEmpty ? ListView.builder(
+                  itemCount: sortedValues.length,
+                  itemBuilder: (context, index) => _Item(
+                    data: sortedValues[index], 
+                    isClient: widget.isClient, 
+                    options: widget.options, 
+                    withProgressBar: widget.withProgressBar, 
+                    onTapEntry: widget.onTapEntry, 
+                    buildValue: widget.buildValue, 
+                    total: total,
+                  ),
+                ) : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      AppLocalizations.of(context)!.noItemsSearch,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -260,8 +294,8 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
   }
 }
 
-class _Content extends StatelessWidget {
-  final List<Map<String, dynamic>> screenData;
+class _Item extends StatelessWidget {
+  final dynamic data;
   final bool? isClient;
   final List<MenuOption> Function(dynamic) options;
   final bool withProgressBar;
@@ -269,8 +303,8 @@ class _Content extends StatelessWidget {
   final String Function(dynamic) buildValue;
   final double total;
 
-  const _Content({
-    required this.screenData,
+  const _Item({
+    required this.data,
     required this.isClient,
     required this.options,
     required this.withProgressBar,
@@ -283,98 +317,75 @@ class _Content extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusProvider = Provider.of<StatusProvider>(context);
 
-    if (screenData.isNotEmpty) {
-      return ListView.builder(
-        padding: const EdgeInsets.only(top: 0),
-        itemCount: screenData.length,
-        itemBuilder: (context, index) {
-          String? name;
-          if (isClient != null && isClient == true) {
-            try {
-              name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(screenData[index].keys.toList()[0])).name;
-            } catch (e) {
-              // ---- //
-            }
-          }
-               
-          return OptionsMenu(
-            options: options,
-            value: screenData[index].keys.toList()[0],
-            onTap: onTapEntry != null
-              ? (v) {
-                  onTapEntry!(v);
-                  Navigator.pop(context);
-                }
-              : null,
-            child: CustomListTile(
-              title: screenData[index].keys.toList()[0],
-              trailing: Text(
-                buildValue(screenData[index].values.toList()[0]),
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant
-                ),
-              ),
-              subtitleWidget: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (name != null) ...[
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).colorScheme.onSurface
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                  ],
-                  if (withProgressBar == true) Row(
-                    children: [
-                      SizedBox(
-                        width: 50,
-                        child: Text(
-                          "${doubleFormat((screenData[index].values.toList()[0]/total*100), Platform.localeName)}%",
-                          style: TextStyle(
-                            color: Theme.of(context).listTileTheme.textColor
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: LinearPercentIndicator(
-                          animation: true,
-                          lineHeight: 4,
-                          animationDuration: 500,
-                          curve: Curves.easeOut,
-                          percent: screenData[index].values.toList()[0]/total,
-                          barRadius: const Radius.circular(5),
-                          progressColor: Theme.of(context).colorScheme.primary,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                  ),
-                ],
-              )
-            ),
-          );
-        }
-      );
+    String? name;
+    if (isClient != null && isClient == true) {
+      try {
+        name = statusProvider.serverStatus!.clients.firstWhere((c) => c.ids.contains(data.keys.toList()[0])).name;
+      } catch (e) {
+        // ---- //
+      }
     }
-    else { 
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            AppLocalizations.of(context)!.noItemsSearch,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 22,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+               
+    return OptionsMenu(
+      options: options,
+      value: data.keys.toList()[0],
+      onTap: onTapEntry != null
+        ? (v) {
+            onTapEntry!(v);
+            Navigator.pop(context);
+          }
+        : null,
+      child: CustomListTile(
+        title: data.keys.toList()[0],
+        trailing: Text(
+          buildValue(data.values.toList()[0]),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant
           ),
         ),
-      );
-    }
+        subtitleWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (name != null) ...[
+              Text(
+                name,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).colorScheme.onSurface
+                ),
+              ),
+              const SizedBox(height: 5),
+            ],
+            if (withProgressBar == true) Row(
+              children: [
+                SizedBox(
+                  width: 50,
+                  child: Text(
+                    "${doubleFormat((data.values.toList()[0]/total*100), Platform.localeName)}%",
+                    style: TextStyle(
+                      color: Theme.of(context).listTileTheme.textColor
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: LinearPercentIndicator(
+                    animation: true,
+                    lineHeight: 4,
+                    animationDuration: 500,
+                    curve: Curves.easeOut,
+                    percent: data.values.toList()[0]/total,
+                    barRadius: const Radius.circular(5),
+                    progressColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.2),
+                  ),
+                ),
+                const SizedBox(width: 10),
+              ],
+            ),
+          ],
+        )
+      ),
+    );
   }
 }

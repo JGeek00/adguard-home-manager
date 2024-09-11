@@ -13,13 +13,13 @@ class SelectionList extends StatelessWidget {
   final void Function() unselectAll;
 
   const SelectionList({
-    Key? key,
+    super.key,
     required this.lists,
     required this.selectedLists,
     required this.onSelect,
     required this.selectAll,
     required this.unselectAll,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -231,11 +231,10 @@ class _CheckboxTile extends StatelessWidget {
   final bool isSelected;
 
   const _CheckboxTile({
-    Key? key,
     required this.list,
     required this.onSelect,
     required this.isSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -8,13 +8,13 @@ class SmallSwitch extends StatelessWidget {
   final bool disabled;
 
   const SmallSwitch({
-    Key? key,
+    super.key,
     required this.label,
     required this.icon,
     required this.value,
     required this.onChange,
     required this.disabled,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -94,14 +94,14 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
       );
       processModal.close();
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listDataUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.listDataNotUpdated, 
           color: Colors.red
@@ -175,6 +175,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                           _Content(
                             isDialog: widget.dialog,
                             list: list,
+                            type: widget.type,
                           )
                         ],
                       ),
@@ -216,6 +217,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                     _Content(
                       isDialog: widget.dialog,
                       list: list,
+                      type: widget.type,
                     )
                   ],
                 ),
@@ -261,10 +263,12 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
 class _Content extends StatelessWidget {
   final Filter list;
   final bool isDialog;
+  final String type;
 
   const _Content({
     required this.list,
-    required this.isDialog
+    required this.isDialog,
+    required this.type,
   });
 
   @override
@@ -339,7 +343,7 @@ class _Content extends StatelessWidget {
         CustomListTile(
           icon: Icons.shield_rounded, 
           title: AppLocalizations.of(context)!.listType, 
-          subtitle: isDialog == 'whitelist'
+          subtitle: type == 'whitelist'
             ? AppLocalizations.of(context)!.whitelist
             : AppLocalizations.of(context)!.blacklist,
           padding: isDialog == true
@@ -431,7 +435,7 @@ class _Actions extends StatelessWidget {
                   );
                   processModal.close();
                   if (result == true) {
-                    showSnacbkar(
+                    showSnackbar(
                       appConfigProvider: appConfigProvider,
                       label: AppLocalizations.of(context)!.listDeleted, 
                       color: Colors.green
@@ -439,7 +443,7 @@ class _Actions extends StatelessWidget {
                     Navigator.pop(context);
                   }
                   else {
-                    showSnacbkar(
+                    showSnackbar(
                       appConfigProvider: appConfigProvider,
                       label: AppLocalizations.of(context)!.listNotDeleted, 
                       color: Colors.red

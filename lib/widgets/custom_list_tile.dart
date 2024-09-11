@@ -14,7 +14,7 @@ class CustomListTile extends StatelessWidget {
   final Color? color;
 
   const CustomListTile({
-    Key? key,
+    super.key,
     required this.title,
     this.subtitle,
     this.subtitleWidget,
@@ -26,7 +26,7 @@ class CustomListTile extends StatelessWidget {
     this.disabled,
     this.onHover,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

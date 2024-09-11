@@ -68,7 +68,7 @@ class _ServersListItemState extends State<ServersListItem> with SingleTickerProv
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Theme.of(context).colorScheme.surfaceVariant,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             width: 1
           )
         )

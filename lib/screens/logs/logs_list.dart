@@ -42,7 +42,7 @@ class _LogsListWidgetState extends State<LogsListWidget> {
 
     final result = await statusProvider.getFilteringRules();
     if (mounted && result == false) {
-      showSnacbkar(
+      showSnackbar(
         appConfigProvider: appConfigProvider, 
         label: AppLocalizations.of(context)!.couldntGetFilteringStatus, 
         color: Colors.red
@@ -56,7 +56,7 @@ class _LogsListWidgetState extends State<LogsListWidget> {
 
     final result = await clientsProvider.fetchClients();
     if (mounted && result == false) {
-      showSnacbkar(
+      showSnackbar(
         appConfigProvider: appConfigProvider, 
         label: AppLocalizations.of(context)!.couldntGetFilteringStatus, 
         color: Colors.red
@@ -188,6 +188,7 @@ class _LogsListWidgetState extends State<LogsListWidget> {
                                               builder: (context) => LogDetailsScreen(
                                                 log: log,
                                                 dialog: false,
+                                                twoColumns: widget.twoColumns,
                                               )
                                             )
                                           );

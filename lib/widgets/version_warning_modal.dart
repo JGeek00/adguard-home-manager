@@ -5,9 +5,9 @@ class VersionWarningModal extends StatelessWidget {
   final String version;
 
   const VersionWarningModal({
-    Key? key,
+    super.key,
     required this.version,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

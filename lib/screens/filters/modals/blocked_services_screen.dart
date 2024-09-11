@@ -68,14 +68,14 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
       processModal.close();
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.blockedServicesUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.blockedServicesNotUpdated, 
           color: Colors.red
@@ -119,24 +119,26 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
                     SliverOverlapInjector(
                       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                     ),
-                    if (filteringProvider.blockedServicesLoadStatus == LoadStatus.loading) Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      width: double.maxFinite,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const CircularProgressIndicator(),
-                          const SizedBox(height: 30),
-                          Text(
-                            AppLocalizations.of(context)!.loadingBlockedServicesList,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                          )
-                        ],
+                    if (filteringProvider.blockedServicesLoadStatus == LoadStatus.loading) SliverFillRemaining(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        width: double.maxFinite,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 30),
+                            Text(
+                              AppLocalizations.of(context)!.loadingBlockedServicesList,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     if (filteringProvider.blockedServicesLoadStatus == LoadStatus.loaded) SliverList.builder(
@@ -181,28 +183,30 @@ class _BlockedServicesScreenStateWidget extends State<BlockedServicesScreen> {
                         ),
                       )
                     ),
-                    if (filteringProvider.blockedServicesLoadStatus == LoadStatus.error) Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      width: double.maxFinite,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.error,
-                            color: Colors.red,
-                            size: 50,
-                          ),
-                          const SizedBox(height: 30),
-                          Text(
-                            AppLocalizations.of(context)!.blockedServicesListNotLoaded,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    if (filteringProvider.blockedServicesLoadStatus == LoadStatus.error) SliverFillRemaining(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        width: double.maxFinite,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                              size: 50,
                             ),
-                          )
-                        ],
+                            const SizedBox(height: 30),
+                            Text(
+                              AppLocalizations.of(context)!.blockedServicesListNotLoaded,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],

@@ -3,8 +3,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:install_referrer/install_referrer.dart';
 import 'package:provider/provider.dart';
-import 'package:store_checker/store_checker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/settings.dart';
@@ -49,14 +49,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     }) async {
       final result = await function(newStatus);
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.settingsUpdatedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.cannotUpdateSettings, 
           color: Colors.red
@@ -253,14 +253,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 right: 10
               )
             ),
-            if (
-              !(Platform.isAndroid || Platform.isIOS) || 
-              (Platform.isAndroid && (
-                appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_LOCAL_SOURCE ||
-                appConfigProvider.installationSource == Source.IS_INSTALLED_FROM_PLAY_PACKAGE_INSTALLER ||
-                appConfigProvider.installationSource == Source.UNKNOWN
-              ))
-            ) ...[
+            if (!(Platform.isAndroid || Platform.isIOS) || (Platform.isAndroid && (appConfigProvider.installationSource == InstallationAppReferrer.androidManually ))) ...[
               SectionLabel(label: AppLocalizations.of(context)!.application),
               CustomListTile(
                 icon: Icons.system_update_rounded,

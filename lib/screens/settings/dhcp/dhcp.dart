@@ -221,14 +221,14 @@ class _DhcpScreenState extends State<DhcpScreen> {
       if (!mounted) return;
       processModal.close();
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.settingsSaved, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.settingsNotSaved, 
           color: Colors.red
@@ -245,14 +245,14 @@ class _DhcpScreenState extends State<DhcpScreen> {
         processModal.close();
         if (result.successful == true) {
           clearAll();
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.configRestored, 
             color: Colors.green
           );
         }
         else {
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.configNotRestored, 
             color: Colors.red
@@ -276,14 +276,14 @@ class _DhcpScreenState extends State<DhcpScreen> {
           data.dhcpStatus!.leases = [];
           dhcpProvider.setDhcpData(data);
 
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.leasesRestored, 
             color: Colors.green
           );
         }
         else {
-          showSnacbkar(
+          showSnackbar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.leasesNotRestored, 
             color: Colors.red

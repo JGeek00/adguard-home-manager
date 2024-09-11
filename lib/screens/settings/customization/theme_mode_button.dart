@@ -9,14 +9,14 @@ class ThemeModeButton extends StatelessWidget {
   final bool? disabled;
 
   const ThemeModeButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.value,
     required this.selected,
     required this.label,
     required this.onChanged,
     this.disabled
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,19 +32,19 @@ class ThemeModeButton extends StatelessWidget {
         ? () => onChanged(value)
         : null,
       style: ButtonStyle(
-        elevation: MaterialStateProperty.all(0),
-        shape: MaterialStateProperty.all(
+        elevation: WidgetStateProperty.all(0),
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           )
         ),
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
           value == selected
             ? disabled == null || disabled == false
               ? Theme.of(context).colorScheme.primary
               : greyBackgroundColor
             : disabled == null || disabled == false
-              ? Theme.of(context).colorScheme.surfaceVariant
+              ? Theme.of(context).colorScheme.surfaceTint.withOpacity(0.1)
               : greyBackgroundColor,
         )
       ),

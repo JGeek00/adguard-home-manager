@@ -108,14 +108,14 @@ class LogTile extends StatelessWidget {
 
       if (!context.mounted) return;
       if (rules == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.userFilteringRulesUpdated, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.userFilteringRulesNotUpdated, 
           color: Colors.red
@@ -134,14 +134,14 @@ class LogTile extends StatelessWidget {
       if (!context.mounted) return;
 
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientNotAdded, 
           color: Colors.red
@@ -163,7 +163,7 @@ class LogTile extends StatelessWidget {
 
       if (!context.mounted) return;
       if (result == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: isDomainBlocked(log.reason) == true 
             ? AppLocalizations.of(context)!.domainUnblockedThisClient(log.question.name!)
@@ -172,7 +172,7 @@ class LogTile extends StatelessWidget {
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.ruleNotAdded, 
           color: Colors.red
@@ -199,21 +199,21 @@ class LogTile extends StatelessWidget {
       
       if (!context.mounted) return;
       if (result.successful == true) {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAddedSuccessfully, 
           color: Colors.green
         );
       }
       else if (result.successful == false && result.content == 'client_another_list') {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.clientAnotherList, 
           color: Colors.red
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider,
           label: AppLocalizations.of(context)!.changesNotSaved,
           color: Colors.red

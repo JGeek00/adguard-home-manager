@@ -13,9 +13,9 @@ class DeleteModal extends StatelessWidget {
   final Server serverToDelete;
 
   const DeleteModal({
-    Key? key,
+    super.key,
     required this.serverToDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +34,14 @@ class DeleteModal extends StatelessWidget {
           appConfigProvider.setSelectedScreen(0);
         }
 
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.connectionRemoved, 
           color: Colors.green
         );
       }
       else {
-        showSnacbkar(
+        showSnackbar(
           appConfigProvider: appConfigProvider, 
           label: AppLocalizations.of(context)!.connectionCannotBeRemoved, 
           color: Colors.red

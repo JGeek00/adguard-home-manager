@@ -42,6 +42,15 @@ This is an unofficial application. The AdGuard Home team and the development of 
 ## Recommended configuration and lists
 On [this repository](https://github.com/juanico10/Pihole_list) you can find a recommended configuration for AdGuard Home and some lists. Thanks to [juanico10](https://github.com/juanico10).
 
+## Donations
+If you like the project and you want to contribute with the development, you can [become a sponsor on GitHub](https://github.com/sponsors/JGeek00), or you can donate using PayPal.
+
+<div align="center">
+  <a href="https://www.paypal.com/donate/?hosted_button_id=T63UK6AVL3MG8">
+    <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" height="100" />
+  </a>
+</div>
+
 ## Generate production build
 <ul>
   <li>
@@ -114,7 +123,6 @@ On [this repository](https://github.com/juanico10/Pihole_list) you can find a re
 - [fl chart](https://pub.dev/packages/fl_chart)
 - [flutter svg](https://pub.dev/packages/flutter_svg)
 - [percent indicator](https://pub.dev/packages/percent_indicator)
-- [store checker](https://pub.dev/packages/store_checker)
 - [flutter markdown](https://pub.dev/packages/flutter_markdown)
 - [markdown](https://pub.dev/packages/markdown)
 - [html](https://pub.dev/packages/html)
@@ -132,6 +140,9 @@ On [this repository](https://github.com/juanico10/Pihole_list) you can find a re
 - [timezone](https://pub.dev/packages/timezone)
 - [url launcher](https://pub.dev/packages/url_launcher)
 - [flutter custom tabs](https://pub.dev/packages/flutter_custom_tabs)
+- [shared preferences](https://pub.dev/packages/shared_preferences)
+- [window manager](https://pub.dev/packages/window_manager)
+- [install referrer](https://pub.dev/packages/install_referrer)
 
 <br>
 

@@ -9,11 +9,11 @@ class DeleteSelectionModal extends StatefulWidget {
   final void Function() onDelete;
 
   const DeleteSelectionModal({
-    Key? key,
+    super.key,
     required this.selectedBlacklists,
     required this.selectedWhitelists,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   State<DeleteSelectionModal> createState() => _DeleteSelectionModalState();
