@@ -8,8 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/logs/live/live_logs_screen.dart';
 import 'package:adguard_home_manager/screens/logs/filters/logs_filters_modal.dart';
+import 'package:adguard_home_manager/widgets/floating_search_bar.dart';
 
-import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/providers/live_logs_provider.dart';
@@ -61,9 +61,10 @@ class LogsListAppBar extends StatelessWidget {
     void showSearchDialog() {
       showDialog(
         context: context, 
-        builder: (context) => _Search(
+        builder: (context) => FloatingSearchBar(
+          existingSearchValue: logsProvider.appliedFilters.searchText ?? "",
           searchButtonRenderBox: _searchButtonKey.currentContext?.findRenderObject() as RenderBox?,
-          onSearch: (v) {
+          onSearchCompleted: (v) {
             logsProvider.setAppliedFilters(
               AppliedFiters(
                 selectedResultStatus: logsProvider.appliedFilters.selectedResultStatus, 
@@ -72,6 +73,16 @@ class LogsListAppBar extends StatelessWidget {
               )
             );
             logsProvider.filterLogs();
+          },
+          onSearchFieldUpdated: (v) {
+            if (v == "") {
+              logsProvider.setSearchText(null);
+              return;
+            }
+            logsProvider.setSearchText(v);
+          },
+          onSearchFieldCleared: () {
+            logsProvider.setSearchText(null);
           },
         ),
       );
@@ -279,106 +290,3 @@ class LogsListAppBar extends StatelessWidget {
   }
 }
 
-class _Search extends StatefulWidget {
-  final void Function(String) onSearch;
-  final RenderBox? searchButtonRenderBox;
-
-  const _Search({
-    required this.onSearch,
-    required this.searchButtonRenderBox,
-  });
-
-  @override
-  State<_Search> createState() => _SearchState();
-}
-
-class _SearchState extends State<_Search> {
-  final _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    final logsProvider = Provider.of<LogsProvider>(context, listen: false);
-    _searchController.text = logsProvider.appliedFilters.searchText ?? "";
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final logsProvider = Provider.of<LogsProvider>(context);
-
-    final position = widget.searchButtonRenderBox?.localToGlobal(Offset.zero);
-    final topPadding = MediaQuery.of(globalNavigatorKey.currentContext!).viewPadding.top;
-
-    return GestureDetector(
-      onTap: () => Navigator.pop(context),
-      child: Material(
-        color: Colors.transparent,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final double width = constraints.maxWidth - 32  > 500 ? 500 : constraints.maxWidth - 32;
-            return Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                Positioned(
-                  top: position != null ? position.dy - topPadding : topPadding,
-                  child: SizedBox(
-                    width: width,
-                    child: GestureDetector(
-                      onTap: () => {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(16)
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: TextFormField(
-                            controller: _searchController,
-                            onChanged: (v) {
-                              if (v == "") {
-                                logsProvider.setSearchText(null);
-                                return;
-                              }
-                              logsProvider.setSearchText(v);
-                            },
-                            onFieldSubmitted: (v) {
-                              widget.onSearch(v);
-                              Navigator.pop(context);
-                            },
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context)!.search,
-                              prefixIcon: const Icon(Icons.search_rounded),
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: Colors.grey.withOpacity(0.2),
-                              suffixIcon: _searchController.text != ""
-                                ? IconButton(
-                                    onPressed: () {
-                                      _searchController.text = "";
-                                      logsProvider.setSearchText(null);
-                                    }, 
-                                    icon: const Icon(
-                                      Icons.close_rounded,
-                                      size: 20,
-                                    ),
-                                    tooltip: AppLocalizations.of(context)!.clearSearch,
-                                  )
-                                : null,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            );
-          }
-        ),
-      ),
-    );
-  }
-}
