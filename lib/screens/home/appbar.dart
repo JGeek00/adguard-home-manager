@@ -34,6 +34,7 @@ class HomeAppBar extends StatelessWidget {
 
     void navigateServers() {
       Future.delayed(const Duration(milliseconds: 0), (() {
+        if (!context.mounted) return;
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const Servers())
         );

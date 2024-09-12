@@ -115,7 +115,7 @@ class _ClientsModalState extends State<ClientsModal> {
 
     void searchAddedClient(_ClientLog client) {
       final notIps = client.ids?.where((e) => isIpAddress(e) == false).toList();
-      if (notIps == null) return;
+      if (notIps == null || notIps.isEmpty) return;
       logsProvider.setSearchText('"${notIps[0]}"');
       Navigator.of(context).pop();
     }

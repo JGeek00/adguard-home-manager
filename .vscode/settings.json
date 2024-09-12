@@ -12,5 +12,9 @@
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false,
     "editor.formatOnType": false
-  }
+  },
+  "cSpell.ignorePaths": [
+    "/pubspec.yaml",
+    "/.github/workflows"
+  ]
 }

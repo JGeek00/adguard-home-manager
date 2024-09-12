@@ -138,7 +138,7 @@ class _StatisticsSettingsState extends State<StatisticsSettings> {
           "enabled": _generalSwitch,
           "interval": _retentionTime == "custom" 
             ? Duration(hours: int.parse(_customTimeController.text)).inMilliseconds 
-            : int.parse(_retentionTime!),
+            : int.parse(_retentionTime ?? _retentionItems[0]),
           "ignored": _ignoredDomainsControllers.map((e) => e.controller.text).toList()
         }
       );

@@ -151,20 +151,26 @@ class DnsProvider with ChangeNotifier {
     final result = await _serversProvider!.apiClient2!.setDnsConfig(
       data: value
     );
+    
+    void updateValue(dynamic parameter, dynamic value) {
+      if (value != null) {
+        parameter = value;
+      }
+    }
 
     if (result.successful == true) {
       DnsInfo data = dnsInfo!;
-      data.ratelimit = value['ratelimit'];
-      data.ednsCsEnabled = value['edns_cs_enabled'];
-      data.dnssecEnabled = value['dnssec_enabled'];
-      data.disableIpv6 = value['disable_ipv6'];
-      data.blockingMode = value['blocking_mode'];
-      data.blockingIpv4 = value['blocking_ipv4'];
-      data.blockingIpv6 = value['blocking_ipv6'];
-      data.blockedResponseTtl = value['blocked_response_ttl'];
-      data.ratelimitSubnetLenIpv4 = value['ratelimit_subnet_len_ipv4'];
-      data.ratelimitSubnetLenIpv6 = value['ratelimit_subnet_len_ipv6'];
-      data.ratelimitWhitelist = value['ratelimit_whitelist'];
+      updateValue(data.ratelimit, value['ratelimit']);
+      updateValue(data.ednsCsEnabled, value['edns_cs_enabled']);
+      updateValue(data.dnssecEnabled, value['dnssec_enabled']);
+      updateValue(data.disableIpv6, value['disable_ipv6']);
+      updateValue(data.blockingMode, value['blocking_mode']);
+      updateValue(data.blockingIpv4, value['blocking_ipv4']);
+      updateValue(data.blockingIpv6, value['blocking_ipv6']);
+      updateValue(data.blockedResponseTtl, value['blocked_response_ttl']);
+      updateValue(data.ratelimitSubnetLenIpv4, value['ratelimit_subnet_len_ipv4']);
+      updateValue(data.ratelimitSubnetLenIpv6, value['ratelimit_subnet_len_ipv6']);
+      updateValue(data.ratelimitWhitelist, value['ratelimit_whitelist']);
       setDnsInfoData(data);
       return result;
     }
