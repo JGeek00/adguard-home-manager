@@ -1,9 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:install_referrer/install_referrer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -13,11 +8,8 @@ import 'package:adguard_home_manager/screens/settings/general_settings/top_items
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 import 'package:adguard_home_manager/widgets/section_label.dart';
 
-import 'package:adguard_home_manager/functions/check_app_updates.dart';
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/functions/open_url.dart';
-import 'package:adguard_home_manager/functions/app_update_download_link.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 class GeneralSettings extends StatefulWidget {
@@ -48,6 +40,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
       required Future Function(bool) function
     }) async {
       final result = await function(newStatus);
+      if (!context.mounted) return;
       if (result == true) {
         showSnackbar(
           appConfigProvider: appConfigProvider, 
@@ -64,60 +57,60 @@ class _GeneralSettingsState extends State<GeneralSettings> {
       }
     }
 
-    Future checkUpdatesAvailable() async {
-      setState(() => appUpdatesStatus = AppUpdatesStatus.checking);
+    // Future checkUpdatesAvailable() async {
+    //   setState(() => appUpdatesStatus = AppUpdatesStatus.checking);
       
-      final res = await checkAppUpdates(
-        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber, 
-        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable, 
-        installationSource: appConfigProvider.installationSource,
-        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
-      );
+    //   final res = await checkAppUpdates(
+    //     currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber, 
+    //     setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable, 
+    //     installationSource: appConfigProvider.installationSource,
+    //     isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
+    //   );
 
-      if (!mounted) return;
-      if (res != null) {
-        setState(() => appUpdatesStatus = AppUpdatesStatus.available);
-      }
-      else {
-        setState(() => appUpdatesStatus = AppUpdatesStatus.recheck);
-      }
-    }
+    //   if (!mounted) return;
+    //   if (res != null) {
+    //     setState(() => appUpdatesStatus = AppUpdatesStatus.available);
+    //   }
+    //   else {
+    //     setState(() => appUpdatesStatus = AppUpdatesStatus.recheck);
+    //   }
+    // }
 
-    Widget generateAppUpdateStatus() {
-      if (appUpdatesStatus == AppUpdatesStatus.available) {
-        return IconButton(
-          onPressed: appConfigProvider.appUpdatesAvailable != null
-            ? () async {
-                final link = getAppUpdateDownloadLink(appConfigProvider.appUpdatesAvailable!);
-                if (link != null) {
-                  openUrl(link);
-                }
-              }
-            : null, 
-          icon: const Icon(Icons.download_rounded),
-          tooltip: AppLocalizations.of(context)!.downloadUpdate,
-        );
-      }
-      else if (appUpdatesStatus == AppUpdatesStatus.checking) {
-        return const Padding(
-          padding: EdgeInsets.only(right: 16),
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 3,
-            )
-          ),
-        );
-      }
-      else {
-        return IconButton(
-          onPressed: checkUpdatesAvailable, 
-          icon: const Icon(Icons.refresh_rounded),
-          tooltip: AppLocalizations.of(context)!.checkUpdates,
-        );
-      }
-    }
+    // Widget generateAppUpdateStatus() {
+    //   if (appUpdatesStatus == AppUpdatesStatus.available) {
+    //     return IconButton(
+    //       onPressed: appConfigProvider.appUpdatesAvailable != null
+    //         ? () async {
+    //             final link = getAppUpdateDownloadLink(appConfigProvider.appUpdatesAvailable!);
+    //             if (link != null) {
+    //               openUrl(link);
+    //             }
+    //           }
+    //         : null, 
+    //       icon: const Icon(Icons.download_rounded),
+    //       tooltip: AppLocalizations.of(context)!.downloadUpdate,
+    //     );
+    //   }
+    //   else if (appUpdatesStatus == AppUpdatesStatus.checking) {
+    //     return const Padding(
+    //       padding: EdgeInsets.only(right: 16),
+    //       child: SizedBox(
+    //         width: 24,
+    //         height: 24,
+    //         child: CircularProgressIndicator(
+    //           strokeWidth: 3,
+    //         )
+    //       ),
+    //     );
+    //   }
+    //   else {
+    //     return IconButton(
+    //       onPressed: checkUpdatesAvailable, 
+    //       icon: const Icon(Icons.refresh_rounded),
+    //       tooltip: AppLocalizations.of(context)!.checkUpdates,
+    //     );
+    //   }
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -253,17 +246,17 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 right: 10
               )
             ),
-            if (!(Platform.isAndroid || Platform.isIOS) || (Platform.isAndroid && (appConfigProvider.installationSource == InstallationAppReferrer.androidManually ))) ...[
-              SectionLabel(label: AppLocalizations.of(context)!.application),
-              CustomListTile(
-                icon: Icons.system_update_rounded,
-                title: AppLocalizations.of(context)!.appUpdates,
-                subtitle: appConfigProvider.appUpdatesAvailable != null
-                  ? AppLocalizations.of(context)!.updateAvailable
-                  : AppLocalizations.of(context)!.usingLatestVersion,
-                trailing: generateAppUpdateStatus()
-              )
-            ]
+            // if (!(Platform.isAndroid || Platform.isIOS) || (Platform.isAndroid && (appConfigProvider.installationSource == InstallationAppReferrer.androidManually ))) ...[
+            //   SectionLabel(label: AppLocalizations.of(context)!.application),
+            //   CustomListTile(
+            //     icon: Icons.system_update_rounded,
+            //     title: AppLocalizations.of(context)!.appUpdates,
+            //     subtitle: appConfigProvider.appUpdatesAvailable != null
+            //       ? AppLocalizations.of(context)!.updateAvailable
+            //       : AppLocalizations.of(context)!.usingLatestVersion,
+            //     trailing: generateAppUpdateStatus()
+            //   )
+            // ]
           ],
         ),
       )

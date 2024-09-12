@@ -1,14 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:adguard_home_manager/widgets/update_modal.dart';
 import 'package:adguard_home_manager/widgets/system_ui_overlay_style.dart';
 
-import 'package:adguard_home_manager/functions/check_app_updates.dart';
-import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/config/app_screens.dart';
 import 'package:adguard_home_manager/config/sizes.dart';
@@ -37,23 +33,23 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
     super.initState();
       
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (kDebugMode) return;   // Don't check for app updates on debug mode
-      final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
-      final result = await checkAppUpdates(
-        currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber,
-        installationSource: appConfigProvider.installationSource,
-        setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable,
-        isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
-      );
-      if (result != null && appConfigProvider.doNotRememberVersion != result.tagName && mounted) {
-        await showDialog(
-          context: context, 
-          builder: (context) => UpdateModal(
-            gitHubRelease: result,
-            onDownload: (link, version) => openUrl(link),
-          ),
-        );
-      }
+      // if (kDebugMode) return;   // Don't check for app updates on debug mode
+      // final appConfigProvider = Provider.of<AppConfigProvider>(context, listen: false);
+      // final result = await checkAppUpdates(
+      //   currentBuildNumber: appConfigProvider.getAppInfo!.buildNumber,
+      //   installationSource: appConfigProvider.installationSource,
+      //   setUpdateAvailable: appConfigProvider.setAppUpdatesAvailable,
+      //   isBeta: appConfigProvider.getAppInfo!.version.contains('beta'),
+      // );
+      // if (result != null && appConfigProvider.doNotRememberVersion != result.tagName && mounted) {
+      //   await showDialog(
+      //     context: context, 
+      //     builder: (context) => UpdateModal(
+      //       gitHubRelease: result,
+      //       onDownload: (link, version) => openUrl(link),
+      //     ),
+      //   );
+      // }
     }); 
   }
 

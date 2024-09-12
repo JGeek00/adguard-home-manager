@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:install_referrer/install_referrer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -77,11 +76,6 @@ void main() async {
 
   if (sharedPreferences.getBool('overrideSslCheck') == true) {
     HttpOverrides.global = MyHttpOverrides();
-  }
-
-  if (Platform.isAndroid || Platform.isIOS) {
-    InstallationAppReferrer installationSource = await InstallReferrer.referrer;
-    appConfigProvider.setInstallationSource(installationSource);
   }
 
   final dbData = await loadDb();
