@@ -142,6 +142,7 @@ class _AddServerModalState extends State<AddServerModal> {
         port: portController.text != '' ? int.parse(portController.text) : null,
         user: userController.text != "" ? userController.text : null, 
         password: passwordController.text != "" ? passwordController.text : null, 
+        path: pathController.text != "" ? pathController.text : null, 
         defaultServer: defaultServer,
         authToken: homeAssistant == true 
           ? encodeBase64UserPass(userController.text, passwordController.text)
