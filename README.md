@@ -142,7 +142,6 @@ If you like the project and you want to contribute with the development, you can
 - [flutter custom tabs](https://pub.dev/packages/flutter_custom_tabs)
 - [shared preferences](https://pub.dev/packages/shared_preferences)
 - [window manager](https://pub.dev/packages/window_manager)
-- [install referrer](https://pub.dev/packages/install_referrer)
 
 <br>
 

@@ -70,7 +70,6 @@ dependencies:
   url_launcher: ^6.2.4
   shared_preferences: ^2.2.2
   window_manager: ^0.4.2
-  install_referrer: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -81,8 +80,8 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
-  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.1
   flutter_native_splash: ^2.3.8
 
 # For information on the generic Dart part of this file, see the

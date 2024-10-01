@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:install_referrer/install_referrer.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -57,8 +56,6 @@ class AppConfigProvider with ChangeNotifier {
   String? _doNotRememberVersion;
 
   GitHubRelease? _appUpdatesAvailable;
-
-  InstallationAppReferrer? _installationSource;
 
   PackageInfo? get getAppInfo {
     return _appInfo;
@@ -162,10 +159,6 @@ class AppConfigProvider with ChangeNotifier {
     return _appUpdatesAvailable;
   }
 
-  InstallationAppReferrer? get installationSource {
-    return _installationSource;
-  }
-
   List<HomeTopItems> get homeTopItemsOrder {
     return _homeTopItemsOrder;
   }
@@ -224,11 +217,6 @@ class AppConfigProvider with ChangeNotifier {
 
   void setAppUpdatesAvailable(GitHubRelease? value) {
     _appUpdatesAvailable = value;
-    notifyListeners();
-  }
-
-  void setInstallationSource(InstallationAppReferrer value) {
-    _installationSource = value;
     notifyListeners();
   }
 
