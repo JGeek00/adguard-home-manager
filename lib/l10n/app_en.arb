@@ -801,5 +801,7 @@
     "applicationDetails": "Application details",
     "applicationDetailsDescription": "App repository, stores where it's available, and more",
     "myOtherApps": "Check my other apps",
-    "myOtherAppsDescription": "Created by JGeek00"
+    "myOtherAppsDescription": "Created by JGeek00",
+    "topToBottom": "From top to bottom",
+    "bottomToTop": "From bottom to top"
 }

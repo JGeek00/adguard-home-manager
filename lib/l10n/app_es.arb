@@ -801,5 +801,7 @@
     "applicationDetails": "Detalles de la aplicación",
     "applicationDetailsDescription": "Repositorio de la app, tiendas donde está disponible, y más",
     "myOtherApps": "Comprueba mis otras apps",
-    "myOtherAppsDescription": "Creadas por JGeek00"
+    "myOtherAppsDescription": "Creadas por JGeek00",
+    "topToBottom": "Desde arriba hacia abajo",
+    "bottomToTop": "Desde abajo hacia arriba"
 }
