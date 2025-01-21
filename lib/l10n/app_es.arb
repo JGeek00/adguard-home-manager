@@ -797,5 +797,9 @@
     "dnsServerAddressCopied": "Dirección del servidor DNS copiada al portapapeles",
     "select": "Seleccionar",
     "liveLogs": "Registros en directo",
-    "hereWillAppearRealtimeLogs": "Aquí aparecerán los registros en tiempo real."
+    "hereWillAppearRealtimeLogs": "Aquí aparecerán los registros en tiempo real.",
+    "applicationDetails": "Detalles de la aplicación",
+    "applicationDetailsDescription": "Repositorio de la app, tiendas donde está disponible, y más",
+    "myOtherApps": "Comprueba mis otras apps",
+    "myOtherAppsDescription": "Creadas por JGeek00"
 }

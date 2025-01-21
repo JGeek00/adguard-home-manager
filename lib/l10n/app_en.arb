@@ -797,5 +797,9 @@
     "dnsServerAddressCopied": "DNS server address copied to the clipboard",
     "select": "Select",
     "liveLogs": "Live logs",
-    "hereWillAppearRealtimeLogs": "Here there will appear the logs on realtime."
+    "hereWillAppearRealtimeLogs": "Here there will appear the logs on realtime.",
+    "applicationDetails": "Application details",
+    "applicationDetailsDescription": "App repository, stores where it's available, and more",
+    "myOtherApps": "Check my other apps",
+    "myOtherAppsDescription": "Created by JGeek00"
 }

@@ -7,4 +7,6 @@ class Urls {
   static const String adGuardHomeReleasesTags = "https://api.github.com/repos/AdGuardTeam/AdGuardHome/releases/tags";
   static const String googleSearchUrl = "https://www.google.com/search";
   static const String connectionInstructions = "https://github.com/JGeek00/adguard-home-manager/wiki/Create-a-connection";
+  static const String appDetailsWebpage = "https://apps.jgeek00.com/jlfed8mcgyz6laf";
+  static const String jgeek00AppsWebpage = "https://apps.jgeek00.com";
 }
