@@ -37,15 +37,18 @@ class _LogsSettingsState extends State<LogsSettings> {
 
   bool generalSwitch = false;
   bool anonymizeClientIp = false;
-  double? retentionTime;
+  String? retentionTime;
   List<DomainListItemController> _ignoredDomainsControllers = [];
+  final _customTimeController = TextEditingController();
+  String? _customTimeError = null;
 
-  List<int> retentionItems = [
-    21600000,
-    86400000,
-    604800000,
-    2592000000,
-    7776000000
+  List<String> retentionItems = [
+    "custom",
+    "21600000",
+    "86400000",
+    "604800000",
+    "2592000000",
+    "7776000000"
   ];
 
   LoadStatus loadStatus = LoadStatus.loading;
@@ -61,9 +64,10 @@ class _LogsSettingsState extends State<LogsSettings> {
       setState(() {
         generalSwitch = data.enabled ?? false;
         anonymizeClientIp = data.anonymizeClientIp ?? false;
-        retentionTime = data.interval != null 
-          ? double.parse(data.interval.toString()) 
-          : null;
+        retentionTime = retentionItems.contains(data.interval.toString()) ? data.interval.toString() : "custom";
+        if (data.interval != null && !retentionItems.contains(data.interval.toString())) {
+          _customTimeController.text = (data.interval!/3.6e+6).toInt().toString();
+        }
         if (data.ignored != null) {
           _ignoredDomainsControllers = data.ignored!.map((e) => DomainListItemController(
             id: uuid.v4(), 
@@ -79,6 +83,34 @@ class _LogsSettingsState extends State<LogsSettings> {
     }
   }
 
+  void validateCustomTime(String value) {
+    try {
+      final regex = RegExp(r'^\d+$');
+      final parsed = int.parse(value);
+      if (!regex.hasMatch(value)) {
+        setState(() => _customTimeError = AppLocalizations.of(context)!.invalidTime);
+      }
+      else if (parsed < 1) {
+        setState(() => _customTimeError = AppLocalizations.of(context)!.notLess1Hour);
+      }
+      else {
+        setState(() => _customTimeError = null);
+      }
+    } catch (_) {
+      setState(() => _customTimeError = AppLocalizations.of(context)!.invalidTime);
+    }
+  }
+
+  bool checkValidValues() {
+    if (_ignoredDomainsControllers.where((d) =>  d.controller.text == "" || d.error == true).isNotEmpty) {
+      return false;
+    }
+    if (retentionTime == "custom" && (_customTimeError != null || _customTimeController.text == "")) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   void initState() {
     loadData();
@@ -90,9 +122,7 @@ class _LogsSettingsState extends State<LogsSettings> {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    final validValues = _ignoredDomainsControllers.where(
-      (d) =>  d.controller.text == "" || d.error == true
-    ).isEmpty;
+    final validValues = checkValidValues();
 
     void clearQueries() async {
       ProcessModal processModal = ProcessModal();
@@ -127,7 +157,7 @@ class _LogsSettingsState extends State<LogsSettings> {
       final result = await serversProvider.apiClient2!.updateQueryLogParameters(
         data: {
           "enabled": generalSwitch,
-          "interval": retentionTime,
+          "interval": retentionTime == "custom" ? int.parse(_customTimeController.text)*3.6e+6 : int.parse(retentionTime!) ,
           "anonymize_client_ip": anonymizeClientIp,
           "ignored": _ignoredDomainsControllers.map((e) => e.controller.text).toList()
         }
@@ -198,6 +228,9 @@ class _LogsSettingsState extends State<LogsSettings> {
                 onConfirm: updateConfig,
                 ignoredDomainsControllers: _ignoredDomainsControllers,
                 updateIgnoredDomainsControllers: (v) => setState(() => _ignoredDomainsControllers = v),
+                customTimeController: _customTimeController,
+                customTimeError: _customTimeError,
+                validateCustomTime: validateCustomTime,
               );
       
             case LoadStatus.error:

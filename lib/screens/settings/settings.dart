@@ -1,8 +1,6 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/settings/server_info/server_info.dart';
@@ -25,7 +23,6 @@ import 'package:adguard_home_manager/widgets/section_label.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
 import 'package:adguard_home_manager/functions/desktop_mode.dart';
-import 'package:adguard_home_manager/constants/strings.dart';
 import 'package:adguard_home_manager/functions/open_url.dart';
 import 'package:adguard_home_manager/constants/urls.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
@@ -273,37 +270,18 @@ class _SettingsWidgetState extends State<_SettingsWidget> {
                         subtitle: appConfigProvider.getAppInfo!.version,
                       ),
                       CustomListTile(
-                        title: AppLocalizations.of(context)!.createdBy, 
-                        subtitle: Strings.createdBy,
+                        title: AppLocalizations.of(context)!.applicationDetails, 
+                        subtitle: AppLocalizations.of(context)!.applicationDetailsDescription,
+                        trailing: Icon(Icons.open_in_new_rounded),
+                        onTap: () => openUrl(Urls.appDetailsWebpage),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            if (Platform.isAndroid) IconButton(
-                              onPressed: () => openUrl(Urls.playStore), 
-                              icon: SvgPicture.asset(
-                                'assets/resources/google-play.svg',
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                width: 30,
-                                height: 30,
-                              ),
-                              tooltip: AppLocalizations.of(context)!.visitGooglePlay,
-                            ),
-                            IconButton(
-                              onPressed: () => openUrl(Urls.gitHub), 
-                              icon: SvgPicture.asset(
-                                'assets/resources/github.svg',
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                width: 30,
-                                height: 30,
-                              ),
-                              tooltip: AppLocalizations.of(context)!.gitHub,
-                            ),
-                          ],
-                        ),
-                      )
+                      CustomListTile(
+                        title: AppLocalizations.of(context)!.myOtherApps, 
+                        subtitle: AppLocalizations.of(context)!.myOtherAppsDescription,
+                        trailing: Icon(Icons.open_in_new_rounded),
+                        onTap: () => openUrl(Urls.jgeek00AppsWebpage),
+                      ),
+                      SizedBox(height: 16)
                     ],
                   )
                 ],

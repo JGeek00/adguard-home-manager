@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/screens/filters/add_button.dart';
+import 'package:adguard_home_manager/screens/filters/modals/custom_rules/sort_rules.dart';
 import 'package:adguard_home_manager/widgets/tab_content_list.dart';
 
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -34,6 +35,8 @@ class CustomRulesList extends StatefulWidget {
 class _CustomRulesListState extends State<CustomRulesList> {
   late bool isVisible;
 
+  CustomRulesSorting _sortingMethod = CustomRulesSorting.topBottom;
+
   @override
   initState(){
     super.initState();
@@ -59,6 +62,8 @@ class _CustomRulesListState extends State<CustomRulesList> {
   Widget build(BuildContext context) {
     final filteringProvider = Provider.of<FilteringProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
+
+    final renderData = _sortingMethod == CustomRulesSorting.bottomTop ? widget.data.reversed.toList() : widget.data.toList();
 
     bool checkIfComment(String value) {
       final regex = RegExp(r'^(!|#).*$');
@@ -104,6 +109,16 @@ class _CustomRulesListState extends State<CustomRulesList> {
       }
     }
 
+    void showSortingMethodModal() {
+      showDialog(
+        context: context, 
+        builder: (ctx) => SortCustomRulesModal(
+          sortingMethod: _sortingMethod, 
+          onSelect: (value) => setState(() => _sortingMethod = value),
+        ),
+      );
+    }
+
     return CustomTabContentList(
       loadingGenerator: () => SizedBox(
         width: double.maxFinite,
@@ -124,10 +139,10 @@ class _CustomRulesListState extends State<CustomRulesList> {
           ],
         ),
       ), 
-      itemsCount: widget.data.length, 
+      itemsCount: renderData.length, 
       contentWidget: (index) => ListTile(
         title: Text(
-          widget.data[index],
+          renderData[index],
           style: TextStyle(
             color: checkIfComment(widget.data[index]) == true
               ? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)
@@ -135,9 +150,9 @@ class _CustomRulesListState extends State<CustomRulesList> {
             fontWeight: FontWeight.normal,
           ),
         ),
-        subtitle: generateSubtitle(widget.data[index]),
+        subtitle: generateSubtitle(renderData[index]),
         trailing: IconButton(
-          onPressed: () => widget.onRemoveCustomRule(widget.data[index]),
+          onPressed: () => widget.onRemoveCustomRule(renderData[index]),
           icon: const Icon(Icons.delete)
         ),
       ), 
@@ -212,6 +227,11 @@ class _CustomRulesListState extends State<CustomRulesList> {
       }, 
       fab: Column(
         children: [
+          FloatingActionButton.small(
+            onPressed: showSortingMethodModal,
+            child: Icon(Icons.sort_rounded),
+          ),
+          const SizedBox(height: 16),
           AddFiltersButton(
             type: 'edit_custom_rule', 
             widget: (fn) => FloatingActionButton.small(
@@ -229,7 +249,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
           ),
         ],
       ),
-      heightFabHidden: -120,
+      heightFabHidden: -180,
       fabVisible: isVisible,
     );
   }

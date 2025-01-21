@@ -12,13 +12,16 @@ class LogsConfigOptions extends StatelessWidget {
   final void Function(bool) updateGeneralSwitch;
   final bool anonymizeClientIp;
   final void Function(bool) updateAnonymizeClientIp;
-  final List<int> retentionItems; 
-  final double? retentionTime;
-  final void Function(double?) updateRetentionTime;
+  final List<String> retentionItems; 
+  final String? retentionTime;
+  final void Function(String?) updateRetentionTime;
   final void Function() onClear;
   final void Function() onConfirm;
   final List<DomainListItemController> ignoredDomainsControllers;
   final void Function(List<DomainListItemController>) updateIgnoredDomainsControllers;
+  final TextEditingController customTimeController;
+  final String? customTimeError;
+  final void Function(String) validateCustomTime;
 
   const LogsConfigOptions({
     super.key,
@@ -32,7 +35,10 @@ class LogsConfigOptions extends StatelessWidget {
     required this.onClear,
     required this.onConfirm,
     required this.ignoredDomainsControllers,
-    required this.updateIgnoredDomainsControllers
+    required this.updateIgnoredDomainsControllers,
+    required this.customTimeController,
+    required this.customTimeError,
+    required this.validateCustomTime,
   });
 
   @override
@@ -40,6 +46,7 @@ class LogsConfigOptions extends StatelessWidget {
     const Uuid uuid = Uuid();
     
     final List<String> dropdownItemTranslation = [
+      AppLocalizations.of(context)!.custom,
       AppLocalizations.of(context)!.hours6,
       AppLocalizations.of(context)!.hours24,
       AppLocalizations.of(context)!.days7,
@@ -67,7 +74,7 @@ class LogsConfigOptions extends StatelessWidget {
         }).toList()
       );
     }
-
+print(retentionTime);
     return ListView(
       children: [
         const SizedBox(height: 16),
@@ -92,7 +99,7 @@ class LogsConfigOptions extends StatelessWidget {
               child: Text(dropdownItemTranslation[item.key]),
             )).toList(),
             value: retentionTime,
-            onChanged: (value) => updateRetentionTime(double.tryParse(value.toString())),
+            onChanged: (value) => updateRetentionTime(value.toString()),
             decoration: InputDecoration(
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(
@@ -102,6 +109,24 @@ class LogsConfigOptions extends StatelessWidget {
               label: Text(AppLocalizations.of(context)!.retentionTime)
             ),
             borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        if (retentionTime == "custom") Padding(
+          padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
+          child: TextFormField(
+            controller: customTimeController,
+            onChanged: validateCustomTime,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.schedule_rounded),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10)
+                )
+              ),
+              labelText: AppLocalizations.of(context)!.customTimeInHours,
+              errorText: customTimeError
+            ),
+            keyboardType: TextInputType.number,
           ),
         ),
         Padding(
