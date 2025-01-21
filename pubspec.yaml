@@ -45,10 +45,10 @@ dependencies:
   flutter_displaymode: ^0.6.0 
   dynamic_color: ^1.7.0
   animations: ^2.0.10
-  device_info_plus: ^10.1.0
+  device_info_plus: ^11.2.1
   uuid: ^4.2.1
   expandable: ^5.0.1
-  fl_chart: ^0.69.0
+  fl_chart: ^0.70.2
   flutter_svg: ^2.0.9
   percent_indicator: ^4.2.3
   flutter_markdown: ^0.7.1
@@ -65,7 +65,7 @@ dependencies:
   pie_chart: ^5.4.0
   segmented_button_slide: ^2.0.0
   http: ^1.1.2
-  timezone: ^0.9.2
+  timezone: ^0.10.0
   flutter_custom_tabs: ^2.0.0+1
   url_launcher: ^6.2.4
   shared_preferences: ^2.2.2
