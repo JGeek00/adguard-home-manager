@@ -154,6 +154,8 @@ class LogTile extends StatelessWidget {
     }
 
     void blockUnblockRuleClient() async {
+      if (!context.mounted) return;
+
       ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingRule);
 

@@ -33,6 +33,8 @@ class AddFiltersButton extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     void confirmAddRule(String rule) async {
+      if (!context.mounted) return;
+
       ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.addingRule);
 
@@ -58,6 +60,8 @@ class AddFiltersButton extends StatelessWidget {
     }
 
     void confirmEditCustomRules(List<String> rules) async {
+      if (!context.mounted) return;
+
       ProcessModal processModal = ProcessModal();
       processModal.open(AppLocalizations.of(context)!.savingCustomRules);
 

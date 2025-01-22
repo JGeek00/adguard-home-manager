@@ -175,6 +175,8 @@ class _AddServerModalState extends State<AddServerModal> {
       final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
       final serverStatus = await apiClient2.getServerStatus();
 
+      if (!context.mounted) return;
+
       // If something goes wrong when fetching server status
       if (serverStatus.successful == false) {
         statusProvider.setServerStatusLoad(LoadStatus.error);
@@ -203,16 +205,16 @@ class _AddServerModalState extends State<AddServerModal> {
 
       final serverCreated = await serversProvider.createServer(serverObj);
 
+      if (!context.mounted) return;
+
       // If something goes wrong when saving the connection on the db
       if (serverCreated != null) {
-        if (mounted) setState(() => isConnecting = false);
-        if (mounted) {
-          showSnackbar(
-            appConfigProvider: appConfigProvider, 
-            label: AppLocalizations.of(context)!.connectionNotCreated, 
-            color: Colors.red
-          );
-        }
+        setState(() => isConnecting = false);
+        showSnackbar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.connectionNotCreated, 
+          color: Colors.red
+        );
         return;
       }
 
@@ -295,10 +297,12 @@ class _AddServerModalState extends State<AddServerModal> {
       }
 
       final serverSaved = await serversProvider.editServer(serverObj);
+
+      if (!mounted) return;
     
       // If something goes wrong when saving the connection on the db
       if (serverSaved != null) {
-        if (mounted) setState(() => isConnecting = false);
+        setState(() => isConnecting = false);
         appConfigProvider.addLog(
           AppLog(
             type: 'save_connection_db', 
@@ -306,13 +310,11 @@ class _AddServerModalState extends State<AddServerModal> {
             message: serverSaved.toString()
           )
         );
-        if (mounted) {
-          showSnackbar(
-            appConfigProvider: appConfigProvider, 
-            label: AppLocalizations.of(context)!.connectionNotCreated, 
-            color: Colors.red
-          );
-        }
+        showSnackbar(
+          appConfigProvider: appConfigProvider, 
+          label: AppLocalizations.of(context)!.connectionNotCreated, 
+          color: Colors.red
+        );
         return;
       }
 

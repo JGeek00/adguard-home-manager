@@ -43,9 +43,9 @@ class DnsStatistics {
 
   factory DnsStatistics.fromJson(Map<String, dynamic> json) => DnsStatistics(
     timeUnits: json["time_units"],
-    topQueriedDomains: List<Map<String, int>>.from(json["top_queried_domains"].map((x) => Map.from(x).map((k, v) => MapEntry<String, int>(k, v)))),
-    topClients: List<Map<String, int>>.from(json["top_clients"].map((x) => Map.from(x).map((k, v) => MapEntry<String, int>(k, v)))),
-    topBlockedDomains: List<Map<String, int>>.from(json["top_blocked_domains"].map((x) => Map.from(x).map((k, v) => MapEntry<String, int>(k, v)))),
+    topQueriedDomains: json["top_queried_domains"] != null ? List<Map<String, int>>.from(json["top_queried_domains"].map((x) => Map.from(x).map((k, v) => MapEntry<String, int>(k, v)))) : [],
+    topClients: json["top_clients"] != null ? List<Map<String, int>>.from(json["top_clients"].map((x) => Map.from(x).map((k, v) => MapEntry<String, int>(k, v)))) : [],
+    topBlockedDomains: json["top_blocked_domains"] != null ? List<Map<String, int>>.from(json["top_blocked_domains"].map((x) => Map.from(x).map((k, v) => MapEntry<String, int>(k, v)))): [],
     topUpstreamResponses: json["top_upstreams_responses"] != null ? List<Map<String, int>>.from(json["top_upstreams_responses"].map((x) => Map.from(x).map((k, v) => MapEntry<String, int>(k, v)))) : null,
     topUpstreamsAvgTime: json["top_upstreams_avg_time"] != null ? List<Map<String, double>>.from(json["top_upstreams_avg_time"].map((x) => Map.from(x).map((k, v) => MapEntry<String, double>(k, v)))) : null,
     dnsQueries: List<int>.from(json["dns_queries"].map((x) => x)),
