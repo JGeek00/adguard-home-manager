@@ -168,11 +168,22 @@ void main() async {
             return null;
           }
 
+          if (event.message?.formatted.contains("HttpException") == true) {
+            return null;
+          }
+
           if (
             event.message?.formatted.contains("Unexpected character") ?? false ||
             (event.throwable != null && event.throwable!.toString().contains("Unexpected character"))
           ) {
-            return null; // Exclude this event
+            return null;
+          }
+
+          if (
+            event.message?.formatted.contains("Unexpected end of input") ?? false ||
+            (event.throwable != null && event.throwable!.toString().contains("Unexpected end of input"))
+          ) {
+            return null;
           }
 
           return event;

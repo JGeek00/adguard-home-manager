@@ -89,6 +89,7 @@ class LogsListAppBar extends StatelessWidget {
     }
 
     void openLiveLogsScreen() {
+      if (!context.mounted) return;
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => MultiProvider(
