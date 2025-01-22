@@ -800,8 +800,8 @@
     "hereWillAppearRealtimeLogs": "Here there will appear the logs on realtime.",
     "applicationDetails": "Application details",
     "applicationDetailsDescription": "App repository, stores where it's available, and more",
-    "myOtherApps": "Check my other apps",
-    "myOtherAppsDescription": "Created by JGeek00",
+    "myOtherApps": "My other apps",
+    "myOtherAppsDescription": "Check my other apps, make a donation, contact support, and more",
     "topToBottom": "From top to bottom",
     "bottomToTop": "From bottom to top"
 }
