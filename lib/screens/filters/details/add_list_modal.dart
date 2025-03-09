@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -97,8 +98,7 @@ class _ContentState extends State<_Content> {
   }
 
   void validateUrl(String value) {
-    final urlRegex = RegExp(r'^(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})$');
-    if (urlRegex.hasMatch(value)) {
+    if (Regexps.url.hasMatch(value)) {
       setState(() => urlError = null);
     }
     else {

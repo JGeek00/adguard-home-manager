@@ -1,11 +1,11 @@
+import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 
 String? validateDomain(BuildContext context, String domain) {
-  RegExp regExp = RegExp(r'^([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$');
-  if (regExp.hasMatch(domain)) {
+  if (Regexps.domain.hasMatch(domain)) {
     return null;
   }
   else {
@@ -23,8 +23,7 @@ String? validatePort(BuildContext context, String value) {
 }
 
 String? validateCertificate(BuildContext context, String cert) {
-  final regExp = RegExp(r'(-{3,}(\bBEGIN CERTIFICATE\b))|(-{3,}-{3,}(\END CERTIFICATE\b)-{3,})', multiLine: true);
-  if (regExp.hasMatch(cert.replaceAll('\n', ''))) {
+  if (Regexps.certificate.hasMatch(cert.replaceAll('\n', ''))) {
     return null;
   }
   else {
@@ -33,8 +32,7 @@ String? validateCertificate(BuildContext context, String cert) {
 }
 
 String? validatePrivateKey(BuildContext context, String cert) {
-  final regExp = RegExp(r'(-{3,}(\bBEGIN\b).*(PRIVATE KEY\b))|(-{3,}-{3,}(\bEND\b).*(PRIVATE KEY\b)-{3,})', multiLine: true);
-  if (regExp.hasMatch(cert.replaceAll('\n', ''))) {
+  if (Regexps.privateKey.hasMatch(cert.replaceAll('\n', ''))) {
     return null;
   }
   else {
@@ -43,8 +41,7 @@ String? validatePrivateKey(BuildContext context, String cert) {
 }
 
 String? validatePath(BuildContext context, String cert) {
-  final regExp = RegExp(r'^(\/{0,1}(?!\/))[A-Za-z0-9\/\-_]+(\.([a-zA-Z]+))?$');
-  if (regExp.hasMatch(cert)) {
+  if (Regexps.path.hasMatch(cert)) {
     return null;
   }
   else {

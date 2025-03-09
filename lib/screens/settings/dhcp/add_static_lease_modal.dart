@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -67,8 +68,7 @@ class __ContentState extends State<_Content> {
   bool validData = false;
 
   void validateMac(String value) {
-    final RegExp macRegex = RegExp(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$');
-    if (macRegex.hasMatch(value)) {
+    if (Regexps.macAddress.hasMatch(value)) {
       setState(() => macError = null);
     }
     else {
@@ -78,8 +78,7 @@ class __ContentState extends State<_Content> {
   }
 
   void validateIp(String value) {
-    RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
-    if (ipAddress.hasMatch(value) == true) {
+    if (Regexps.ipv4Address.hasMatch(value) == true) {
       setState(() => ipError = null);
     }
     else {

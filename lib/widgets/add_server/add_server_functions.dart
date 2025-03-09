@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -49,8 +50,7 @@ String? validateSubroute({
   required String? value
 }) {
   if (value != null && value != '') {
-    RegExp subrouteRegexp = RegExp(r'^\/\b([A-Za-z0-9_\-~/]*)[^\/|\.|\:]$');
-    if (subrouteRegexp.hasMatch(value) == true) {
+    if (Regexps.subroute.hasMatch(value) == true) {
       return null;
     }
     else {
@@ -67,9 +67,7 @@ String? validateAddress({
   required String? value
 }) {
   if (value != null && value != '') {
-    RegExp ipAddress = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
-    RegExp domain = RegExp(r'^(([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+)$');
-    if (ipAddress.hasMatch(value) == true || domain.hasMatch(value) == true) {
+    if (Regexps.ipv4Address.hasMatch(value) == true || Regexps.domain.hasMatch(value) == true) {
       return null;
     }
     else {

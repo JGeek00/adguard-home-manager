@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -41,8 +42,7 @@ class _AddCustomRuleState extends State<AddCustomRule> {
   }
 
   void validateDomain(String value) {
-    final domainRegex = RegExp(r'^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$');
-    if (domainRegex.hasMatch(value)) {
+    if (Regexps.domain.hasMatch(value)) {
       setState(() => _domainError = null);
     }
     else {
