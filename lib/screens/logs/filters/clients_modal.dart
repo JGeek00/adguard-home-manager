@@ -114,10 +114,12 @@ class _ClientsModalState extends State<ClientsModal> {
     }
 
     void searchAddedClient(_ClientLog client) {
-      final notIps = client.ids?.where((e) => isIpAddress(e) == false).toList();
-      if (notIps == null || notIps.isEmpty) return;
-      logsProvider.setSearchText('"${notIps[0]}"');
+      final ips = client.ids?.where((e) => isIpAddress(e) == true).toList();
+      if (ips == null || ips.isEmpty) return;
+      logsProvider.setSearchText(ips[0]);
+      logsProvider.filterLogs();
       Navigator.of(context).pop();
+      Navigator.pop(context);
     }
 
     if (widget.dialog == true) {
@@ -302,7 +304,7 @@ class _ClientsModalState extends State<ClientsModal> {
                 subtitle: _selectedList == 0 ? _filteredClients[index].name : _filteredClients[index].ids?.join(", "),
                 checkboxActive: logsProvider.selectedClients.contains(_filteredClients[index].ip),
                 isAddedClient: _selectedList == 1,
-                onSearchAddedClient: () => searchAddedClient(_filteredClients[index]),
+                onSearchAddedClient: _filteredClients[index].ids != null && _filteredClients[index].ids!.where((e) => isIpAddress(e) == true).isNotEmpty ? () => searchAddedClient(_filteredClients[index]) : null,
                 onChanged: (isSelected) {
                   if (isSelected == true) {
                     logsProvider.setSelectedClients([
@@ -376,7 +378,7 @@ class _ListItem extends StatelessWidget {
   final bool checkboxActive;
   final void Function(bool) onChanged;
   final bool isAddedClient;
-  final void Function() onSearchAddedClient;
+  final void Function()? onSearchAddedClient;
 
   const _ListItem({
     required this.title,
