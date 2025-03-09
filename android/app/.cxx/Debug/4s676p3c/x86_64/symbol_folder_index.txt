@@ -1,0 +1,1 @@
+/Users/juan/Proyectos/adguard-home-manager/build/app/intermediates/cxx/Debug/4s676p3c/obj/x86_64

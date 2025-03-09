@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -63,8 +64,7 @@ class _ContentState extends State<_Content> {
   Widget? resultWidget;
 
   void validateDomain(String value) {
-    final domainRegex = RegExp(r'^([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$');
-    if (domainRegex.hasMatch(value)) {
+    if (Regexps.domain.hasMatch(value)) {
       setState(() => domainError = null);
     }
     else {

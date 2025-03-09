@@ -1,0 +1,2 @@
+/Users/juan/Proyectos/adguard-home-manager/android/app/.cxx/Debug/4s676p3c/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/juan/Proyectos/adguard-home-manager/android/app/.cxx/Debug/4s676p3c/armeabi-v7a/CMakeFiles/rebuild_cache.dir

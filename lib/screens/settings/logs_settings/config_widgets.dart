@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -55,9 +56,8 @@ class LogsConfigOptions extends StatelessWidget {
     ];
 
     void validateDomain(String value, String id) {
-      final domainRegex = RegExp(r'^([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$');
       bool error = false;
-      if (domainRegex.hasMatch(value)) {
+      if (Regexps.domain.hasMatch(value)) {
         error = false;
       }
       else {

@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -33,8 +34,7 @@ class _RateLimitAllowlistModalState extends State<RateLimitAllowlistModal> {
   List<_IpListItemController> _controllersList = [];
 
   void _validateIp(String value, _IpListItemController item) {
-    final regexp = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$');
-    if (regexp.hasMatch(value)) {
+    if (Regexps.ipv4Address.hasMatch(value)) {
       setState(() => _controllersList = _controllersList.map((e) {
         if (e.id == item.id) {
           return _IpListItemController(
