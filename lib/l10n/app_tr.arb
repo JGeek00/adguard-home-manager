@@ -804,7 +804,7 @@
     "myOtherAppsDescription": "Diğer uygulamalarımı kontrol et, bağış yap, destekle iletişime geç ve daha fazlası",
     "topToBottom": "Yukarıdan aşağıya",
     "bottomToTop": "Aşağıdan yukarıya",
-    "upstreamTimeout": "Yukarı akış zaman aşımı",
-    "upstreamTimeoutHelper": "Yukarı akış sunucusundan yanıt bekleme süresini saniye cinsinden belirtir",
+    "upstreamTimeout": "Üst sunucu zaman aşımı",
+    "upstreamTimeoutHelper": "Üst DNS sunucusundan yanıt bekleme süresini saniye cinsinden belirtir",
     "fieldCannotBeEmpty": "Bu alan boş olamaz"
 }
