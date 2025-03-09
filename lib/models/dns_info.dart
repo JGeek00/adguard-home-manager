@@ -26,6 +26,7 @@ class DnsInfo {
   int? ratelimitSubnetLenIpv4;
   int? ratelimitSubnetLenIpv6;
   List<String>? ratelimitWhitelist;
+  int? upstreamTimeout;
 
   DnsInfo({
     required this.upstreamDns,
@@ -55,6 +56,7 @@ class DnsInfo {
     required this.ratelimitSubnetLenIpv4,
     required this.ratelimitSubnetLenIpv6,
     required this.ratelimitWhitelist,
+    required this.upstreamTimeout,
   });
 
   factory DnsInfo.fromJson(Map<String, dynamic> json) => DnsInfo(
@@ -85,6 +87,7 @@ class DnsInfo {
     ratelimitSubnetLenIpv4: json["ratelimit_subnet_len_ipv4"],
     ratelimitSubnetLenIpv6: json["ratelimit_subnet_len_ipv6"],
     ratelimitWhitelist:  json["ratelimit_whitelist"] != null ? List<String>.from(json["ratelimit_whitelist"].map((x) => x)) : [],
+    upstreamTimeout: json["upstream_timeout"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -115,5 +118,6 @@ class DnsInfo {
     "ratelimit_subnet_len_ipv4": ratelimitSubnetLenIpv4,
     "ratelimit_subnet_len_ipv6": ratelimitSubnetLenIpv6,
     "ratelimit_whitelist": ratelimitWhitelist != null ? List<String>.from(ratelimitWhitelist!.map((x) => x)) : null,
+    "upstream_timeout": upstreamTimeout,
   };
 }

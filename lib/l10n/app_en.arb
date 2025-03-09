@@ -803,5 +803,8 @@
     "myOtherApps": "My other apps",
     "myOtherAppsDescription": "Check my other apps, make a donation, contact support, and more",
     "topToBottom": "From top to bottom",
-    "bottomToTop": "From bottom to top"
+    "bottomToTop": "From bottom to top",
+    "upstreamTimeout": "Upstream timeout",
+    "upstreamTimeoutHelper": "Specifies the number of seconds to wait for a response from the upstream server",
+    "fieldCannotBeEmpty": "This field cannot be empty"
 }

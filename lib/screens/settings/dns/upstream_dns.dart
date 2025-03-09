@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -29,6 +27,9 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
   String upstreamMode = "";
 
   bool validValues = false;
+
+  final upstreamTimeoutController = TextEditingController();
+  String? upstreamTimeoutError = null;
 
   checkValidValues() {
     if (
@@ -61,6 +62,7 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
       }
     }
     upstreamMode = dnsProvider.dnsInfo!.upstreamMode ?? "";
+    upstreamTimeoutController.text = dnsProvider.dnsInfo!.upstreamTimeout != null ? dnsProvider.dnsInfo!.upstreamTimeout.toString() : "";
     validValues = true;
     super.initState();
   }
@@ -71,6 +73,23 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
     
     final width = MediaQuery.of(context).size.width;
+
+    void validateTimeout(String value) {
+      if (value != '' && int.tryParse(value) != null && int.parse(value) > 0) {
+        setState(() {
+          upstreamTimeoutError = null;
+          validValues = true;
+        });
+      }
+      else {
+        setState(() {
+          upstreamTimeoutError = value == ''
+            ? AppLocalizations.of(context)!.fieldCannotBeEmpty
+            : AppLocalizations.of(context)!.invalidValue;
+          validValues = false;
+        });
+      }
+    }
 
     void openAddCommentModal() {
       if (width > 900 || !(Platform.isAndroid || Platform.isIOS)) {
@@ -146,11 +165,13 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
 
       final result = await dnsProvider.saveUpstreamDnsConfig({
         "upstream_dns": dnsServers.map((e) => e['controller'] != null ? e['controller'].text : e['comment']).toList(),
-        "upstream_mode": upstreamMode
+        "upstream_mode": upstreamMode,
+        "upstream_timeout": int.tryParse(upstreamTimeoutController.text)
       });
 
       processModal.close();
 
+      if (!context.mounted) return;
       if (result.successful == true) {
         showSnackbar(
           appConfigProvider: appConfigProvider,
@@ -311,6 +332,27 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
               title: AppLocalizations.of(context)!.fastestIpAddress,
               subtitle: AppLocalizations.of(context)!.fastestIpAddressDescription,
               onChanged: (value) => setState(() => upstreamMode = value),
+            ),
+            const SizedBox(height: 16),
+            SectionLabel(label: AppLocalizations.of(context)!.others),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextFormField(
+                controller: upstreamTimeoutController,
+                onChanged: validateTimeout,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.timer_rounded),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10)
+                    )
+                  ),
+                  labelText: AppLocalizations.of(context)!.upstreamTimeout,
+                  helperText: AppLocalizations.of(context)!.upstreamTimeoutHelper,
+                  helperMaxLines: 2,
+                  errorText: upstreamTimeoutError
+                )
+              ),
             ),
           ],
         ),
