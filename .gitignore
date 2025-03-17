@@ -51,3 +51,5 @@ app.*.map.json
 /debian/packages
 
 untranslated.json
+
+android/app/.cxx
