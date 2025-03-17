@@ -791,5 +791,20 @@
     "clientDisallowedSuccessfully": "İstemci başarıyla reddedildi",
     "changesNotSaved": "Değişiklikler kaydedilemedi",
     "allowingClient": "İstemciye izin veriliyor...",
-    "disallowingClient": "İstemci reddediliyor..."
+    "disallowingClient": "İstemci reddediliyor...",
+    "clientIpCopied": "İstemci IP'si panoya kopyalandı",
+    "clientNameCopied": "İstemci adı panoya kopyalandı",
+    "dnsServerAddressCopied": "DNS sunucu adresi panoya kopyalandı",
+    "select": "Seç",
+    "liveLogs": "Canlı günlükler",
+    "hereWillAppearRealtimeLogs": "Burada gerçek zamanlı günlükler görünecek.",
+    "applicationDetails": "Uygulama detayları",
+    "applicationDetailsDescription": "Uygulama deposu, mevcut olduğu mağazalar ve daha fazlası",
+    "myOtherApps": "Diğer uygulamalarım",
+    "myOtherAppsDescription": "Diğer uygulamalarımı kontrol et, bağış yap, destekle iletişime geç ve daha fazlası",
+    "topToBottom": "Yukarıdan aşağıya",
+    "bottomToTop": "Aşağıdan yukarıya",
+    "upstreamTimeout": "Üst sunucu zaman aşımı",
+    "upstreamTimeoutHelper": "Üst DNS sunucusundan yanıt bekleme süresini saniye cinsinden belirtir",
+    "fieldCannotBeEmpty": "Bu alan boş olamaz"
 }
