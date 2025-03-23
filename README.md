@@ -113,7 +113,6 @@ If you like the project and you want to contribute with the development, you can
 - [expandable](https://pub.dev/packages/expandable)
 - [package info plus](https://pub.dev/packages/package_info_plus)
 - [flutter phoenix](https://pub.dev/packages/flutter_phoenix)
-- [flutter displaymode](https://pub.dev/packages/flutter_displaymode)
 - [flutter launcher icons](https://pub.dev/packages/flutter_launcher_icons)
 - [flutter native splash](https://pub.dev/packages/flutter_native_splash)
 - [intl](https://pub.dev/packages/intl)

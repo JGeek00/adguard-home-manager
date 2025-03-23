@@ -27,11 +27,12 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   dialogTheme: DialogTheme(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
-  pageTransitionsTheme: const PageTransitionsTheme(
-    builders: {
-      TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
-    }
-  )
+  // DISABLE PREDICTIVE BACK GESTURE
+  // pageTransitionsTheme: const PageTransitionsTheme(
+  //   builders: {
+  //     TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
+  //   }
+  // )
 );
 
 ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
@@ -62,11 +63,12 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   dialogTheme: DialogTheme(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
-  pageTransitionsTheme: const PageTransitionsTheme(
-    builders: {
-      TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
-    }
-  )
+  // DISABLE PREDICTIVE BACK GESTURE
+  // pageTransitionsTheme: const PageTransitionsTheme(
+  //   builders: {
+  //     TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
+  //   }
+  // )
 );
 
 ThemeData lightThemeOldVersions(MaterialColor primaryColor) => ThemeData(
@@ -85,11 +87,12 @@ ThemeData lightThemeOldVersions(MaterialColor primaryColor) => ThemeData(
     iconColor: Color.fromRGBO(117, 117, 117, 1),
   ),
   brightness: Brightness.light,
-  pageTransitionsTheme: const PageTransitionsTheme(
-    builders: {
-      TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
-    }
-  )
+  // DISABLE PREDICTIVE BACK GESTURE
+  // pageTransitionsTheme: const PageTransitionsTheme(
+  //   builders: {
+  //     TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
+  //   }
+  // )
 );
 
 ThemeData darkThemeOldVersions(MaterialColor primaryColor) => ThemeData(
@@ -111,9 +114,10 @@ ThemeData darkThemeOldVersions(MaterialColor primaryColor) => ThemeData(
     iconColor: Color.fromRGBO(187, 187, 187, 1),
   ),
   brightness: Brightness.dark,
-  pageTransitionsTheme: const PageTransitionsTheme(
-    builders: {
-      TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
-    }
-  )
+  // DISABLE PREDICTIVE BACK GESTURE
+  // pageTransitionsTheme: const PageTransitionsTheme(
+  //   builders: {
+  //     TargetPlatform.android: PredictiveBackPageTransitionsBuilder()
+  //   }
+  // )
 );
