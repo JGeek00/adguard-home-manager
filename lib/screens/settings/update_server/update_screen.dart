@@ -218,101 +218,110 @@ class _Header extends SliverPersistentHeaderDelegate {
     final iconBottom = _iconMinBottomPositionExent + (iconMaxBottomPositionExent-iconMinBottomPositionExent)*(1-iconPercentage);
 
     return LayoutBuilder(
-      builder: (context, constraints) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        ),
-        child: Align(
-          alignment: Alignment.topLeft,
-          child: SafeArea(
-            bottom: false,
-            child: Stack(
-              fit: StackFit.expand,
-              alignment: Alignment.center,
-              children: [
-                if (Navigator.of(context).canPop()) Positioned(
-                  top: 8,
-                  left: 0,
-                  child: BackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 0,
-                  child: IconButton(
-                    onPressed: onRefresh,
-                    icon: const Icon(Icons.refresh_rounded),
-                    tooltip: AppLocalizations.of(context)!.refresh,
-                  )
-                ),
-                Positioned(
-                  bottom: iconBottom,
-                  left: (constraints.maxWidth/2)-(_iconSize/2),
-                  child: Opacity(
-                    opacity: 1-iconPercentage,
-                    child: serversProvider.updateAvailable.loadStatus == LoadStatus.loading
-                      ? const Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            SizedBox(height: 4)
-                          ],
-                        )
-                      : Icon(
-                          serversProvider.updateAvailable.data!.canAutoupdate == true
-                            ? Icons.system_update_rounded
-                            : Icons.system_security_update_good_rounded,
-                          size: _iconSize,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                  ),
-                ),
-                Positioned(
-                  bottom: mainText,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: constraints.maxWidth-100
-                    ),
-                    child: Text(
-                      serversProvider.updateAvailable.loadStatus == LoadStatus.loading
-                        ? AppLocalizations.of(context)!.checkingUpdates
-                        : serversProvider.updateAvailable.data!.canAutoupdate == true
-                          ? AppLocalizations.of(context)!.updateAvailable
-                          :  AppLocalizations.of(context)!.serverUpdated,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: textFontSize,
-                        fontWeight: FontWeight.w400
-                      ),
-                    ),
-                  )
-                ),
-                Positioned(
-                  bottom: versionText,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: constraints.maxWidth-100
-                    ),
-                    child: Opacity(
-                      opacity: 1-iconPercentage,
-                      child: Text(
-                        serversProvider.updateAvailable.data!.canAutoupdate == true
-                          ? "${AppLocalizations.of(context)!.newVersion}: ${serversProvider.updateAvailable.data!.newVersion ?? 'N/A'}"
-                          : "${AppLocalizations.of(context)!.installedVersion}: ${serversProvider.updateAvailable.data!.currentVersion}",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant
-                        ),
-                      ),
-                    ),
-                  )
-                )
-              ],
+      builder: (context, constraints) => Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
             ),
           ),
-        ),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.075),
+            ),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: SafeArea(
+                bottom: false,
+                child: Stack(
+                  fit: StackFit.expand,
+                  alignment: Alignment.center,
+                  children: [
+                    if (Navigator.of(context).canPop()) Positioned(
+                      top: 8,
+                      left: 0,
+                      child: BackButton(
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 0,
+                      child: IconButton(
+                        onPressed: onRefresh,
+                        icon: const Icon(Icons.refresh_rounded),
+                        tooltip: AppLocalizations.of(context)!.refresh,
+                      )
+                    ),
+                    Positioned(
+                      bottom: iconBottom,
+                      left: (constraints.maxWidth/2)-(_iconSize/2),
+                      child: Opacity(
+                        opacity: 1-iconPercentage,
+                        child: serversProvider.updateAvailable.loadStatus == LoadStatus.loading
+                          ? const Column(
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 4)
+                              ],
+                            )
+                          : Icon(
+                              serversProvider.updateAvailable.data!.canAutoupdate == true
+                                ? Icons.system_update_rounded
+                                : Icons.system_security_update_good_rounded,
+                              size: _iconSize,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: mainText,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: constraints.maxWidth-100
+                        ),
+                        child: Text(
+                          serversProvider.updateAvailable.loadStatus == LoadStatus.loading
+                            ? AppLocalizations.of(context)!.checkingUpdates
+                            : serversProvider.updateAvailable.data!.canAutoupdate == true
+                              ? AppLocalizations.of(context)!.updateAvailable
+                              :  AppLocalizations.of(context)!.serverUpdated,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: textFontSize,
+                            fontWeight: FontWeight.w400
+                          ),
+                        ),
+                      )
+                    ),
+                    Positioned(
+                      bottom: versionText,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: constraints.maxWidth-100
+                        ),
+                        child: Opacity(
+                          opacity: 1-iconPercentage,
+                          child: Text(
+                            serversProvider.updateAvailable.data!.canAutoupdate == true
+                              ? "${AppLocalizations.of(context)!.newVersion}: ${serversProvider.updateAvailable.data!.newVersion ?? 'N/A'}"
+                              : "${AppLocalizations.of(context)!.installedVersion}: ${serversProvider.updateAvailable.data!.currentVersion}",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant
+                            ),
+                          ),
+                        ),
+                      )
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
