@@ -17,5 +17,4 @@
     "/pubspec.yaml",
     "/.github/workflows"
   ],
-  "dart.flutterRunAdditionalArgs": [ "--no-enable-impeller" ]
 }
