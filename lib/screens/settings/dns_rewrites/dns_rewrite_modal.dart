@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/models/rewrite_rules.dart';
 

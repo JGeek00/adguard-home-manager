@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/screens/logs/details/log_details_screen.dart';
 import 'package:adguard_home_manager/screens/logs/log_tile.dart';
@@ -154,7 +155,7 @@ class _LogsListWidgetState extends State<LogsListWidget> {
                         onRefresh: () async {
                           await logsProvider.fetchLogs(inOffset: 0);
                         },
-                        displacement: 95,
+                        displacement: 110,
                         child: NotificationListener(
                           onNotification: scrollListener,
                           child: CustomScrollView(

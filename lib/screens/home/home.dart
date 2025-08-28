@@ -5,7 +5,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/screens/home/server_status.dart';
 import 'package:adguard_home_manager/screens/home/top_items/top_items_lists.dart';
@@ -89,7 +90,7 @@ class _HomeState extends State<Home> {
                 child: Builder(
                   builder: (context) => RefreshIndicator(
                     color: Theme.of(context).colorScheme.primary,
-                    displacement: 95,
+                    displacement: 110,
                     onRefresh: () async {
                       final result = await statusProvider.getServerStatus();
                       if (mounted && result == false) {

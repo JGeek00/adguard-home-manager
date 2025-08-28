@@ -6,7 +6,8 @@ import 'package:adguard_home_manager/functions/desktop_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animations/animations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/screens/settings/dhcp/delete_static_lease_modal.dart';
 import 'package:adguard_home_manager/screens/settings/dhcp/add_static_lease_modal.dart';

@@ -3,7 +3,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/screens/home/top_items/row_item.dart';
 import 'package:adguard_home_manager/screens/home/top_items/top_items_screen.dart';
