@@ -2,7 +2,8 @@ import 'package:adguard_home_manager/constants/regexps.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/screens/settings/logs_settings/logs_settings.dart';
 import 'package:adguard_home_manager/widgets/load_status_widgets.dart';

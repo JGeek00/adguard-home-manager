@@ -13,7 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/widgets/layout.dart';
 import 'package:adguard_home_manager/widgets/menu_bar.dart';

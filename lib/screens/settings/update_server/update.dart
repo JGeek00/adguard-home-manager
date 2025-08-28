@@ -7,7 +7,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart' as html;
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';

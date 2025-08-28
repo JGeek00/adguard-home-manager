@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:segmented_button_slide/segmented_button_slide.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 import 'package:adguard_home_manager/functions/is_ip.dart';

@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
+
 
 import 'package:adguard_home_manager/widgets/add_server/unsupported_version_modal.dart';
 import 'package:adguard_home_manager/widgets/add_server/form_text_field.dart';

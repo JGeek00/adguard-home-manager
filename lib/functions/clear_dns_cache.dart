@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adguard_home_manager/l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';

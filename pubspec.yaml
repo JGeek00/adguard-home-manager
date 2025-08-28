@@ -47,7 +47,7 @@ dependencies:
   device_info_plus: ^11.2.1
   uuid: ^4.2.1
   expandable: ^5.0.1
-  fl_chart: ^0.70.2
+  fl_chart: ^1.0.0
   flutter_svg: ^2.0.9
   percent_indicator: ^4.2.3
   flutter_markdown: ^0.7.1
@@ -58,8 +58,8 @@ dependencies:
   sqflite_common_ffi: ^2.3.1
   contextmenu: ^3.0.0
   async: ^2.11.0
-  sentry_flutter: ^8.0.0
-  flutter_dotenv: ^5.1.0
+  sentry_flutter: ^9.6.0
+  flutter_dotenv: ^6.0.0
   flutter_reorderable_list: ^1.3.1
   pie_chart: ^5.4.0
   segmented_button_slide: ^2.0.0
@@ -68,7 +68,7 @@ dependencies:
   flutter_custom_tabs: ^2.0.0+1
   url_launcher: ^6.2.4
   shared_preferences: ^2.2.2
-  window_manager: ^0.4.2
+  window_manager: ^0.5.1
 
 dev_dependencies:
   flutter_test:
@@ -79,9 +79,10 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.1
   flutter_native_splash: ^2.3.8
+  flutter_gen: ^5.11.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -15,16 +15,10 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     textColor: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(117, 117, 117, 1),
     iconColor: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(117, 117, 117, 1),
   ),
-  cardTheme: CardTheme(
-    surfaceTintColor: dynamicColorScheme?.surfaceTint
-  ),
   popupMenuTheme: PopupMenuThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
   navigationBarTheme: NavigationBarThemeData(
-    surfaceTintColor: dynamicColorScheme?.surfaceTint
-  ),
-  dialogTheme: DialogTheme(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
   // DISABLE PREDICTIVE BACK GESTURE
@@ -51,16 +45,10 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     textColor: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(187, 187, 187, 1),
     iconColor: dynamicColorScheme != null ? dynamicColorScheme.onSurfaceVariant : const Color.fromRGBO(187, 187, 187, 1),
   ),
-  cardTheme: CardTheme(
-    surfaceTintColor: dynamicColorScheme?.surfaceTint
-  ),
   popupMenuTheme: PopupMenuThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
   navigationBarTheme: NavigationBarThemeData(
-    surfaceTintColor: dynamicColorScheme?.surfaceTint
-  ),
-  dialogTheme: DialogTheme(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
   // DISABLE PREDICTIVE BACK GESTURE
