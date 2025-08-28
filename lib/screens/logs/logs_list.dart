@@ -155,7 +155,7 @@ class _LogsListWidgetState extends State<LogsListWidget> {
                         onRefresh: () async {
                           await logsProvider.fetchLogs(inOffset: 0);
                         },
-                        displacement: 95,
+                        displacement: 110,
                         child: NotificationListener(
                           onNotification: scrollListener,
                           child: CustomScrollView(

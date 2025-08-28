@@ -21,6 +21,9 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   navigationBarTheme: NavigationBarThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
+  cardTheme: CardThemeData(
+    surfaceTintColor: dynamicColorScheme?.surfaceTint
+  ),
   // DISABLE PREDICTIVE BACK GESTURE
   // pageTransitionsTheme: const PageTransitionsTheme(
   //   builders: {
@@ -49,6 +52,9 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
   navigationBarTheme: NavigationBarThemeData(
+    surfaceTintColor: dynamicColorScheme?.surfaceTint
+  ),
+  cardTheme: CardThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
   // DISABLE PREDICTIVE BACK GESTURE
