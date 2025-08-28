@@ -20,6 +20,16 @@
   </a>
 </p>
 
+<br>
+<div>
+  <div align="center">
+    <b>ℹ️ RELEVANT INFORMATION ℹ️</b>
+  </div>
+  <br>
+  It's recommended to increase the number of <code>auth_attempts</code> in <code>AdGuardHome.yaml</code> from the default value of 5 to 15.
+</div>
+<br>
+
 ## Main features
 <p>▶ Manage your AdGuard Home server on an easy way.</p>
 <p>▶ Supports HTTP and HTTPS connections.</p>
