@@ -24,6 +24,9 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   cardTheme: CardThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
+  dialogTheme: DialogThemeData(
+    backgroundColor: dynamicColorScheme?.surfaceContainerHigh
+  ),
   // DISABLE PREDICTIVE BACK GESTURE
   // pageTransitionsTheme: const PageTransitionsTheme(
   //   builders: {
@@ -56,6 +59,9 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   ),
   cardTheme: CardThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
+  ),
+  dialogTheme: DialogThemeData(
+    backgroundColor: dynamicColorScheme?.surfaceContainerHigh
   ),
   // DISABLE PREDICTIVE BACK GESTURE
   // pageTransitionsTheme: const PageTransitionsTheme(
