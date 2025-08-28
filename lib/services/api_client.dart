@@ -59,15 +59,28 @@ class ApiClientV2 {
   }
 
   Future<ApiResponse> getServerStatus() async {
-    final results = await Future.wait([
+    final results1 = await Future.wait([
       HttpRequestClient.get(urlPath: "/stats", server: server),
       HttpRequestClient.get(urlPath: "/status", server: server),
+    ]);
+    final results2 = await Future.wait([
       HttpRequestClient.get(urlPath: "/filtering/status", server: server),
       HttpRequestClient.get(urlPath: "/safesearch/status", server: server),
+    ]);
+    final results3 = await Future.wait([
       HttpRequestClient.get(urlPath: "/safebrowsing/status", server: server),
       HttpRequestClient.get(urlPath: "/parental/status", server: server),
+    ]);
+    final results4 = await Future.wait([
       HttpRequestClient.get(urlPath: "/clients", server: server),
     ]);
+    // AdGuard Home limits the amount of concurrent connections
+    final results = [
+      ...results1,
+      ...results2,
+      ...results3,
+      ...results4
+    ];
     if (
       results.map((e) => e.successful).every((e) => e == true) &&
       results.map((e) => e.body).every((e) => e != null)
