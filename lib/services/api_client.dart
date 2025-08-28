@@ -316,18 +316,16 @@ class ApiClientV2 {
   }
 
   Future<ApiResponse> getFiltering() async {
-    final results = await Future.wait([
-      HttpRequestClient.get(urlPath: '/filtering/status', server: server),
-      HttpRequestClient.get(urlPath: '/blocked_services/list', server: server),
-    ]);
-    if (results[0].successful == true && results[0].body != null) {
+    final results1 = await  HttpRequestClient.get(urlPath: '/filtering/status', server: server);
+    final results2 = await HttpRequestClient.get(urlPath: '/blocked_services/list', server: server);
+    if (results1.successful == true && results1.body != null) {
       try {
         return ApiResponse(
           successful: true,
           content: Filtering.fromJson({
-            ...jsonDecode(results[0].body!),
-            "blocked_services": results[1].body != null 
-              ? jsonDecode(results[1].body!)
+            ...jsonDecode(results1.body!),
+            "blocked_services": results2.body != null 
+              ? jsonDecode(results2.body!)
               : []
           })
         );
@@ -335,7 +333,7 @@ class ApiClientV2 {
         Sentry.captureException(
           e, 
           stackTrace: stackTrace, 
-          hint: Hint.withMap({ "statusCode": results.map((e) => e.statusCode.toString()) })
+          hint: Hint.withMap({ "statusCode": [results1.statusCode, results2.statusCode].map((e) => e.toString()) })
         );
         return const ApiResponse(successful: false);
       }
