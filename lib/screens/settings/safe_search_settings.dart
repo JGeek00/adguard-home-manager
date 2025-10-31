@@ -25,6 +25,7 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
   bool generalEnabled = false;
   bool bingEnabled = false;
   bool duckduckgoEnabled = false;
+  bool ecosiaEnabled = false;
   bool googleEnabled = false;
   bool pixabayEnabled = false;
   bool yandexEnabled = false;
@@ -39,6 +40,7 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
           generalEnabled = statusProvider.serverStatus!.safeSearchEnabled;
           bingEnabled = statusProvider.serverStatus!.safeSeachBing ?? false;
           duckduckgoEnabled = statusProvider.serverStatus!.safeSearchDuckduckgo ?? false;
+          ecosiaEnabled = statusProvider.serverStatus!.safeSearchEcosia ?? false;
           googleEnabled = statusProvider.serverStatus!.safeSearchGoogle ?? false;
           pixabayEnabled = statusProvider.serverStatus!.safeSearchPixabay ?? false;
           yandexEnabled = statusProvider.serverStatus!.safeSearchYandex ?? false;
@@ -59,6 +61,7 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
       generalEnabled = statusProvider.serverStatus!.safeSearchEnabled;
       bingEnabled = statusProvider.serverStatus!.safeSeachBing!;
       duckduckgoEnabled = statusProvider.serverStatus!.safeSearchDuckduckgo!;
+      ecosiaEnabled = statusProvider.serverStatus!.safeSearchEcosia!;
       googleEnabled = statusProvider.serverStatus!.safeSearchGoogle!;
       pixabayEnabled = statusProvider.serverStatus!.safeSearchPixabay!;
       yandexEnabled = statusProvider.serverStatus!.safeSearchYandex!;
@@ -82,6 +85,7 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
         "enabled": generalEnabled,
         "bing": bingEnabled,
         "duckduckgo": duckduckgoEnabled,
+        "ecosia": ecosiaEnabled,
         "google": googleEnabled,
         "pixabay": pixabayEnabled,
         "yandex": yandexEnabled,
@@ -210,6 +214,15 @@ class _SafeSearchSettingsScreenState extends State<SafeSearchSettingsScreen> {
                         value: duckduckgoEnabled, 
                         onChanged: (value) => setState(() => duckduckgoEnabled = value), 
                         title: "DuckDuckGo",
+                        padding: const EdgeInsets.only(
+                          top: 8, left: 40, right: 40, bottom: 8
+                        ),
+                        disabled: !generalEnabled,
+                      ),
+                      CustomCheckboxListTile(
+                        value: ecosiaEnabled, 
+                        onChanged: (value) => setState(() => ecosiaEnabled = value), 
+                        title: "Ecosia",
                         padding: const EdgeInsets.only(
                           top: 8, left: 40, right: 40, bottom: 8
                         ),
