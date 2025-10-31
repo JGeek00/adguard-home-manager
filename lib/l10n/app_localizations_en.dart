@@ -2559,4 +2559,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldCannotBeEmpty => 'This field cannot be empty';
+
+  @override
+  String get dnsRewriteRuleEnabled => 'DNS rewrite rule enabled successfully';
+
+  @override
+  String get dnsRewriteRuleDisabled => 'DNS rewrite rule disabled successfully';
 }

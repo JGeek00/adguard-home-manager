@@ -806,5 +806,7 @@
     "bottomToTop": "From bottom to top",
     "upstreamTimeout": "Upstream timeout",
     "upstreamTimeoutHelper": "Specifies the number of seconds to wait for a response from the upstream server",
-    "fieldCannotBeEmpty": "This field cannot be empty"
+    "fieldCannotBeEmpty": "This field cannot be empty",
+    "dnsRewriteRuleEnabled": "DNS rewrite rule enabled successfully",
+    "dnsRewriteRuleDisabled": "DNS rewrite rule disabled successfully"
 }

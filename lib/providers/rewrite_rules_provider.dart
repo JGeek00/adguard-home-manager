@@ -59,11 +59,13 @@ class RewriteRulesProvider with ChangeNotifier {
       body: {
         "target": {
           "answer": oldRule.answer,
-          "domain": oldRule.domain
+          "domain": oldRule.domain,
+          "enabled": oldRule.enabled
         },
         "update": {
           "answer": newRule.answer,
-          "domain": newRule.domain
+          "domain": newRule.domain,
+          "enabled": newRule.enabled
         }
       }
     );

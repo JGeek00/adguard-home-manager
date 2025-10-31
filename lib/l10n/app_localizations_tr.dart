@@ -2573,4 +2573,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get fieldCannotBeEmpty => 'Bu alan boş olamaz';
+
+  @override
+  String get dnsRewriteRuleEnabled => 'DNS rewrite rule enabled successfully';
+
+  @override
+  String get dnsRewriteRuleDisabled => 'DNS rewrite rule disabled successfully';
 }

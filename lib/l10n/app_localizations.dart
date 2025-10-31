@@ -4954,6 +4954,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This field cannot be empty'**
   String get fieldCannotBeEmpty;
+
+  /// No description provided for @dnsRewriteRuleEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS rewrite rule enabled successfully'**
+  String get dnsRewriteRuleEnabled;
+
+  /// No description provided for @dnsRewriteRuleDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS rewrite rule disabled successfully'**
+  String get dnsRewriteRuleDisabled;
 }
 
 class _AppLocalizationsDelegate

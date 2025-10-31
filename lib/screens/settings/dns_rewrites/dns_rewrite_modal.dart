@@ -208,7 +208,8 @@ class _ContentState extends State<_Content> {
                   widget.onDelete(
                     RewriteRules(
                       domain: domainController.text, 
-                      answer: answerController.text
+                      answer: answerController.text,
+                      enabled: true,
                     )
                   );
                 },
@@ -229,7 +230,8 @@ class _ContentState extends State<_Content> {
                           widget.onConfirm(
                             RewriteRules(
                               domain: domainController.text, 
-                              answer: answerController.text
+                              answer: answerController.text,
+                              enabled: true,
                             ),
                             widget.rule
                           );
