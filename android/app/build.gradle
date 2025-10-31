@@ -34,12 +34,12 @@ android {
     ndkVersion "27.0.12077973"
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_18
-        targetCompatibility JavaVersion.VERSION_18
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = 18
+        jvmTarget = "11"
     }
 
     sourceSets {
@@ -75,5 +75,5 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.20"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
 }
