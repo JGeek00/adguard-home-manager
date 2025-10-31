@@ -807,6 +807,13 @@
     "upstreamTimeout": "Upstream timeout",
     "upstreamTimeoutHelper": "Specifies the number of seconds to wait for a response from the upstream server",
     "fieldCannotBeEmpty": "This field cannot be empty",
+    "enableDnsRewriteRules": "Enable DNS rewrite rules",
     "dnsRewriteRuleEnabled": "DNS rewrite rule enabled successfully",
-    "dnsRewriteRuleDisabled": "DNS rewrite rule disabled successfully"
+    "dnsRewriteRuleDisabled": "DNS rewrite rule disabled successfully",
+    "allDnsRewriteRulesEnabled": "All DNS rewrite rules enabled successfully",
+    "allDnsRewriteRulesDisabled": "All DNS rewrite rules disabled successfully",
+    "errorEnablingAllDnsRewriteRules": "Error enabling all DNS rewrite rules",
+    "errorDisablingAllDnsRewriteRules": "Error disabling all DNS rewrite rules",
+    "enablingDnsRewriteRule": "Enabling DNS rewrite rules...",
+    "disablingDnsRewriteRule": "Disabling DNS rewrite rules..."
 }

@@ -2592,8 +2592,33 @@ class AppLocalizationsPl extends AppLocalizations {
   String get fieldCannotBeEmpty => 'This field cannot be empty';
 
   @override
+  String get enableDnsRewriteRules => 'Enable DNS rewrite rules';
+
+  @override
   String get dnsRewriteRuleEnabled => 'DNS rewrite rule enabled successfully';
 
   @override
   String get dnsRewriteRuleDisabled => 'DNS rewrite rule disabled successfully';
+
+  @override
+  String get allDnsRewriteRulesEnabled =>
+      'All DNS rewrite rules enabled successfully';
+
+  @override
+  String get allDnsRewriteRulesDisabled =>
+      'All DNS rewrite rules disabled successfully';
+
+  @override
+  String get errorEnablingAllDnsRewriteRules =>
+      'Error enabling all DNS rewrite rules';
+
+  @override
+  String get errorDisablingAllDnsRewriteRules =>
+      'Error disabling all DNS rewrite rules';
+
+  @override
+  String get enablingDnsRewriteRule => 'Enabling DNS rewrite rules...';
+
+  @override
+  String get disablingDnsRewriteRule => 'Disabling DNS rewrite rules...';
 }

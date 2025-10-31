@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:adguard_home_manager/models/blocked_services.dart';
+import 'package:adguard_home_manager/models/rewrite_status.dart';
 import 'package:adguard_home_manager/models/querylog_config.dart';
 import 'package:adguard_home_manager/models/statistics_config.dart';
 import 'package:adguard_home_manager/models/dns_info.dart';
@@ -583,6 +584,40 @@ class ApiClientV2 {
       urlPath: '/dhcp/reset_leases', 
       server: server,
       body: {},
+    );
+    return ApiResponse(successful: result.successful);
+  }
+
+  Future<ApiResponse> getDnsRewriteSettings() async {
+    final result = await HttpRequestClient.get(urlPath: '/rewrite/settings', server: server);
+    if (result.successful) {
+      try {
+        final data = RewriteStatus.fromJson(jsonDecode(result.body!));
+        return ApiResponse(
+          successful: true,
+          content: data
+        );
+      } catch (e, stackTrace) {
+        Sentry.captureException(
+          e, 
+          stackTrace: stackTrace, 
+          hint: Hint.withMap({ "statusCode": result.statusCode.toString() })
+        );
+        return const ApiResponse(successful: false);
+      }
+    }
+    else {
+      return const ApiResponse(successful: false);
+    }
+  }
+
+  Future<ApiResponse> updateDnsRewriteSettings({
+    required Map<String, dynamic> data,
+  }) async {
+    final result = await HttpRequestClient.put(
+      urlPath: '/rewrite/settings/update', 
+      server: server,
+      body: data,
     );
     return ApiResponse(successful: result.successful);
   }

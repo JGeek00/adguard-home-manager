@@ -4955,6 +4955,12 @@ abstract class AppLocalizations {
   /// **'This field cannot be empty'**
   String get fieldCannotBeEmpty;
 
+  /// No description provided for @enableDnsRewriteRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable DNS rewrite rules'**
+  String get enableDnsRewriteRules;
+
   /// No description provided for @dnsRewriteRuleEnabled.
   ///
   /// In en, this message translates to:
@@ -4966,6 +4972,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'DNS rewrite rule disabled successfully'**
   String get dnsRewriteRuleDisabled;
+
+  /// No description provided for @allDnsRewriteRulesEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'All DNS rewrite rules enabled successfully'**
+  String get allDnsRewriteRulesEnabled;
+
+  /// No description provided for @allDnsRewriteRulesDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'All DNS rewrite rules disabled successfully'**
+  String get allDnsRewriteRulesDisabled;
+
+  /// No description provided for @errorEnablingAllDnsRewriteRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Error enabling all DNS rewrite rules'**
+  String get errorEnablingAllDnsRewriteRules;
+
+  /// No description provided for @errorDisablingAllDnsRewriteRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Error disabling all DNS rewrite rules'**
+  String get errorDisablingAllDnsRewriteRules;
+
+  /// No description provided for @enablingDnsRewriteRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabling DNS rewrite rules...'**
+  String get enablingDnsRewriteRule;
+
+  /// No description provided for @disablingDnsRewriteRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabling DNS rewrite rules...'**
+  String get disablingDnsRewriteRule;
 }
 
 class _AppLocalizationsDelegate

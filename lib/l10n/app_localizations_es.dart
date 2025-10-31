@@ -72,7 +72,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ipDomainNotEmpty => 'IP o dominio no puede estar vacío';
 
   @override
-  String get nameNotEmpty => 'Name cannot be empty';
+  String get nameNotEmpty => 'El nombre no puede estar vacío';
 
   @override
   String get invalidUsernamePassword => 'Usuario o contraseña no válidos.';
@@ -2624,8 +2624,37 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldCannotBeEmpty => 'El campo no puede estar vacío';
 
   @override
-  String get dnsRewriteRuleEnabled => 'DNS rewrite rule enabled successfully';
+  String get enableDnsRewriteRules => 'Habilitar reglas de reescritura DNS';
 
   @override
-  String get dnsRewriteRuleDisabled => 'DNS rewrite rule disabled successfully';
+  String get dnsRewriteRuleEnabled =>
+      'Regla de reescritura DNS habilitada exitosamente';
+
+  @override
+  String get dnsRewriteRuleDisabled =>
+      'Regla de reescritura DNS deshabilitada exitosamente';
+
+  @override
+  String get allDnsRewriteRulesEnabled =>
+      'Todas las reglas de reescritura DNS habilitadas exitosamente';
+
+  @override
+  String get allDnsRewriteRulesDisabled =>
+      'Todas las reglas de reescritura DNS deshabilitadas exitosamente';
+
+  @override
+  String get errorEnablingAllDnsRewriteRules =>
+      'Error al habilitar todas las reglas de reescritura DNS';
+
+  @override
+  String get errorDisablingAllDnsRewriteRules =>
+      'Error al deshabilitar todas las reglas de reescritura DNS';
+
+  @override
+  String get enablingDnsRewriteRule =>
+      'Habilitando reglas de reescritura DNS...';
+
+  @override
+  String get disablingDnsRewriteRule =>
+      'Deshabilitando reglas de reescritura DNS...';
 }
