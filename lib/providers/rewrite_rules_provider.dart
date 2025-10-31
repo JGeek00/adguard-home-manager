@@ -1,3 +1,4 @@
+import 'package:adguard_home_manager/models/rewrite_status.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
@@ -13,9 +14,14 @@ class RewriteRulesProvider with ChangeNotifier {
 
   LoadStatus _loadStatus = LoadStatus.loading;
   List<RewriteRules>? _rewriteRules;
+  RewriteStatus? _rewriteStatus;
 
   LoadStatus get loadStatus {
     return _loadStatus;
+  }
+
+  RewriteStatus? get rewriteStatus {
+    return _rewriteStatus;
   }
 
   List<RewriteRules>? get rewriteRules {
@@ -32,6 +38,11 @@ class RewriteRulesProvider with ChangeNotifier {
     if (notify == true) {
       notifyListeners();
     }
+  }
+
+  void setRewriteStatusData(RewriteStatus status) {
+    _rewriteStatus = status;
+    notifyListeners();
   }
 
   Future<bool> addDnsRewrite(RewriteRules rule) async {
@@ -59,11 +70,13 @@ class RewriteRulesProvider with ChangeNotifier {
       body: {
         "target": {
           "answer": oldRule.answer,
-          "domain": oldRule.domain
+          "domain": oldRule.domain,
+          "enabled": oldRule.enabled
         },
         "update": {
           "answer": newRule.answer,
-          "domain": newRule.domain
+          "domain": newRule.domain,
+          "enabled": newRule.enabled
         }
       }
     );
@@ -101,17 +114,21 @@ class RewriteRulesProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> fetchRules({
+  Future<bool> fetchData({
     bool? showLoading
   }) async {
     if (showLoading == true) {
       _loadStatus = LoadStatus.loading;
     }
 
-    final result = await _serversProvider!.apiClient2!.getDnsRewriteRules();
+    final result = await Future.wait([
+      _serversProvider!.apiClient2!.getDnsRewriteRules(),
+      _serversProvider!.apiClient2!.getDnsRewriteSettings(),
+    ]);
 
-    if (result.successful == true) {
-      _rewriteRules = result.content as List<RewriteRules>;
+    if (result.every((element) => element.successful == true)) {
+      _rewriteRules = result[0].content as List<RewriteRules>;
+      _rewriteStatus = result[1].content as RewriteStatus;
       _loadStatus = LoadStatus.loaded;
       notifyListeners();
       return true;
@@ -121,6 +138,26 @@ class RewriteRulesProvider with ChangeNotifier {
         _loadStatus = LoadStatus.error;
         notifyListeners();
       }
+      return false;
+    }
+  }
+
+  Future enableDisableRewriteRules(bool enabled) async {
+    final result = await _serversProvider!.apiClient2!.updateDnsRewriteSettings(
+      data: {
+        "enabled": enabled
+      }
+    );
+
+    if (result.successful == true) {
+      _rewriteStatus = RewriteStatus(
+        enabled: enabled
+      );
+      notifyListeners();
+      return true;
+    }
+    else {
+      notifyListeners();
       return false;
     }
   }

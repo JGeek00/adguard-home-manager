@@ -26,6 +26,7 @@ class _SafeSearchModalState extends State<SafeSearchModal> {
   bool generalEnabled = false;
   bool bingEnabled = false;
   bool duckduckgoEnabled = false;
+  bool ecosiaEnabled = false;
   bool googleEnabled = false;
   bool pixabayEnabled = false;
   bool yandexEnabled = false;
@@ -36,6 +37,7 @@ class _SafeSearchModalState extends State<SafeSearchModal> {
     generalEnabled = widget.safeSearch.enabled;
     bingEnabled = widget.safeSearch.bing;
     duckduckgoEnabled = widget.safeSearch.duckduckgo;
+    ecosiaEnabled = widget.safeSearch.ecosia;
     googleEnabled = widget.safeSearch.google;
     pixabayEnabled = widget.safeSearch.pixabay;
     yandexEnabled = widget.safeSearch.yandex;
@@ -132,6 +134,16 @@ class _SafeSearchModalState extends State<SafeSearchModal> {
               ),
             ),
             CustomCheckboxListTile(
+              value: ecosiaEnabled, 
+              onChanged: (value) => setState(() => ecosiaEnabled = value), 
+              title: "Ecosia",
+              disabled: widget.disabled || !generalEnabled,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 36,
+                vertical: 4
+              ),
+            ),
+            CustomCheckboxListTile(
               value: googleEnabled, 
               onChanged: (value) => setState(() => googleEnabled = value), 
               title: "Google",
@@ -186,6 +198,7 @@ class _SafeSearchModalState extends State<SafeSearchModal> {
                 enabled: generalEnabled, 
                 bing: bingEnabled, 
                 duckduckgo: duckduckgoEnabled, 
+                ecosia: ecosiaEnabled,
                 google: googleEnabled, 
                 pixabay: pixabayEnabled, 
                 yandex: yandexEnabled, 

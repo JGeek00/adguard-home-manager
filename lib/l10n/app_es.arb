@@ -20,7 +20,7 @@
     "invalidPath": "Ruta no válida",
     "invalidIpDomain": "IP o dominio no válido",
     "ipDomainNotEmpty": "IP o dominio no puede estar vacío",
-    "nameNotEmpty": "Name cannot be empty",
+    "nameNotEmpty": "El nombre no puede estar vacío",
     "invalidUsernamePassword": "Usuario o contraseña no válidos.",
     "tooManyAttempts": "Demasiados intentos. Prueba de nuevo más tarde.",
     "cantReachServer": "No se puede alcanzar el servidor. Comprueba los datos de conexión.",
@@ -806,5 +806,14 @@
     "bottomToTop": "Desde abajo hacia arriba",
     "upstreamTimeout": "Tiempo de espera del upstream",
     "upstreamTimeoutHelper": "Especifica el número de segundos que se debe esperar para recibir una respuesta del servidor upstream",
-    "fieldCannotBeEmpty": "El campo no puede estar vacío"
+    "fieldCannotBeEmpty": "El campo no puede estar vacío",
+    "enableDnsRewriteRules": "Habilitar reglas de reescritura DNS",
+    "dnsRewriteRuleEnabled": "Regla de reescritura DNS habilitada exitosamente",
+    "dnsRewriteRuleDisabled": "Regla de reescritura DNS deshabilitada exitosamente",
+    "allDnsRewriteRulesEnabled": "Todas las reglas de reescritura DNS habilitadas exitosamente",
+    "allDnsRewriteRulesDisabled": "Todas las reglas de reescritura DNS deshabilitadas exitosamente",
+    "errorEnablingAllDnsRewriteRules": "Error al habilitar todas las reglas de reescritura DNS",
+    "errorDisablingAllDnsRewriteRules": "Error al deshabilitar todas las reglas de reescritura DNS",
+    "enablingDnsRewriteRule": "Habilitando reglas de reescritura DNS...",
+    "disablingDnsRewriteRule": "Deshabilitando reglas de reescritura DNS..."
 }

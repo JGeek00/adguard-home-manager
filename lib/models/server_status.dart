@@ -18,6 +18,7 @@ class ServerStatus {
   bool? safeSeachBing;
   bool? safeSearchGoogle;
   bool? safeSearchDuckduckgo;
+  bool? safeSearchEcosia;
   bool? safeSearchPixabay;
   bool? safeSearchYandex;
   bool? safeSearchYoutube;
@@ -38,6 +39,7 @@ class ServerStatus {
     required this.safeSeachBing,
     required this.safeSearchGoogle,
     required this.safeSearchDuckduckgo,
+    required this.safeSearchEcosia,
     required this.safeSearchPixabay,
     required this.safeSearchYandex,
     required this.safeSearchYoutube,
@@ -62,6 +64,7 @@ class ServerStatus {
     serverVersion: json['status']['version'],
     safeSeachBing: json['safeSearch']['bing'],
     safeSearchDuckduckgo: json['safeSearch']['duckduckgo'],
+    safeSearchEcosia: json['safeSearch']['ecosia'],
     safeSearchGoogle: json['safeSearch']['google'],
     safeSearchPixabay: json['safeSearch']['pixabay'],
     safeSearchYandex: json['safeSearch']['yandex'],

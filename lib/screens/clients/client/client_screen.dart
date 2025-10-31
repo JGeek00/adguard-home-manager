@@ -77,6 +77,7 @@ class _ClientScreenState extends State<ClientScreen> {
     enabled: false,
     bing: false,
     duckduckgo: false,
+    ecosia: false,
     google: false,
     pixabay: false,
     yandex: false,
