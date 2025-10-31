@@ -68,7 +68,7 @@ String? validateAddress({
   required String? value
 }) {
   if (value != null && value != '') {
-    if (Regexps.ipv4Address.hasMatch(value) == true || Regexps.domain.hasMatch(value) == true) {
+    if (Regexps.ipv4Address.hasMatch(value) == true || Regexps.ipv6Address.hasMatch(value) == true  || Regexps.domain.hasMatch(value) == true) {
       return null;
     }
     else {
