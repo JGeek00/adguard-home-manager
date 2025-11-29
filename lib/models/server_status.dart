@@ -62,13 +62,13 @@ class ServerStatus {
     safeBrowsingEnabled: json['safeBrowsingEnabled']['enabled'],
     parentalControlEnabled: json['parentalControlEnabled']['enabled'],
     serverVersion: json['status']['version'],
-    safeSeachBing: json['safeSearch']['bing'],
-    safeSearchDuckduckgo: json['safeSearch']['duckduckgo'],
-    safeSearchEcosia: json['safeSearch']['ecosia'],
-    safeSearchGoogle: json['safeSearch']['google'],
-    safeSearchPixabay: json['safeSearch']['pixabay'],
-    safeSearchYandex: json['safeSearch']['yandex'],
-    safeSearchYoutube: json['safeSearch']['youtube'],
+    safeSeachBing: json['safeSearch']['bing'] ?? false,
+    safeSearchDuckduckgo: json['safeSearch']['duckduckgo'] ?? false,
+    safeSearchEcosia: json['safeSearch']['ecosia'] ?? false,
+    safeSearchGoogle: json['safeSearch']['google'] ?? false ,
+    safeSearchPixabay: json['safeSearch']['pixabay'] ?? false,
+    safeSearchYandex: json['safeSearch']['yandex'] ?? false,
+    safeSearchYoutube: json['safeSearch']['youtube'] ?? false,
     dhcpAvailable: json['status']['dhcp_available'] ?? false
   );
 }

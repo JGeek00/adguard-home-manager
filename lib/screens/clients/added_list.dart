@@ -76,12 +76,16 @@ class _AddedListState extends State<AddedList> {
 
     void confirmEditClient(Client client) async {
       ProcessModal processModal = ProcessModal();
-      processModal.open(AppLocalizations.of(context)!.savingChanges);
+      if (context.mounted) {
+        processModal.open(AppLocalizations.of(context)!.savingChanges);
+      }
       
       final result = await clientsProvider.editClient(client);
 
-      processModal.close();
+      if (!context.mounted) return;
 
+      processModal.close();
+      
       if (result == true) {
         showSnackbar(
           appConfigProvider: appConfigProvider,

@@ -54,6 +54,10 @@ class RewriteRulesProvider with ChangeNotifier {
     );
 
     if (result.successful == true) {
+      if (rewriteRules == null) {
+        return false;
+      }
+
       List<RewriteRules> data = rewriteRules!;
       data.add(rule);
       setRewriteRulesData(data);

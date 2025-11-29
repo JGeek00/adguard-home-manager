@@ -218,7 +218,7 @@ class _CustomRulesListState extends State<CustomRulesList> {
       loadStatus: widget.loadStatus, 
       onRefresh: () async {
         final result = await filteringProvider.fetchFilters();
-        if (result == false) {
+        if (result == false && context.mounted) {
           showSnackbar(
             appConfigProvider: appConfigProvider,
             label: AppLocalizations.of(context)!.errorLoadFilters, 

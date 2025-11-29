@@ -20,14 +20,14 @@ class SafeSearch {
   });
 
   factory SafeSearch.fromJson(Map<String, dynamic> json) => SafeSearch(
-    enabled: json["enabled"],
-    bing: json["bing"],
-    duckduckgo: json["duckduckgo"],
-    ecosia: json["ecosia"],
-    google: json["google"],
-    pixabay: json["pixabay"],
-    yandex: json["yandex"],
-    youtube: json["youtube"],
+    enabled: json["enabled"] ?? false,
+    bing: json["bing"] ?? false,
+    duckduckgo: json["duckduckgo"] ?? false,
+    ecosia: json["ecosia"] ?? false,
+    google: json["google"] ?? false,
+    pixabay: json["pixabay"] ?? false,
+    yandex: json["yandex"] ?? false,
+    youtube: json["youtube"] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
