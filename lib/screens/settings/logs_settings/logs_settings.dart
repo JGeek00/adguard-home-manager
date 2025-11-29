@@ -41,7 +41,7 @@ class _LogsSettingsState extends State<LogsSettings> {
   String? retentionTime;
   List<DomainListItemController> _ignoredDomainsControllers = [];
   final _customTimeController = TextEditingController();
-  String? _customTimeError = null;
+  String? _customTimeError;
 
   List<String> retentionItems = [
     "custom",

@@ -13,7 +13,7 @@ enum AccessSettingsList { allowed, disallowed, domains }
 class ClientsProvider with ChangeNotifier {
   ServersProvider? _serversProvider;
 
-  update(ServersProvider? servers, StatusProvider? status) {
+  void update(ServersProvider? servers, StatusProvider? status) {
     _serversProvider = servers;
   }
 

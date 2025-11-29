@@ -16,7 +16,7 @@ import 'package:adguard_home_manager/functions/time_server_disabled.dart';
 class StatusProvider with ChangeNotifier {
   ServersProvider? _serversProvider;
 
-  update(ServersProvider? provider) {
+  void update(ServersProvider? provider) {
     _serversProvider = provider;
   }
 

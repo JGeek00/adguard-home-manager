@@ -815,5 +815,7 @@
     "errorEnablingAllDnsRewriteRules": "Error al habilitar todas las reglas de reescritura DNS",
     "errorDisablingAllDnsRewriteRules": "Error al deshabilitar todas las reglas de reescritura DNS",
     "enablingDnsRewriteRule": "Habilitando reglas de reescritura DNS...",
-    "disablingDnsRewriteRule": "Deshabilitando reglas de reescritura DNS..."
+    "disablingDnsRewriteRule": "Deshabilitando reglas de reescritura DNS...",
+    "selectIdToFilter": "Selecciona un ID para filtrar",
+    "clientIds": "IDs de cliente"
 }

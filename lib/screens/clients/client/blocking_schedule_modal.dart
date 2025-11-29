@@ -148,7 +148,7 @@ class _BlockingScheduleModalState extends State<BlockingScheduleModal> {
                               ),
                             ),
                           )).toList(),
-                          value: _timezone,
+                          initialValue: _timezone,
                           onChanged: (v) => setState(() => _timezone = v),
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(

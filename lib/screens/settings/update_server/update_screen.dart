@@ -63,7 +63,9 @@ class _UpdateScreenState extends State<UpdateScreen> {
         serversProvider.updatingServer == false &&
         serversProvider.updateAvailable.data!.canAutoupdate != null && 
         serversProvider.updateAvailable.data!.canAutoupdate == true
-      )) return;
+      )) {
+        return;
+      }
       if (_isScrolled == newValue) return;
       setState(() => _isScrolled = newValue);
     });

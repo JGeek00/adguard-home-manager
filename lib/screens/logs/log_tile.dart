@@ -495,7 +495,7 @@ class LogTile extends StatelessWidget {
               icon: Icons.copy_rounded, 
               action: () => copyToClipboard(
                 value: log.question.name!, 
-                successMessage: AppLocalizations.of(context)!.copiedClipboard
+                successMessage: AppLocalizations.of(context)?.copiedClipboard ?? "Success"
               )
             )
           ],

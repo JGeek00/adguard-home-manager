@@ -103,12 +103,12 @@ class ActiveClientTile extends StatelessWidget {
         options: (_) => [
           MenuOption(
             icon: Icons.copy_rounded,
-            title: AppLocalizations.of(context)!.copyClipboard, 
+            title: AppLocalizations.of(context)?.copyClipboard ?? "Copy to clipboard", 
             action: () => copyToClipboard(
               value: client.name != '' 
                 ? client.name!
                 : client.ip,
-              successMessage: AppLocalizations.of(context)!.copiedClipboard,
+              successMessage: AppLocalizations.of(context)?.copiedClipboard ?? "Success",
             )
           )
         ],

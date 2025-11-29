@@ -2513,6 +2513,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get disablingDnsRewriteRule => 'Disabling DNS rewrite rules...';
+
+  @override
+  String get selectIdToFilter => 'Select an ID to filter';
+
+  @override
+  String get clientIds => 'Client IDs';
 }
 
 /// The translations for Chinese, as used in China (`zh_CN`).

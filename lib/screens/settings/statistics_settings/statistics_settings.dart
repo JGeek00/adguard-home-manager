@@ -205,7 +205,7 @@ class _StatisticsSettingsState extends State<StatisticsSettings> {
                         value: item.value,
                         child: Text(dropdownItemTranslation[item.key]),
                       )).toList(),
-                      value: _retentionTime,
+                      initialValue: _retentionTime,
                       onChanged: (value) => setState(() {
                         if (value != null && value != "custom") {
                           _customTimeError = null;

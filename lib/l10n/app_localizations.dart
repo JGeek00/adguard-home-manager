@@ -5008,6 +5008,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disabling DNS rewrite rules...'**
   String get disablingDnsRewriteRule;
+
+  /// No description provided for @selectIdToFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an ID to filter'**
+  String get selectIdToFilter;
+
+  /// No description provided for @clientIds.
+  ///
+  /// In en, this message translates to:
+  /// **'Client IDs'**
+  String get clientIds;
 }
 
 class _AppLocalizationsDelegate

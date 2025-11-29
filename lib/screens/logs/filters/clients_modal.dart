@@ -1,13 +1,12 @@
 import 'dart:io';
 
+import 'package:adguard_home_manager/screens/logs/filters/added_client_id_selection_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:adguard_home_manager/l10n/app_localizations.dart';
 
-
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
-import 'package:adguard_home_manager/functions/is_ip.dart';
 import 'package:adguard_home_manager/widgets/list_bottom_sheet.dart';
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
@@ -16,14 +15,12 @@ import 'package:adguard_home_manager/providers/clients_provider.dart';
 import 'package:adguard_home_manager/providers/logs_provider.dart';
 
 class _ClientLog {
-  final String ip;
   final String? name;
-  final List<String>? ids;
+  final List<String> ids;
 
   const _ClientLog({
-    required this.ip,
     required this.name,
-    this.ids,
+    required this.ids,
   });
 }
 
@@ -58,8 +55,8 @@ class _ClientsModalState extends State<ClientsModal> {
         // ---- //
       }
       return _ClientLog(
-        ip: e.ip, 
-        name: name
+        name: name,
+        ids: [e.ip]
       );
     }).toList();
 
@@ -82,13 +79,10 @@ class _ClientsModalState extends State<ClientsModal> {
             // ---- //
           }
           return _ClientLog(
-            ip: e.ids[0], 
             name: name,
             ids: e.ids
           );
-        }).where(
-          (c) => c.ip.contains(value.toLowerCase()) || (c.name != null && c.name!.toLowerCase().contains(value.toLowerCase()))
-        ).toList();
+        }).toList();
         setState(() => _filteredClients = filtered);
       }
       else {
@@ -100,12 +94,10 @@ class _ClientsModalState extends State<ClientsModal> {
             // ---- //
           }
           return _ClientLog(
-            ip: e.ip, 
-            name: name
+            name: name,
+            ids: [e.ip]
           );
-        }).where(
-          (c) => c.ip.contains(value.toLowerCase()) || (c.name != null && c.name!.toLowerCase().contains(value.toLowerCase()))
-        ).toList();
+        }).toList();
         setState(() => _filteredClients = filtered);
       }
     }
@@ -114,10 +106,8 @@ class _ClientsModalState extends State<ClientsModal> {
       onSearch(value: _searchController.text, selectedList: list);
     }
 
-    void searchAddedClient(_ClientLog client) {
-      final ips = client.ids?.where((e) => isIpAddress(e) == true).toList();
-      if (ips == null || ips.isEmpty) return;
-      logsProvider.setSearchText(ips[0]);
+    void searchAddedClient(String id) {
+      logsProvider.setSearchText(id);
       logsProvider.filterLogs();
       Navigator.of(context).pop();
       Navigator.pop(context);
@@ -175,59 +165,14 @@ class _ClientsModalState extends State<ClientsModal> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: SegmentedButtonSlide(
-                        entries: [
-                          SegmentedButtonSlideEntry(icon: Icons.devices, label: AppLocalizations.of(context)!.activeClients),
-                          SegmentedButtonSlideEntry(icon: Icons.add_rounded, label: AppLocalizations.of(context)!.added),
-                        ], 
-                        selectedEntry: _selectedList, 
-                        onChange: (v) {
-                          onListChange(v);
-                          setState(() => _selectedList = v);
-                        }, 
-                        colors: SegmentedButtonSlideColors(
-                          barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
-                          backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
-                        ),
-                        selectedTextStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        unselectedTextStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                        hoverTextStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                    ListView.builder(
-                      primary: false,
-                      shrinkWrap: true,
-                      itemCount: _filteredClients.length,
-                      itemBuilder: (context, index) => _ListItem(
-                        title: _filteredClients[index].ip, 
-                        subtitle: _selectedList == 0 ? _filteredClients[index].name : _filteredClients[index].ids?.join(", "),
-                        checkboxActive: logsProvider.selectedClients.contains(_filteredClients[index].ip),
-                        isAddedClient: _selectedList == 0,
-                        onSearchAddedClient: () => searchAddedClient(_filteredClients[index]),
-                        onChanged: (isSelected) {
-                          if (isSelected == true) {
-                            logsProvider.setSelectedClients([
-                              ...logsProvider.selectedClients,
-                              _filteredClients[index].ip
-                            ]);
-                          }
-                          else {
-                            logsProvider.setSelectedClients(
-                              logsProvider.selectedClients.where(
-                                (item) => item != _filteredClients[index].ip
-                              ).toList()
-                            );
-                          }
-                        }
-                      )
+                    _Content(
+                      selectedList: _selectedList, 
+                      filteredClients: _filteredClients, 
+                      onListChange: (v) {
+                        onListChange(v);
+                        setState(() => _selectedList = v);
+                      }, 
+                      searchAddedClient: searchAddedClient
                     ),
                   ],
                 )
@@ -263,70 +208,101 @@ class _ClientsModalState extends State<ClientsModal> {
                     const SizedBox(width: 16),
                     Flexible(
                       child: Text(AppLocalizations.of(context)!.selectClientsFiltersInfo)
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: SegmentedButtonSlide(
-                entries: [
-                  SegmentedButtonSlideEntry(icon: Icons.devices, label: AppLocalizations.of(context)!.activeClients),
-                  SegmentedButtonSlideEntry(icon: Icons.add_rounded, label: AppLocalizations.of(context)!.added),
-                ], 
-                selectedEntry: _selectedList, 
-                onChange: (v) {
-                  onListChange(v);
-                  setState(() => _selectedList = v);
-                }, 
-                colors: SegmentedButtonSlideColors(
-                  barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
-                  backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
-                ),
-                selectedTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  fontWeight: FontWeight.w700
-                ),
-                unselectedTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                hoverTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              primary: false,
-              itemCount: _filteredClients.length,
-              itemBuilder: (context, index) => _ListItem(
-                title: _selectedList == 0 ? _filteredClients[index].ip : _filteredClients[index].name ?? "", 
-                subtitle: _selectedList == 0 ? _filteredClients[index].name : _filteredClients[index].ids?.join(", "),
-                checkboxActive: logsProvider.selectedClients.contains(_filteredClients[index].ip),
-                isAddedClient: _selectedList == 1,
-                onSearchAddedClient: _filteredClients[index].ids != null && _filteredClients[index].ids!.where((e) => isIpAddress(e) == true).isNotEmpty ? () => searchAddedClient(_filteredClients[index]) : null,
-                onChanged: (isSelected) {
-                  if (isSelected == true) {
-                    logsProvider.setSelectedClients([
-                      ...logsProvider.selectedClients,
-                      _filteredClients[index].ip
-                    ]);
-                  }
-                  else {
-                    logsProvider.setSelectedClients(
-                      logsProvider.selectedClients.where(
-                        (item) => item != _filteredClients[index].ip
-                      ).toList()
-                    );
-                  }
-                }
-              )
+            _Content(
+              selectedList: _selectedList, 
+              filteredClients: _filteredClients, 
+              onListChange: (v) {
+                onListChange(v);
+                setState(() => _selectedList = v);
+              }, 
+              searchAddedClient: searchAddedClient
             ),
           ]
         ),
       );
     }
+  }
+}
+
+class _Content extends StatelessWidget {
+  final int selectedList;
+  final List<_ClientLog> filteredClients;
+  final void Function(int) onListChange;
+  final void Function(String id) searchAddedClient;
+
+  const _Content({
+    required this.selectedList,
+    required this.filteredClients,
+    required this.onListChange,   
+    required this.searchAddedClient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final logsProvider = Provider.of<LogsProvider>(context);
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SegmentedButtonSlide(
+            entries: [
+              SegmentedButtonSlideEntry(icon: Icons.devices, label: AppLocalizations.of(context)!.activeClients),
+              SegmentedButtonSlideEntry(icon: Icons.add_rounded, label: AppLocalizations.of(context)!.added),
+            ], 
+            selectedEntry: selectedList, 
+            onChange: onListChange,
+            colors: SegmentedButtonSlideColors(
+              barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
+              backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
+            ),
+            selectedTextStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.w700
+            ),
+            unselectedTextStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            hoverTextStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          primary: false,
+          itemCount: filteredClients.length,
+          itemBuilder: (context, index) => _ListItem(
+            title: selectedList == 0 ? filteredClients[index].ids[0] : filteredClients[index].name ?? "", 
+            subtitle: selectedList == 0 ? filteredClients[index].name : filteredClients[index].ids.join(", "),
+            checkboxActive: filteredClients[index].ids.any((id) => logsProvider.selectedClients.contains(id)),
+            ids: filteredClients[index].ids,
+            isAddedClient: selectedList == 1,
+            onSearchAddedClient: searchAddedClient,
+            onChanged: (isSelected) {
+              if (isSelected == true) {
+                logsProvider.setSelectedClients([
+                  ...logsProvider.selectedClients,
+                  filteredClients[index].ids[0]
+                ]);
+              }
+              else {
+                logsProvider.setSelectedClients(
+                  logsProvider.selectedClients.where(
+                    (item) => !filteredClients[index].ids.contains(item)
+                  ).toList()
+                );
+              }
+            }
+          )
+        ),
+      ],
+    );
   }
 }
 
@@ -378,26 +354,42 @@ class _ListItem extends StatelessWidget {
   final String? subtitle;
   final bool checkboxActive;
   final void Function(bool) onChanged;
+  final List<String> ids;
   final bool isAddedClient;
-  final void Function()? onSearchAddedClient;
+  final void Function(String id)? onSearchAddedClient;
 
   const _ListItem({
     required this.title,
     this.subtitle,
     required this.checkboxActive,
     required this.onChanged,
+    required this.ids,
     required this.isAddedClient,
     required this.onSearchAddedClient,
   });
 
   @override
   Widget build(BuildContext context) {
+    void showIdSelectionModal() {
+      showDialog(
+        context: context, 
+        builder: (context) => AddedClientIdSelectionModal(
+          clientIds: ids,
+          onConfirm: (id) {
+            if (onSearchAddedClient != null) {
+              onSearchAddedClient!(id);
+            }
+          },
+        )
+      );
+    } 
+
     if (isAddedClient == true) {
       return CustomListTile(
         title: title,
         subtitle: subtitle,
         trailing: TextButton(
-          onPressed: onSearchAddedClient, 
+          onPressed: showIdSelectionModal, 
           child: Text(AppLocalizations.of(context)!.select)
         ),
       );

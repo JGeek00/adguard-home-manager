@@ -8,7 +8,7 @@ import 'package:adguard_home_manager/models/dns_info.dart';
 class DnsProvider with ChangeNotifier {
   ServersProvider? _serversProvider;
 
-  update(ServersProvider? provider) {
+  void update(ServersProvider? provider) {
     _serversProvider = provider;
   }
 

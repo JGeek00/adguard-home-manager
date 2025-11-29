@@ -30,9 +30,9 @@ class _UpstreamDnsScreenState extends State<UpstreamDnsScreen> {
   bool validValues = false;
 
   final upstreamTimeoutController = TextEditingController();
-  String? upstreamTimeoutError = null;
+  String? upstreamTimeoutError;
 
-  checkValidValues() {
+  void checkValidValues() {
     if (
       dnsServers.isNotEmpty &&
       dnsServers.every((element) => element['controller'] != null ? element['controller.text'] != '' : true)

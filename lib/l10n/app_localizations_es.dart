@@ -2657,4 +2657,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get disablingDnsRewriteRule =>
       'Deshabilitando reglas de reescritura DNS...';
+
+  @override
+  String get selectIdToFilter => 'Selecciona un ID para filtrar';
+
+  @override
+  String get clientIds => 'IDs de cliente';
 }
