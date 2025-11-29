@@ -8,7 +8,7 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 class LiveLogsProvider with ChangeNotifier {
   ServersProvider? _serversProvider;
 
-  update(ServersProvider? provider) {
+  void update(ServersProvider? provider) {
     _serversProvider = provider;
   }
 

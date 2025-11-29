@@ -99,7 +99,7 @@ print(retentionTime);
               value: item.value,
               child: Text(dropdownItemTranslation[item.key]),
             )).toList(),
-            value: retentionTime,
+            initialValue: retentionTime,
             onChanged: (value) => updateRetentionTime(value.toString()),
             decoration: InputDecoration(
               border: const OutlineInputBorder(

@@ -12,7 +12,7 @@ class FilteringProvider with ChangeNotifier {
   StatusProvider? _statusProvider;
   ServersProvider? _serversProvider;
 
-  update(ServersProvider? servers, StatusProvider? status) {
+  void update(ServersProvider? servers, StatusProvider? status) {
     _serversProvider = servers;
     _statusProvider = status;
   }
