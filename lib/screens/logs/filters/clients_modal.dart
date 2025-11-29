@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:adguard_home_manager/screens/logs/filters/added_client_id_selection_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:segmented_button_slide/segmented_button_slide.dart';
 import 'package:adguard_home_manager/l10n/app_localizations.dart';
-
 
 import 'package:adguard_home_manager/widgets/custom_checkbox_list_tile.dart';
 import 'package:adguard_home_manager/widgets/list_bottom_sheet.dart';
@@ -106,8 +106,8 @@ class _ClientsModalState extends State<ClientsModal> {
       onSearch(value: _searchController.text, selectedList: list);
     }
 
-    void searchAddedClient(_ClientLog client) {
-      logsProvider.setSearchText(client.ids[0]);
+    void searchAddedClient(String id) {
+      logsProvider.setSearchText(id);
       logsProvider.filterLogs();
       Navigator.of(context).pop();
       Navigator.pop(context);
@@ -233,7 +233,7 @@ class _Content extends StatelessWidget {
   final int selectedList;
   final List<_ClientLog> filteredClients;
   final void Function(int) onListChange;
-  final void Function(_ClientLog) searchAddedClient;
+  final void Function(String id) searchAddedClient;
 
   const _Content({
     required this.selectedList,
@@ -281,8 +281,9 @@ class _Content extends StatelessWidget {
             title: selectedList == 0 ? filteredClients[index].ids[0] : filteredClients[index].name ?? "", 
             subtitle: selectedList == 0 ? filteredClients[index].name : filteredClients[index].ids.join(", "),
             checkboxActive: filteredClients[index].ids.any((id) => logsProvider.selectedClients.contains(id)),
+            ids: filteredClients[index].ids,
             isAddedClient: selectedList == 1,
-            onSearchAddedClient: () => searchAddedClient(filteredClients[index]),
+            onSearchAddedClient: searchAddedClient,
             onChanged: (isSelected) {
               if (isSelected == true) {
                 logsProvider.setSelectedClients([
@@ -353,26 +354,42 @@ class _ListItem extends StatelessWidget {
   final String? subtitle;
   final bool checkboxActive;
   final void Function(bool) onChanged;
+  final List<String> ids;
   final bool isAddedClient;
-  final void Function()? onSearchAddedClient;
+  final void Function(String id)? onSearchAddedClient;
 
   const _ListItem({
     required this.title,
     this.subtitle,
     required this.checkboxActive,
     required this.onChanged,
+    required this.ids,
     required this.isAddedClient,
     required this.onSearchAddedClient,
   });
 
   @override
   Widget build(BuildContext context) {
+    void showIdSelectionModal() {
+      showDialog(
+        context: context, 
+        builder: (context) => AddedClientIdSelectionModal(
+          clientIds: ids,
+          onConfirm: (id) {
+            if (onSearchAddedClient != null) {
+              onSearchAddedClient!(id);
+            }
+          },
+        )
+      );
+    } 
+
     if (isAddedClient == true) {
       return CustomListTile(
         title: title,
         subtitle: subtitle,
         trailing: TextButton(
-          onPressed: onSearchAddedClient, 
+          onPressed: showIdSelectionModal, 
           child: Text(AppLocalizations.of(context)!.select)
         ),
       );

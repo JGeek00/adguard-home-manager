@@ -815,5 +815,7 @@
     "errorEnablingAllDnsRewriteRules": "Error enabling all DNS rewrite rules",
     "errorDisablingAllDnsRewriteRules": "Error disabling all DNS rewrite rules",
     "enablingDnsRewriteRule": "Enabling DNS rewrite rules...",
-    "disablingDnsRewriteRule": "Disabling DNS rewrite rules..."
+    "disablingDnsRewriteRule": "Disabling DNS rewrite rules...",
+    "selectIdToFilter": "Select an ID to filter",
+    "clientIds": "Client IDs"
 }
