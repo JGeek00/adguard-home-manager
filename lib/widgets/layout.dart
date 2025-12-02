@@ -61,7 +61,7 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
     final serversProvider = Provider.of<ServersProvider>(context);
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    final screens = serversProvider.selectedServer != null && serversProvider.apiClient2 != null
+    final screens = serversProvider.selectedServer != null
       ? screensServerConnected
       : screensSelectServer;
 
@@ -152,7 +152,7 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
       );
     }
     else {
-      final screens = serversProvider.selectedServer != null && serversProvider.apiClient2 != null
+      final screens = serversProvider.selectedServer != null
         ? screensServerConnected 
         : screensSelectServer;
 
@@ -172,7 +172,7 @@ class _LayoutState extends State<Layout> with WidgetsBindingObserver {
               : screens[0].child,
           ),
           bottomNavigationBar: NavigationBar(
-            selectedIndex: (serversProvider.selectedServer == null || serversProvider.apiClient2 == null) && appConfigProvider.selectedScreen > 1
+            selectedIndex: (serversProvider.selectedServer == null) && appConfigProvider.selectedScreen > 1
               ? 0
               : appConfigProvider.selectedScreen,
             onDestinationSelected: (s) => _goBranch(s),

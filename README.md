@@ -1,122 +1,102 @@
 <h1 align="center">
-  <img src="https://github.com/JGeek00/adguard-home-manager/raw/master/assets/other/banner.png" />
+  AdGuard Private DNS Client
 </h1>
 
 <h5 align="center">
   <b>
-    AdGuard Home Manager is an 
-    <a href="https://adguard.com/es/adguard-home/overview.html" target="_blank" rel="noopener noreferrer">
-      AdGuard Home
-    </a> 
-    unofficial client developed with Flutter.</b>
+    Cliente no oficial para <a href="https://adguard-dns.io/es/" target="_blank" rel="noopener noreferrer">AdGuard Private DNS</a> desarrollado con Flutter.
+  </b>
 </h5>
 
 <p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.jgeek00.adguard_home_manager" target="_blank" rel="noopener noreferrer">
-    <img src="/assets/other/get_google_play.png" width="300px">
-  </a>
-  <a href="https://github.com/JGeek00/adguard-home-manager/releases" target="_blank" rel="noopener noreferrer">
-    <img src="/assets/other/get-github.png" width="300px">
-  </a>
+  <img src="https://via.placeholder.com/300x100?text=Disponible+pronto+en+Google+Play" width="300px">
+  <img src="https://via.placeholder.com/300x100?text=Descargar+APK" width="300px">
 </p>
 
 <br>
 <div>
   <div align="center">
-    <b>ℹ️ RELEVANT INFORMATION ℹ️</b>
+    <b>ℹ️ INFORMACIÓN IMPORTANTE ℹ️</b>
   </div>
   <br>
-  It's recommended to increase the number of <code>auth_attempts</code> in <code>AdGuardHome.yaml</code> from the default value of 5 to 15.
+  Esta aplicación es un <b>fork</b> de <a href="https://github.com/JGeek00/adguard-home-manager">AdGuard Home Manager</a>, transformada para funcionar exclusivamente con la API de <b>AdGuard Private DNS</b>. No es compatible con servidores AdGuard Home autoalojados.
 </div>
 <br>
 
-## Main features
-<p>▶ Manage your AdGuard Home server on an easy way.</p>
-<p>▶ Supports HTTP and HTTPS connections.</p>
-<p>▶ Enable and disable the different protections with only one switch.</p>
-<p>▶ Add multiple servers to the app, and manage all of them from here.</p>
-<p>▶ See and filter the query logs.</p>
-<p>▶ Manage your filtering lists.</p>
-<p>▶ See the clients list and create a custom configuration for a client.</p>
-<p>▶ Configure the allowed devices, DHCP, DNS or rewrites among others.</p>
-<p>▶ Material You interface with dynamic theming (only Android 12+).</p>
-<p>▶ Full desktop support with builds for macOS, Linux and Windows.</p>
-<p>▶ Responsive UI adapted for landscape displays.</p>
+## Características principales
+<p>▶ Gestiona tu cuenta de AdGuard Private DNS de forma sencilla.</p>
+<p>▶ Soporte para autenticación mediante API Key.</p>
+<p>▶ Panel de control con estadísticas de uso y límites de la cuenta.</p>
+<p>▶ Gestión de Perfiles (Servidores DNS).</p>
+<p>▶ Gestión de Dispositivos (Crear, Editar, Eliminar).</p>
+<p>▶ Visualización de Registros de Consultas (Query Logs).</p>
+<p>▶ Gestión de Listas de Filtros.</p>
+<p>▶ Interfaz Material You con temas dinámicos (solo Android 12+).</p>
+<p>▶ Soporte completo de escritorio para macOS, Linux y Windows.</p>
+<p>▶ UI responsiva adaptada a pantallas horizontales.</p>
 
-## Privacy policy
-Check the privacy policy [here](https://github.com/JGeek00/adguard-home-manager/wiki/Privacy-policy).
+## Política de privacidad
+Consulta la política de privacidad [aquí](PRIVACY_POLICY.md).
 
-## Disclaimer
-This is an unofficial application. The AdGuard Home team and the development of the AdGuard Home software is not related in any way with this application.
+## Descargo de responsabilidad
+Esta es una aplicación no oficial. El equipo de AdGuard y el desarrollo del software AdGuard DNS no están relacionados de ninguna manera con esta aplicación.
 
-## Recommended configuration and lists
-On [this repository](https://github.com/juanico10/Pihole_list) you can find a recommended configuration for AdGuard Home and some lists. Thanks to [juanico10](https://github.com/juanico10).
-
-## Donations
-If you like the project and you want to contribute with the development, you can [become a sponsor on GitHub](https://github.com/sponsors/JGeek00), or you can donate using PayPal.
-
-<div align="center">
-  <a href="https://www.paypal.com/donate/?hosted_button_id=T63UK6AVL3MG8">
-    <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" height="100" />
-  </a>
-</div>
-
-## Generate production build
+## Generar versión de producción
 <ul>
   <li>
-    <b>Prerequisites</b>
+    <b>Prerrequisitos</b>
     <ol>
-      <li>Open <code>pubspec.yaml</code> and change the version name and the version number.</li>
-      <li>Run <code>flutter clean</code>.</li>
-      <li>Run <code>flutter pub get</code>.</li>
+      <li>Abre <code>pubspec.yaml</code> y cambia el nombre de la versión y el número de versión.</li>
+      <li>Ejecuta <code>flutter clean</code>.</li>
+      <li>Ejecuta <code>flutter pub get</code>.</li>
     </ol>
   </li>
   <li>
     <b>Android</b>
     <ol>  
-      <li>Make sure you have your <code>key.properties</code> file at <code>android/</code>, with all the required values of your signing key correctly set up.</li>
-      <li>Make sure you have your keystore file at <code>android/app</code>.</li>
-      <li>Run <code>flutter build apk --release</code> to compile the APK.</li>
-      <li>The .apk package is located at <code>build/app/outputs/flutter-apk/app-release.apk</code>.</li>
+      <li>Asegúrate de tener tu archivo <code>key.properties</code> en <code>android/</code>, con todos los valores requeridos de tu clave de firma configurados correctamente.</li>
+      <li>Asegúrate de tener tu archivo keystore en <code>android/app</code>.</li>
+      <li>Ejecuta <code>flutter build apk --release</code> para compilar el APK.</li>
+      <li>El paquete .apk se encuentra en <code>build/app/outputs/flutter-apk/app-release.apk</code>.</li>
     </ol>
   </li>
   <li>
     <b>macOS</b>
     <ol>  
-      <li>Run <code>flutter build macos --release</code> to compile the production build.</li>
-      <li>The .app package is located at <code>build/macos/Build/Products/Release/AdGuard Home Manager.app</code>.</li>
+      <li>Ejecuta <code>flutter build macos --release</code> para compilar la versión de producción.</li>
+      <li>El paquete .app se encuentra en <code>build/macos/Build/Products/Release/AdGuard Private DNS Client.app</code>.</li>
     </ol>
   </li>
   <li>
     <b>Linux</b>
     <ul>
-      <b>Prerequisites</b>
+      <b>Prerrequisitos</b>
       <ol>
-        <li>Install rps by running <code>dart pub global activate rps --version 0.7.0-dev.6</code></li>
+        <li>Instala rps ejecutando <code>dart pub global activate rps --version 0.7.0-dev.6</code></li>
       </ol>
-      <b>Build</b>
+      <b>Compilación</b>
       <ol>
-        <li>Open <code>debian.yaml</code> file inside debian/ and update the version number</li>
-        <li>run <code>rps build linux</code></li>
-        <li>The .tar.gz is at <code>build/linux/x64/release/bundle</code></li>
-        <li>The .deb package is at <code>build/linux/x64/release/debian/</code></li>
+        <li>Abre el archivo <code>debian.yaml</code> dentro de debian/ y actualiza el número de versión</li>
+        <li>Ejecuta <code>rps build linux</code></li>
+        <li>El .tar.gz está en <code>build/linux/x64/release/bundle</code></li>
+        <li>El paquete .deb está en <code>build/linux/x64/release/debian/</code></li>
       </ol>
     </ul>
   </li>
   <li>
     <b>Windows</b>
     <ol>
-      <li>Run <code>flutter build windows --release</code>.</li>
-      <li>Open Inno Setup Compiler application and load the script</li>
-      <li>The script is located at <code>windows/innosetup_installer_builder.iss</code></li>
-      <li>Update the version number and save the changes</li>
-      <li>Click on the Compile button</li>
-      <li>The installer will be generated at <code>build/windows/aghm_installer.exe</code>.</li>
+      <li>Ejecuta <code>flutter build windows --release</code>.</li>
+      <li>Abre la aplicación Inno Setup Compiler y carga el script</li>
+      <li>El script se encuentra en <code>windows/innosetup_installer_builder.iss</code></li>
+      <li>Actualiza el número de versión y guarda los cambios</li>
+      <li>Haz clic en el botón Compilar</li>
+      <li>El instalador se generará en <code>build/windows/aghm_installer.exe</code>.</li>
     </ol>
   </li>
 </ul>
 
-## Third party libraries
+## Bibliotecas de terceros
 - [provider](https://pub.dev/packages/provider)
 - [sqflite](https://pub.dev/packages/sqflite)
 - [http](https://pub.dev/packages/http)
@@ -139,7 +119,7 @@ If you like the project and you want to contribute with the development, you can
 - [sqlite3 flutter libs](https://pub.dev/packages/sqlite3_flutter_libs)
 - [sqflite common ffi](https://pub.dev/packages/sqflite_common_ffi)
 - [window size](https://github.com/google/flutter-desktop-embedding)
-- [flutter split view](https://github.com/JGeek00/flutter_split_view) (forked from [here](https://pub.dev/packages/flutter_split_view))
+- [flutter split view](https://github.com/JGeek00/flutter_split_view) (fork de [aquí](https://pub.dev/packages/flutter_split_view))
 - [async](https://pub.dev/packages/async)
 - [sentry flutter](https://pub.dev/packages/sentry_flutter)
 - [flutter dotenv](https://pub.dev/packages/flutter_dotenv)
@@ -154,4 +134,4 @@ If you like the project and you want to contribute with the development, you can
 
 <br>
 
-##### Created by JGeek00
+##### Basado en el trabajo de JGeek00

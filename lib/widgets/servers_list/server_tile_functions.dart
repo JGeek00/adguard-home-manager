@@ -2,21 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:adguard_home_manager/l10n/app_localizations.dart';
 
-
-import 'package:adguard_home_manager/widgets/add_server/unsupported_version_modal.dart';
 import 'package:adguard_home_manager/widgets/servers_list/delete_modal.dart';
 import 'package:adguard_home_manager/widgets/add_server/add_server_functions.dart';
 
 import 'package:adguard_home_manager/config/globals.dart';
-import 'package:adguard_home_manager/config/minimum_server_version.dart';
-import 'package:adguard_home_manager/functions/compare_versions.dart';
-import 'package:adguard_home_manager/constants/enums.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
-import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
-import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/services/api_client.dart';
+import 'package:adguard_home_manager/providers/private_dns_provider.dart';
 import 'package:adguard_home_manager/services/auth.dart';
 import 'package:adguard_home_manager/classes/process_modal.dart';
 import 'package:adguard_home_manager/models/server.dart';
@@ -80,55 +73,16 @@ void connectToServer({
   final ProcessModal process = ProcessModal();
   process.open(AppLocalizations.of(context)!.connecting);
       
-  final result = server.runningOnHa == true 
-    ? await ServerAuth.loginHA(server)
-    : await ServerAuth.login(server);
+  final result = await ServerAuth.validateApiKey(server.authToken ?? "");
         
   if (result == AuthStatus.success && context.mounted) {
     final serversProvider = Provider.of<ServersProvider>(context, listen: false);
-    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
+    final privateDnsProvider = Provider.of<PrivateDnsProvider>(context, listen: false);
     
-    final ApiClientV2 apiClient2 = ApiClientV2(server: server);
-    serversProvider.setApiClient2(apiClient2);
-         
-    statusProvider.setServerStatusLoad(LoadStatus.loading);
-    final serverStatus = await apiClient2.getServerStatus();
-    if (serverStatus.successful == true) {
-      final status = serverStatus.content as ServerStatus;
+    serversProvider.setSelectedServer(server);
+    privateDnsProvider.initializeClient(server);
+    // await privateDnsProvider.fetchData(); // Optional: fetch immediately
 
-      // Check if server version is supported
-      final validVersion = serverVersionIsAhead(
-        currentVersion: status.serverVersion, 
-        referenceVersion: MinimumServerVersion.stable,
-        referenceVersionBeta: MinimumServerVersion.beta
-      );
-      if (validVersion == false) {
-        process.close();
-        showDialog(
-          context: globalNavigatorKey.currentContext!, 
-          builder: (ctx) => UnsupportedVersionModal(
-            serverVersion: status.serverVersion, 
-            onClose: () {
-              serversProvider.setSelectedServer(null);
-            }
-          )
-        );
-        return;
-      }
-      
-      serversProvider.setSelectedServer(server);
-      statusProvider.setServerStatusData(
-        data: status
-      );
-      serversProvider.checkServerUpdatesAvailable(
-        server: server,
-      );
-      statusProvider.setServerStatusLoad(LoadStatus.loaded);
-    }
-    else {
-      statusProvider.setServerStatusLoad(LoadStatus.error);
-    }
-          
     process.close();
   }
   else {

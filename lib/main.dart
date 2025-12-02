@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -28,6 +27,7 @@ import 'package:adguard_home_manager/providers/rewrite_rules_provider.dart';
 import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
+import 'package:adguard_home_manager/providers/private_dns_provider.dart';
 import 'package:adguard_home_manager/constants/colors.dart';
 import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/config/theme.dart';
@@ -63,6 +63,7 @@ void main() async {
   final RewriteRulesProvider rewriteRulesProvider = RewriteRulesProvider();
   final DnsProvider dnsProvider = DnsProvider();
   final LogsProvider logsProvider = LogsProvider();
+  final PrivateDnsProvider privateDnsProvider = PrivateDnsProvider();
 
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   if (Platform.isAndroid) {
@@ -116,6 +117,18 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: ((context) => dnsProvider)
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => privateDnsProvider)
+        ),
+        ChangeNotifierProxyProvider<ServersProvider, PrivateDnsProvider>(
+          create: (context) => privateDnsProvider,
+          update: (context, servers, privateDns) {
+            if (servers.selectedServer != null) {
+              privateDns!.initializeClient(servers.selectedServer!);
+            }
+            return privateDns!;
+          },
         ),
         ChangeNotifierProxyProvider2<ServersProvider, StatusProvider, ClientsProvider>(
           create: (context) => clientsProvider, 
@@ -204,46 +217,33 @@ class Main extends StatelessWidget {
   Widget build(BuildContext context) {
     final appConfigProvider = Provider.of<AppConfigProvider>(context);
 
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) {
-        appConfigProvider.setSupportsDynamicTheme(lightDynamic != null && darkDynamic != null);
-        return MaterialApp(
-          title: 'AdGuard Home Manager',
-          theme: lightDynamic != null
-            ? appConfigProvider.useDynamicColor == true
-              ? lightTheme(lightDynamic)
-              : lightThemeOldVersions(colors[appConfigProvider.staticColor])
-            : lightThemeOldVersions(colors[appConfigProvider.staticColor]),
-          darkTheme: darkDynamic != null
-            ? appConfigProvider.useDynamicColor == true
-              ? darkTheme(darkDynamic)
-              : darkThemeOldVersions(colors[appConfigProvider.staticColor])
-            : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
-          themeMode: appConfigProvider.selectedTheme,
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            AppLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''),
-            Locale('es', ''),
-            Locale('zh', ''),
-            Locale('zh', 'CN'),
-            Locale('pl', ''),
-            Locale('tr', ''),
-            Locale('ru', '')
-          ],
-          scaffoldMessengerKey: scaffoldMessengerKey,
-          navigatorKey: globalNavigatorKey,
-          builder: (context, child) => CustomMenuBar(
-            child: child!,
-          ),
-          home: const Layout(),
-        );
-      }
+    return MaterialApp(
+      title: 'AdGuard Home Manager',
+      theme: lightThemeOldVersions(colors[appConfigProvider.staticColor]),
+      darkTheme: darkThemeOldVersions(colors[appConfigProvider.staticColor]),
+      themeMode: appConfigProvider.selectedTheme,
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        AppLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('es', ''),
+        Locale('zh', ''),
+        Locale('zh', 'CN'),
+        Locale('pl', ''),
+        Locale('tr', ''),
+        Locale('ru', '')
+      ],
+      scaffoldMessengerKey: scaffoldMessengerKey,
+      navigatorKey: globalNavigatorKey,
+      builder: (context, child) => CustomMenuBar(
+        child: child!,
+      ),
+      home: const Layout(),
     );
   }
 }

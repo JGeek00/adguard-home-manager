@@ -1,27 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:adguard_home_manager/l10n/app_localizations.dart';
-
-
-import 'package:adguard_home_manager/screens/home/server_status.dart';
-import 'package:adguard_home_manager/screens/home/top_items/top_items_lists.dart';
-import 'package:adguard_home_manager/screens/home/combined_chart.dart';
-import 'package:adguard_home_manager/screens/home/appbar.dart';
-import 'package:adguard_home_manager/screens/home/fab.dart';
-import 'package:adguard_home_manager/screens/home/chart.dart';
-
-import 'package:adguard_home_manager/providers/clients_provider.dart';
-import 'package:adguard_home_manager/providers/logs_provider.dart';
-import 'package:adguard_home_manager/functions/number_format.dart';
-import 'package:adguard_home_manager/constants/enums.dart';
-import 'package:adguard_home_manager/providers/status_provider.dart';
-import 'package:adguard_home_manager/providers/app_config_provider.dart';
-import 'package:adguard_home_manager/functions/snackbar.dart';
+import 'package:adguard_home_manager/providers/private_dns_provider.dart';
+import 'package:adguard_home_manager/widgets/section_label.dart';
+import 'package:adguard_home_manager/widgets/add_dns_server_modal.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -31,251 +13,151 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final ScrollController scrollController = ScrollController();
-  late bool isVisible;
-
   @override
-  initState() {
-    final statusProvider = Provider.of<StatusProvider>(context, listen: false);
-    statusProvider.getServerStatus(
-      withLoadingIndicator: statusProvider.serverStatus != null ? false : true
-    );
-
-    final clientsProvider = Provider.of<ClientsProvider>(context, listen: false);
-    clientsProvider.fetchClients(updateLoading:  false);
-
+  void initState() {
     super.initState();
-
-    isVisible = true;
-    scrollController.addListener(() {
-      if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-        if (mounted && isVisible == true) {
-          setState(() => isVisible = false);
-        }
-      } 
-      else {
-        if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
-          if (mounted && isVisible == false) {
-            setState(() => isVisible = true);
-          }
-        }
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<PrivateDnsProvider>(context, listen: false).fetchData();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final statusProvider = Provider.of<StatusProvider>(context);
-    final appConfigProvider = Provider.of<AppConfigProvider>(context);
-    final logsProvider = Provider.of<LogsProvider>(context);
-
-    final width = MediaQuery.of(context).size.width;
+    final privateDnsProvider = Provider.of<PrivateDnsProvider>(context);
+    final limits = privateDnsProvider.accountLimits;
 
     return Scaffold(
-      body: SafeArea(
-        top: false,
-        child: Stack(
-          children: [
-            NestedScrollView(
-              controller: scrollController,
-              headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: HomeAppBar(innerBoxScrolled: innerBoxIsScrolled,)
-                )
-              ], 
-              body: SafeArea(
-                top: false,
-                bottom: false,
-                child: Builder(
-                  builder: (context) => RefreshIndicator(
-                    color: Theme.of(context).colorScheme.primary,
-                    displacement: 110,
-                    onRefresh: () async {
-                      final result = await statusProvider.getServerStatus();
-                      if (mounted && result == false) {
-                        showSnackbar(
-                          appConfigProvider: appConfigProvider, 
-                          label: AppLocalizations.of(context)!.serverStatusNotRefreshed, 
-                          color: Colors.red
-                        );
-                      }
-                    },
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverOverlapInjector(
-                          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                        ),
-                        if (statusProvider.loadStatus == LoadStatus.loading) SliverFillRemaining(
-                          child: SizedBox(
-                            width: double.maxFinite,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const CircularProgressIndicator(),
-                                const SizedBox(height: 30),
-                                Text(
-                                  AppLocalizations.of(context)!.loadingStatus,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ),
-                        if (statusProvider.loadStatus == LoadStatus.loaded) SliverList.list(
-                          children: [
-                            ServerStatusWidget(serverStatus: statusProvider.serverStatus!),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Divider(
-                                thickness: 1,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                                  
-                            if (appConfigProvider.combinedChartHome == false) Wrap(
-                              children: [
-                                FractionallySizedBox(
-                                  widthFactor: width > 700 ? 0.5 : 1,
-                                  child: HomeChart(
-                                    data: statusProvider.serverStatus!.stats.dnsQueries, 
-                                    label: AppLocalizations.of(context)!.dnsQueries, 
-                                    primaryValue: intFormat(statusProvider.serverStatus!.stats.numDnsQueries, Platform.localeName), 
-                                    secondaryValue: "${doubleFormat(statusProvider.serverStatus!.stats.avgProcessingTime*1000, Platform.localeName)} ms",
-                                    color: Colors.blue,
-                                    hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
-                                    onTapTitle: () {
-                                      logsProvider.setSelectedResultStatus(
-                                        value: "all",
-                                        refetch: true
-                                      );
-                                      logsProvider.filterLogs();
-                                      appConfigProvider.setSelectedScreen(2);
-                                    },
-                                    isDesktop: width > 700,
-                                  ),
-                                ),
-                                FractionallySizedBox(
-                                  widthFactor: width > 700 ? 0.5 : 1,
-                                  child: HomeChart(
-                                    data: statusProvider.serverStatus!.stats.blockedFiltering, 
-                                    label: AppLocalizations.of(context)!.blockedFilters, 
-                                    primaryValue: intFormat(statusProvider.serverStatus!.stats.numBlockedFiltering, Platform.localeName), 
-                                    secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numBlockedFiltering/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                                    color: Colors.red,
-                                    hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
-                                    onTapTitle: () {
-                                      logsProvider.setSelectedResultStatus(
-                                        value: "blocked",
-                                        refetch: true
-                                      );
-                                      appConfigProvider.setSelectedScreen(2);
-                                    },
-                                    isDesktop: width > 700,
-                                  ),
-                                ),
-                                FractionallySizedBox(
-                                  widthFactor: width > 700 ? 0.5 : 1,
-                                  child: HomeChart(
-                                    data: statusProvider.serverStatus!.stats.replacedSafebrowsing, 
-                                    label: AppLocalizations.of(context)!.malwarePhishingBlocked, 
-                                    primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedSafebrowsing, Platform.localeName), 
-                                    secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedSafebrowsing/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                                    color: Colors.green,
-                                    hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
-                                    onTapTitle: () {
-                                      logsProvider.setSelectedResultStatus(
-                                        value: "blocked_safebrowsing",
-                                        refetch: true
-                                      );
-                                      appConfigProvider.setSelectedScreen(2);
-                                    },
-                                    isDesktop: width > 700,
-                                  ),
-                                ),
-                                FractionallySizedBox(
-                                  widthFactor: width > 700 ? 0.5 : 1,
-                                  child: HomeChart(
-                                    data: statusProvider.serverStatus!.stats.replacedParental, 
-                                    label: AppLocalizations.of(context)!.blockedAdultWebsites, 
-                                    primaryValue: intFormat(statusProvider.serverStatus!.stats.numReplacedParental, Platform.localeName), 
-                                    secondaryValue: "${statusProvider.serverStatus!.stats.numDnsQueries > 0 ? doubleFormat((statusProvider.serverStatus!.stats.numReplacedParental/statusProvider.serverStatus!.stats.numDnsQueries)*100, Platform.localeName) : 0}%",
-                                    color: Colors.orange,
-                                    hoursInterval: statusProvider.serverStatus!.stats.timeUnits == "days" ? 24 : 1,
-                                    onTapTitle: () {
-                                      logsProvider.setSelectedResultStatus(
-                                        value: "blocked_parental",
-                                        refetch: true
-                                      );
-                                      logsProvider.filterLogs();
-                                      appConfigProvider.setSelectedScreen(2);
-                                    },
-                                    isDesktop: width > 700,
-                                  ),
-                                ),             
-                              ],
-                            ),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.home),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => privateDnsProvider.fetchData(),
+          ),
+        ],
+      ),
+      body: privateDnsProvider.loadingAccountLimits
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: () async => await privateDnsProvider.fetchData(),
+              child: ListView(
+                children: [
+                  if (limits != null) ...[
+                    SectionLabel(
+                      label: "Límites de la cuenta", // TODO: Localize
+                      padding: const EdgeInsets.all(16),
+                    ),
+                    _buildLimitTile("Dispositivos", limits.devices.used, limits.devices.limit),
+                    _buildLimitTile("Servidores DNS", limits.dnsServers.used, limits.dnsServers.limit),
+                    _buildLimitTile("Reglas de acceso", limits.accessRules.used, limits.accessRules.limit),
+                    _buildLimitTile("Reglas de usuario", limits.userRules.used, limits.userRules.limit),
+                    _buildLimitTile("Peticiones", limits.requests.used, limits.requests.limit),
+                  ],
 
-                            if (appConfigProvider.combinedChartHome == true) const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: CombinedHomeChart(),
-                            ),
-                                  
-                            TopItemsLists(order: appConfigProvider.homeTopItemsOrder),
-
-                            const SizedBox(height: 16),
-                          ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 8, top: 16, bottom: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.servers,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).colorScheme.primary
+                          ),
                         ),
-                        if (statusProvider.loadStatus == LoadStatus.error) SliverFillRemaining(
-                          child: SizedBox(
-                            width: double.maxFinite,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                  size: 50,
-                                ),
-                                const SizedBox(height: 30),
-                                Text(
-                                  AppLocalizations.of(context)!.errorLoadServerStatus,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => const AddDnsServerModal(),
+                            );
+                          },
                         ),
                       ],
-                    )
+                    ),
                   ),
-                )
-              )
+                  if (privateDnsProvider.dnsServers.isEmpty)
+                     const Padding(
+                       padding: EdgeInsets.all(16.0),
+                       child: Text("No hay servidores DNS"),
+                     )
+                  else
+                    ...privateDnsProvider.dnsServers.map((s) => ListTile(
+                      title: Text(s.name),
+                      subtitle: Text(s.id),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (s.isDefault) const Icon(Icons.star, color: Colors.amber),
+                          PopupMenuButton(
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 'edit',
+                                child: Text("Editar"),
+                              ),
+                              if (!s.isDefault) const PopupMenuItem(
+                                value: 'delete',
+                                child: Text("Eliminar"),
+                              ),
+                            ],
+                            onSelected: (value) async {
+                              if (value == 'edit') {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AddDnsServerModal(dnsServer: s),
+                                );
+                              } else if (value == 'delete') {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Eliminar Perfil'),
+                                    content: const Text('¿Estás seguro de que quieres eliminar este perfil?'),
+                                    actions: [
+                                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+                                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Eliminar')),
+                                    ],
+                                  ),
+                                );
+                                if (confirm == true) {
+                                  await privateDnsProvider.deleteDnsServer(s.id);
+                                }
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    )),
+
+                  SectionLabel(
+                    label: "Dispositivos",
+                    padding: const EdgeInsets.all(16),
+                  ),
+                   if (privateDnsProvider.devices.isEmpty)
+                     const Padding(
+                       padding: EdgeInsets.all(16.0),
+                       child: Text("No hay dispositivos"),
+                     )
+                  else
+                    ...privateDnsProvider.devices.map((d) => ListTile(
+                      title: Text(d.name),
+                      subtitle: Text(d.id),
+                    )),
+                ],
+              ),
             ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeInOut,
-              bottom: isVisible == true ?
-                appConfigProvider.showingSnackbar
-                  ? 70 
-                  : 20
-                : -70,
-              right: 20,
-              child: const HomeFab() 
-            ),
-          ],
-        ),
+    );
+  }
+
+  Widget _buildLimitTile(String title, int used, int limit) {
+    return ListTile(
+      title: Text(title),
+      trailing: Text("$used / $limit"),
+      subtitle: LinearProgressIndicator(
+        value: limit > 0 ? used / limit : 0,
+        backgroundColor: Colors.grey[200],
       ),
     );
   }

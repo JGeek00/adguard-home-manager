@@ -21,10 +21,10 @@ ThemeData lightTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   navigationBarTheme: NavigationBarThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
-  cardTheme: CardThemeData(
+  cardTheme: CardTheme(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
-  dialogTheme: DialogThemeData(
+  dialogTheme: DialogTheme(
     backgroundColor: dynamicColorScheme?.surfaceContainerHigh
   ),
   // DISABLE PREDICTIVE BACK GESTURE
@@ -57,10 +57,10 @@ ThemeData darkTheme(ColorScheme? dynamicColorScheme) => ThemeData(
   navigationBarTheme: NavigationBarThemeData(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
-  cardTheme: CardThemeData(
+  cardTheme: CardTheme(
     surfaceTintColor: dynamicColorScheme?.surfaceTint
   ),
-  dialogTheme: DialogThemeData(
+  dialogTheme: DialogTheme(
     backgroundColor: dynamicColorScheme?.surfaceContainerHigh
   ),
   // DISABLE PREDICTIVE BACK GESTURE

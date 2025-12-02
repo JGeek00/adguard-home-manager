@@ -8,7 +8,6 @@ import 'package:adguard_home_manager/l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/servers_list/server_tile_functions.dart';
 
-import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
@@ -191,7 +190,6 @@ class _LeadingIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-    final statusProvider = Provider.of<StatusProvider>(context);
 
     if (server.defaultServer == true) {
       return Stack(
@@ -200,9 +198,7 @@ class _LeadingIcon extends StatelessWidget {
           Icon(
             Icons.storage_rounded,
             color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-              ? statusProvider.serverStatus != null
-                ? Colors.green
-                : Colors.orange
+              ? Colors.green
               : null,
           ),
           SizedBox(
@@ -233,9 +229,7 @@ class _LeadingIcon extends StatelessWidget {
       return Icon(
         Icons.storage_rounded,
         color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-          ? statusProvider.serverStatus != null
-            ? Colors.green
-            : Colors.orange
+          ? Colors.green
           : null,
       );
     }
@@ -260,7 +254,6 @@ class _BottomRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-    final statusProvider = Provider.of<StatusProvider>(context);
 
     return Column(
       children: [

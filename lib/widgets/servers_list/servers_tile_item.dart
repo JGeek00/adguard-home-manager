@@ -7,7 +7,6 @@ import 'package:adguard_home_manager/l10n/app_localizations.dart';
 
 import 'package:adguard_home_manager/widgets/servers_list/server_tile_functions.dart';
 
-import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 
@@ -77,7 +76,6 @@ class _LeadingIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-    final statusProvider = Provider.of<StatusProvider>(context);
 
     if (server.defaultServer == true) {
       return Stack(
@@ -86,9 +84,7 @@ class _LeadingIcon extends StatelessWidget {
           Icon(
             Icons.storage_rounded,
             color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-              ? statusProvider.serverStatus != null
-                ? Colors.green
-                : Colors.orange
+              ? Colors.green
               : null,
           ),
           SizedBox(
@@ -119,9 +115,7 @@ class _LeadingIcon extends StatelessWidget {
       return Icon(
         Icons.storage_rounded,
         color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id
-          ? statusProvider.serverStatus != null
-            ? Colors.green
-            : Colors.orange
+          ? Colors.green
           : null,
       );
     }
@@ -207,7 +201,6 @@ class _BottomRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serversProvider = Provider.of<ServersProvider>(context);
-    final statusProvider = Provider.of<StatusProvider>(context);
 
     return Column(
       children: [
@@ -261,29 +254,21 @@ class _BottomRow extends StatelessWidget {
             ),
             SizedBox(
               child: serversProvider.selectedServer != null && 
-                serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null && 
+                serversProvider.selectedServer != null &&
                 serversProvider.selectedServer?.id == server.id
                   ? Padding(
                       padding: const EdgeInsets.only(right: 16),
                       child: Row(
                           children: [
-                            Icon(
-                              serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
-                                ? Icons.check
-                                : Icons.warning,
-                              color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
-                                ? Colors.green
-                                : Colors.orange,
+                            const Icon(
+                              Icons.check,
+                              color: Colors.green,
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
-                                ? AppLocalizations.of(context)!.connected
-                                : AppLocalizations.of(context)!.selectedDisconnected,
-                              style: TextStyle(
-                                color: serversProvider.selectedServer != null && serversProvider.selectedServer?.id == server.id && statusProvider.serverStatus != null
-                                  ? Colors.green
-                                  : Colors.orange,
+                              AppLocalizations.of(context)!.connected,
+                              style: const TextStyle(
+                                color: Colors.green,
                                 fontWeight: FontWeight.w500
                               ),
                             )
