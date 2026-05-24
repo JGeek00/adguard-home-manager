@@ -6,10 +6,12 @@ final List<HomeTopItems> homeTopItemsDefaultOrder = [
   HomeTopItems.queriedDomains,
   HomeTopItems.blockedDomains,
   HomeTopItems.recurrentClients,
+  HomeTopItems.topIps,
+  HomeTopItems.rootDomains,
   HomeTopItems.topUpstreams,
-  HomeTopItems.avgUpstreamResponseTime
-];  
+  HomeTopItems.avgUpstreamResponseTime,
+];
 
 final String homeTopItemsDefaultOrderString = jsonEncode(
-  List<String>.from(homeTopItemsDefaultOrder.map((e) => e.name))
+  List<String>.from(homeTopItemsDefaultOrder.map((e) => e.name)),
 );

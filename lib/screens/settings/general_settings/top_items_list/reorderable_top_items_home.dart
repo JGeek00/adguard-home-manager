@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable_list;
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart'
+    as reorderable_list;
 import 'package:adguard_home_manager/l10n/app_localizations.dart';
-
 
 import 'package:adguard_home_manager/widgets/custom_list_tile.dart';
 
@@ -13,16 +13,10 @@ class _ItemData {
   final HomeTopItems title;
   final Key key;
 
-  const _ItemData({
-    required this.title, 
-    required this.key
-  });
+  const _ItemData({required this.title, required this.key});
 }
 
-enum DraggingMode {
-  iOS,
-  android,
-}
+enum DraggingMode { iOS, android }
 
 class ReorderableTopItemsHome extends StatefulWidget {
   final List<HomeTopItems> persistHomeTopItems;
@@ -35,7 +29,8 @@ class ReorderableTopItemsHome extends StatefulWidget {
   });
 
   @override
-  State<ReorderableTopItemsHome> createState() => _ReorderableTopItemsHomeState();
+  State<ReorderableTopItemsHome> createState() =>
+      _ReorderableTopItemsHomeState();
 }
 
 class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
@@ -52,7 +47,10 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
 
     final draggedItem = renderItems[draggingIndex];
 
-    final List<HomeTopItems> reorderedItems = reorderEnumItems(draggingIndex, newPositionIndex);
+    final List<HomeTopItems> reorderedItems = reorderEnumItems(
+      draggingIndex,
+      newPositionIndex,
+    );
 
     setState(() {
       renderItems.removeAt(draggingIndex);
@@ -78,21 +76,20 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
   @override
   void initState() {
     homeTopItemsList = widget.persistHomeTopItems;
-    renderItems = widget.persistHomeTopItems.asMap().entries.map(
-      (e) => _ItemData(
-        key: ValueKey(e.key),
-        title: e.value, 
-      )
-    ).toList();
+    renderItems = widget.persistHomeTopItems
+        .asMap()
+        .entries
+        .map((e) => _ItemData(key: ValueKey(e.key), title: e.value))
+        .toList();
 
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     final draggingMode = Platform.isAndroid
-      ? DraggingMode.android
-      : DraggingMode.iOS;
+        ? DraggingMode.android
+        : DraggingMode.iOS;
 
     return SafeArea(
       top: false,
@@ -102,7 +99,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
           slivers: [
             SliverOverlapInjector(
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            ),      
+            ),
             SliverList.list(
               children: [
                 Card(
@@ -117,68 +114,80 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
                         ),
                         const SizedBox(width: 16),
                         Flexible(
-                          child: Text(AppLocalizations.of(context)!.topItemsReorderInfo)
-                        )
+                          child: Text(
+                            AppLocalizations.of(context)!.topItemsReorderInfo,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-                if (homeTopItemsList.isEmpty) Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Center(
-                        child: Text(
-                          AppLocalizations.of(context)!.noElementsReorderMessage,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant
+                if (homeTopItemsList.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Center(
+                          child: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.noElementsReorderMessage,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (homeTopItemsList.isNotEmpty) reorderable_list.ReorderableList(
-                  onReorder: _reorderCallback,
-                  onReorderDone: _reorderDone,
-                  child: ListView.builder(
-                    primary: false,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(top: 0),
-                    itemBuilder: (context, index) => reorderable_list.ReorderableItem(
-                      key: renderItems[index].key,
-                      childBuilder: (context, state) {
-                        if (draggingMode == DraggingMode.android) {
-                          return reorderable_list.DelayedReorderableListener(
-                            child: _ReorderableTile(
-                              draggingMode: draggingMode,
-                              isFirst: index == 0,
-                              isLast: index == renderItems.length - 1,
-                              state: state,
-                              tileWidget: _TopItemTile(tile: renderItems[index].title), 
-                            ),
-                          );
-                        }
-                        else {
-                          return _ReorderableTile(
-                            draggingMode: draggingMode,
-                            isFirst: index == 0,
-                            isLast: index == renderItems.length - 1,
-                            state: state,
-                            tileWidget: _TopItemTile(tile: renderItems[index].title), 
-                          );
-                        }
-                      },
+                      ],
                     ),
-                    itemCount: renderItems.length,
-                  )
-                ),
-              ]
-            )
+                  ),
+                if (homeTopItemsList.isNotEmpty)
+                  reorderable_list.ReorderableList(
+                    onReorder: _reorderCallback,
+                    onReorderDone: _reorderDone,
+                    child: ListView.builder(
+                      primary: false,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(top: 0),
+                      itemBuilder: (context, index) =>
+                          reorderable_list.ReorderableItem(
+                            key: renderItems[index].key,
+                            childBuilder: (context, state) {
+                              if (draggingMode == DraggingMode.android) {
+                                return reorderable_list.DelayedReorderableListener(
+                                  child: _ReorderableTile(
+                                    draggingMode: draggingMode,
+                                    isFirst: index == 0,
+                                    isLast: index == renderItems.length - 1,
+                                    state: state,
+                                    tileWidget: _TopItemTile(
+                                      tile: renderItems[index].title,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return _ReorderableTile(
+                                  draggingMode: draggingMode,
+                                  isFirst: index == 0,
+                                  isLast: index == renderItems.length - 1,
+                                  state: state,
+                                  tileWidget: _TopItemTile(
+                                    tile: renderItems[index].title,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                      itemCount: renderItems.length,
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
@@ -189,9 +198,7 @@ class _ReorderableTopItemsHomeState extends State<ReorderableTopItemsHome> {
 class _TopItemTile extends StatelessWidget {
   final HomeTopItems tile;
 
-  const _TopItemTile({
-    required this.tile,
-  });
+  const _TopItemTile({required this.tile});
 
   @override
   Widget build(BuildContext context) {
@@ -200,35 +207,49 @@ class _TopItemTile extends StatelessWidget {
         return CustomListTile(
           title: AppLocalizations.of(context)!.topQueriedDomains,
           icon: Icons.install_desktop_outlined,
-          padding: const EdgeInsets.all(16)
+          padding: const EdgeInsets.all(16),
         );
 
       case HomeTopItems.blockedDomains:
         return CustomListTile(
           title: AppLocalizations.of(context)!.topBlockedDomains,
           icon: Icons.block_rounded,
-           padding: const EdgeInsets.all(16)
+          padding: const EdgeInsets.all(16),
         );
 
       case HomeTopItems.recurrentClients:
         return CustomListTile(
           title: AppLocalizations.of(context)!.topClients,
           icon: Icons.smartphone_rounded,
-           padding: const EdgeInsets.all(16)
+          padding: const EdgeInsets.all(16),
+        );
+
+      case HomeTopItems.topIps:
+        return const CustomListTile(
+          title: 'IPs',
+          icon: Icons.dns_rounded,
+          padding: EdgeInsets.all(16),
+        );
+
+      case HomeTopItems.rootDomains:
+        return const CustomListTile(
+          title: 'Domínios raiz',
+          icon: Icons.account_tree_rounded,
+          padding: EdgeInsets.all(16),
         );
 
       case HomeTopItems.topUpstreams:
         return CustomListTile(
           title: AppLocalizations.of(context)!.topUpstreams,
           icon: Icons.upload_file_rounded,
-           padding: const EdgeInsets.all(16)
+          padding: const EdgeInsets.all(16),
         );
 
       case HomeTopItems.avgUpstreamResponseTime:
         return CustomListTile(
           title: AppLocalizations.of(context)!.averageUpstreamResponseTime,
           icon: Icons.timer_rounded,
-           padding: const EdgeInsets.all(16)
+          padding: const EdgeInsets.all(16),
         );
 
       default:
@@ -249,66 +270,73 @@ class _ReorderableTile extends StatelessWidget {
     required this.isFirst,
     required this.isLast,
     required this.state,
-    required this.draggingMode
+    required this.draggingMode,
   });
 
   @override
   Widget build(BuildContext context) {
     BoxDecoration getDecoration() {
-      if (
-        state == reorderable_list.ReorderableItemState.dragProxy ||
-        state == reorderable_list.ReorderableItemState.dragProxyFinished
-      ) {
+      if (state == reorderable_list.ReorderableItemState.dragProxy ||
+          state == reorderable_list.ReorderableItemState.dragProxyFinished) {
         return BoxDecoration(
-          color: Theme.of(context).colorScheme.surface.withOpacity(0.7)
+          color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
         );
-      } 
-      else {
-        bool placeholder = state == reorderable_list.ReorderableItemState.placeholder;
+      } else {
+        bool placeholder =
+            state == reorderable_list.ReorderableItemState.placeholder;
         return BoxDecoration(
           border: Border(
-            top: isFirst && !placeholder ? BorderSide(
-              width: 1,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
-            ) : BorderSide.none,
-            bottom: isLast && placeholder ? BorderSide.none : BorderSide(
-              width: 1,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1)
-            ),
+            top: isFirst && !placeholder
+                ? BorderSide(
+                    width: 1,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.1),
+                  )
+                : BorderSide.none,
+            bottom: isLast && placeholder
+                ? BorderSide.none
+                : BorderSide(
+                    width: 1,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.1),
+                  ),
           ),
         );
       }
     }
-    
+
     return Container(
       decoration: getDecoration(),
       child: SafeArea(
         top: false,
         bottom: false,
         child: Opacity(
-          opacity: state == reorderable_list.ReorderableItemState.placeholder ? 0.0 : 1.0,
+          opacity: state == reorderable_list.ReorderableItemState.placeholder
+              ? 0.0
+              : 1.0,
           child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Expanded(
-                  child: tileWidget
-                ),
-                if (draggingMode == DraggingMode.iOS) reorderable_list.ReorderableListener(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Center(
-                      child: Icon(
-                        Icons.reorder,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                Expanded(child: tileWidget),
+                if (draggingMode == DraggingMode.iOS)
+                  reorderable_list.ReorderableListener(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Center(
+                        child: Icon(
+                          Icons.reorder,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   ),
-                )
               ],
             ),
           ),
-        )
+        ),
       ),
     );
   }
