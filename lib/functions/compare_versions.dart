@@ -2,61 +2,59 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:adguard_home_manager/models/github_release.dart';
 
+class _ParsedVersion {
+  final List<int> numbers;
+  final String suffix;
+
+  const _ParsedVersion({
+    required this.numbers,
+    required this.suffix,
+  });
+
+  bool get isAlpha => RegExp(r'(^|[-.])a(lpha)?([-.]|\d|$)').hasMatch(suffix);
+  bool get isBeta => RegExp(r'(^|[-.])b(eta)?([-.]|\d|$)').hasMatch(suffix);
+}
+
+_ParsedVersion? _parseVersion(String version) {
+  final match = RegExp(r'v?(\d+)\.(\d+)\.(\d+)(?:[-+]([0-9A-Za-z][0-9A-Za-z.-]*))?').firstMatch(version);
+
+  if (match == null) return null;
+
+  return _ParsedVersion(
+    numbers: [
+      int.parse(match.group(1)!),
+      int.parse(match.group(2)!),
+      int.parse(match.group(3)!),
+    ],
+    suffix: match.group(4)?.toLowerCase() ?? '',
+  );
+}
+
+int _compareVersionNumbers(_ParsedVersion current, _ParsedVersion reference) {
+  for (var i = 0; i < current.numbers.length; i++) {
+    if (current.numbers[i] > reference.numbers[i]) return 1;
+    if (current.numbers[i] < reference.numbers[i]) return -1;
+  }
+
+  return 0;
+}
+
 bool compareVersions({
   required String currentVersion, 
   required String newVersion
 }) {
   if (currentVersion == "") return false;
   try {
-    if (currentVersion.contains('a')) {   // alpha
+    final current = _parseVersion(currentVersion);
+    final newV = _parseVersion(newVersion);
+
+    if (current == null || newV == null) return false;
+
+    if (current.isAlpha) {   // alpha
       return true;
     }
-    else if (currentVersion.contains('b')) {    // beta
-      final current = currentVersion.replaceAll('v', '');
-      final newV = currentVersion.replaceAll('v', '');
 
-      final currentSplit = current.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-      final newSplit = newV.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-
-      final currentBeta = int.parse(current.split('-')[1].replaceAll('b.', ''));
-      final newBeta = int.parse(newV.split('-')[1].replaceAll('b.', ''));
-      
-      if (newSplit[0] > currentSplit[0]) {
-        return true;
-      }
-      else if (newSplit[1] > currentSplit[1]) {
-        return true;
-      }
-      else if (newSplit[2] > currentSplit[2]) {
-        return true;
-      }
-      else if (newBeta > currentBeta) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    else {    // stable
-      final current = currentVersion.replaceAll('v', '');
-      final newV = newVersion.replaceAll('v', '');
-      
-      final currentSplit = current.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-      final newSplit = newV.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-
-      if (newSplit[0] > currentSplit[0]) {
-        return true;
-      }
-      else if (newSplit[1] > currentSplit[1]) {
-        return true;
-      }
-      else if (newSplit[2] > currentSplit[2]) {
-        return true;
-      }   
-      else {
-        return false;
-      }
-    }
+    return _compareVersionNumbers(newV, current) > 0;
   } catch (e) {
     Sentry.captureException(e);
     Sentry.captureMessage("compareVersions error", params: [
@@ -77,63 +75,25 @@ bool serverVersionIsAhead({
 }) {
   if (currentVersion == "") return false;
   try {
-    final current = currentVersion.replaceAll('v', '');
-    final reference = referenceVersion.replaceAll('v', '');
-    final referenceBeta = referenceVersionBeta?.replaceAll('v', '');
+    final current = _parseVersion(currentVersion);
+    final reference = _parseVersion(referenceVersion);
+    final referenceBeta = referenceVersionBeta != null ? _parseVersion(referenceVersionBeta) : null;
 
-    if (currentVersion.contains('a')) {   // alpha
+    if (current == null || reference == null) return false;
+
+    if (current.isAlpha) {   // alpha
       return true;
     }
-    else if (current.contains('b')) {   // beta
+    else if (current.isBeta) {   // beta
       if (referenceBeta != null) {
-        final currentSplit = current.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-        final newSplit = referenceBeta.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-
-        final currentBeta = int.parse(current.split('-')[1].replaceAll('b.', ''));
-        final newBeta = int.parse(referenceBeta.split('-')[1].replaceAll('b.', ''));
-        
-        if (newSplit[0] == currentSplit[0] && newSplit[1] == currentSplit[1] && newSplit[2] == currentSplit[2] && newBeta == currentBeta) {
-          return true;
-        }
-        else if (newSplit[0] < currentSplit[0]) {
-          return true;
-        }
-        else if (newSplit[1] < currentSplit[1]) {
-          return true;
-        }
-        else if (newSplit[2] < currentSplit[2]) {
-          return true;
-        }
-        else if (newBeta < currentBeta) {
-          return true;
-        }
-        else {
-          return false;
-        }
+        return _compareVersionNumbers(current, referenceBeta) >= 0;
       }
       else {
         return false;
       }
     }
     else {    // stable
-      final currentSplit = current.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-      final newSplit = reference.split('-')[0].split('.').map((e) => int.parse(e)).toList();
-
-      if (newSplit[0] == currentSplit[0] && newSplit[1] == currentSplit[1] && newSplit[2] == currentSplit[2]) {
-        return true;
-      }
-      else if (newSplit[0] < currentSplit[0]) {
-        return true;
-      }
-      else if (newSplit[1] < currentSplit[1]) {
-        return true;
-      }
-      else if (newSplit[2] < currentSplit[2]) {
-        return true;
-      }   
-      else {
-        return false;
-      }
+      return _compareVersionNumbers(current, reference) >= 0;
     }
   } catch (e) {
     Sentry.captureException(e);
