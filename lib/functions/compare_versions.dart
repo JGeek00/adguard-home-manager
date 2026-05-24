@@ -41,8 +41,8 @@ bool compareVersions({
       final current = currentVersion.replaceAll('v', '');
       final newV = newVersion.replaceAll('v', '');
       
-      final currentSplit = current.split('.').map((e) => int.parse(e)).toList();
-      final newSplit = newV.split('.').map((e) => int.parse(e)).toList();
+      final currentSplit = current.split('-')[0].split('.').map((e) => int.parse(e)).toList();
+      final newSplit = newV.split('-')[0].split('.').map((e) => int.parse(e)).toList();
 
       if (newSplit[0] > currentSplit[0]) {
         return true;
@@ -116,8 +116,8 @@ bool serverVersionIsAhead({
       }
     }
     else {    // stable
-      final currentSplit = current.split('.').map((e) => int.parse(e)).toList();
-      final newSplit = reference.split('.').map((e) => int.parse(e)).toList();
+      final currentSplit = current.split('-')[0].split('.').map((e) => int.parse(e)).toList();
+      final newSplit = reference.split('-')[0].split('.').map((e) => int.parse(e)).toList();
 
       if (newSplit[0] == currentSplit[0] && newSplit[1] == currentSplit[1] && newSplit[2] == currentSplit[2]) {
         return true;
