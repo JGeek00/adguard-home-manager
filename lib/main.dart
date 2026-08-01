@@ -229,6 +229,7 @@ class Main extends StatelessWidget {
           ],
           supportedLocales: const [
             Locale('en', ''),
+            Locale('de', ''),
             Locale('es', ''),
             Locale('zh', ''),
             Locale('zh', 'CN'),
