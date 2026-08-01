@@ -537,6 +537,8 @@
     "noClientsSearch": "No clients with that search.",
     "customization": "Customization",
     "customizationDescription": "Customize this application",
+    "language": "Language",
+    "languageDescription": "Change the language of the app",
     "color": "Color",
     "useDynamicTheme": "Use dynamic theme",
     "red": "Red",

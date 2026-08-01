@@ -16,6 +16,7 @@
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher"
+        android:localeConfig="@xml/locale_config"
         android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"

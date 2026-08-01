@@ -84,6 +84,8 @@ void main() async {
 
   appConfigProvider.saveFromSharedPreferences();
 
+  await appConfigProvider.syncLanguageWithSystem();
+
   PackageInfo appInfo = await PackageInfo.fromPlatform();
   appConfigProvider.setAppInfo(appInfo);
 
@@ -220,6 +222,7 @@ class Main extends StatelessWidget {
               : darkThemeOldVersions(colors[appConfigProvider.staticColor])
             : darkThemeOldVersions(colors[appConfigProvider.staticColor]),
           themeMode: appConfigProvider.selectedTheme,
+          locale: appConfigProvider.selectedLocale,
           debugShowCheckedModeBanner: false,
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,

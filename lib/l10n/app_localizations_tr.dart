@@ -1697,6 +1697,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get customizationDescription => 'Bu uygulamayı özelleştir';
 
   @override
+  String get language => 'Language';
+
+  @override
+  String get languageDescription => 'Change the language of the app';
+
+  @override
   String get color => 'Renk';
 
   @override
