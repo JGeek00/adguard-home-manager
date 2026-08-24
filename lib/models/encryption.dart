@@ -19,8 +19,8 @@ class EncryptionData {
   final bool validChain;
   final String? subject;
   final String? issuer;
-  final DateTime notBefore;
-  final DateTime notAfter;
+  final DateTime? notBefore;
+  final DateTime? notAfter;
   final List<String> dnsNames;
   final bool validKey;
   final String? keyType;
@@ -46,8 +46,8 @@ class EncryptionData {
     required this.validChain,
     this.subject,
     this.issuer,
-    required this.notBefore,
-    required this.notAfter,
+    this.notBefore,
+    this.notAfter,
     required this.dnsNames,
     required this.validKey,
     this.keyType,
@@ -70,18 +70,30 @@ class EncryptionData {
   });
 
 
+  /// Fields the API may leave out are read with a fallback to the zero value
+  /// they stand for.
+  ///
+  /// allow_unencrypted_doh is the reason this matters: AdGuard Home moved that
+  /// setting out of the TLS section into http.doh.insecure_enabled with schema
+  /// version 34, so /tls/status has not carried it since v0.108.0-b.84.
+  /// Reading it as a non-nullable bool threw on every such server and left the
+  /// encryption screen stuck on an error with no way to tell why.
+  ///
+  /// The remaining fallbacks are defensive. Most of those fields are always
+  /// present today, but a few carry omitempty, and this bug is what an API
+  /// change looks like when the client insists on a field.
   factory EncryptionData.fromJson(Map<String, dynamic> json) => EncryptionData(
-    validCert: json["valid_cert"],
-    validChain: json["valid_chain"],
+    validCert: json["valid_cert"] ?? false,
+    validChain: json["valid_chain"] ?? false,
     subject: json["subject"],
     issuer: json["issuer"],
-    notBefore: DateTime.parse(json["not_before"]),
-    notAfter: DateTime.parse(json["not_after"]),
+    notBefore: json["not_before"] == null ? null : DateTime.parse(json["not_before"]),
+    notAfter: json["not_after"] == null ? null : DateTime.parse(json["not_after"]),
     dnsNames: json["dns_names"] != null ? List<String>.from(json["dns_names"].map((x) => x)) : [],
-    validKey: json["valid_key"],
+    validKey: json["valid_key"] ?? false,
     keyType: json["key_type"],
-    validPair: json["valid_pair"],
-    enabled: json["enabled"],
+    validPair: json["valid_pair"] ?? false,
+    enabled: json["enabled"] ?? false,
     serverName: json["server_name"],
     forceHttps: json["force_https"] ?? false,
     portHttps: json["port_https"],
@@ -89,12 +101,12 @@ class EncryptionData {
     portDnsOverQuic: json["port_dns_over_quic"],
     portDnscrypt: json["port_dnscrypt"],
     dnscryptConfigFile: json["dnscrypt_config_file"],
-    allowUnencryptedDoh: json["allow_unencrypted_doh"],
-    certificateChain: json["certificate_chain"],
-    privateKey: json["private_key"],
-    certificatePath: json["certificate_path"],
-    privateKeyPath: json["private_key_path"],
-    privateKeySaved: json["private_key_saved"],
+    allowUnencryptedDoh: json["allow_unencrypted_doh"] ?? false,
+    certificateChain: json["certificate_chain"] ?? "",
+    privateKey: json["private_key"] ?? "",
+    certificatePath: json["certificate_path"] ?? "",
+    privateKeyPath: json["private_key_path"] ?? "",
+    privateKeySaved: json["private_key_saved"] ?? false,
     servePlainDns: json["serve_plain_dns"],
   );
 
@@ -103,8 +115,8 @@ class EncryptionData {
     "valid_chain": validChain,
     "subject": subject,
     "issuer": issuer,
-    "not_before": notBefore.toIso8601String(),
-    "not_after": notAfter.toIso8601String(),
+    "not_before": notBefore?.toIso8601String(),
+    "not_after": notAfter?.toIso8601String(),
     "dns_names": List<dynamic>.from(dnsNames.map((x) => x)),
     "valid_key": validKey,
     "key_type": keyType,

@@ -7,10 +7,11 @@ import 'package:adguard_home_manager/config/globals.dart';
 
 void showSnackbar({
   required AppConfigProvider appConfigProvider,
-  required String label, 
+  required String label,
   required Color color,
   Color? labelColor,
   GlobalKey<ScaffoldMessengerState>? key,
+  Duration? duration,
 }) async {
   final GlobalKey<ScaffoldMessengerState> scaffoldKey = key ?? scaffoldMessengerKey;
   if (appConfigProvider.showingSnackbar == true) {
@@ -27,6 +28,9 @@ void showSnackbar({
       ),
     ),
     backgroundColor: color,
+    // Leaving this null keeps the framework default of four seconds, which is
+    // what every existing call relies on.
+    duration: duration ?? const Duration(seconds: 4),
   );
   scaffoldKey.currentState?.showSnackBar(snackBar).closed.then(
     (value) => appConfigProvider.setShowingSnackbar(false)
