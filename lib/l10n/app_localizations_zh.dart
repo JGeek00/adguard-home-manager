@@ -1643,6 +1643,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get customizationDescription => '自定义此应用程序';
 
   @override
+  String get language => 'Language';
+
+  @override
+  String get languageDescription => 'Change the language of the app';
+
+  @override
   String get color => '颜色';
 
   @override

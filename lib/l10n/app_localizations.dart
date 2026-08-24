@@ -3337,6 +3337,18 @@ abstract class AppLocalizations {
   /// **'Customize this application'**
   String get customizationDescription;
 
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @languageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the language of the app'**
+  String get languageDescription;
+
   /// No description provided for @color.
   ///
   /// In en, this message translates to:

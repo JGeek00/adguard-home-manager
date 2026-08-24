@@ -1727,6 +1727,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get customizationDescription => 'Diese App anpassen';
 
   @override
+  String get language => 'Sprache';
+
+  @override
+  String get languageDescription => 'Sprache der App ändern';
+
+  @override
   String get color => 'Farbe';
 
   @override

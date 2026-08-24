@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:adguard_home_manager/constants/enums.dart';
+import 'package:adguard_home_manager/constants/languages.dart';
+import 'package:adguard_home_manager/services/platform_locale.dart';
 import 'package:adguard_home_manager/config/home_top_items_default_order.dart';
 import 'package:adguard_home_manager/models/github_release.dart';
 import 'package:adguard_home_manager/models/app_log.dart';
@@ -31,6 +33,9 @@ class AppConfigProvider with ChangeNotifier {
   bool _supportsDynamicTheme = true;
   int _selectedTheme = 0;
   bool _useDynamicColor = true;
+
+  /// BCP 47 tag, or null to follow the system language.
+  String? _selectedLanguage;
   int _staticColor = 0;
   final bool _useThemeColorForStatus = false;
 
@@ -93,6 +98,15 @@ class AppConfigProvider with ChangeNotifier {
 
   int get selectedThemeNumber {
     return _selectedTheme;
+  }
+
+  String? get selectedLanguage {
+    return _selectedLanguage;
+  }
+
+  /// Null lets MaterialApp resolve the system language itself.
+  Locale? get selectedLocale {
+    return languageFromTag(_selectedLanguage)?.locale;
   }
 
   int get selectedClientsTab {
@@ -280,6 +294,47 @@ class AppConfigProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> setSelectedLanguage(String? value) async {
+    try {
+      if (value == null) {
+        sharedPreferencesInstance.remove('selectedLanguage');
+      }
+      else {
+        sharedPreferencesInstance.setString('selectedLanguage', value);
+      }
+      _selectedLanguage = value;
+      await PlatformLocaleService.setApplicationLocale(value);
+      notifyListeners();
+      return true;
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
+      return false;
+    }
+  }
+
+  /// The system entry wins, since it can be changed while the app is closed.
+  Future<void> syncLanguageWithSystem() async {
+    try {
+      final systemTag = await PlatformLocaleService.getApplicationLocale();
+      final resolved = languageFromTag(systemTag)?.tag;
+      if (resolved == _selectedLanguage) return;
+      if (systemTag == null && _selectedLanguage != null) {
+        await PlatformLocaleService.setApplicationLocale(_selectedLanguage);
+        return;
+      }
+      _selectedLanguage = resolved;
+      if (resolved == null) {
+        sharedPreferencesInstance.remove('selectedLanguage');
+      }
+      else {
+        sharedPreferencesInstance.setString('selectedLanguage', resolved);
+      }
+      notifyListeners();
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
+    }
+  }
+
   Future<bool> setUseDynamicColor(bool value) async {
     try {
       sharedPreferencesInstance.setBool('useDynamicColor', value);
@@ -347,6 +402,7 @@ class AppConfigProvider with ChangeNotifier {
   
   void saveFromSharedPreferences() {
     _selectedTheme = sharedPreferencesInstance.getInt('selectedTheme') ?? 0;
+    _selectedLanguage = sharedPreferencesInstance.getString('selectedLanguage');
     _overrideSslCheck = sharedPreferencesInstance.getBool('overrideSslCheck') ?? false;
     _hideZeroValues = sharedPreferencesInstance.getBool('hideZeroValues') ?? false;
     _useDynamicColor = sharedPreferencesInstance.getBool('useDynamicColor') ?? true;

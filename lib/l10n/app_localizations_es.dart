@@ -1728,6 +1728,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get customizationDescription => 'Personaliza esta aplicación';
 
   @override
+  String get language => 'Language';
+
+  @override
+  String get languageDescription => 'Change the language of the app';
+
+  @override
   String get color => 'Color';
 
   @override

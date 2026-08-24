@@ -537,6 +537,8 @@
     "noClientsSearch": "Keine Clients für diese Suche.",
     "customization": "Anpassung",
     "customizationDescription": "Diese App anpassen",
+    "language": "Sprache",
+    "languageDescription": "Sprache der App ändern",
     "color": "Farbe",
     "useDynamicTheme": "Dynamisches Design verwenden",
     "red": "Rot",
