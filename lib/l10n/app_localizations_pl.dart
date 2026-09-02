@@ -1714,6 +1714,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get customizationDescription => 'Dostosuj tę aplikację';
 
   @override
+  String get language => 'Language';
+
+  @override
+  String get languageDescription => 'Change the language of the app';
+
+  @override
   String get color => 'Kolor';
 
   @override
