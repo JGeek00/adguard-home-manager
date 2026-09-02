@@ -242,7 +242,7 @@ class _ContentState extends State<_Content> {
                       style: TextStyle(
                         color: validData == true
                           ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
                       ),
                     ),
                   ),

@@ -64,9 +64,9 @@ class HomeAppBar extends StatelessWidget {
                     ? Theme.of(context).colorScheme.primary
                     : Colors.green
                   : appConfigProvider.useThemeColorForStatus == true
-                    ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                    ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
                     : Colors.red
-                : Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
             ),
           ),
           if (statusProvider.remainingTime > 0) Positioned(

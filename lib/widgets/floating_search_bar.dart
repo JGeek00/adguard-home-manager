@@ -77,7 +77,7 @@ class _SearchState extends State<FloatingSearchBar> {
                               prefixIcon: const Icon(Icons.search_rounded),
                               border: InputBorder.none,
                               filled: true,
-                              fillColor: Colors.grey.withOpacity(0.2),
+                              fillColor: Colors.grey.withValues(alpha: 0.2),
                               suffixIcon: _searchController.text != ""
                                 ? IconButton(
                                     onPressed: () {

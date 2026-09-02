@@ -3,7 +3,7 @@
 import 'package:adguard_home_manager/screens/settings/update_server/autoupdate_unavailable.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:html/parser.dart' as html;
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
@@ -188,9 +188,12 @@ class UpdateScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Html(
-                data: html.parse(md.markdownToHtml(serversProvider.updateAvailable.data!.changelog!)).outerHtml,
-                onLinkTap: (url, context, attributes) => url != null ? openUrl(url) : null,
+              child: HtmlWidget(
+                html.parse(md.markdownToHtml(serversProvider.updateAvailable.data!.changelog!)).outerHtml,
+                onTapUrl: (url) {
+                  openUrl(url);
+                  return true;
+                },
               )
             )
           ],

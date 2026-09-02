@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:html/parser.dart' as html;
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
@@ -143,9 +143,12 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     ),
                     if (_htmlChangelog != null) Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Html(
-                        data: _htmlChangelog,
-                        onLinkTap: (url, context, attributes) => url != null ? openUrl(url) : null,
+                      child: HtmlWidget(
+                        _htmlChangelog!,
+                        onTapUrl: (url) {
+                          openUrl(url);
+                          return true;
+                        },
                       )
                     ),
                     if (_htmlChangelog == null) Padding(
@@ -230,7 +233,7 @@ class _Header extends SliverPersistentHeaderDelegate {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.075),
+              color: Theme.of(context).colorScheme.surfaceTint.withValues(alpha: 0.075),
             ),
             child: Align(
               alignment: Alignment.topLeft,

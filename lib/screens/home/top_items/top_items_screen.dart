@@ -243,7 +243,7 @@ class _TopItemsScreenState extends State<TopItemsScreen> {
                         onChanged: search,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          fillColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                           hintText: AppLocalizations.of(context)!.search,
                           prefixIcon: const Icon(Icons.search_rounded),
                           contentPadding: const EdgeInsets.only(left: 14, bottom: 9, top: 11),
@@ -378,7 +378,7 @@ class _Item extends StatelessWidget {
                     percent: data.values.toList()[0]/total,
                     barRadius: const Radius.circular(5),
                     progressColor: Theme.of(context).colorScheme.primary,
-                    backgroundColor: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.2),
+                    backgroundColor: Theme.of(context).colorScheme.surfaceTint.withValues(alpha: 0.2),
                   ),
                 ),
                 const SizedBox(width: 10),

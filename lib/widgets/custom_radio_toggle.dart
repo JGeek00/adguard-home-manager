@@ -32,7 +32,7 @@ class CustomRadioToggle extends StatelessWidget {
           decoration: BoxDecoration(
             color: groupSelected == value 
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.primary.withOpacity(0.05),
+              : Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
             border: Border.all(
               color: Theme.of(context).colorScheme.primary
             ),

@@ -51,7 +51,7 @@ class CustomSwitchListTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         color: disabled != null && disabled == true
-                            ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                            ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
                             : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
@@ -64,7 +64,7 @@ class CustomSwitchListTile extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             color: disabled != null && disabled == true
-                              ? Theme.of(context).listTileTheme.textColor!.withOpacity(0.38)
+                              ? Theme.of(context).listTileTheme.textColor!.withValues(alpha: 0.38)
                               : Theme.of(context).listTileTheme.textColor
                           ),
                         ),
