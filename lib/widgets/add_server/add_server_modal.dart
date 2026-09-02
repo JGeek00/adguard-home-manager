@@ -374,7 +374,7 @@ class _AddServerModalState extends State<AddServerModal> {
             right: 24
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
               color: Theme.of(context).colorScheme.primary
@@ -421,7 +421,7 @@ class _AddServerModalState extends State<AddServerModal> {
           selectedEntry: connectionType.index, 
           onChange: (v) => setState(() => connectionType = ConnectionType.values[v]), 
           colors: SegmentedButtonSlideColors(
-            barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
+            barColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2), 
             backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
           ),
           textOverflow: TextOverflow.ellipsis,

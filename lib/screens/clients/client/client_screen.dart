@@ -431,7 +431,7 @@ class _Errors extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: Colors.red.withOpacity(0.2),
+      color: Colors.red.withValues(alpha: 0.2),
       margin: const EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(16),

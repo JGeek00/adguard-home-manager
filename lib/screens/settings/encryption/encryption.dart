@@ -367,7 +367,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                   children: [
                     if (_dataValidApi == false && (validDataError != null || encryptionResultMessage != null)) Card(
                       margin: const EdgeInsets.all(16),
-                      color: Colors.red.withOpacity(0.2),
+                      color: Colors.red.withValues(alpha: 0.2),
                       elevation: 0,
                       child: Padding(
                         padding: const EdgeInsets.all(16),

@@ -25,7 +25,7 @@ class DhcpMainButton extends StatelessWidget {
         right: 16
       ),
       child: Material(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(28),
         child: InkWell(
           onTap: selectedInterface != null

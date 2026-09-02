@@ -186,7 +186,7 @@ class _HomeChartState extends State<HomeChart> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Divider(
               thickness: 1,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
             ),
           ),
           const SizedBox(height: 16),

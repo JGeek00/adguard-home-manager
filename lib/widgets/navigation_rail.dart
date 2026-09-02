@@ -82,7 +82,7 @@ class SideNavigationRail extends StatelessWidget {
       labelType: NavigationRailLabelType.all,
       useIndicator: true,
       groupAlignment: 0,
-      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+      backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
     );
   }
 }

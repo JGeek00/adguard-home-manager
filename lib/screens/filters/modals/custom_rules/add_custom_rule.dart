@@ -226,7 +226,7 @@ class _CustomRuleEditor extends StatelessWidget {
                 vertical: 5
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(
                   color: Theme.of(context).colorScheme.primary
@@ -275,7 +275,7 @@ class _CustomRuleEditor extends StatelessWidget {
           selectedEntry: preset.index,
           onChange: (v) => setPreset(_BlockingPresets.values[v]), 
           colors: SegmentedButtonSlideColors(
-            barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
+            barColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2), 
             backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
           ),
           textOverflow: TextOverflow.ellipsis,

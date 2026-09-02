@@ -50,7 +50,7 @@ class CustomListTile extends StatelessWidget {
                         icon,
                         size: 24,
                         color: disabled == true
-                          ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                          ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
                           : Theme.of(context).listTileTheme.iconColor,
                       ),
                       const SizedBox(width: 16),
@@ -65,7 +65,7 @@ class CustomListTile extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
                               color: disabled == true
-                                ? Theme.of(context).colorScheme.onSurface.withOpacity(0.38)
+                                ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
                                 : Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
@@ -76,7 +76,7 @@ class CustomListTile extends StatelessWidget {
                               subtitle!,
                               style: TextStyle(
                                 color:  disabled == true
-                                  ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.38)
+                                  ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.38)
                                   : Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400

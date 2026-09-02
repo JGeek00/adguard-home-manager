@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.22.0+154
+version: 2.22.1+155
 
 environment:
   sdk: '>=2.18.1 <3.0.0'
@@ -41,10 +41,10 @@ dependencies:
   intl: any
   provider: ^6.1.5
   sqflite: ^2.4.2
-  package_info_plus: ^8.0.0
-  dynamic_color: ^1.8.1
+  package_info_plus: ^10.2.1
+  dynamic_color: 1.9.0
   animations: ^2.1.0
-  device_info_plus: ^11.2.1
+  device_info_plus: ^13.2.0
   uuid: ^4.5.1
   expandable: ^5.0.1
   fl_chart: ^1.1.1
@@ -53,18 +53,18 @@ dependencies:
   flutter_markdown: ^0.7.7+1
   markdown: ^7.3.0
   html: ^0.15.6
-  flutter_html: ^3.0.0
-  sqlite3_flutter_libs: ^0.5.40
+  flutter_widget_from_html_core: ^0.17.3
+  sqlite3_flutter_libs: ^0.6.0+eol
   sqflite_common_ffi: ^2.3.6
   contextmenu: ^3.0.0
   async: ^2.13.0
-  sentry_flutter: ^9.7.0
+  sentry_flutter: ^10.0.0-alpha.4
   flutter_dotenv: ^6.0.0
   flutter_reorderable_list: ^1.3.1
   pie_chart: ^5.4.0
   segmented_button_slide: ^2.0.0
   http: ^1.5.0
-  timezone: ^0.10.1
+  timezone: ^0.11.1
   flutter_custom_tabs: ^2.4.0
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.3

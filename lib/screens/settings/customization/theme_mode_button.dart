@@ -44,7 +44,7 @@ class ThemeModeButton extends StatelessWidget {
               ? Theme.of(context).colorScheme.primary
               : greyBackgroundColor
             : disabled == null || disabled == false
-              ? Theme.of(context).colorScheme.surfaceTint.withOpacity(0.1)
+              ? Theme.of(context).colorScheme.surfaceTint.withValues(alpha: 0.1)
               : greyBackgroundColor,
         )
       ),

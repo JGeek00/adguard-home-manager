@@ -219,7 +219,7 @@ class _Tile extends StatelessWidget {
         horizontal: 16
       ),
       selected: isSelected,
-      selectedTileColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5),
+      selectedTileColor: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
       selectedColor: Theme.of(context).colorScheme.onSurface,
       onTap: () => onSelect(list),
     );

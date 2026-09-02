@@ -25,7 +25,7 @@ class BlockedServicesSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(28),
             child: InkWell(
               onTap: () => onUpdateServicesGlobalSettings(!useGlobalSettingsServices),
@@ -78,7 +78,7 @@ class BlockedServicesSection extends StatelessWidget {
                     Icons.public,
                     color: useGlobalSettingsServices == false
                       ? Theme.of(context).listTileTheme.iconColor
-                      : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
+                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                   ),
                   const SizedBox(width: 16),
                   Flexible(
@@ -91,7 +91,7 @@ class BlockedServicesSection extends StatelessWidget {
                             fontSize: 16,
                             color: useGlobalSettingsServices == false
                               ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
+                              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                           ),
                         ),
                         if (useGlobalSettingsServices == false) ...[

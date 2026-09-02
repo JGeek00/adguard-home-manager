@@ -258,7 +258,7 @@ class _Content extends StatelessWidget {
             selectedEntry: selectedList, 
             onChange: onListChange,
             colors: SegmentedButtonSlideColors(
-              barColor: Theme.of(context).colorScheme.primary.withOpacity(0.2), 
+              barColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2), 
               backgroundSelectedColor: Theme.of(context).colorScheme.primary, 
             ),
             selectedTextStyle: TextStyle(
@@ -331,7 +331,7 @@ class _SearchField extends StatelessWidget {
             prefixIcon: const Icon(Icons.search_rounded),
             border: InputBorder.none,
             filled: true,
-            fillColor: Colors.grey.withOpacity(0.2),
+            fillColor: Colors.grey.withValues(alpha: 0.2),
             suffixIcon: controller.text != ""
               ? IconButton(
                   onPressed: onClear, 
