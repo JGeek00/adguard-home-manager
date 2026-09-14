@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jgeek00.adguard_home_manager">
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required on Android 17+ (targetSdk 37): LAN access is blocked by
+         default without it (Local Network Protection). -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove"  />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="33" tools:node="remove" />
