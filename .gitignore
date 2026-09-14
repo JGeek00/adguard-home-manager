@@ -53,3 +53,5 @@ app.*.map.json
 untranslated.json
 
 android/app/.cxx
+
+.codegraph/
