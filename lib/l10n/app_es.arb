@@ -817,5 +817,19 @@
     "enablingDnsRewriteRule": "Habilitando reglas de reescritura DNS...",
     "disablingDnsRewriteRule": "Deshabilitando reglas de reescritura DNS...",
     "selectIdToFilter": "Selecciona un ID para filtrar",
-    "clientIds": "IDs de cliente"
+    "clientIds": "IDs de cliente",
+    "loginMethod": "Método de acceso",
+    "loginMethodDefault": "Estándar",
+    "loginMethodHomeAssistant": "Home Assistant",
+    "loginMethodGlinet": "GL.iNet",
+    "loginMethodDefaultHelp": "Usa el usuario y la contraseña de AdGuard Home.",
+    "loginMethodHomeAssistantHelp": "Usa el usuario y la contraseña de Home Assistant.",
+    "loginMethodGlinetHelp": "Usa la contraseña de administrador del router. No hace falta un usuario.",
+    "routerAdminPassword": "Contraseña de administrador del router",
+    "glinetAddressHint": "Usa la dirección de administración del router y deja el puerto vacío.",
+    "glinetDetectedTitle": "Esto parece un router GL.iNet",
+    "glinetDetectedMessage": "AdGuard en este router usa el acceso de administrador de GL.iNet. Cambia el método de acceso a GL.iNet y deja el puerto vacío.",
+    "useGlinetLogin": "Usar acceso GL.iNet",
+    "glinetNotFound": "No hay un acceso GL.iNet en esta dirección. Usa la dirección de administración del router y deja el puerto vacío.",
+    "glinetSessionRejected": "El router aceptó la contraseña, pero AdGuard rechazó la sesión."
 }

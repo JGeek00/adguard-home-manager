@@ -19,7 +19,8 @@ Future<dynamic> saveServerQuery(Database db, Server server) async {
           'password': server.password,
           'defaultServer': convertFromBoolToInt(server.defaultServer),
           'authToken': server.authToken,
-          'runningOnHa': convertFromBoolToInt(server.runningOnHa)
+          'runningOnHa': convertFromBoolToInt(server.runningOnHa),
+          'glinetAuth': convertFromBoolToInt(server.glinetAuth)
         }
       );
       return null;
@@ -45,7 +46,8 @@ Future<dynamic> editServerQuery(Database db, Server server) async {
           'password': server.password,
           'defaultServer': convertFromBoolToInt(server.defaultServer),
           'authToken': server.authToken,
-          'runningOnHa': convertFromBoolToInt(server.runningOnHa)
+          'runningOnHa': convertFromBoolToInt(server.runningOnHa),
+          'glinetAuth': convertFromBoolToInt(server.glinetAuth)
         },
         where: 'id = ?',
         whereArgs: [server.id]

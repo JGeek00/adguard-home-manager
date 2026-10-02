@@ -80,9 +80,7 @@ void connectToServer({
   final ProcessModal process = ProcessModal();
   process.open(AppLocalizations.of(context)!.connecting);
       
-  final result = server.runningOnHa == true 
-    ? await ServerAuth.loginHA(server)
-    : await ServerAuth.login(server);
+  final result = await ServerAuth.authenticate(server);
         
   if (result == AuthStatus.success && context.mounted) {
     final serversProvider = Provider.of<ServersProvider>(context, listen: false);

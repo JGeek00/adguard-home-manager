@@ -227,6 +227,7 @@ class ServersProvider with ChangeNotifier {
           defaultServer: convertFromIntToBool(server['defaultServer'])!,
           authToken: server['authToken'],
           runningOnHa: convertFromIntToBool(server['runningOnHa'])!,
+          glinetAuth: convertFromIntToBool(server['glinetAuth'] ?? 0) ?? false,
         );
         _serversList.add(serverObj);
         if (convertFromIntToBool(server['defaultServer']) == true) {

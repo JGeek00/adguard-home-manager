@@ -54,7 +54,6 @@ dependencies:
   markdown: ^7.3.0
   html: ^0.15.6
   flutter_widget_from_html_core: ^0.17.3
-  sqlite3_flutter_libs: ^0.6.0+eol
   sqflite_common_ffi: ^2.3.6
   contextmenu: ^3.0.0
   async: ^2.13.0
@@ -64,6 +63,8 @@ dependencies:
   pie_chart: ^5.4.0
   segmented_button_slide: ^2.0.0
   http: ^1.5.0
+  crypt: ^4.3.1
+  crypto: ^3.0.6
   timezone: ^0.11.1
   flutter_custom_tabs: ^2.4.0
   url_launcher: ^6.3.2

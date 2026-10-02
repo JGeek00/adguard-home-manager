@@ -2665,4 +2665,53 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get clientIds => 'Client-IDs';
+
+  @override
+  String get loginMethod => 'Login method';
+
+  @override
+  String get loginMethodDefault => 'Default';
+
+  @override
+  String get loginMethodHomeAssistant => 'Home Assistant';
+
+  @override
+  String get loginMethodGlinet => 'GL.iNet';
+
+  @override
+  String get loginMethodDefaultHelp =>
+      'Uses the AdGuard Home username and password.';
+
+  @override
+  String get loginMethodHomeAssistantHelp =>
+      'Uses the Home Assistant username and password.';
+
+  @override
+  String get loginMethodGlinetHelp =>
+      'Uses the router\'s admin password. No username is needed.';
+
+  @override
+  String get routerAdminPassword => 'Router admin password';
+
+  @override
+  String get glinetAddressHint =>
+      'Use the router\'s admin address and leave the port empty.';
+
+  @override
+  String get glinetDetectedTitle => 'This looks like a GL.iNet router';
+
+  @override
+  String get glinetDetectedMessage =>
+      'AdGuard on this router uses the GL.iNet admin login. Switch the login method to GL.iNet and leave the port empty.';
+
+  @override
+  String get useGlinetLogin => 'Use GL.iNet login';
+
+  @override
+  String get glinetNotFound =>
+      'No GL.iNet login at this address. Use the router\'s admin address and leave the port empty.';
+
+  @override
+  String get glinetSessionRejected =>
+      'The router accepted the password, but AdGuard rejected the session.';
 }
