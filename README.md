@@ -136,7 +136,6 @@ If you like the project and you want to contribute with the development, you can
 - [markdown](https://pub.dev/packages/markdown)
 - [html](https://pub.dev/packages/html)
 - [flutter html](https://pub.dev/packages/flutter_html)
-- [sqlite3 flutter libs](https://pub.dev/packages/sqlite3_flutter_libs)
 - [sqflite common ffi](https://pub.dev/packages/sqflite_common_ffi)
 - [window size](https://github.com/google/flutter-desktop-embedding)
 - [flutter split view](https://github.com/JGeek00/flutter_split_view) (forked from [here](https://pub.dev/packages/flutter_split_view))

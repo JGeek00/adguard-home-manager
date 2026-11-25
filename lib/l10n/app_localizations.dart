@@ -5034,6 +5034,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Client IDs'**
   String get clientIds;
+
+  /// No description provided for @loginMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Login method'**
+  String get loginMethod;
+
+  /// No description provided for @loginMethodDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get loginMethodDefault;
+
+  /// No description provided for @loginMethodHomeAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant'**
+  String get loginMethodHomeAssistant;
+
+  /// No description provided for @loginMethodGlinet.
+  ///
+  /// In en, this message translates to:
+  /// **'GL.iNet'**
+  String get loginMethodGlinet;
+
+  /// No description provided for @loginMethodDefaultHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses the AdGuard Home username and password.'**
+  String get loginMethodDefaultHelp;
+
+  /// No description provided for @loginMethodHomeAssistantHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses the Home Assistant username and password.'**
+  String get loginMethodHomeAssistantHelp;
+
+  /// No description provided for @loginMethodGlinetHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses the router\'s admin password. No username is needed.'**
+  String get loginMethodGlinetHelp;
+
+  /// No description provided for @routerAdminPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Router admin password'**
+  String get routerAdminPassword;
+
+  /// No description provided for @glinetAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the router\'s admin address and leave the port empty.'**
+  String get glinetAddressHint;
+
+  /// No description provided for @glinetDetectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This looks like a GL.iNet router'**
+  String get glinetDetectedTitle;
+
+  /// No description provided for @glinetDetectedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'AdGuard on this router uses the GL.iNet admin login. Switch the login method to GL.iNet and leave the port empty.'**
+  String get glinetDetectedMessage;
+
+  /// No description provided for @useGlinetLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Use GL.iNet login'**
+  String get useGlinetLogin;
+
+  /// No description provided for @glinetNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No GL.iNet login at this address. Use the router\'s admin address and leave the port empty.'**
+  String get glinetNotFound;
+
+  /// No description provided for @glinetSessionRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'The router accepted the password, but AdGuard rejected the session.'**
+  String get glinetSessionRejected;
 }
 
 class _AppLocalizationsDelegate

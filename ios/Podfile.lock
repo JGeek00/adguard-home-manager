@@ -18,21 +18,6 @@ PODS:
   - sqflite (0.0.3):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.45.0):
-    - sqlite3/common (= 3.45.0)
-  - sqlite3/common (3.45.0)
-  - sqlite3/fts5 (3.45.0):
-    - sqlite3/common
-  - sqlite3/perf-threadsafe (3.45.0):
-    - sqlite3/common
-  - sqlite3/rtree (3.45.0):
-    - sqlite3/common
-  - sqlite3_flutter_libs (0.0.1):
-    - Flutter
-    - sqlite3 (~> 3.45.0)
-    - sqlite3/fts5
-    - sqlite3/perf-threadsafe
-    - sqlite3/rtree
   - store_checker (0.0.1):
     - Flutter
 
@@ -44,14 +29,12 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
-  - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - store_checker (from `.symlinks/plugins/store_checker/ios`)
 
 SPEC REPOS:
   trunk:
     - Sentry
     - SentryPrivate
-    - sqlite3
 
 EXTERNAL SOURCES:
   device_info_plus:
@@ -68,8 +51,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sentry_flutter/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/darwin"
-  sqlite3_flutter_libs:
-    :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   store_checker:
     :path: ".symlinks/plugins/store_checker/ios"
 
@@ -83,8 +64,6 @@ SPEC CHECKSUMS:
   sentry_flutter: c87a0556eeb6cbf7f9f924d30e878bdedf22d364
   SentryPrivate: 2f0c9ba4c3fc993f70eab6ca95673509561e0085
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
-  sqlite3: f307b6291c4db7b5086c38d6237446b98a738581
-  sqlite3_flutter_libs: aeb4d37509853dfa79d9b59386a2dac5dd079428
   store_checker: 359c5051d9ec30ff0a8fa39eb5ec9df021bb745d
 
 PODFILE CHECKSUM: c4c93c5f6502fe2754f48404d3594bf779584011
