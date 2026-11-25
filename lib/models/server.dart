@@ -10,6 +10,7 @@ class Server {
   bool defaultServer;
   String? authToken;
   bool runningOnHa;
+  bool glinetAuth;
 
   Server({
     required this.id,
@@ -23,5 +24,6 @@ class Server {
     required this.defaultServer,
     this.authToken,
     required this.runningOnHa,
+    this.glinetAuth = false,
   });
 }

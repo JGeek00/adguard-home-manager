@@ -6,21 +6,25 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:adguard_home_manager/classes/http_client.dart';
 import 'package:adguard_home_manager/models/server.dart';
+import 'package:adguard_home_manager/services/auth_status.dart';
+import 'package:adguard_home_manager/services/glinet_auth.dart';
 import 'package:adguard_home_manager/services/local_network_permission.dart';
 
-enum AuthStatus { 
-  success, 
-  invalidCredentials, 
-  manyAttepts, 
-  serverError, 
-  socketException,
-  timeoutException,
-  handshakeException,
-  unknown 
-}
+export 'package:adguard_home_manager/services/auth_status.dart';
 
 class ServerAuth {
+  /// Picks the login path. GL.iNet wins if both flags are set, which the
+  /// connection form does not produce.
+  static Future<AuthStatus> authenticate(Server server) {
+    if (server.glinetAuth) return login(server);
+    if (server.runningOnHa) return loginHA(server);
+    return login(server);
+  }
+
   static Future<AuthStatus> login(Server server) async {
+    if (server.glinetAuth) {
+      return GlinetAuth.login(server);
+    }
     try {
       // Android 17+ blocks LAN sockets until the user grants local network
       // access; request it before opening the socket (no-op elsewhere).

@@ -16,6 +16,7 @@ import 'package:adguard_home_manager/config/minimum_server_version.dart';
 import 'package:adguard_home_manager/models/server_status.dart';
 import 'package:adguard_home_manager/functions/compare_versions.dart';
 import 'package:adguard_home_manager/services/auth.dart';
+import 'package:adguard_home_manager/services/glinet_auth.dart';
 import 'package:adguard_home_manager/providers/app_config_provider.dart';
 import 'package:adguard_home_manager/services/api_client.dart';
 import 'package:adguard_home_manager/functions/snackbar.dart';
@@ -29,6 +30,8 @@ import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/models/server.dart';
 
 enum ConnectionType { http, https}
+
+enum LoginMethod { standard, homeAssistant, glinet }
 
 class AddServerModal extends StatefulWidget {
   final Server? server;
@@ -69,11 +72,43 @@ class _AddServerModalState extends State<AddServerModal> {
 
   bool defaultServer = false;
 
-  bool homeAssistant = false;
+  LoginMethod loginMethod = LoginMethod.standard;
 
   bool allDataValid = false;
 
   bool isConnecting = false;
+
+  Server _serverFromForm({required String id}) {
+    final glinet = loginMethod == LoginMethod.glinet;
+    final homeAssistant = loginMethod == LoginMethod.homeAssistant;
+    final user = glinet
+        ? 'root'
+        : (userController.text != '' ? userController.text : null);
+    final password = passwordController.text != '' ? passwordController.text : null;
+    return Server(
+      id: id,
+      name: nameController.text,
+      connectionMethod: connectionType.name,
+      domain: ipDomainController.text,
+      port: portController.text != '' ? int.parse(portController.text) : null,
+      user: user,
+      password: password,
+      path: pathController.text != '' ? pathController.text : null,
+      defaultServer: defaultServer,
+      authToken: homeAssistant && user != null && password != null
+          ? encodeBase64UserPass(user, password)
+          : null,
+      runningOnHa: homeAssistant,
+      glinetAuth: glinet,
+    );
+  }
+
+  void _applyBasicAuth(Server server) {
+    if (server.glinetAuth) return;
+    if (server.user != null && server.password != null) {
+      server.authToken = encodeBase64UserPass(server.user!, server.password!);
+    }
+  }
 
   @override
   void initState() {
@@ -86,7 +121,11 @@ class _AddServerModalState extends State<AddServerModal> {
       userController.text = widget.server!.user ?? "";
       passwordController.text = widget.server!.password ?? "";
       defaultServer = widget.server!.defaultServer;
-      homeAssistant = widget.server!.runningOnHa;
+      if (widget.server!.glinetAuth) {
+        loginMethod = LoginMethod.glinet;
+      } else if (widget.server!.runningOnHa) {
+        loginMethod = LoginMethod.homeAssistant;
+      }
     }
     setState(() => allDataValid = checkDataValid(
       ipDomainController: ipDomainController,
@@ -129,35 +168,50 @@ class _AddServerModalState extends State<AddServerModal> {
       if (status == AuthStatus.socketException || status == AuthStatus.timeoutException) return AppLocalizations.of(context)!.cantReachServer;
       if (status == AuthStatus.serverError) return AppLocalizations.of(context)!.serverError;
       if (status == AuthStatus.handshakeException) return AppLocalizations.of(context)!.sslError;
+      if (status == AuthStatus.glinetNotFound) return AppLocalizations.of(context)!.glinetNotFound;
+      if (status == AuthStatus.glinetSessionRejected) return AppLocalizations.of(context)!.glinetSessionRejected;
       return AppLocalizations.of(context)!.unknownError;
     }
 
     void connect() async {
       setState(() => isConnecting = true);
 
-      Server serverObj = Server(
-        id: uuid.v4(),
-        name: nameController.text, 
-        connectionMethod: connectionType.name, 
-        domain: ipDomainController.text, 
-        port: portController.text != '' ? int.parse(portController.text) : null,
-        user: userController.text != "" ? userController.text : null, 
-        password: passwordController.text != "" ? passwordController.text : null, 
-        path: pathController.text != "" ? pathController.text : null, 
-        defaultServer: defaultServer,
-        authToken: homeAssistant == true 
-          ? encodeBase64UserPass(userController.text, passwordController.text)
-          : null,
-        runningOnHa: homeAssistant
-      );
+      final Server serverObj = _serverFromForm(id: uuid.v4());
 
-      final result = homeAssistant == true 
-        ? await ServerAuth.loginHA(serverObj)
-        : await ServerAuth.login(serverObj);
+      final result = await ServerAuth.authenticate(serverObj);
 
       // If something goes wrong with the connection
       if (result != AuthStatus.success) {
         cancelConnecting();
+        if (loginMethod == LoginMethod.standard && mounted) {
+          final probe = await GlinetAuth.probe(serverObj);
+          if (probe.found && mounted) {
+            final useGlinet = await showDialog<bool>(
+              context: context,
+              builder: (dialogContext) => AlertDialog(
+                title: Text(AppLocalizations.of(dialogContext)!.glinetDetectedTitle),
+                content: Text(AppLocalizations.of(dialogContext)!.glinetDetectedMessage),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext, false),
+                    child: Text(AppLocalizations.of(dialogContext)!.cancel),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext, true),
+                    child: Text(AppLocalizations.of(dialogContext)!.useGlinetLogin),
+                  ),
+                ],
+              ),
+            );
+            if (useGlinet == true && mounted) {
+              setState(() {
+                loginMethod = LoginMethod.glinet;
+                if (probe.clearPort) portController.clear();
+              });
+            }
+            return;
+          }
+        }
         if (mounted) {
           showSnackbar(
             appConfigProvider: appConfigProvider, 
@@ -168,9 +222,7 @@ class _AddServerModalState extends State<AddServerModal> {
         return;
       }
 
-      if (serverObj.user != null && serverObj.password != null) {
-        serverObj.authToken = encodeBase64UserPass(serverObj.user!, serverObj.password!);
-      }
+      _applyBasicAuth(serverObj);
 
       statusProvider.setServerStatusLoad(LoadStatus.loading);
       final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
@@ -236,25 +288,10 @@ class _AddServerModalState extends State<AddServerModal> {
 
     void edit() async {
       setState(() => isConnecting = true);
+
+      final Server serverObj = _serverFromForm(id: widget.server!.id);
       
-      final Server serverObj = Server(
-        id: widget.server!.id,
-        name: nameController.text, 
-        connectionMethod: connectionType.name, 
-        domain: ipDomainController.text, 
-        port: portController.text != '' ? int.parse(portController.text) : null,
-        user: userController.text != "" ? userController.text : null, 
-        password: passwordController.text != "" ? passwordController.text : null, 
-        defaultServer: defaultServer,
-        authToken: homeAssistant == true 
-          ? encodeBase64UserPass(userController.text, passwordController.text)
-          : null,
-        runningOnHa: homeAssistant
-      );
-      
-      final result = homeAssistant == true 
-        ? await ServerAuth.loginHA(serverObj)
-        : await ServerAuth.login(serverObj);
+      final result = await ServerAuth.authenticate(serverObj);
 
       // If something goes wrong with the connection
       if (result != AuthStatus.success) {
@@ -269,9 +306,7 @@ class _AddServerModalState extends State<AddServerModal> {
         return;
       }
       
-      if (serverObj.user != null && serverObj.password != null) {
-        serverObj.authToken = encodeBase64UserPass(serverObj.user!, serverObj.password!);
-      }
+      _applyBasicAuth(serverObj);
 
       final ApiClientV2 apiClient2 = ApiClientV2(server: serverObj);
       final version = await apiClient2.getServerVersion();
@@ -517,19 +552,85 @@ class _AddServerModalState extends State<AddServerModal> {
           isConnecting: isConnecting,
         ),
         SectionLabel(
-          label: AppLocalizations.of(context)!.authentication,
+          label: AppLocalizations.of(context)!.loginMethod,
           padding: const EdgeInsets.all(24),
         ),
-        FormTextField(
-          label: AppLocalizations.of(context)!.username, 
-          controller: userController, 
-          icon: Icons.person_rounded,
-          isConnecting: isConnecting,
+        IgnorePointer(
+          ignoring: widget.server != null || isConnecting,
+          child: Opacity(
+            opacity: widget.server != null ? 0.6 : 1,
+            child: SegmentedButtonSlide(
+              entries: [
+                SegmentedButtonSlideEntry(label: AppLocalizations.of(context)!.loginMethodDefault),
+                SegmentedButtonSlideEntry(label: AppLocalizations.of(context)!.loginMethodHomeAssistant),
+                SegmentedButtonSlideEntry(label: AppLocalizations.of(context)!.loginMethodGlinet),
+              ],
+              selectedEntry: loginMethod.index,
+              onChange: (v) => setState(() => loginMethod = LoginMethod.values[v]),
+              colors: SegmentedButtonSlideColors(
+                barColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                backgroundSelectedColor: Theme.of(context).colorScheme.primary,
+              ),
+              textOverflow: TextOverflow.ellipsis,
+              height: 40,
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              selectedTextStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+              unselectedTextStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              hoverTextStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
         ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+          child: Text(
+            loginMethod == LoginMethod.glinet
+                ? AppLocalizations.of(context)!.loginMethodGlinetHelp
+                : loginMethod == LoginMethod.homeAssistant
+                    ? AppLocalizations.of(context)!.loginMethodHomeAssistantHelp
+                    : AppLocalizations.of(context)!.loginMethodDefaultHelp,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        if (loginMethod == LoginMethod.glinet) Card(
+          margin: const EdgeInsets.only(top: 16, left: 24, right: 24),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_rounded,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 16),
+                Flexible(child: Text(AppLocalizations.of(context)!.glinetAddressHint)),
+              ],
+            ),
+          ),
+        ),
+        if (loginMethod != LoginMethod.glinet) ...[
+          const SizedBox(height: 20),
+          FormTextField(
+            label: AppLocalizations.of(context)!.username,
+            controller: userController,
+            icon: Icons.person_rounded,
+            isConnecting: isConnecting,
+          ),
+        ],
         const SizedBox(height: 20),
         FormTextField(
-          label: AppLocalizations.of(context)!.password, 
-          controller: passwordController, 
+          label: loginMethod == LoginMethod.glinet
+              ? AppLocalizations.of(context)!.routerAdminPassword
+              : AppLocalizations.of(context)!.password,
+          controller: passwordController,
           icon: Icons.lock_rounded,
           keyboardType: TextInputType.visiblePassword,
           obscureText: true,
@@ -547,16 +648,6 @@ class _AddServerModalState extends State<AddServerModal> {
           value: defaultServer, 
           onChanged:  (value) => setState(() => defaultServer = value),
           title: AppLocalizations.of(context)!.defaultServer,
-          disabled: widget.server != null || isConnecting,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 4
-          ),
-        ),
-        CustomSwitchListTile(
-          value: homeAssistant, 
-          onChanged:  (value) => setState(() => homeAssistant = value),
-          title: AppLocalizations.of(context)!.runningHomeAssistant,
           disabled: widget.server != null || isConnecting,
           padding: const EdgeInsets.symmetric(
             horizontal: 24,
