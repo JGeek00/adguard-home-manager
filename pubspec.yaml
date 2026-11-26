@@ -17,10 +17,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.22.2+156
+version: 2.23.0+157
 
 environment:
-  sdk: '>=2.18.1 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 scripts:
   build:
@@ -35,30 +35,28 @@ scripts:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^2.0.0
   flutter_localizations:
     sdk: flutter   
-  intl: any
+  intl: ^0.20.3
   provider: ^6.1.5
   sqflite: ^2.4.2
   package_info_plus: ^10.2.1
-  dynamic_color: 1.9.0
-  animations: ^2.1.0
+  dynamic_color: ^1.9.0
+  animations: ^2.2.0
   device_info_plus: ^13.2.0
   uuid: ^4.5.1
   expandable: ^5.0.1
   fl_chart: ^1.1.1
   flutter_svg: ^2.2.1
   percent_indicator: ^4.2.5
-  flutter_markdown: ^0.7.7+1
   markdown: ^7.3.0
   html: ^0.15.6
   flutter_widget_from_html_core: ^0.17.3
   sqflite_common_ffi: ^2.3.6
   contextmenu: ^3.0.0
   async: ^2.13.0
-  sentry_flutter: ^10.0.0-alpha.4
-  flutter_dotenv: ^6.0.0
+  sentry_flutter: ^10.6.0
   flutter_reorderable_list: ^1.3.1
   pie_chart: ^5.4.0
   segmented_button_slide: ^2.0.0
@@ -69,7 +67,7 @@ dependencies:
   flutter_custom_tabs: ^2.4.0
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.3
-  window_manager: ^0.5.1
+  window_manager: ^0.7.1
 
 dev_dependencies:
   flutter_test:
@@ -132,7 +130,6 @@ flutter:
     - assets/other/get_google_play.png
     - assets/resources/github.svg
     - assets/resources/google-play.svg
-    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
