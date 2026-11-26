@@ -316,18 +316,26 @@ class ApiClientV2 {
     return ApiResponse(successful: result.successful);
   }
 
-  Future<ApiResponse> getFiltering() async {
-    final results1 = await  HttpRequestClient.get(urlPath: '/filtering/status', server: server);
-    final results2 = await HttpRequestClient.get(urlPath: '/blocked_services/list', server: server);
+    Future<ApiResponse> getFiltering() async {
+    final results1 = await HttpRequestClient.get(urlPath: '/filtering/status', server: server);
+    final results2 = await HttpRequestClient.get(urlPath: '/blocked_services/get', server: server);
     if (results1.successful == true && results1.body != null) {
       try {
+        List<dynamic> blockedServices = [];
+        if (results2.successful == true && results2.body != null) {
+          final decodedServices = jsonDecode(results2.body!);
+          if (decodedServices is List) {
+            blockedServices = decodedServices;
+          } else if (decodedServices is Map && decodedServices['ids'] is List) {
+            blockedServices = decodedServices['ids'];
+          }
+        }
+
         return ApiResponse(
           successful: true,
           content: Filtering.fromJson({
             ...jsonDecode(results1.body!),
-            "blocked_services": results2.body != null 
-              ? jsonDecode(results2.body!)
-              : []
+            "blocked_services": blockedServices,
           })
         );
       } catch (e, stackTrace) {
@@ -343,6 +351,7 @@ class ApiClientV2 {
       return const ApiResponse(successful: false);
     }
   }
+
 
   Future<ApiResponse> setCustomRules({
     required List<String> rules, 
@@ -478,16 +487,29 @@ class ApiClientV2 {
     return ApiResponse(successful: result.successful);
   }
 
-  Future<ApiResponse> setBlockedServices({
+    Future<ApiResponse> setBlockedServices({
     required List<String> data,
   }) async {
-    final result = await HttpRequestClient.post(
-      urlPath: '/blocked_services/set', 
+    Map<String, dynamic> schedule = {"time_zone": "Local"};
+    final current = await HttpRequestClient.get(urlPath: '/blocked_services/get', server: server);
+    if (current.successful && current.body != null) {
+      final decoded = jsonDecode(current.body!);
+      if (decoded is Map && decoded['schedule'] is Map<String, dynamic>) {
+        schedule = decoded['schedule'];
+      }
+    }
+
+    final result = await HttpRequestClient.put(
+      urlPath: '/blocked_services/update',
       server: server,
-      body: data,
+      body: {
+        'ids': data,
+        'schedule': schedule,
+      },
     );
     return ApiResponse(successful: result.successful);
   }
+
 
   Future<ApiResponse> getDhcpData() async {
     final results = await Future.wait([
