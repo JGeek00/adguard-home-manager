@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -11,7 +10,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:window_manager/legacy.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:adguard_home_manager/l10n/app_localizations.dart';
 
@@ -29,6 +28,7 @@ import 'package:adguard_home_manager/providers/dhcp_provider.dart';
 import 'package:adguard_home_manager/providers/status_provider.dart';
 import 'package:adguard_home_manager/providers/servers_provider.dart';
 import 'package:adguard_home_manager/constants/colors.dart';
+import 'package:adguard_home_manager/config/app_config.dart';
 import 'package:adguard_home_manager/config/globals.dart';
 import 'package:adguard_home_manager/config/theme.dart';
 import 'package:adguard_home_manager/services/db/database.dart';
@@ -47,8 +47,6 @@ void main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-
-  await dotenv.load(fileName: '.env');
 
   final sharedPreferences = await SharedPreferences.getInstance();
   
@@ -152,18 +150,10 @@ void main() async {
     )
   );
 
-  if (
-    (
-      kReleaseMode &&
-      (dotenv.env['SENTRY_DSN'] != null && dotenv.env['SENTRY_DSN'] != "")
-    ) || (
-      dotenv.env['ENABLE_SENTRY'] == "true" &&
-      (dotenv.env['SENTRY_DSN'] != null && dotenv.env['SENTRY_DSN'] != "")
-    )
-  ) {
+  if (sentryDsn.isNotEmpty && (kReleaseMode || enableSentry)) {
     SentryFlutter.init(
       (options) {
-        options.dsn = dotenv.env['SENTRY_DSN'];
+        options.dsn = sentryDsn;
         options.sendDefaultPii = false;
         options.beforeSend = (event, hint) {
           if (event.throwable is HttpException) {

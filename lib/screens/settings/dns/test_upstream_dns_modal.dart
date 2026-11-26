@@ -93,7 +93,7 @@ class _TestUpstreamDnsModalState extends State<TestUpstreamDnsModal> {
           builder: (context) {
             switch (loadStatus) {
               case LoadStatus.loading:
-                return const Padding(
+                return Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

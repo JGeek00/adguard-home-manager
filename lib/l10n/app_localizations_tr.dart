@@ -9,7 +9,7 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get home => 'Anasayfa';
+  String get home => 'Ana Sayfa';
 
   @override
   String get settings => 'Ayarlar';
@@ -33,19 +33,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ipDomain => 'IP adresi veya alan adı';
 
   @override
-  String get path => 'Dosya Yolu';
+  String get path => 'Yol';
 
   @override
-  String get port => 'Bağlantı noktası';
+  String get port => 'Port';
 
   @override
   String get username => 'Kullanıcı adı';
 
   @override
-  String get password => 'Şifre';
+  String get password => 'Parola';
 
   @override
-  String get defaultServer => 'Varsayılan sunucu olarak ayarla';
+  String get defaultServer => 'Varsayılan sunucu';
 
   @override
   String get general => 'Genel';
@@ -60,76 +60,76 @@ class AppLocalizationsTr extends AppLocalizations {
   String get other => 'Diğer';
 
   @override
-  String get invalidPort => 'Geçersiz bağlantı noktası';
+  String get invalidPort => 'Geçersiz port';
 
   @override
-  String get invalidPath => 'Geçersiz dosya yolu';
+  String get invalidPath => 'Geçersiz yol';
 
   @override
-  String get invalidIpDomain => 'Geçersiz IP veya alan adı';
+  String get invalidIpDomain => 'Geçersiz IP adresi veya alan adı';
 
   @override
-  String get ipDomainNotEmpty => 'IP veya alan adı boş olamaz';
+  String get ipDomainNotEmpty => 'IP adresi veya alan adı boş bırakılamaz';
 
   @override
-  String get nameNotEmpty => 'Ad boş bırakılamaz';
+  String get nameNotEmpty => 'Ad alanı boş bırakılamaz';
 
   @override
-  String get invalidUsernamePassword => 'Geçersiz kullanıcı adı veya şifre';
+  String get invalidUsernamePassword => 'Kullanıcı adı veya parola hatalı';
 
   @override
   String get tooManyAttempts =>
-      'Çok fazla deneme yapıldı. Daha sonra tekrar deneyin.';
+      'Çok fazla deneme yaptınız. Birazdan tekrar deneyin.';
 
   @override
   String get cantReachServer =>
-      'Sunucuya ulaşılamıyor. Bağlantınızı kontrol edin.';
+      'Sunucuya ulaşılamıyor. Bağlantı bilgilerini kontrol edin.';
 
   @override
   String get sslError =>
-      'SSL hatası. Ayarlar > Gelişmiş ayarlar bölümüne gidin ve SSL doğrulamasını geçersiz kıl seçeneğini etkinleştirin.';
+      'El sıkışma hatası. Sunucuyla güvenli bağlantı kurulamıyor; sorun SSL kaynaklı olabilir. Ayarlar > Gelişmiş ayarlar bölümünden \"SSL sertifikasını kontrol etme\" seçeneğini etkinleştirin.';
 
   @override
   String get unknownError => 'Bilinmeyen hata';
 
   @override
-  String get connectionNotCreated => 'Bağlantı kurulamadı';
+  String get connectionNotCreated => 'Bağlantı oluşturulamadı';
 
   @override
   String get connecting => 'Bağlanılıyor...';
 
   @override
-  String get connected => 'Bağlantı kuruldu';
+  String get connected => 'Bağlandı';
 
   @override
-  String get selectedDisconnected => 'Seçildi ancak bağlantı kesildi';
+  String get selectedDisconnected => 'Seçili ancak bağlantı yok';
 
   @override
   String get connectionDefaultSuccessfully =>
-      'Bağlantı başarıyla varsayılan olarak ayarlandı.';
+      'Bağlantı varsayılan olarak ayarlandı.';
 
   @override
   String get connectionDefaultFailed =>
       'Bağlantı varsayılan olarak ayarlanamadı.';
 
   @override
-  String get noSavedConnections => 'Kaydedilmiş bağlantı yok';
+  String get noSavedConnections => 'Kayıtlı bağlantı yok';
 
   @override
   String get cannotConnect => 'Sunucuya bağlanılamıyor';
 
   @override
-  String get connectionRemoved => 'Bağlantı başarıyla kaldırıldı';
+  String get connectionRemoved => 'Bağlantı kaldırıldı';
 
   @override
-  String get connectionCannotBeRemoved => 'Bağlantı kaldırılamaz.';
+  String get connectionCannotBeRemoved => 'Bağlantı kaldırılamadı.';
 
   @override
   String get remove => 'Kaldır';
 
   @override
   String get removeWarning =>
-      'Bu AdGuard Home sunucusuyla olan bağlantıyı kaldırmak istediğinizden emin misiniz?';
+      'Bu AdGuard Home sunucusuyla olan bağlantıyı kaldırmak istediğinize emin misiniz?';
 
   @override
   String get cancel => 'İptal';
@@ -138,7 +138,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get defaultConnection => 'Varsayılan bağlantı';
 
   @override
-  String get setDefault => 'Varsayılan sunucu yap';
+  String get setDefault => 'Varsayılan yap';
 
   @override
   String get edit => 'Düzenle';
@@ -153,7 +153,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get serverStatus => 'Sunucu durumu';
 
   @override
-  String get connectionNotUpdated => 'Bağlantı Güncellenmedi';
+  String get connectionNotUpdated => 'Bağlantı güncellenemedi';
 
   @override
   String get ruleFilteringWidget => 'Kural filtreleme';
@@ -162,7 +162,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get safeBrowsingWidget => 'Güvenli gezinme';
 
   @override
-  String get parentalFilteringWidget => 'Ebeveyn filtreleme';
+  String get parentalFilteringWidget => 'Ebeveyn denetimi';
 
   @override
   String get safeSearchWidget => 'Güvenli arama';
@@ -174,7 +174,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get safeBrowsing => 'Güvenli gezinme';
 
   @override
-  String get parentalFiltering => 'Ebeveyn filtreleme';
+  String get parentalFiltering => 'Ebeveyn denetimi';
 
   @override
   String get safeSearch => 'Güvenli arama';
@@ -189,16 +189,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get errorLoadServerStatus => 'Sunucu durumu yüklenemedi';
 
   @override
-  String get topQueriedDomains => 'En çok sorgulananlar';
+  String get topQueriedDomains => 'Sorgulanan alan adları';
 
   @override
-  String get viewMore => 'Daha fazla göster';
+  String get viewMore => 'Tümünü gör';
 
   @override
-  String get topClients => 'Öne çıkan istemciler';
+  String get topClients => 'İstemciler';
 
   @override
-  String get topBlockedDomains => 'En çok engellenenler';
+  String get topBlockedDomains => 'Engellenen alan adları';
 
   @override
   String get appSettings => 'Uygulama ayarları';
@@ -213,13 +213,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dark => 'Koyu';
 
   @override
-  String get systemDefined => 'Otomatik (Cihazınızın renk düzenine göre)';
+  String get systemDefined => 'Sistem varsayılanı';
 
   @override
   String get close => 'Kapat';
 
   @override
-  String get connectedTo => 'Bağlandı:';
+  String get connectedTo => 'Bağlı sunucu:';
 
   @override
   String get selectedServer => 'Seçili sunucu:';
@@ -237,13 +237,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get userNotEmpty => 'Kullanıcı adı boş bırakılamaz';
 
   @override
-  String get passwordNotEmpty => 'Şifre boş bırakılamaz';
+  String get passwordNotEmpty => 'Parola boş bırakılamaz';
 
   @override
   String get examplePath => 'Örnek: /adguard';
 
   @override
-  String get helperPath => 'Eğer ters proxy kullanıyorsanız';
+  String get helperPath => 'Ters vekil sunucu (reverse proxy) kullanıyorsanız';
 
   @override
   String get aboutApp => 'Uygulama hakkında';
@@ -258,13 +258,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get clients => 'İstemciler';
 
   @override
-  String get allowed => 'İzin verilen';
+  String get allowed => 'İzin verilenler';
 
   @override
-  String get blocked => 'Engellenen';
+  String get blocked => 'Engellenenler';
 
   @override
-  String get noClientsList => 'Bu listede hiç istemci yok';
+  String get noClientsList => 'Bu listede henüz istemci yok';
 
   @override
   String get activeClients => 'Etkin';
@@ -274,7 +274,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get removeClientMessage =>
-      'Bu istemciyi listeden çıkarmak istediğinize emin misiniz?';
+      'Bu istemciyi listeden kaldırmak istediğinize emin misiniz?';
 
   @override
   String get confirm => 'Onayla';
@@ -283,7 +283,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get removingClient => 'İstemci kaldırılıyor...';
 
   @override
-  String get clientNotRemoved => 'İstemci listeden çıkarılamadı';
+  String get clientNotRemoved => 'İstemci listeden kaldırılamadı';
 
   @override
   String get addClient => 'İstemci ekle';
@@ -295,10 +295,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ipAddress => 'IP adresi';
 
   @override
-  String get ipNotValid => 'IP adresi geçersiz';
+  String get ipNotValid => 'Geçersiz IP adresi';
 
   @override
-  String get clientAddedSuccessfully => 'İstemci listeye başarıyla eklendi';
+  String get clientAddedSuccessfully => 'İstemci listeye eklendi';
 
   @override
   String get addingClient => 'İstemci ekleniyor...';
@@ -307,7 +307,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get clientNotAdded => 'İstemci listeye eklenemedi';
 
   @override
-  String get clientAnotherList => 'Bu istemci henüz başka bir listede';
+  String get clientAnotherList => 'Bu istemci zaten başka bir listede';
 
   @override
   String get noSavedLogs => 'Kayıtlı günlük yok';
@@ -329,82 +329,82 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dontCheckCertificateDescription =>
-      'Sunucunun SSL sertifikası doğrulamasını geçersiz kılar.';
+      'Sunucunun SSL sertifika doğrulamasını devre dışı bırakır';
 
   @override
-  String get advancedSetupDescription => 'Gelişmiş seçenekleri yönet';
+  String get advancedSetupDescription => 'Gelişmiş seçenekler';
 
   @override
-  String get settingsUpdatedSuccessfully => 'Ayarlar başarıyla güncellendi.';
+  String get settingsUpdatedSuccessfully => 'Ayarlar güncellendi.';
 
   @override
-  String get cannotUpdateSettings => 'Ayarlar güncellenemiyor.';
+  String get cannotUpdateSettings => 'Ayarlar güncellenemedi.';
 
   @override
-  String get restartAppTakeEffect => 'Uygulamayı yeniden başlat';
+  String get restartAppTakeEffect => 'Uygulamayı yeniden başlatın';
 
   @override
   String get loadingLogs => 'Günlükler yükleniyor...';
 
   @override
-  String get logsNotLoaded => 'Günlüklerin listesi yüklenemedi';
+  String get logsNotLoaded => 'Günlük listesi yüklenemedi';
 
   @override
-  String get processed => 'İşlendi\nListe yok';
+  String get processed => 'İşlendi\nListe dışı';
 
   @override
-  String get processedRow => 'İşlendi (Liste yok)';
+  String get processedRow => 'İşlendi (liste dışı)';
 
   @override
-  String get blockedBlacklist => 'Engellendi\nKara Liste';
+  String get blockedBlacklist => 'Engellendi\nKara liste';
 
   @override
-  String get blockedBlacklistRow => 'Engellendi (Kara liste)';
+  String get blockedBlacklistRow => 'Engellendi (kara liste)';
 
   @override
   String get blockedSafeBrowsing => 'Engellendi\nGüvenli gezinme';
 
   @override
-  String get blockedSafeBrowsingRow => 'Engellendi (Güvenli gezinme)';
+  String get blockedSafeBrowsingRow => 'Engellendi (güvenli gezinme)';
 
   @override
-  String get blockedParental => 'Engellendi\nEbeveyn filtreleme';
+  String get blockedParental => 'Engellendi\nEbeveyn denetimi';
 
   @override
-  String get blockedParentalRow => 'Engellendi (Ebeveyn filtreleme)';
+  String get blockedParentalRow => 'Engellendi (ebeveyn denetimi)';
 
   @override
   String get blockedInvalid => 'Engellendi\nGeçersiz';
 
   @override
-  String get blockedInvalidRow => 'Engellendi (Geçersiz)';
+  String get blockedInvalidRow => 'Engellendi (geçersiz)';
 
   @override
   String get blockedSafeSearch => 'Engellendi\nGüvenli arama';
 
   @override
-  String get blockedSafeSearchRow => 'Engellendi (Güvenli arama)';
+  String get blockedSafeSearchRow => 'Engellendi (güvenli arama)';
 
   @override
-  String get blockedService => 'Engellendi\nBelirlenen hizmet';
+  String get blockedService => 'Engellendi\nHizmet engeli';
 
   @override
-  String get blockedServiceRow => 'Engellendi (Belirlenen hizmet)';
+  String get blockedServiceRow => 'Engellendi (hizmet engeli)';
 
   @override
   String get processedWhitelist => 'İşlendi\nBeyaz liste';
 
   @override
-  String get processedWhitelistRow => 'İşlendi (Beyaz liste)';
+  String get processedWhitelistRow => 'İşlendi (beyaz liste)';
 
   @override
   String get processedError => 'İşlendi\nHata';
 
   @override
-  String get processedErrorRow => 'İşlendi (Hata)';
+  String get processedErrorRow => 'İşlendi (hata)';
 
   @override
-  String get rewrite => 'Yeniden Yaz';
+  String get rewrite => 'Yeniden yazım';
 
   @override
   String get status => 'Durum';
@@ -413,10 +413,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get result => 'Sonuç';
 
   @override
-  String get time => 'Saat';
+  String get time => 'Zaman';
 
   @override
-  String get blocklist => 'Engelleme Listesi';
+  String get blocklist => 'Engelleme listesi';
 
   @override
   String get request => 'İstek';
@@ -437,7 +437,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsServer => 'DNS sunucusu';
 
   @override
-  String get elapsedTime => 'İşlem süresi';
+  String get elapsedTime => 'Geçen süre';
 
   @override
   String get responseCode => 'Yanıt kodu';
@@ -449,10 +449,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deviceIp => 'IP adresi';
 
   @override
-  String get deviceName => 'İstemci adı';
+  String get deviceName => 'Ad';
 
   @override
-  String get logDetails => 'Günlük detayları';
+  String get logDetails => 'Günlük ayrıntıları';
 
   @override
   String get blockingRule => 'Engelleme kuralı';
@@ -461,7 +461,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get blockDomain => 'Alan adını engelle';
 
   @override
-  String get couldntGetFilteringStatus => 'Filtreleme durumu alınamıyor';
+  String get couldntGetFilteringStatus => 'Filtreleme durumu alınamadı';
 
   @override
   String get unblockDomain => 'Alan adı engelini kaldır';
@@ -472,7 +472,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get userFilteringRulesUpdated =>
-      'Kullanıcı filtreleme kuralları başarıyla güncellendi';
+      'Kullanıcı filtreleme kuralları güncellendi';
 
   @override
   String get savingUserFilters => 'Kullanıcı filtreleri kaydediliyor...';
@@ -481,16 +481,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get filters => 'Filtreler';
 
   @override
-  String get logsOlderThan => 'Daha eski günlükler';
+  String get logsOlderThan => 'Şu zamandan eski günlükler';
 
   @override
   String get responseStatus => 'Yanıt durumu';
 
   @override
-  String get selectTime => 'Zaman seç';
+  String get selectTime => 'Zaman seçin';
 
   @override
-  String get notSelected => 'Seçili değil';
+  String get notSelected => 'Seçilmedi';
 
   @override
   String get resetFilters => 'Filtreleri sıfırla';
@@ -500,25 +500,25 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noLogsThatOld =>
-      'Seçilen zaman için kaydedilmiş herhangi bir günlük bulunmuyor olabilir. Daha yakın bir zaman seçmeyi deneyin.';
+      'Seçtiğiniz zamana ait kayıtlı günlük kalmamış olabilir. Daha yakın bir zaman seçmeyi deneyin.';
 
   @override
   String get apply => 'Uygula';
 
   @override
-  String get selectAll => 'Hepsini seç';
+  String get selectAll => 'Tümünü seç';
 
   @override
-  String get unselectAll => 'Seçimleri kaldır';
+  String get unselectAll => 'Seçimi kaldır';
 
   @override
-  String get all => 'Hepsi';
+  String get all => 'Tümü';
 
   @override
-  String get filtered => 'Filtrelenmiş';
+  String get filtered => 'Filtrelenenler';
 
   @override
-  String get checkAppLogs => 'Uygulama günlüklerini kontrol edin';
+  String get checkAppLogs => 'Uygulama günlüklerini incele';
 
   @override
   String get refresh => 'Yenile';
@@ -533,44 +533,44 @@ class AppLocalizationsTr extends AppLocalizations {
   String get average => 'Ortalama';
 
   @override
-  String get blockedFilters => 'Engellenen alan adları';
+  String get blockedFilters => 'Filtrelerce engellenen';
 
   @override
-  String get malwarePhishingBlocked => 'Engellenen zararlı içerikler';
+  String get malwarePhishingBlocked => 'Engellenen zararlı/oltalama';
 
   @override
-  String get blockedAdultWebsites => 'Engellenen yetişkin içerikler';
+  String get blockedAdultWebsites => 'Engellenen yetişkin siteleri';
 
   @override
   String get generalSettings => 'Genel ayarlar';
 
   @override
-  String get generalSettingsDescription => 'Çeşitli farklı ayarları yönet';
+  String get generalSettingsDescription => 'Uygulamaya dair genel ayarlar';
 
   @override
-  String get hideZeroValues => 'Sıfır değerlerini gizle';
+  String get hideZeroValues => 'Sıfır değerleri gizle';
 
   @override
   String get hideZeroValuesDescription =>
-      'Ana ekranda, değeri sıfır olan blokları gizler.';
+      'Ana ekranda değeri sıfır olan kutucukları gizler';
 
   @override
   String get webAdminPanel => 'Web yönetim paneli';
 
   @override
-  String get visitGooglePlay => 'Google Play sayfasını ziyaret et';
+  String get visitGooglePlay => 'Google Play sayfasına git';
 
   @override
-  String get gitHub => 'Kaynak kodlarına GitHub\'dan ulaşabilirsiniz';
+  String get gitHub => 'Kaynak kodları GitHub\'da';
 
   @override
   String get blockClient => 'İstemciyi engelle';
 
   @override
-  String get selectTags => 'Etiketleri seç';
+  String get selectTags => 'Etiket seç';
 
   @override
-  String get noTagsSelected => 'Seçili etiket yok';
+  String get noTagsSelected => 'Etiket seçilmedi';
 
   @override
   String get tags => 'Etiketler';
@@ -585,10 +585,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get identifierHelper => 'IP adresi, CIDR, MAC adresi veya ClientID';
 
   @override
-  String get noIdentifiers => 'Tanımlayıcı eklenmedi';
+  String get noIdentifiers => 'Henüz tanımlayıcı eklenmedi';
 
   @override
-  String get useGlobalSettings => 'Küresel ayarları kullan';
+  String get useGlobalSettings => 'Genel ayarları kullan';
 
   @override
   String get enableFiltering => 'Filtrelemeyi etkinleştir';
@@ -597,7 +597,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get enableSafeBrowsing => 'Güvenli gezinmeyi etkinleştir';
 
   @override
-  String get enableParentalControl => 'Ebeveyn kontrolünü etkinleştir';
+  String get enableParentalControl => 'Ebeveyn denetimini etkinleştir';
 
   @override
   String get enableSafeSearch => 'Güvenli aramayı etkinleştir';
@@ -606,44 +606,44 @@ class AppLocalizationsTr extends AppLocalizations {
   String get blockedServices => 'Engellenen hizmetler';
 
   @override
-  String get selectBlockedServices => 'Engellenen hizmetleri seç';
+  String get selectBlockedServices => 'Engellenecek hizmetleri seçin';
 
   @override
-  String get noBlockedServicesSelected => 'Engellenen hizmetler seçilmedi';
+  String get noBlockedServicesSelected => 'Engellenen hizmet yok';
 
   @override
   String get services => 'Hizmetler';
 
   @override
-  String get servicesBlocked => 'Hizmetler engellendi';
+  String get servicesBlocked => 'hizmet engellendi';
 
   @override
-  String get tagsSelected => 'Etiket seçildi';
+  String get tagsSelected => 'etiket seçildi';
 
   @override
-  String get upstreamServers => 'Üst sunucular';
+  String get upstreamServers => 'Üst DNS sunucuları';
 
   @override
   String get serverAddress => 'Sunucu adresi';
 
   @override
-  String get noUpstreamServers => 'Üst sunucu yok.';
+  String get noUpstreamServers => 'Üst DNS sunucusu yok.';
 
   @override
-  String get willBeUsedGeneralServers => 'Genel üst sunucular kullanılacak.';
+  String get willBeUsedGeneralServers =>
+      'Genel üst DNS sunucuları kullanılacak.';
 
   @override
-  String get added => 'Eklenenler';
+  String get added => 'Eklendi';
 
   @override
-  String get clientUpdatedSuccessfully =>
-      'İstemci ayarları başarıyla güncellendi';
+  String get clientUpdatedSuccessfully => 'İstemci güncellendi';
 
   @override
   String get clientNotUpdated => 'İstemci güncellenemedi';
 
   @override
-  String get clientDeletedSuccessfully => 'İstemci başarıyla kaldırıldı';
+  String get clientDeletedSuccessfully => 'İstemci silindi';
 
   @override
   String get clientNotDeleted => 'İstemci silinemedi';
@@ -670,7 +670,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get customRules => 'Özel kurallar';
 
   @override
-  String get enabledRules => 'Etkin kural';
+  String get enabledRules => 'Etkin kurallar';
 
   @override
   String get enabled => 'Etkin';
@@ -689,34 +689,34 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get removeCustomRuleMessage =>
-      'Bu özel kuralı kaldırmak istediğinizden emin misiniz?';
+      'Bu özel kuralı kaldırmak istediğinize emin misiniz?';
 
   @override
   String get updatingRules => 'Özel kurallar güncelleniyor...';
 
   @override
-  String get ruleRemovedSuccessfully => 'Kural başarıyla kaldırıldı';
+  String get ruleRemovedSuccessfully => 'Kural kaldırıldı';
 
   @override
   String get ruleNotRemoved => 'Kural kaldırılamadı';
 
   @override
-  String get ruleAddedSuccessfully => 'Kural başarıyla eklendi';
+  String get ruleAddedSuccessfully => 'Kural eklendi';
 
   @override
   String get ruleNotAdded => 'Kural eklenemedi';
 
   @override
-  String get noCustomFilters => 'Özel filtreler yok';
+  String get noCustomFilters => 'Özel filtre yok';
 
   @override
-  String get noBlockedClients => 'Engellenmiş istemci yok';
+  String get noBlockedClients => 'Engellenen istemci yok';
 
   @override
-  String get noBlackLists => 'Kara listeler yok';
+  String get noBlackLists => 'Kara liste yok';
 
   @override
-  String get noWhiteLists => 'Beyaz listeler yok';
+  String get noWhiteLists => 'Beyaz liste yok';
 
   @override
   String get addWhitelist => 'Beyaz liste ekle';
@@ -725,28 +725,28 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addBlacklist => 'Kara liste ekle';
 
   @override
-  String get urlNotValid => 'Bağlantı adresi geçerli değil';
+  String get urlNotValid => 'Geçersiz URL';
 
   @override
-  String get urlAbsolutePath => 'Bağlantı adresi veya dosya yolu';
+  String get urlAbsolutePath => 'URL veya tam dosya yolu';
 
   @override
   String get addingList => 'Liste ekleniyor...';
 
   @override
-  String get listAdded => 'Liste başarıyla eklendi. Eklenen öğeler:';
+  String get listAdded => 'Liste eklendi. Eklenen öğe sayısı:';
 
   @override
-  String get listAlreadyAdded => 'Liste zaten eklenmiş';
+  String get listAlreadyAdded => 'Bu liste zaten ekli';
 
   @override
-  String get listUrlInvalid => 'Liste bağlantı adresi geçersiz';
+  String get listUrlInvalid => 'Liste URL\'si geçersiz';
 
   @override
   String get listNotAdded => 'Liste eklenemedi';
 
   @override
-  String get listDetails => 'Liste detayları';
+  String get listDetails => 'Liste ayrıntıları';
 
   @override
   String get listType => 'Liste türü';
@@ -767,16 +767,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get enable => 'Etkinleştir';
 
   @override
-  String get currentStatus => 'Mevcut durum';
+  String get currentStatus => 'Geçerli durum';
 
   @override
-  String get listDataUpdated => 'Liste verileri başarıyla güncellendi';
+  String get listDataUpdated => 'Liste bilgileri güncellendi';
 
   @override
-  String get listDataNotUpdated => 'Liste verileri güncellenemedi';
+  String get listDataNotUpdated => 'Liste bilgileri güncellenemedi';
 
   @override
-  String get updatingListData => 'Liste verileri güncelleniyor...';
+  String get updatingListData => 'Liste bilgileri güncelleniyor...';
 
   @override
   String get editWhitelist => 'Beyaz listeyi düzenle';
@@ -788,7 +788,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deletingList => 'Liste siliniyor...';
 
   @override
-  String get listDeleted => 'Liste başarıyla silindi';
+  String get listDeleted => 'Liste silindi';
 
   @override
   String get listNotDeleted => 'Liste silinemedi';
@@ -798,43 +798,43 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get deleteListMessage =>
-      'Bu listeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+      'Bu listeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.';
 
   @override
   String get serverSettings => 'Sunucu ayarları';
 
   @override
-  String get serverInformation => 'Sunucu bilgisi';
+  String get serverInformation => 'Sunucu bilgileri';
 
   @override
-  String get serverInformationDescription => 'Sunucu bilgisi ve durumunu öğren';
+  String get serverInformationDescription => 'Sunucu durumu ve ayrıntıları';
 
   @override
-  String get loadingServerInfo => 'Sunucu bilgisi yükleniyor...';
+  String get loadingServerInfo => 'Sunucu bilgileri yükleniyor...';
 
   @override
-  String get serverInfoNotLoaded => 'Sunucu bilgisi yüklenemedi.';
+  String get serverInfoNotLoaded => 'Sunucu bilgileri yüklenemedi.';
 
   @override
   String get dnsAddresses => 'DNS adresleri';
 
   @override
-  String get seeDnsAddresses => 'DNS adreslerine göz at';
+  String get seeDnsAddresses => 'DNS adreslerini gör';
 
   @override
-  String get dnsPort => 'DNS bağlantı noktası';
+  String get dnsPort => 'DNS portu';
 
   @override
-  String get httpPort => 'HTTP bağlantı noktası';
+  String get httpPort => 'HTTP portu';
 
   @override
-  String get protectionEnabled => 'Koruma durumu';
+  String get protectionEnabled => 'Koruma etkin';
 
   @override
-  String get dhcpAvailable => 'DHCP durumu';
+  String get dhcpAvailable => 'DHCP kullanılabilir';
 
   @override
-  String get serverRunning => 'Sunucu durumu';
+  String get serverRunning => 'Sunucu çalışıyor';
 
   @override
   String get serverVersion => 'Sunucu sürümü';
@@ -843,10 +843,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get serverLanguage => 'Sunucu dili';
 
   @override
-  String get yes => 'Etkin';
+  String get yes => 'Evet';
 
   @override
-  String get no => 'Mevcut değil';
+  String get no => 'Hayır';
 
   @override
   String get allowedClients => 'İzin verilen istemciler';
@@ -862,7 +862,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get accessSettingsDescription =>
-      'Sunucu için erişim kurallarını yapılandır';
+      'Sunucu için erişim kurallarını belirleyin';
 
   @override
   String get loadingClients => 'İstemciler yükleniyor...';
@@ -871,22 +871,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get clientsNotLoaded => 'İstemciler yüklenemedi.';
 
   @override
-  String get noAllowedClients => 'İzin verilmiş istemci yok';
+  String get noAllowedClients => 'İzin verilen istemci yok';
 
   @override
   String get allowedClientsDescription =>
-      'Eğer bu liste girdiler içeriyorsa, AdGuard Home yalnızca bu istemcilerden gelen talepleri kabul edecektir.';
+      'Bu listede kayıt varsa AdGuard Home yalnızca bu istemcilerden gelen istekleri kabul eder.';
 
   @override
   String get blockedClientsDescription =>
-      'Bu liste girdileri içeriyorsa, AdGuard Home bu istemcilerden gelen talepleri reddedecektir. Bu alan adı, İzin Verilen İstemciler\'de girdi varsa görmezden gelinir.';
+      'Bu listede kayıt varsa AdGuard Home bu istemcilerden gelen istekleri yoksayar. \"İzin verilen istemciler\" listesi doluysa bu alan dikkate alınmaz.';
 
   @override
   String get disallowedDomainsDescription =>
-      'AdGuard Home, bu alan adlarına uyan DNS sorgularını reddeder ve bu sorgular sorgu günlüğünde bile görünmez.';
+      'AdGuard Home bu alan adlarıyla eşleşen DNS sorgularını doğrudan düşürür; bu sorgular günlüklerde bile görünmez.';
 
   @override
-  String get addClientFieldDescription => 'CIDR\'ler, IP adresi veya ClientID';
+  String get addClientFieldDescription => 'CIDR, IP adresi veya ClientID';
 
   @override
   String get clientIdentifier => 'İstemci tanımlayıcısı';
@@ -895,7 +895,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get allowClient => 'İstemciye izin ver';
 
   @override
-  String get disallowClient => 'İstemciyi engelle';
+  String get disallowClient => 'İstemciye izin verme';
 
   @override
   String get noDisallowedDomains => 'İzin verilmeyen alan adı yok';
@@ -904,19 +904,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get domainNotAdded => 'Alan adı eklenemedi';
 
   @override
-  String get statusSelected => 'Durum seçildi.';
+  String get statusSelected => 'durum seçildi';
 
   @override
   String get updateLists => 'Listeleri güncelle';
 
   @override
-  String get checkHostFiltered => 'Filtrelemeyi kontrol et';
+  String get checkHostFiltered => 'Alan adını kontrol et';
 
   @override
   String get updatingLists => 'Listeler güncelleniyor...';
 
   @override
-  String get listsUpdated => 'Listeler güncellendi';
+  String get listsUpdated => 'liste güncellendi';
 
   @override
   String get listsNotUpdated => 'Listeler güncellenemedi';
@@ -925,16 +925,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get listsNotLoaded => 'Listeler yüklenemedi';
 
   @override
-  String get domainNotValid => 'Alan adı geçersiz';
+  String get domainNotValid => 'Geçersiz alan adı';
 
   @override
   String get check => 'Kontrol et';
 
   @override
-  String get checkingHost => 'Kontrol ediliyor';
+  String get checkingHost => 'Kontrol ediliyor...';
 
   @override
-  String get errorCheckingHost => 'Kontrol etme başarısız';
+  String get errorCheckingHost => 'Alan adı kontrol edilemedi';
 
   @override
   String get block => 'Engelle';
@@ -946,7 +946,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get custom => 'Özel';
 
   @override
-  String get addImportant => 'Başına \$important ekle';
+  String get addImportant => '\$important ekle';
 
   @override
   String get howCreateRules => 'Özel kurallar nasıl oluşturulur?';
@@ -960,14 +960,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get example2 =>
-      'example.org ve tüm alt alan adlarına erişimi engellemeyi kaldırır.';
+      'example.org ve tüm alt alan adlarına erişim engelini kaldırır.';
 
   @override
-  String get example3 => 'Yorum ekler.';
+  String get example3 => 'Yorum satırı ekler.';
 
   @override
   String get example4 =>
-      'Belirtilen düzenli ifadeye uyan alan adlarına erişimi engeller.';
+      'Belirtilen düzenli ifadeyle (regex) eşleşen alan adlarına erişimi engeller.';
 
   @override
   String get moreInformation => 'Daha fazla bilgi';
@@ -997,8 +997,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get disablingFiltering => 'Filtreleme devre dışı bırakılıyor...';
 
   @override
-  String get filteringStatusUpdated =>
-      'Filtreleme durumu başarıyla güncellendi';
+  String get filteringStatusUpdated => 'Filtreleme durumu güncellendi';
 
   @override
   String get filteringStatusNotUpdated => 'Filtreleme durumu güncellenemedi';
@@ -1007,7 +1006,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get updateFrequency => 'Güncelleme sıklığı';
 
   @override
-  String get never => 'Asla';
+  String get never => 'Hiçbir zaman';
 
   @override
   String get hour1 => '1 saat';
@@ -1028,8 +1027,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get changingUpdateFrequency => 'Değiştiriliyor...';
 
   @override
-  String get updateFrequencyChanged =>
-      'Güncelleme sıklığı başarıyla değiştirildi';
+  String get updateFrequencyChanged => 'Güncelleme sıklığı değiştirildi';
 
   @override
   String get updateFrequencyNotChanged => 'Güncelleme sıklığı değiştirilemedi';
@@ -1038,21 +1036,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get updating => 'Değerler güncelleniyor...';
 
   @override
-  String get blockedServicesUpdated =>
-      'Engellenen hizmetler başarıyla güncellendi';
+  String get blockedServicesUpdated => 'Engellenen hizmetler güncellendi';
 
   @override
   String get blockedServicesNotUpdated => 'Engellenen hizmetler güncellenemedi';
 
   @override
-  String get insertDomain =>
-      'Filtreleme durumunu kontrol etmek için bir alan adı ekleyin.';
+  String get insertDomain => 'Durumunu görmek için bir alan adı girin.';
 
   @override
   String get dhcpSettings => 'DHCP ayarları';
 
   @override
-  String get dhcpSettingsDescription => 'DHCP sunucusunu yapılandır';
+  String get dhcpSettingsDescription => 'DHCP sunucusunu yapılandırın';
 
   @override
   String get dhcpSettingsNotLoaded => 'DHCP ayarları yüklenemedi';
@@ -1064,13 +1060,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get enableDhcpServer => 'DHCP sunucusunu etkinleştir';
 
   @override
-  String get selectInterface => 'Arayüz seç';
+  String get selectInterface => 'Arayüz seçin';
 
   @override
   String get hardwareAddress => 'Donanım adresi';
 
   @override
-  String get gatewayIp => 'Ağ Geçidi IP\'si';
+  String get gatewayIp => 'Ağ geçidi IP\'si';
 
   @override
   String get ipv4addresses => 'IPv4 adresleri';
@@ -1080,16 +1076,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get neededSelectInterface =>
-      'DHCP sunucusunu yapılandırmak için bir arayüz seçmeniz gerekir.';
+      'DHCP sunucusunu yapılandırmak için önce bir ağ arayüzü seçmelisiniz.';
 
   @override
   String get ipv4settings => 'IPv4 ayarları';
 
   @override
-  String get startOfRange => 'Menzilin başlangıcı';
+  String get startOfRange => 'Aralık başlangıcı';
 
   @override
-  String get endOfRange => 'Menzilin sonu';
+  String get endOfRange => 'Aralık bitişi';
 
   @override
   String get ipv6settings => 'IPv6 ayarları';
@@ -1098,16 +1094,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get subnetMask => 'Alt ağ maskesi';
 
   @override
-  String get subnetMaskNotValid => 'Alt ağ maskesi geçerli değil';
+  String get subnetMaskNotValid => 'Alt ağ maskesi geçersiz';
 
   @override
-  String get gateway => 'Ağ Geçidi';
+  String get gateway => 'Ağ geçidi';
 
   @override
-  String get gatewayNotValid => 'Ağ geçidi geçerli değil';
+  String get gatewayNotValid => 'Ağ geçidi adresi geçersiz';
 
   @override
-  String get leaseTime => 'Kira süresi';
+  String get leaseTime => 'Kiralama süresi';
 
   @override
   String seconds(Object time) {
@@ -1115,14 +1111,14 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get leaseTimeNotValid => 'Kira süresi geçerli değil';
+  String get leaseTimeNotValid => 'Kiralama süresi geçersiz';
 
   @override
   String get restoreConfiguration => 'Yapılandırmayı sıfırla';
 
   @override
   String get restoreConfigurationMessage =>
-      'Devam etmek istediğinizden emin misiniz? Bu, tüm yapılandırmayı sıfırlayacak. Bu işlem geri alınamaz.';
+      'Devam etmek istediğinize emin misiniz? Tüm yapılandırma sıfırlanacak ve bu işlem geri alınamayacak.';
 
   @override
   String get changeInterface => 'Arayüzü değiştir';
@@ -1131,109 +1127,109 @@ class AppLocalizationsTr extends AppLocalizations {
   String get savingSettings => 'Ayarlar kaydediliyor...';
 
   @override
-  String get settingsSaved => 'Ayarlar başarıyla kaydedildi';
+  String get settingsSaved => 'Ayarlar kaydedildi';
 
   @override
   String get settingsNotSaved => 'Ayarlar kaydedilemedi';
 
   @override
-  String get restoringConfig => 'Yapılandırma geri yükleniyor...';
+  String get restoringConfig => 'Yapılandırma sıfırlanıyor...';
 
   @override
-  String get configRestored => 'Yapılandırma başarıyla sıfırlandı';
+  String get configRestored => 'Yapılandırma sıfırlandı';
 
   @override
   String get configNotRestored => 'Yapılandırma sıfırlanamadı';
 
   @override
-  String get dhcpStatic => 'DHCP statik kiraları';
+  String get dhcpStatic => 'Statik DHCP kiralamaları';
 
   @override
-  String get noDhcpStaticLeases => 'DHCP statik kirası bulunamadı';
+  String get noDhcpStaticLeases => 'Statik DHCP kiralaması bulunamadı';
 
   @override
   String get deleting => 'Siliniyor...';
 
   @override
-  String get staticLeaseDeleted => 'DHCP statik kirası başarıyla silindi';
+  String get staticLeaseDeleted => 'Statik DHCP kiralaması silindi';
 
   @override
-  String get staticLeaseNotDeleted => 'DHCP statik kirası silinemedi';
+  String get staticLeaseNotDeleted => 'Statik DHCP kiralaması silinemedi';
 
   @override
-  String get deleteStaticLease => 'Statik kirasını sil';
+  String get deleteStaticLease => 'Statik kiralamayı sil';
 
   @override
   String get deleteStaticLeaseDescription =>
-      'DHCP statik kirası silinecek. Bu işlem geri alınamaz.';
+      'Statik DHCP kiralaması silinecek. Bu işlem geri alınamaz.';
 
   @override
-  String get addStaticLease => 'Statik kira ekleyin';
+  String get addStaticLease => 'Statik kiralama ekle';
 
   @override
   String get macAddress => 'MAC adresi';
 
   @override
-  String get macAddressNotValid => 'MAC adresi geçersiz';
+  String get macAddressNotValid => 'Geçersiz MAC adresi';
 
   @override
   String get hostName => 'Ana bilgisayar adı';
 
   @override
-  String get hostNameError => 'Ana bilgisayar adı boş olamaz';
+  String get hostNameError => 'Ana bilgisayar adı boş bırakılamaz';
 
   @override
   String get creating => 'Oluşturuluyor...';
 
   @override
-  String get staticLeaseCreated => 'DHCP statik kirası başarıyla oluşturuldu';
+  String get staticLeaseCreated => 'Statik DHCP kiralaması oluşturuldu';
 
   @override
-  String get staticLeaseNotCreated => 'DHCP statik kirası oluşturulamadı';
+  String get staticLeaseNotCreated => 'Statik DHCP kiralaması oluşturulamadı';
 
   @override
-  String get staticLeaseExists => 'DHCP statik kirası zaten mevcut';
+  String get staticLeaseExists => 'Bu statik DHCP kiralaması zaten mevcut';
 
   @override
   String get serverNotConfigured => 'Sunucu yapılandırılmamış';
 
   @override
-  String get restoreLeases => 'Kiraları sıfırla';
+  String get restoreLeases => 'Kiralamaları sıfırla';
 
   @override
   String get restoreLeasesMessage =>
-      'Devam etmek istediğinizden emin misiniz? Bu, mevcut tüm kiraları sıfırlayacaktır. Bu işlem geri alınamaz.';
+      'Devam etmek istediğinize emin misiniz? Mevcut tüm kiralamalar sıfırlanacak ve bu işlem geri alınamayacak.';
 
   @override
-  String get restoringLeases => 'Kiralar sıfırlanıyor...';
+  String get restoringLeases => 'Kiralamalar sıfırlanıyor...';
 
   @override
-  String get leasesRestored => 'Kiralar başarıyla sıfırlandı';
+  String get leasesRestored => 'Kiralamalar sıfırlandı';
 
   @override
-  String get leasesNotRestored => 'Kiralar sıfırlanamadı';
+  String get leasesNotRestored => 'Kiralamalar sıfırlanamadı';
 
   @override
-  String get dhcpLeases => 'DHCP kiraları';
+  String get dhcpLeases => 'DHCP kiralamaları';
 
   @override
-  String get noLeases => 'Kullanılabilir DHCP kiraları yok';
+  String get noLeases => 'Etkin DHCP kiralaması yok';
 
   @override
   String get dnsRewrites => 'DNS yeniden yazımları';
 
   @override
-  String get dnsRewritesDescription => 'Özel DNS kurallarını yapılandır';
+  String get dnsRewritesDescription => 'Özel DNS kurallarını yapılandırın';
 
   @override
-  String get loadingRewriteRules => 'Yeniden yazım kuralları yükleniyor...';
+  String get loadingRewriteRules => 'Yeniden yazma kuralları yükleniyor...';
 
   @override
   String get rewriteRulesNotLoaded =>
-      'DNS yeniden yazım kuralları yüklenemedi.';
+      'DNS yeniden yazma kuralları yüklenemedi.';
 
   @override
-  String get noRewriteRules => 'DNS yeniden yazım kuralları yok';
+  String get noRewriteRules => 'DNS yeniden yazma kuralı yok';
 
   @override
   String get answer => 'Yanıt';
@@ -1243,14 +1239,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get deleteDnsRewriteMessage =>
-      'Bu DNS yeniden yazımını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+      'Bu DNS yeniden yazma kuralını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.';
 
   @override
-  String get dnsRewriteRuleDeleted =>
-      'DNS yeniden yazım kuralı başarıyla silindi';
+  String get dnsRewriteRuleDeleted => 'DNS yeniden yazma kuralı silindi';
 
   @override
-  String get dnsRewriteRuleNotDeleted => 'DNS yeniden yazım kuralı silinemedi';
+  String get dnsRewriteRuleNotDeleted => 'DNS yeniden yazma kuralı silinemedi';
 
   @override
   String get addDnsRewrite => 'DNS yeniden yazımı ekle';
@@ -1259,23 +1254,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addingRewrite => 'Yeniden yazım ekleniyor...';
 
   @override
-  String get dnsRewriteRuleAdded =>
-      'DNS yeniden yazım kuralı başarıyla eklendi';
+  String get dnsRewriteRuleAdded => 'DNS yeniden yazma kuralı eklendi';
 
   @override
-  String get dnsRewriteRuleNotAdded => 'DNS yeniden yazım kuralı eklenemedi';
+  String get dnsRewriteRuleNotAdded => 'DNS yeniden yazma kuralı eklenemedi';
 
   @override
   String get logsSettings => 'Günlük ayarları';
 
   @override
-  String get enableLog => 'Günlüğü etkinleştir';
+  String get enableLog => 'Günlük kaydını etkinleştir';
 
   @override
   String get clearLogs => 'Günlükleri temizle';
 
   @override
-  String get anonymizeClientIp => 'İstemci IP\'sini gizle';
+  String get anonymizeClientIp => 'İstemci IP adresini anonimleştir';
 
   @override
   String get hours6 => '6 saat';
@@ -1290,7 +1284,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get retentionTime => 'Saklama süresi';
 
   @override
-  String get selectOneItem => 'Bir öğe seçin';
+  String get selectOneItem => 'Bir seçenek belirleyin';
 
   @override
   String get logSettingsNotLoaded => 'Günlük ayarları yüklenemedi.';
@@ -1299,7 +1293,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get updatingSettings => 'Ayarlar güncelleniyor...';
 
   @override
-  String get logsConfigUpdated => 'Günlük ayarları başarıyla güncellendi';
+  String get logsConfigUpdated => 'Günlük ayarları güncellendi';
 
   @override
   String get logsConfigNotUpdated => 'Günlük ayarları güncellenemedi';
@@ -1308,26 +1302,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deletingLogs => 'Günlükler temizleniyor...';
 
   @override
-  String get logsCleared => 'Günlükler başarıyla temizlendi';
+  String get logsCleared => 'Günlükler temizlendi';
 
   @override
   String get logsNotCleared => 'Günlükler temizlenemedi';
 
   @override
-  String get runningHomeAssistant => 'Ev asistanı üzerinde çalıştır';
+  String get runningHomeAssistant => 'Home Assistant üzerinde çalışıyor';
 
   @override
   String get serverError => 'Sunucu hatası';
 
   @override
-  String get noItems => 'Burada gösterilecek öğe yok';
+  String get noItems => 'Burada gösterilecek bir şey yok';
 
   @override
   String get dnsSettings => 'DNS ayarları';
 
   @override
   String get dnsSettingsDescription =>
-      'DNS sunucuları ile bağlantıyı yapılandır';
+      'DNS sunucularıyla bağlantıyı yapılandırın';
 
   @override
   String get upstreamDns => 'Üst DNS sunucuları';
@@ -1336,13 +1330,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get bootstrapDns => 'Önyükleme DNS sunucuları';
 
   @override
-  String get noUpstreamDns => 'Üst DNS sunucuları eklenmedi.';
+  String get noUpstreamDns => 'Henüz üst DNS sunucusu eklenmemiş.';
 
   @override
   String get dnsMode => 'DNS modu';
 
   @override
-  String get noDnsMode => 'DNS modu seçili değil';
+  String get noDnsMode => 'DNS modu seçilmedi';
 
   @override
   String get loadBalancing => 'Yük dengeleme';
@@ -1355,39 +1349,39 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loadBalancingDescription =>
-      'Her seferinde bir üst sunucuya sorgu yapar. AdGuard Home, sunucuyu seçmek için ağırlıklı rastgele algoritmasını kullanır, böylece en hızlı sunucu daha sık kullanılır.';
+      'Her seferinde tek bir üst sunucuyu sorgular. AdGuard Home, ağırlıklı rastgele algoritmasıyla en hızlı sunucuyu daha sık tercih eder.';
 
   @override
   String get parallelRequestsDescription =>
-      'Tüm üst sunucuları aynı anda sorgulayarak çözümlemeyi hızlandırmak için paralel sorgular kullanılır.';
+      'Tüm üst sunucuları aynı anda sorgulayarak DNS çözümlemesini hızlandırır.';
 
   @override
   String get fastestIpAddressDescription =>
-      'Tüm DNS sunucularına sorgu yapın ve tüm yanıtlar arasında en hızlı IP adresini döndürür. Bu, AdGuard Home\'un tüm DNS sunucularından yanıtları beklemesi gerektiği için DNS sorgularını yavaşlatır, ancak genel bağlantıyı iyileştirir.';
+      'Tüm DNS sunucularını sorgular ve gelen yanıtlar arasından en hızlı IP adresini döndürür. AdGuard Home tüm sunuculardan yanıt beklediği için sorgular biraz yavaşlasa da genel bağlantı kalitesini artırır.';
 
   @override
-  String get noBootstrapDns => 'Önyükleme DNS sunucuları eklenmedi.';
+  String get noBootstrapDns => 'Henüz önyükleme DNS sunucusu eklenmemiş.';
 
   @override
   String get bootstrapDnsServersInfo =>
-      'Önyükleme ​​DNS sunucuları, üst kaynaklarda belirttiğiniz DoH/DoT çözümleyicilerinin IP adreslerini çözmek için kullanılır.';
+      'Önyükleme DNS sunucuları, üst sunucu olarak belirttiğiniz DoH/DoT çözümleyicilerinin IP adreslerini çözmek için kullanılır.';
 
   @override
   String get privateReverseDnsServers => 'Özel ters DNS sunucuları';
 
   @override
   String get privateReverseDnsServersDescription =>
-      'AdGuard Home\'un yerel PTR sorguları için kullandığı DNS sunucuları. Bu sunucular, özel IP aralıklarındaki adresler için ters DNS kullanarak PTR isteklerini çözmek için kullanılır, örneğin \'192.168.12.34\' olarak ayarlanmamışsa AdGuard Home, AdGuard Home\'un kendi adresleri dışında, işletim sisteminizin varsayılan DNS çözümleyicilerinin adreslerini kullanır.';
+      'AdGuard Home\'un yerel PTR sorguları için kullandığı DNS sunucularıdır. Örneğin \"192.168.12.34\" gibi özel IP aralıklarındaki adresler için ters DNS ile PTR isteklerini çözer. Belirtilmezse, AdGuard Home\'un kendi adresleri hariç işletim sisteminizin varsayılan DNS çözümleyicileri kullanılır.';
 
   @override
   String get reverseDnsDefault =>
-      'Varsayılan olarak, AdGuard Home aşağıdaki ters DNS çözümleyicilerini kullanır';
+      'AdGuard Home varsayılan olarak şu ters DNS çözümleyicilerini kullanır';
 
   @override
   String get addItem => 'Öğe ekle';
 
   @override
-  String get noServerAddressesAdded => 'Sunucu adresleri eklenmedi.';
+  String get noServerAddressesAdded => 'Henüz sunucu adresi eklenmedi.';
 
   @override
   String get usePrivateReverseDnsResolvers =>
@@ -1395,46 +1389,46 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get usePrivateReverseDnsResolversDescription =>
-      'Bu üst sunucuları kullanarak yerel olarak sunulan adresler için ters DNS sorguları gerçekleştirin. Devre dışı bırakılırsa, AdGuard Home, DHCP, /etc/hosts vb. kaynaklardan bilinen istemciler dışında tüm PTR isteklerine NXDOMAIN yanıtı verir.';
+      'Yerel ağdaki adresler için bu üst sunucuları kullanarak ters DNS aramaları yapar. Devre dışı bırakılırsa AdGuard Home; DHCP, /etc/hosts ve benzeri kaynaklardan bilinen istemciler dışındaki tüm bu tür PTR isteklerine NXDOMAIN yanıtı verir.';
 
   @override
   String get enableReverseResolving =>
-      'İstemcilerin IP adreslerinin ters çözümlemesini etkinleştir';
+      'İstemci IP adreslerinin ters çözümlenmesini etkinleştir';
 
   @override
   String get enableReverseResolvingDescription =>
-      'Karşılık gelen çözümleyicilere (yerel istemciler için özel DNS sunucuları, genel IP adresleri olan istemciler için üst sunuculara) PTR sorguları göndererek istemcilerin IP adreslerini ana makine adlarının tersine çözer.';
+      'İlgili çözümleyicilere (yerel istemciler için özel DNS sunucuları, genel IP\'li istemciler için üst sunucular) PTR sorguları göndererek istemci IP adreslerini ana bilgisayar adlarına dönüştürür.';
 
   @override
-  String get dnsServerSettings => 'AdGuard Home DNS sunucusu ayarları';
+  String get dnsServerSettings => 'AdGuard Home DNS sunucu ayarları';
 
   @override
-  String get limitRequestsSecond => 'Sıklık limiti';
+  String get limitRequestsSecond => 'Saniye başına istek sınırı';
 
   @override
-  String get valueNotNumber => 'Değer bir sayı değil';
+  String get valueNotNumber => 'Geçerli bir sayı girin';
 
   @override
   String get enableEdns => 'EDNS istemci alt ağını etkinleştir';
 
   @override
   String get enableEdnsDescription =>
-      'Kaynak yönü isteklerine EDNS İstemci Alt Ağı Seçeneği (ECS) ekler ve istemciler tarafından gönderilen değerleri sorgu günlüğüne kaydeder.';
+      'Üst sunucu isteklerine EDNS İstemci Alt Ağı (ECS) bilgisini ekler ve istemcilerin gönderdiği değerleri sorgu günlüğüne kaydeder.';
 
   @override
   String get enableDnssec => 'DNSSEC\'i etkinleştir';
 
   @override
   String get enableDnssecDescription =>
-      'Giden DNS sorguları için DNSSEC özelliğini etkinleştirir ve sonucu kontrol eder. (DNSSEC etkinleştirilmiş bir çözümleyici gerekli)';
+      'Giden DNS sorgularında DNSSEC bayrağını ayarlar ve sonucu doğrular (DNSSEC destekli bir çözümleyici gerekir).';
 
   @override
   String get disableResolvingIpv6 =>
-      'IPv6 adreslerinin çözümlenmesini devre dışı bırak';
+      'IPv6 adres çözümlemesini devre dışı bırak';
 
   @override
   String get disableResolvingIpv6Description =>
-      'IPv6 adresleri için tüm DNS sorgularını bırakır (AAAA yazar) ve HTTPS yanıtlarından IPv6 ipuçlarını kaldırır.';
+      'IPv6 adresleri için yapılan tüm DNS sorgularını (AAAA türü) yoksayar.';
 
   @override
   String get blockingMode => 'Engelleme modu';
@@ -1444,27 +1438,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get defaultDescription =>
-      'Reklam engelleme tarzı bir kural tarafından engellendiğinde sıfır IP adresi ile yanıt verir. (A için 0.0.0.0; :: AAAA için) /etc/hosts tarzı bir kural tarafından engellendiğinde kuralda belirtilen IP adresi ile yanıt verir.';
+      'Adblock tarzı bir kuralla engellendiğinde sıfır IP adresi (A için 0.0.0.0; AAAA için ::), /etc/hosts tarzı bir kuralla engellendiğinde ise kuralda belirtilen IP adresiyle yanıt verir';
 
   @override
-  String get refusedDescription => 'REFUSED kodu ile yanıt verir.';
+  String get refusedDescription => 'REFUSED koduyla yanıt verir';
 
   @override
-  String get nxdomainDescription => 'NXDOMAIN kodu ile yanıt verir.';
+  String get nxdomainDescription => 'NXDOMAIN koduyla yanıt verir';
 
   @override
-  String get nullIp => 'Boş IP';
+  String get nullIp => 'Sıfır IP';
 
   @override
   String get nullIpDescription =>
-      'Sıfır IP adresi ile yanıt verir. (A için 0.0.0.0; :: AAAA için)';
+      'Sıfır IP adresiyle yanıt verir (A için 0.0.0.0; AAAA için ::)';
 
   @override
   String get customIp => 'Özel IP';
 
   @override
   String get customIpDescription =>
-      'Manuel olarak ayarlanmış bir IP adresi ile yanıt verir.';
+      'Elle belirlediğiniz bir IP adresiyle yanıt verir';
 
   @override
   String get dnsCacheConfig => 'DNS önbellek yapılandırması';
@@ -1473,28 +1467,28 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cacheSize => 'Önbellek boyutu';
 
   @override
-  String get inBytes => 'Alınacak önbelleğin boyutunu ayarla (Bayt olarak)';
+  String get inBytes => 'Bayt cinsinden';
 
   @override
-  String get overrideMinimumTtl => 'Minimum kullanım süresini geçersiz kıl';
+  String get overrideMinimumTtl => 'En düşük TTL değerini geçersiz kıl';
 
   @override
   String get overrideMinimumTtlDescription =>
-      'DNS yanıtlarını önbelleğe alırken üst sunucudan alınan minimum kullanım süresi değerini (TTL) saniye olarak ayarlayın.';
+      'DNS yanıtlarını önbelleğe alırken üst sunucudan gelen kısa TTL (yaşam süresi) değerlerini saniye cinsinden uzatır.';
 
   @override
-  String get overrideMaximumTtl => 'Maksimum kullanım süresini geçersiz kıl';
+  String get overrideMaximumTtl => 'En yüksek TTL değerini geçersiz kıl';
 
   @override
   String get overrideMaximumTtlDescription =>
-      'DNS yanıtlarını önbelleğe alırken üst sunucudan alınan maksimum kullanım süresi değerini (TTL) saniye olarak ayarlayın.';
+      'DNS önbelleğindeki kayıtlar için en yüksek TTL (yaşam süresi) sınırını saniye cinsinden belirler.';
 
   @override
-  String get optimisticCaching => 'İyimser önbelleğe alma';
+  String get optimisticCaching => 'İyimser önbellekleme';
 
   @override
   String get optimisticCachingDescription =>
-      'Girişlerin süresi dolmuş olsa bile Adguard Home\'un önbellekten yanıt vermesini sağlar ve aynı zamanda bunları yenilemeye çalışır.';
+      'Süresi dolmuş kayıtlar için bile önbellekten yanıt verirken arka planda bu kayıtları yenilemeye çalışır.';
 
   @override
   String get loadingDnsConfig => 'DNS yapılandırması yükleniyor...';
@@ -1503,14 +1497,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsConfigNotLoaded => 'DNS yapılandırması yüklenemedi.';
 
   @override
-  String get blockingIpv4 => 'IPv4 engelleniyor';
+  String get blockingIpv4 => 'Engelleme IPv4 adresi';
 
   @override
   String get blockingIpv4Description =>
       'Engellenen bir A isteği için döndürülecek IP adresi';
 
   @override
-  String get blockingIpv6 => 'IPv6 engelleniyor';
+  String get blockingIpv6 => 'Engelleme IPv6 adresi';
 
   @override
   String get blockingIpv6Description =>
@@ -1520,36 +1514,36 @@ class AppLocalizationsTr extends AppLocalizations {
   String get invalidIp => 'Geçersiz IP adresi';
 
   @override
-  String get dnsConfigSaved =>
-      'DNS sunucusu yapılandırması başarıyla kaydedildi';
+  String get dnsConfigSaved => 'DNS sunucu yapılandırması kaydedildi';
 
   @override
-  String get dnsConfigNotSaved => 'DNS sunucusu yapılandırması kaydedilemedi';
+  String get dnsConfigNotSaved => 'DNS sunucu yapılandırması kaydedilemedi';
 
   @override
   String get savingConfig => 'Yapılandırma kaydediliyor...';
 
   @override
-  String get someValueNotValid => 'Bazı değerler geçerli değil';
+  String get someValueNotValid => 'Girilen değerlerden biri geçersiz';
 
   @override
   String get upstreamDnsDescription =>
-      'Üst sunucuları ve DNS modunu yapılandır';
+      'Üst DNS sunucularını ve DNS modunu ayarlayın';
 
   @override
-  String get bootstrapDnsDescription => 'Önyükleme DNS sunucularını yapılandır';
+  String get bootstrapDnsDescription =>
+      'Önyükleme DNS sunucularını yapılandırın';
 
   @override
   String get privateReverseDnsDescription =>
-      'Özel DNS çözümleyicileri yapılandır ve özel ters DNS çözümlemeyi etkinleştir';
+      'Özel DNS çözümleyicilerini ayarlayın ve özel ters DNS çözümlemesini yönetin';
 
   @override
   String get dnsServerSettingsDescription =>
-      'Hız limiti, engelleme modu ve daha fazlasını yapılandır';
+      'Hız sınırı, engelleme modu ve diğer sunucu ayarlarını yapın';
 
   @override
   String get dnsCacheConfigDescription =>
-      'Sunucunun DNS önbelleğini nasıl yöneteceğini yapılandır';
+      'Sunucunun DNS önbelleğini nasıl yöneteceğini belirleyin';
 
   @override
   String get comment => 'Yorum';
@@ -1559,7 +1553,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get commentsDescription =>
-      'Yorumlar her zaman # işareti ile başlar. Eklemenize gerek yok, otomatik olarak eklenecektir.';
+      'Yorumların başında her zaman # bulunur. Sizin eklemenize gerek yok, otomatik olarak eklenir.';
 
   @override
   String get encryptionSettings => 'Şifreleme ayarları';
@@ -1582,7 +1576,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get enableEncryptionDescription =>
-      'Eğer şifreleme etkinleştirilmişse, AdGuard Home yönetici arayüzü HTTPS üzerinden çalışacaktır ve DNS sunucusu DNS üzerinden HTTPS ve TLS ile gelen isteklere yanıt verecektir.';
+      'Şifreleme etkinleştirildiğinde AdGuard Home yönetim arayüzü HTTPS üzerinden çalışır ve DNS sunucusu DNS-over-HTTPS ile DNS-over-TLS isteklerini dinler.';
 
   @override
   String get serverConfiguration => 'Sunucu yapılandırması';
@@ -1592,53 +1586,53 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get domainNameDescription =>
-      'Eğer ayarlanırsa, AdGuard Home istemci kimliklerini tespit eder, DDR sorgularına yanıt verir ve ek bağlantı doğrulamalarını gerçekleştirir. Ayarlanmazsa, bu özellikler devre dışı bırakılır. Sertifikadaki DNS adlarından biriyle eşleşmelidir.';
+      'Belirtilirse AdGuard Home, ClientID\'leri algılar, DDR sorgularını yanıtlar ve ek bağlantı doğrulamaları yapar. Boş bırakılırsa bu özellikler devre dışı kalır. Sertifikadaki DNS adlarından biriyle eşleşmelidir.';
 
   @override
-  String get redirectHttps => 'Otomatik olarak HTTPS\'e yönlendir';
+  String get redirectHttps => 'Otomatik olarak HTTPS\'ye yönlendir';
 
   @override
-  String get httpsPort => 'HTTPS bağlantı noktası';
+  String get httpsPort => 'HTTPS portu';
 
   @override
-  String get tlsPort => 'DNS-over-TLS bağlantı noktası';
+  String get tlsPort => 'DNS-over-TLS portu';
 
   @override
-  String get dnsOverQuicPort => 'DNS-over-QUIC bağlantı noktası';
+  String get dnsOverQuicPort => 'DNS-over-QUIC portu';
 
   @override
   String get certificates => 'Sertifikalar';
 
   @override
   String get certificatesDescription =>
-      'Şifreleme kullanmak için, alan adınız için geçerli bir SSL sertifikası zinciri sağlamanız gereklidir. letsencrypt.org\'dan ücretsiz bir sertifika alabilir veya güvenilir sertifika yetkililerinden satın alabilirsiniz.';
+      'Şifrelemeyi kullanabilmek için alan adınıza ait geçerli bir SSL sertifika zinciri sağlamanız gerekir. letsencrypt.org üzerinden ücretsiz bir sertifika alabilir ya da güvenilir bir sertifika otoritesinden satın alabilirsiniz.';
 
   @override
-  String get certificateFilePath => 'Sertifika dosyası belirle';
+  String get certificateFilePath => 'Sertifika dosya yolunu belirt';
 
   @override
   String get pasteCertificateContent => 'Sertifika içeriğini yapıştır';
 
   @override
-  String get certificatePath => 'Sertifikanın dosya yolu';
+  String get certificatePath => 'Sertifika yolu';
 
   @override
   String get certificateContent => 'Sertifika içeriği';
 
   @override
-  String get privateKey => 'Özel anahtarlar';
+  String get privateKey => 'Özel anahtar';
 
   @override
-  String get privateKeyFile => 'Özel anahtar dosyası belirle';
+  String get privateKeyFile => 'Özel anahtar dosya yolunu belirt';
 
   @override
   String get pastePrivateKey => 'Özel anahtar içeriğini yapıştır';
 
   @override
-  String get usePreviousKey => 'Önceden kaydedilmiş olan anahtarı kullan';
+  String get usePreviousKey => 'Önceden kaydedilmiş anahtarı kullan';
 
   @override
-  String get privateKeyPath => 'Özel anahtarın dosya yolu';
+  String get privateKeyPath => 'Özel anahtar yolu';
 
   @override
   String get invalidCertificate => 'Geçersiz sertifika';
@@ -1647,17 +1641,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get invalidPrivateKey => 'Geçersiz özel anahtar';
 
   @override
-  String get validatingData => 'Veri doğrulama';
+  String get validatingData => 'Veriler doğrulanıyor';
 
   @override
-  String get dataValid => 'Veri geçerli';
+  String get dataValid => 'Veriler geçerli';
 
   @override
-  String get dataNotValid => 'Veri geçersiz';
+  String get dataNotValid => 'Veriler geçersiz';
 
   @override
-  String get encryptionConfigSaved =>
-      'Şifreleme yapılandırması başarıyla kaydedildi';
+  String get encryptionConfigSaved => 'Şifreleme yapılandırması kaydedildi';
 
   @override
   String get encryptionConfigNotSaved =>
@@ -1668,14 +1661,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get enterOnlyCertificate =>
-      'Yalnızca sertifikayı girin. ---BEGIN--- ve ---END--- satırlarını girmeyin.';
+      'Yalnızca sertifika metnini girin; ---BEGIN--- ve ---END--- satırlarını dahil etmeyin.';
 
   @override
   String get enterOnlyPrivateKey =>
-      'Yalnızca anahtarı girin. ---BEGIN--- ve ---END--- satırlarını girmeyin.';
+      'Yalnızca anahtar metnini girin; ---BEGIN--- ve ---END--- satırlarını dahil etmeyin.';
 
   @override
-  String get noItemsSearch => 'Bu arama için hiçbir öğe yok.';
+  String get noItemsSearch => 'Aramanızla eşleşen sonuç bulunamadı.';
 
   @override
   String get clearSearch => 'Aramayı temizle';
@@ -1684,29 +1677,29 @@ class AppLocalizationsTr extends AppLocalizations {
   String get exitSearch => 'Aramadan çık';
 
   @override
-  String get searchClients => 'İstemcileri ara';
+  String get searchClients => 'İstemci ara';
 
   @override
-  String get noClientsSearch =>
-      'Bu arama ile ilgili hiçbir istemci bulunamadı.';
+  String get noClientsSearch => 'Aramanızla eşleşen istemci bulunamadı.';
 
   @override
-  String get customization => 'Özelleştirme';
+  String get customization => 'Kişiselleştirme';
 
   @override
-  String get customizationDescription => 'Bu uygulamayı özelleştir';
+  String get customizationDescription =>
+      'Uygulamanın görünümünü zevkinize göre ayarlayın';
 
   @override
-  String get language => 'Language';
+  String get language => 'Dil';
 
   @override
-  String get languageDescription => 'Change the language of the app';
+  String get languageDescription => 'Uygulama dilini değiştirin';
 
   @override
   String get color => 'Renk';
 
   @override
-  String get useDynamicTheme => 'Dinamik renk teması kullan';
+  String get useDynamicTheme => 'Dinamik temayı kullan';
 
   @override
   String get red => 'Kırmızı';
@@ -1742,11 +1735,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get indigo => 'Çivit mavisi';
 
   @override
-  String get useThemeColorStatus => 'Durum için tema rengini kullan';
+  String get useThemeColorStatus => 'Durumlar için tema rengini kullan';
 
   @override
   String get useThemeColorStatusDescription =>
-      'Yeşil ve kırmızı durum renklerini tema rengi ve gri ile değiştirir.';
+      'Yeşil ve kırmızı durum renklerini tema rengi ve gri ile değiştirir';
 
   @override
   String get invalidCertificateChain => 'Geçersiz sertifika zinciri';
@@ -1758,10 +1751,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get subject => 'Konu';
 
   @override
-  String get issuer => 'Veren';
+  String get issuer => 'Düzenleyen';
 
   @override
-  String get expires => 'Süresi dolacak';
+  String get expires => 'Son geçerlilik';
 
   @override
   String get validPrivateKey => 'Geçerli özel anahtar';
@@ -1771,14 +1764,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get keysNotMatch =>
-      'Geçersiz bir sertifika veya anahtar: tls: özel anahtar genel anahtarla eşleşmiyor.';
+      'Geçersiz sertifika veya anahtar: özel anahtar açık anahtarla eşleşmiyor';
 
   @override
-  String get timeLogs => 'Günlüklerde işlem süresini göster';
+  String get timeLogs => 'Günlüklerde işlem süresi';
 
   @override
   String get timeLogsDescription =>
-      'Günlükler listesinde zaman yerine işlem süresini gösterir.';
+      'Günlük listesinde sorgu işlem süresini gösterir';
 
   @override
   String get hostNames => 'Ana bilgisayar adları';
@@ -1787,7 +1780,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get keyType => 'Anahtar türü';
 
   @override
-  String get updateAvailable => 'Güncelleme mevcut';
+  String get updateAvailable => 'Yeni güncelleme var';
 
   @override
   String get installedVersion => 'Yüklü sürüm';
@@ -1805,19 +1798,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get download => 'İndir';
 
   @override
-  String get doNotRememberAgainUpdate => 'Bu sürüm için tekrar hatırlama.';
+  String get doNotRememberAgainUpdate => 'Bu sürüm için bir daha hatırlatma';
 
   @override
   String get downloadingUpdate => 'İndiriliyor';
 
   @override
-  String get completed => 'Tamamlandı';
+  String get completed => 'tamamlandı';
 
   @override
   String get permissionNotGranted => 'İzin verilmedi';
 
   @override
-  String get inputSearchTerm => 'Bir arama terimi girin.';
+  String get inputSearchTerm => 'Aramak istediğiniz ifadeyi yazın.';
 
   @override
   String get answers => 'Yanıtlar';
@@ -1833,10 +1826,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get clearDnsCacheMessage =>
-      'DNS önbelleğini temizlemek istediğinizden emin misiniz?';
+      'DNS önbelleğini temizlemek istediğinize emin misiniz?';
 
   @override
-  String get dnsCacheCleared => 'DNS önbelleği başarıyla temizlendi';
+  String get dnsCacheCleared => 'DNS önbelleği temizlendi';
 
   @override
   String get clearingDnsCache => 'Önbellek temizleniyor...';
@@ -1845,7 +1838,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsCacheNotCleared => 'DNS önbelleği temizlenemedi';
 
   @override
-  String get clientsSelected => 'Seçilmiş istemci';
+  String get clientsSelected => 'istemci seçildi';
 
   @override
   String get invalidDomain => 'Geçersiz alan adı';
@@ -1865,43 +1858,43 @@ class AppLocalizationsTr extends AppLocalizations {
   String get updates => 'Güncellemeler';
 
   @override
-  String get updatesDescription => 'AdGuard Home sunucusunu güncelle';
+  String get updatesDescription => 'AdGuard Home sunucusunu güncelleyin';
 
   @override
   String get updateNow => 'Şimdi güncelle';
 
   @override
-  String get currentVersion => 'Yüklü sürüm';
+  String get currentVersion => 'Mevcut sürüm';
 
   @override
   String get requestStartUpdateFailed =>
-      'Güncellemeyi başlatma isteği başarısız oldu';
+      'Güncelleme başlatma isteği gönderilemedi';
 
   @override
   String get requestStartUpdateSuccessful =>
-      'Güncellemeyi başlatma isteği başarılı';
+      'Güncelleme başlatma isteği gönderildi';
 
   @override
-  String get serverUpdated => 'Sunucu güncellendi';
+  String get serverUpdated => 'Sunucu güncel';
 
   @override
   String get unknownStatus => 'Bilinmeyen durum';
 
   @override
-  String get checkingUpdates => 'Güncellemeler kontrol ediliyor...';
+  String get checkingUpdates => 'Güncellemeler denetleniyor...';
 
   @override
-  String get checkUpdates => 'Güncellemeleri kontrol et';
+  String get checkUpdates => 'Güncellemeleri denetle';
 
   @override
-  String get requestingUpdate => 'Güncelleme talep ediliyor...';
+  String get requestingUpdate => 'Güncelleme isteniyor...';
 
   @override
   String get autoupdateUnavailable => 'Otomatik güncelleme kullanılamıyor';
 
   @override
   String get autoupdateUnavailableDescription =>
-      'Otomatik güncelleme servisi bu sunucu için kullanılamıyor. Bunun nedeni sunucunun bir Docker konteynerinde çalışıyor olması olabilir. Sunucunuzu manuel olarak güncellemeniz gerekecektir.';
+      'Bu sunucu için otomatik güncelleme hizmeti kullanılamıyor. Sunucunuz bir Docker kapsayıcısı (container) içinde çalışıyor olabilir; bu durumda güncellemeyi elle yapmanız gerekir.';
 
   @override
   String minute(Object time) {
@@ -1935,13 +1928,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get safeSearchSettingsNotLoaded =>
-      'Güvenli arama ayarları yüklenirken hata oluştu.';
+      'Güvenli arama ayarları yüklenirken bir hata oluştu.';
 
   @override
   String get loadingLogsSettings => 'Günlük ayarları yükleniyor...';
 
   @override
-  String get selectOptionLeftColumn => 'Sol sütundan bir seçenek seçin';
+  String get selectOptionLeftColumn => 'Sol sütundan bir seçenek belirleyin';
 
   @override
   String get selectClientLeftColumn => 'Sol sütundan bir istemci seçin';
@@ -1959,23 +1952,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get copiedClipboard => 'Panoya kopyalandı';
 
   @override
-  String get seeDetails => 'Detayları gör';
+  String get seeDetails => 'Ayrıntıları gör';
 
   @override
-  String get listNotAvailable => 'Liste mevcut değil';
+  String get listNotAvailable => 'Liste kullanılamıyor';
 
   @override
-  String get copyListUrl => 'Bağlantıyı kopyala';
+  String get copyListUrl => 'Liste URL\'sini kopyala';
 
   @override
-  String get listUrlCopied => 'Liste bağlantısı panoya kopyalandı';
+  String get listUrlCopied => 'Liste URL\'si panoya kopyalandı';
 
   @override
   String get unsupportedVersion => 'Desteklenmeyen sürüm';
 
   @override
   String unsupprtedVersionMessage(Object version) {
-    return 'Sunucu sürümünüz $version için destek garantisi verilmiyor. Bu uygulamanın bu sunucu sürümüyle çalışmasında bazı sorunlar olabilir. AdGuard Home Yöneticisi, AdGuard Home sunucunun kararlı sürümleriyle çalışacak şekilde tasarlanmıştır. Alfa ve beta sürümleriyle çalışabilir, ancak uyumluluk garanti edilmez ve uygulama bu sürümlerle çalışırken bazı sorunlar yaşayabilir.';
+    return 'Sunucunuzun $version sürümü için tam destek garanti edilmemektedir. Uygulama bu sürümle çalışırken beklenmedik sorunlar yaşayabilirsiniz.\n\nAdGuard Home Manager, AdGuard Home sunucusunun kararlı sürümleri için tasarlanmıştır. Alfa ve beta sürümlerle de çalışabilir ancak uyumluluk garanti edilmez ve çeşitli hatalarla karşılaşılabilir.';
   }
 
   @override
@@ -1985,53 +1978,53 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appUpdates => 'Uygulama güncellemeleri';
 
   @override
-  String get usingLatestVersion => 'En son sürümü kullanıyorsunuz';
+  String get usingLatestVersion => 'En güncel sürümü kullanıyorsunuz';
 
   @override
-  String get ipLogs => 'Günlüklerde IP adresini göster';
+  String get ipLogs => 'Günlüklerde IP adresi';
 
   @override
   String get ipLogsDescription =>
-      'Günlükler listesinde istemci adı yerine IP adresini gösterir.';
+      'Günlüklerde istemci adı yerine her zaman IP adresini gösterir';
 
   @override
   String get application => 'Uygulama';
 
   @override
-  String get combinedChart => 'Birleştirilmiş grafik';
+  String get combinedChart => 'Birleşik grafik';
 
   @override
-  String get combinedChartDescription => 'Tüm grafikleri bir araya getirir.';
+  String get combinedChartDescription =>
+      'Tüm grafikleri tek bir grafikte birleştirir';
 
   @override
   String get statistics => 'İstatistikler';
 
   @override
-  String get errorLoadFilters => 'Filtreler yüklenirken hata oluştu.';
+  String get errorLoadFilters => 'Filtreler yüklenirken bir hata oluştu.';
 
   @override
-  String get clientRemovedSuccessfully => 'İstemci başarıyla kaldırıldı.';
+  String get clientRemovedSuccessfully => 'İstemci kaldırıldı.';
 
   @override
-  String get editRewriteRule => 'Yeniden yazım kuralını düzenle';
+  String get editRewriteRule => 'Yeniden yazma kuralını düzenle';
 
   @override
-  String get dnsRewriteRuleUpdated =>
-      'DNS yeniden yazım kuralı başarıyla güncellendi';
+  String get dnsRewriteRuleUpdated => 'DNS yeniden yazma kuralı güncellendi';
 
   @override
   String get dnsRewriteRuleNotUpdated =>
-      'DNS yeniden yazım kuralı güncellenemedi';
+      'DNS yeniden yazma kuralı güncellenemedi';
 
   @override
   String get updatingRule => 'Kural güncelleniyor...';
 
   @override
-  String get serverUpdateNeeded => 'Sunucu güncellemesi gerekli';
+  String get serverUpdateNeeded => 'Sunucu güncellemesi gerekiyor';
 
   @override
   String updateYourServer(Object version) {
-    return 'Bu özelliği kullanmak için AdGuard Home sunucunuzu $version veya üzeri bir sürüme güncelleyin.';
+    return 'Bu özelliği kullanabilmek için AdGuard Home sunucunuzu $version veya daha yeni bir sürüme güncelleyin.';
   }
 
   @override
@@ -2071,89 +2064,89 @@ class AppLocalizationsTr extends AppLocalizations {
   String get december => 'Aralık';
 
   @override
-  String get malwarePhishing => 'Zararlı yazılım/oltalama';
+  String get malwarePhishing => 'Zararlı/oltalama';
 
   @override
   String get queries => 'Sorgular';
 
   @override
-  String get adultSites => 'Yetişkin içerikler';
+  String get adultSites => 'Yetişkin siteleri';
 
   @override
   String get quickFilters => 'Hızlı filtreler';
 
   @override
-  String get searchDomainInternet => 'Alan adını arat';
+  String get searchDomainInternet => 'Alan adını internette ara';
 
   @override
   String get hideServerAddress => 'Sunucu adresini gizle';
 
   @override
   String get hideServerAddressDescription =>
-      'Ana ekranda sunucu adresini gizler.';
+      'Ana ekranda sunucu adresini gizler';
 
   @override
-  String get topItemsOrder => 'Öne çıkan öğeler sıralaması';
+  String get topItemsOrder => 'Öne çıkan öğelerin sırası';
 
   @override
   String get topItemsOrderDescription =>
-      'Ana ekrandaki öne çıkan öğe listelerini sıralayın.';
+      'Ana ekrandaki öne çıkan öğe listelerini sıralayın';
 
   @override
   String get topItemsReorderInfo =>
-      'Yeniden sıralamak için bir öğeyi basılı tutun ve kaydırın.';
+      'Sırasını değiştirmek için bir öğeye basılı tutup sürükleyin.';
 
   @override
-  String get discardChanges => 'Değişiklikleri iptal et';
+  String get discardChanges => 'Değişikliklerden vazgeç';
 
   @override
   String get discardChangesDescription =>
-      'Değişiklikleri iptal etmek istediğinizden emin misiniz?';
+      'Yaptığınız değişikliklerden vazgeçmek istediğinize emin misiniz?';
 
   @override
   String get others => 'Diğerleri';
 
   @override
-  String get showChart => 'Göster';
+  String get showChart => 'Grafiği göster';
 
   @override
-  String get hideChart => 'Gizle';
+  String get hideChart => 'Grafiği gizle';
 
   @override
-  String get showTopItemsChart => 'Öne çıkan öğeler grafiği';
+  String get showTopItemsChart => 'Öne çıkan öğeler grafiğini göster';
 
   @override
   String get showTopItemsChartDescription =>
-      'Varsayılan olarak öne çıkan öğeler bölümünde halka grafiğini gösterir. Sadece mobil görünümü etkiler.';
+      'Öne çıkan öğeler bölümünde halka grafiğini varsayılan olarak gösterir. Yalnızca mobil görünümü etkiler.';
 
   @override
-  String get openMenu => 'Menüyü genişlet';
+  String get openMenu => 'Menüyü aç';
 
   @override
-  String get closeMenu => 'Menüyü daralt';
+  String get closeMenu => 'Menüyü kapat';
 
   @override
-  String get openListUrl => 'Liste bağlantısını aç';
+  String get openListUrl => 'Liste URL\'sini aç';
 
   @override
   String get selectionMode => 'Seçim modu';
 
   @override
   String get enableDisableSelected =>
-      'Seçili öğeleri etkinleştir veya devre dışı bırak';
+      'Seçilenleri etkinleştir veya devre dışı bırak';
 
   @override
-  String get deleteSelected => 'Seçili öğeleri sil';
+  String get deleteSelected => 'Seçilenleri sil';
 
   @override
-  String get deleteSelectedLists => 'Seçili listeleri sil';
+  String get deleteSelectedLists => 'Seçilen listeleri sil';
 
   @override
   String get allSelectedListsDeletedSuccessfully =>
-      'Seçilen tüm listeler başarıyla silindi.';
+      'Seçilen tüm listeler silindi.';
 
   @override
-  String get deletionResult => 'Silinme sonucu';
+  String get deletionResult => 'Silme sonucu';
 
   @override
   String get deletingLists => 'Listeler siliniyor...';
@@ -2165,94 +2158,93 @@ class AppLocalizationsTr extends AppLocalizations {
   String get processingLists => 'Listeler işleniyor...';
 
   @override
-  String get enableDisableResult => 'Sonucu etkinleştir veya devre dışı bırak';
+  String get enableDisableResult => 'Durum değişikliği sonucu';
 
   @override
   String get selectedListsEnabledDisabledSuccessfully =>
-      'Seçilen tüm listeler başarıyla etkinleştirildi veya devre dışı bırakıldı';
+      'Seçilen tüm listelerin durumu güncellendi';
 
   @override
   String get sslWarning =>
-      'Kendinden imzalı bir sertifika ile HTTPS bağlantısı kullanıyorsanız, Ayarlar > Gelişmiş ayarlar bölümünde \"SSL sertifikasını asla kontrol etme\" seçeneğini etkinleştirdiğinizden emin olun.';
+      'Kendinden imzalı sertifikayla HTTPS bağlantısı kullanıyorsanız Ayarlar > Gelişmiş ayarlar altından \"SSL sertifikasını kontrol etme\" seçeneğini açmayı unutmayın.';
 
   @override
   String get unsupportedServerVersion => 'Desteklenmeyen sunucu sürümü';
 
   @override
   String get unsupportedServerVersionMessage =>
-      'AdGuard Home sunucu sürümünüz çok eski ve AdGuard Home Manager tarafından desteklenmiyor. Bu uygulamayı kullanmak için AdGuard Home sunucunuzu daha yeni bir sürüme yükseltmeniz gerekecektir.';
+      'AdGuard Home sunucunuzun sürümü çok eski olduğu için AdGuard Home Manager tarafından desteklenmiyor. Uygulamayı kullanabilmek için sunucunuzu daha yeni bir sürüme yükseltmeniz gerekiyor.';
 
   @override
   String yourVersion(Object version) {
-    return 'Yüklü sürüm: $version';
+    return 'Sizin sürümünüz: $version';
   }
 
   @override
   String minimumRequiredVersion(Object version) {
-    return 'Gerekli minimum sürüm: $version';
+    return 'Gereken en düşük sürüm: $version';
   }
 
   @override
-  String get topUpstreams => 'Öne çıkan DNS sunucuları';
+  String get topUpstreams => 'Öne çıkan üst DNS\'ler';
 
   @override
-  String get averageUpstreamResponseTime => 'DNS sunucuları işlem süresi';
+  String get averageUpstreamResponseTime => 'Ortalama üst DNS yanıt süresi';
 
   @override
   String get dhcpNotAvailable => 'DHCP sunucusu kullanılamıyor.';
 
   @override
   String get osServerInstalledIncompatible =>
-      'AdGuard Home, işletim sisteminizde DHCP sunucusu çalıştıramıyor.';
+      'Sunucunun kurulu olduğu işletim sistemi bu özelliği desteklemiyor.';
 
   @override
   String get resetSettings => 'Ayarları sıfırla';
 
   @override
   String get resetEncryptionSettingsDescription =>
-      'Şifreleme ayarlarını sıfırlamak istediğinizden emin misiniz?';
+      'Şifreleme ayarlarını varsayılan değerlerine sıfırlamak istediğinize emin misiniz?';
 
   @override
   String get resettingConfig => 'Yapılandırma sıfırlanıyor...';
 
   @override
-  String get configurationResetSuccessfully =>
-      'Yapılandırma başarıyla sıfırlandı';
+  String get configurationResetSuccessfully => 'Yapılandırma sıfırlandı';
 
   @override
   String get configurationResetError => 'Yapılandırma sıfırlanamadı';
 
   @override
-  String get testUpstreamDnsServers => 'DNS sunucusunu test et';
+  String get testUpstreamDnsServers => 'Üst DNS sunucularını test et';
 
   @override
   String get errorTestUpstreamDns =>
-      'DNS sunucularını test ederken hata oluştu.';
+      'Üst DNS sunucuları test edilirken bir hata oluştu.';
 
   @override
   String get useCustomIpEdns => 'EDNS için özel IP kullan';
 
   @override
   String get useCustomIpEdnsDescription =>
-      'EDNS için özel IP kullanımına izin ver';
+      'EDNS için özel IP adresi kullanılmasına izin verir';
 
   @override
   String get sortingOptions => 'Sıralama seçenekleri';
 
   @override
-  String get fromHighestToLowest => 'Yüksekten düşüğe';
+  String get fromHighestToLowest => 'En yüksekten en düşüğe';
 
   @override
-  String get fromLowestToHighest => 'Düşükten yükseğe';
+  String get fromLowestToHighest => 'En düşükten en yükseğe';
 
   @override
-  String get queryLogsAndStatistics => 'Sorgu günlüğü ve istatistikler';
+  String get queryLogsAndStatistics => 'Sorgu günlükleri ve istatistikler';
 
   @override
-  String get ignoreClientQueryLog => 'Sorgu günlüğünde bu istemciyi yoksay';
+  String get ignoreClientQueryLog => 'Bu istemciyi sorgu günlüğünde yoksay';
 
   @override
-  String get ignoreClientStatistics => 'İstatistiklerde bu istemciyi yoksay';
+  String get ignoreClientStatistics => 'Bu istemciyi istatistiklere dahil etme';
 
   @override
   String get savingChanges => 'Değişiklikler kaydediliyor...';
@@ -2262,27 +2254,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get fallbackDnsServersDescription =>
-      'Yedek DNS sunucularını yapılandır';
+      'Yedek DNS sunucularını yapılandırın';
 
   @override
   String get fallbackDnsServersInfo =>
-      'Üst DNS sunucuları yanıt vermediğinde kullanılan yedek DNS sunucularının listesi. Sözdizimi, yukarıdaki ana üst kaynak alanıyla aynıdır.';
+      'Üst DNS sunucuları yanıt vermediğinde devreye girecek yedek DNS sunucularının listesidir. Yazım biçimi yukarıdaki ana üst sunucular alanıyla aynıdır.';
 
   @override
-  String get noFallbackDnsAdded => 'Yedek DNS sunucusu eklenmedi.';
+  String get noFallbackDnsAdded => 'Yedek DNS sunucusu eklenmemiş.';
 
   @override
-  String get blockedResponseTtl => 'Engellenen yanıtın kullanım süresi';
+  String get blockedResponseTtl => 'Engellenen yanıt TTL değeri';
 
   @override
   String get blockedResponseTtlDescription =>
-      'İstemcilerin filtrelenmiş bir yanıtı kaç saniye süreyle önbelleğe alması gerektiğini belirtir';
+      'İstemcilerin filtrelenmiş bir yanıtı kaç saniye boyunca önbellekte tutacağını belirler';
 
   @override
   String get invalidValue => 'Geçersiz değer';
 
   @override
-  String get noDataChart => 'Bu grafiği görüntüleyecek veri yok.';
+  String get noDataChart => 'Bu grafiği gösterecek veri henüz yok.';
 
   @override
   String get noData => 'Veri yok';
@@ -2297,51 +2289,52 @@ class AppLocalizationsTr extends AppLocalizations {
   String get unblockingClient => 'İstemci engeli kaldırılıyor...';
 
   @override
-  String get upstreamDnsCacheConfiguration => 'DNS önbellek yapılandırması';
+  String get upstreamDnsCacheConfiguration => 'Üst DNS önbellek yapılandırması';
 
   @override
   String get enableDnsCachingClient =>
-      'Bu istemci için DNS önbelleğe almayı etkinleştir';
+      'Bu istemci için DNS önbelleğini etkinleştir';
 
   @override
-  String get dnsCacheSize => 'DNS önbellek boyutu (Bayt cinsinden)';
+  String get dnsCacheSize => 'DNS önbellek boyutu';
 
   @override
-  String get nameInvalid => 'Ad gereklidir';
+  String get nameInvalid => 'Ad alanı zorunludur';
 
   @override
-  String get oneIdentifierRequired => 'En az bir tanımlayıcı gereklidir';
+  String get oneIdentifierRequired =>
+      'En az bir tanımlayıcı girmeniz gerekiyor';
 
   @override
-  String get dnsCacheNumber => 'DNS önbellek boyutu bir rakam içermelidir';
+  String get dnsCacheNumber => 'DNS önbellek boyutu bir sayı olmalıdır';
 
   @override
   String get errors => 'Hatalar';
 
   @override
   String get redirectHttpsWarning =>
-      'AdGuard Home sunucunuzda \"Otomatik olarak HTTPS\'e yönlendir\" seçeneğini etkinleştirdiyseniz, bir HTTPS bağlantısı seçmeli ve sunucunuzun HTTPS bağlantı noktasını kullanmalısınız.';
+      'AdGuard Home sunucunuzda \"Otomatik olarak HTTPS\'ye yönlendir\" seçeneği açıksa HTTPS bağlantısını seçip sunucunuzun HTTPS portunu girmelisiniz.';
 
   @override
-  String get logsSettingsDescription => 'Sorgu günlüklerini yapılandır';
+  String get logsSettingsDescription => 'Sorgu günlüklerini yapılandırın';
 
   @override
-  String get ignoredDomains => 'Yok sayılan alan adları';
+  String get ignoredDomains => 'Yoksayılan alan adları';
 
   @override
-  String get noIgnoredDomainsAdded => 'Yok sayılacak alan adı eklenmedi';
+  String get noIgnoredDomainsAdded => 'Yoksayılacak alan adı eklenmemiş';
 
   @override
   String get pauseServiceBlocking => 'Hizmet engellemeyi duraklat';
 
   @override
-  String get newSchedule => 'Yeni program';
+  String get newSchedule => 'Yeni zamanlama';
 
   @override
-  String get editSchedule => 'Programı düzenle';
+  String get editSchedule => 'Zamanlamayı düzenle';
 
   @override
-  String get timezone => 'Zaman dilimi';
+  String get timezone => 'Saat dilimi';
 
   @override
   String get monday => 'Pazartesi';
@@ -2371,35 +2364,35 @@ class AppLocalizationsTr extends AppLocalizations {
   String get to => 'Bitiş';
 
   @override
-  String get selectStartTime => 'Başlangıç zamanını seç';
+  String get selectStartTime => 'Başlangıç saatini seçin';
 
   @override
-  String get selectEndTime => 'Bitiş zamanını seç';
+  String get selectEndTime => 'Bitiş saatini seçin';
 
   @override
   String get startTimeBeforeEndTime =>
-      'Başlangıç zamanı bitiş zamanından önce olmalıdır.';
+      'Başlangıç saati bitiş saatinden önce olmalıdır.';
 
   @override
   String get noBlockingScheduleThisDevice =>
-      'Bu cihaz için herhangi bir engelleme programı bulunmamaktadır.';
+      'Bu cihaz için ayarlanmış bir engelleme zamanlaması yok.';
 
   @override
-  String get selectTimezone => 'Bir zaman dilimi seç';
+  String get selectTimezone => 'Bir saat dilimi seçin';
 
   @override
   String get selectClientsFiltersInfo =>
-      'Görüntülemek istediğiniz istemcileri seçin. Hiçbir istemci seçilmemişse, hepsi görüntülenecektir.';
+      'Görmek istediğiniz istemcileri seçin. Hiçbirini seçmezseniz tümü gösterilir.';
 
   @override
-  String get noDataThisSection => 'Bu bölüm için veri yok.';
+  String get noDataThisSection => 'Bu bölümde gösterilecek veri yok.';
 
   @override
   String get statisticsSettings => 'İstatistik ayarları';
 
   @override
   String get statisticsSettingsDescription =>
-      'İstatistikler için veri toplamayı yapılandır';
+      'İstatistikler için veri toplamayı yapılandırın';
 
   @override
   String get loadingStatisticsSettings => 'İstatistik ayarları yükleniyor...';
@@ -2409,17 +2402,16 @@ class AppLocalizationsTr extends AppLocalizations {
       'İstatistik ayarları yüklenirken bir hata oluştu.';
 
   @override
-  String get statisticsConfigUpdated =>
-      'İstatistik ayarları başarıyla güncellendi';
+  String get statisticsConfigUpdated => 'İstatistik ayarları güncellendi';
 
   @override
   String get statisticsConfigNotUpdated => 'İstatistik ayarları güncellenemedi';
 
   @override
-  String get customTimeInHours => 'Özel zaman (Saat olarak)';
+  String get customTimeInHours => 'Özel süre (saat)';
 
   @override
-  String get invalidTime => 'Geçersiz zaman';
+  String get invalidTime => 'Geçersiz süre';
 
   @override
   String get removeDomain => 'Alan adını kaldır';
@@ -2428,29 +2420,29 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addDomain => 'Alan adı ekle';
 
   @override
-  String get notLess1Hour => 'Zaman 1 saatten az olamaz';
+  String get notLess1Hour => 'Süre 1 saatten az olamaz';
 
   @override
   String get rateLimit => 'Hız sınırı';
 
   @override
-  String get subnetPrefixLengthIpv4 => 'IPv4 için alt ağ önek uzunluğu';
+  String get subnetPrefixLengthIpv4 => 'IPv4 alt ağ ön ek uzunluğu';
 
   @override
-  String get subnetPrefixLengthIpv6 => 'IPv6 için alt ağ önek uzunluğu';
+  String get subnetPrefixLengthIpv6 => 'IPv6 alt ağ ön ek uzunluğu';
 
   @override
-  String get rateLimitAllowlist => 'Hız sınırlama izin listesi';
+  String get rateLimitAllowlist => 'Hız sınırı istisna listesi';
 
   @override
   String get rateLimitAllowlistDescription =>
-      'Hız sınırlamasından hariç tutulan IP adresleri';
+      'Hız sınırından muaf tutulacak IP adresleri';
 
   @override
-  String get dnsOptions => 'DNS ayarları';
+  String get dnsOptions => 'DNS seçenekleri';
 
   @override
-  String get editor => 'Editör';
+  String get editor => 'Düzenleyici';
 
   @override
   String get editCustomRules => 'Özel kuralları düzenle';
@@ -2459,8 +2451,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get savingCustomRules => 'Özel kurallar kaydediliyor...';
 
   @override
-  String get customRulesUpdatedSuccessfully =>
-      'Özel kurallar başarıyla güncellendi';
+  String get customRulesUpdatedSuccessfully => 'Özel kurallar güncellendi';
 
   @override
   String get customRulesNotUpdated => 'Özel kurallar güncellenemedi';
@@ -2473,20 +2464,20 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noElementsReorderMessage =>
-      'Burada yeniden sıralamak için göster/gizle sekmesindeki bazı öğeleri etkinleştirin.';
+      'Burada sıralayabilmek için önce Göster/gizle sekmesinden birkaç öğeyi görünür yapın.';
 
   @override
-  String get enablePlainDns => 'Düz DNS\'i etkinleştir';
+  String get enablePlainDns => 'Düz (şifresiz) DNS\'i etkinleştir';
 
   @override
   String get enablePlainDnsDescription =>
-      'Düz DNS varsayılan olarak etkindir. Tüm aygıtları şifrelenmiş DNS kullanmaya zorlamak için bunu devre dışı bırakabilirsiniz. Bunu yapmak için en az bir şifrelenmiş DNS protokolünü etkinleştirmeniz gerekir.';
+      'Düz DNS varsayılan olarak etkindir. Tüm cihazları şifreli DNS kullanmaya zorlamak için bunu kapatabilirsiniz; ancak bunun için önce en az bir şifreli DNS protokolünü etkinleştirmeniz gerekir.';
 
   @override
   String get date => 'Tarih';
 
   @override
-  String get loadingChangelog => 'Değişiklikler yükleniyor...';
+  String get loadingChangelog => 'Sürüm notları yükleniyor...';
 
   @override
   String get invalidIpOrUrl => 'Geçersiz IP adresi veya URL';
@@ -2502,7 +2493,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String domainBlockedThisClient(Object domain) {
-    return 'Bu istemci için $domain engellendi';
+    return '$domain bu istemci için engellendi';
   }
 
   @override
@@ -2517,10 +2508,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get allowThisClient => 'Bu istemciye izin ver';
 
   @override
-  String get clientAllowedSuccessfully => 'İstemciye başarıyla izin verildi';
+  String get clientAllowedSuccessfully => 'İstemciye izin verildi';
 
   @override
-  String get clientDisallowedSuccessfully => 'İstemci başarıyla reddedildi';
+  String get clientDisallowedSuccessfully =>
+      'İstemci izin verilmeyenlere eklendi';
 
   @override
   String get changesNotSaved => 'Değişiklikler kaydedilemedi';
@@ -2529,7 +2521,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get allowingClient => 'İstemciye izin veriliyor...';
 
   @override
-  String get disallowingClient => 'İstemci reddediliyor...';
+  String get disallowingClient => 'İstemci izin verilmeyenlere ekleniyor...';
 
   @override
   String get clientIpCopied => 'İstemci IP\'si panoya kopyalandı';
@@ -2548,21 +2540,21 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get hereWillAppearRealtimeLogs =>
-      'Burada gerçek zamanlı günlükler görünecek.';
+      'Canlı günlük akışı burada görünecek.';
 
   @override
-  String get applicationDetails => 'Uygulama detayları';
+  String get applicationDetails => 'Uygulama ayrıntıları';
 
   @override
   String get applicationDetailsDescription =>
-      'Uygulama deposu, mevcut olduğu mağazalar ve daha fazlası';
+      'Kaynak kod deposu, uygulama mağazaları ve daha fazlası';
 
   @override
   String get myOtherApps => 'Diğer uygulamalarım';
 
   @override
   String get myOtherAppsDescription =>
-      'Diğer uygulamalarımı kontrol et, bağış yap, destekle iletişime geç ve daha fazlası';
+      'Diğer uygulamalarıma göz atın, bağış yapın, destek alın ve daha fazlasını keşfedin';
 
   @override
   String get topToBottom => 'Yukarıdan aşağıya';
@@ -2575,47 +2567,52 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get upstreamTimeoutHelper =>
-      'Üst DNS sunucusundan yanıt bekleme süresini saniye cinsinden belirtir';
+      'Üst sunucudan yanıt beklerken uygulanacak zaman aşımı süresini (saniye) belirler';
 
   @override
-  String get fieldCannotBeEmpty => 'Bu alan boş olamaz';
+  String get fieldCannotBeEmpty => 'Bu alan boş bırakılamaz';
 
   @override
-  String get enableDnsRewriteRules => 'Enable DNS rewrite rules';
+  String get enableDnsRewriteRules =>
+      'DNS yeniden yazma kurallarını etkinleştir';
 
   @override
-  String get dnsRewriteRuleEnabled => 'DNS rewrite rule enabled successfully';
+  String get dnsRewriteRuleEnabled =>
+      'DNS yeniden yazma kuralı etkinleştirildi';
 
   @override
-  String get dnsRewriteRuleDisabled => 'DNS rewrite rule disabled successfully';
+  String get dnsRewriteRuleDisabled =>
+      'DNS yeniden yazma kuralı devre dışı bırakıldı';
 
   @override
   String get allDnsRewriteRulesEnabled =>
-      'All DNS rewrite rules enabled successfully';
+      'Tüm DNS yeniden yazma kuralları etkinleştirildi';
 
   @override
   String get allDnsRewriteRulesDisabled =>
-      'All DNS rewrite rules disabled successfully';
+      'Tüm DNS yeniden yazma kuralları devre dışı bırakıldı';
 
   @override
   String get errorEnablingAllDnsRewriteRules =>
-      'Error enabling all DNS rewrite rules';
+      'DNS yeniden yazma kuralları etkinleştirilirken hata oluştu';
 
   @override
   String get errorDisablingAllDnsRewriteRules =>
-      'Error disabling all DNS rewrite rules';
+      'DNS yeniden yazma kuralları devre dışı bırakılırken hata oluştu';
 
   @override
-  String get enablingDnsRewriteRule => 'Enabling DNS rewrite rules...';
+  String get enablingDnsRewriteRule =>
+      'DNS yeniden yazma kuralları etkinleştiriliyor...';
 
   @override
-  String get disablingDnsRewriteRule => 'Disabling DNS rewrite rules...';
+  String get disablingDnsRewriteRule =>
+      'DNS yeniden yazma kuralları devre dışı bırakılıyor...';
 
   @override
-  String get selectIdToFilter => 'Select an ID to filter';
+  String get selectIdToFilter => 'Filtrelemek için bir kimlik seçin';
 
   @override
-  String get clientIds => 'Client IDs';
+  String get clientIds => 'İstemci kimlikleri';
 
   @override
   String get loginMethod => 'Login method';

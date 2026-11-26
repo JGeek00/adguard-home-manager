@@ -141,7 +141,6 @@ If you like the project and you want to contribute with the development, you can
 - [flutter split view](https://github.com/JGeek00/flutter_split_view) (forked from [here](https://pub.dev/packages/flutter_split_view))
 - [async](https://pub.dev/packages/async)
 - [sentry flutter](https://pub.dev/packages/sentry_flutter)
-- [flutter dotenv](https://pub.dev/packages/flutter_dotenv)
 - [flutter reorderable list](https://pub.dev/packages/flutter_reorderable_list)
 - [pie chart](https://pub.dev/packages/pie_chart)
 - [segmented button slide](https://pub.dev/packages/segmented_button_slide)

@@ -265,7 +265,7 @@ class _Header extends SliverPersistentHeaderDelegate {
                       child: Opacity(
                         opacity: 1-iconPercentage,
                         child: serversProvider.updateAvailable.loadStatus == LoadStatus.loading
-                          ? const Column(
+                          ? Column(
                               children: [
                                 CircularProgressIndicator(),
                                 SizedBox(height: 4)
