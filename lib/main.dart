@@ -150,7 +150,7 @@ void main() async {
     )
   );
 
-  if (sentryDsn.isNotEmpty && (kReleaseMode || enableSentry)) {
+  if (kReleaseMode) {
     SentryFlutter.init(
       (options) {
         options.dsn = sentryDsn;
